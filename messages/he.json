@@ -1,0 +1,22 @@
+{
+  "Home": {
+    "title": "מאגר המידע לספרות",
+    "description": "מאגר מקיף של ספרות עולמית, נגיש לחוקרים ואנשי מקצוע. תיעוד היסטוריה, תרבות ואמנות.",
+    "selectLanguage": "שפת ניווט",
+    "selectLanguageDescription": "בחר את שפת סביבת המחקר שלך.",
+    "footerTitle": "מאגר המידע STAVNET",
+    "footerDescription": "נבנה עבור אנשי מקצוע וחוקרים אקדמיים.",
+    "academicAccess": "גישה אקדמית בלבד"
+  },
+  "Navbar": {
+    "search": "חיפוש",
+    "menu": "תפריט",
+    "video": "וידאו",
+    "diaporama": "מצגת",
+    "sound": "קול",
+    "introduction": "הקדמה",
+    "help": "עזרה",
+    "next": "הבא",
+    "exit": "יציאה"
+  }
+}

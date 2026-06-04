@@ -1,10 +1,13 @@
 import Image from "next/image";
 import { LanguageTable } from "@/components/home/language-table";
 import { Navbar } from "@/components/home/navbar";
+import { useTranslations } from 'next-intl';
 
 export default function Home() {
+  const t = useTranslations('Home');
+
   return (
-    <div className="flex flex-col min-h-screen bg-background">
+    <div className="flex flex-col min-h-screen bg-background/30 backdrop-blur-[2px]">
       <Navbar />
 
       <main className="flex-1">
@@ -20,10 +23,10 @@ export default function Home() {
             />
           </div>
           <h1 className="text-4xl font-bold tracking-tighter sm:text-6xl text-[#1e1e1e]">
-            The Literature Database
+            {t('title')}
           </h1>
           <p className="max-w-[700px] text-lg text-muted-foreground sm:text-xl leading-relaxed">
-            A comprehensive repository of global literature, accessible for researchers and professionals. Documenting history, culture, and art.
+            {t('description')}
           </p>
           <div className="flex flex-col text-sm font-medium text-muted-foreground italic gap-1 mt-2">
             <span>قاعدة المعطيات للاداب</span>
@@ -31,7 +34,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Content Section - No Padding X, Large Max Width */}
+        {/* Content Section */}
         <section className="container max-w-[90rem] mx-auto pb-20">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-stretch">
             {/* Left side: Language Selection */}
@@ -39,8 +42,8 @@ export default function Home() {
               <LanguageTable />
             </div>
 
-            {/* Right side: Visual Display - Clean & Matched Height */}
-            <div className="relative rounded-xl overflow-hidden border border-border bg-muted">
+            {/* Right side: Visual Display */}
+            <div className="relative rounded-xl overflow-hidden border border-border bg-muted/50">
               <Image
                 src="/images/ancient-books.png"
                 alt="Ancient Books Collection"
@@ -54,15 +57,15 @@ export default function Home() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t py-12 bg-slate-50/50">
+      <footer className="border-t py-12 bg-slate-50/50 backdrop-blur-sm">
         <div className="container max-w-[90rem] mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
           <div className="flex flex-col gap-1">
-            <p className="text-sm font-bold text-[#1e1e1e] uppercase tracking-wider">STAVNET Database</p>
-            <p className="text-sm text-muted-foreground">Built for professionals and academic researchers.</p>
+            <p className="text-sm font-bold text-[#1e1e1e] uppercase tracking-wider">{t('footerTitle')}</p>
+            <p className="text-sm text-muted-foreground">{t('footerDescription')}</p>
           </div>
           <div className="flex items-center">
             <span className="text-[10px] text-muted-foreground/60 uppercase tracking-[0.3em] font-black">
-              Academic Access Only
+              {t('academicAccess')}
             </span>
           </div>
         </div>

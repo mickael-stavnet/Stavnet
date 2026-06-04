@@ -14,6 +14,9 @@ import {
   ItemContent,
   ItemDescription,
 } from "@/components/ui/item";
+import { useTranslations, useLocale } from "next-intl";
+import { useRouter, usePathname } from "@/i18n/routing";
+import { cn } from "@/lib/utils";
 
 interface Language {
   id: string;
@@ -31,20 +34,33 @@ const LANGUAGES: Language[] = [
 ];
 
 export function LanguageTable() {
+  const t = useTranslations("Home");
+  const locale = useLocale();
+  const router = useRouter();
+  const pathname = usePathname();
+
+  function onLanguageSelect(newLocale: string) {
+    router.replace(pathname, { locale: newLocale });
+  }
+
   return (
     <Card className="border-none shadow-none bg-transparent">
       <CardHeader>
-        <CardTitle>Navigation Language</CardTitle>
-        <CardDescription>
-          Select your research environment language.
-        </CardDescription>
+        <CardTitle>{t("selectLanguage")}</CardTitle>
+        <CardDescription>{t("selectLanguageDescription")}</CardDescription>
       </CardHeader>
       <CardContent>
         <ItemGroup className="gap-2">
           {LANGUAGES.map((lang) => (
             <Item
               key={lang.id}
-              className="cursor-pointer border-none bg-slate-100/50 hover:bg-slate-100 transition-colors"
+              onClick={() => onLanguageSelect(lang.id)}
+              className={cn(
+                "cursor-pointer border-none transition-colors",
+                locale === lang.id
+                  ? "bg-slate-200 hover:bg-slate-200"
+                  : "bg-slate-100/50 hover:bg-slate-100",
+              )}
               size="default"
             >
               <ItemContent>

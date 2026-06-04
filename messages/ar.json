@@ -1,0 +1,22 @@
+{
+  "Home": {
+    "title": "قاعدة المعطيات للاداب",
+    "description": "مستودع شامل للأدب العالمي، متاح للباحثين والمهنيين. توثيق التاريخ والثقافة والفن.",
+    "selectLanguage": "لغة التنقل",
+    "selectLanguageDescription": "اختر لغة بيئة البحث الخاصة بك.",
+    "footerTitle": "قاعدة بيانات STAVNET",
+    "footerDescription": "بنيت للمهنيين والباحثين الأكاديميين.",
+    "academicAccess": "الوصول الأكاديمي فقط"
+  },
+  "Navbar": {
+    "search": "بحث",
+    "menu": "قائمة",
+    "video": "فيديو",
+    "diaporama": "عرض شرائح",
+    "sound": "صوت",
+    "introduction": "مقدمة",
+    "help": "مساعدة",
+    "next": "التالي",
+    "exit": "خروج"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "Home": {
+    "title": "La Base de Données de Littérature",
+    "description": "Un répertoire complet de la littérature mondiale, accessible aux chercheurs et aux professionnels. Documenter l'histoire, la culture et l'art.",
+    "selectLanguage": "Langue de navigation",
+    "selectLanguageDescription": "Sélectionnez votre langue d'environnement de recherche.",
+    "footerTitle": "Base de données STAVNET",
+    "footerDescription": "Conçu pour les professionnels et les chercheurs universitaires.",
+    "academicAccess": "Accès académique uniquement"
+  },
+  "Navbar": {
+    "search": "Recherche",
+    "menu": "Menu",
+    "video": "Vidéo",
+    "diaporama": "Diaporama",
+    "sound": "Son",
+    "introduction": "Introduction",
+    "help": "Aide",
+    "next": "Suivant",
+    "exit": "Quitter"
+  }
+}

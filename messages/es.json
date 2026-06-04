@@ -1,0 +1,22 @@
+{
+  "Home": {
+    "title": "La Base de Datos de Literatura",
+    "description": "Un repositorio exhaustivo de literatura global, accesible para investigadores y profesionales. Documentando historia, cultura y arte.",
+    "selectLanguage": "Idioma de navegación",
+    "selectLanguageDescription": "Seleccione el idioma de su entorno de investigación.",
+    "footerTitle": "Base de datos STAVNET",
+    "footerDescription": "Creado para profesionales e investigadores académicos.",
+    "academicAccess": "Acceso académico únicamente"
+  },
+  "Navbar": {
+    "search": "Buscar",
+    "menu": "Menú",
+    "video": "Video",
+    "diaporama": "Diapositivas",
+    "sound": "Sonido",
+    "introduction": "Introducción",
+    "help": "Ayuda",
+    "next": "Siguiente",
+    "exit": "Salir"
+  }
+}

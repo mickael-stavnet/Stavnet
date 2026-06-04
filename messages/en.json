@@ -1,0 +1,22 @@
+{
+  "Home": {
+    "title": "The Literature Database",
+    "description": "A comprehensive repository of global literature, accessible for researchers and professionals. Documenting history, culture, and art.",
+    "selectLanguage": "Navigation Language",
+    "selectLanguageDescription": "Select your research environment language.",
+    "footerTitle": "STAVNET Database",
+    "footerDescription": "Built for professionals and academic researchers.",
+    "academicAccess": "Academic Access Only"
+  },
+  "Navbar": {
+    "search": "Search",
+    "menu": "Menu",
+    "video": "Video",
+    "diaporama": "Diaporama",
+    "sound": "Sound",
+    "introduction": "Introduction",
+    "help": "Help",
+    "next": "Next",
+    "exit": "Exit"
+  }
+}

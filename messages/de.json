@@ -1,0 +1,22 @@
+{
+  "Home": {
+    "title": "Die Literaturdatenbank",
+    "description": "Ein umfassendes Repository für Weltliteratur, zugänglich für Forscher und Fachleute. Dokumentation von Geschichte, Kultur und Kunst.",
+    "selectLanguage": "Navigationssprache",
+    "selectLanguageDescription": "Wählen Sie Ihre Forschungsumgebungssprache aus.",
+    "footerTitle": "STAVNET-Datenbank",
+    "footerDescription": "Entwickelt für Fachleute und akademische Forscher.",
+    "academicAccess": "Nur akademischer Zugang"
+  },
+  "Navbar": {
+    "search": "Suche",
+    "menu": "Menü",
+    "video": "Video",
+    "diaporama": "Diashow",
+    "sound": "Ton",
+    "introduction": "Einführung",
+    "help": "Hilfe",
+    "next": "Weiter",
+    "exit": "Beenden"
+  }
+}
