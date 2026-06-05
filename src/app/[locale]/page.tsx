@@ -34,19 +34,19 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Content Section */}
+        {/* Content Section: Matched Height & Alignment */}
         <section className="container max-w-[90rem] mx-auto pb-20">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-stretch">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
             {/* Left side: Language Selection */}
-            <div className="flex flex-col">
+            <div className="flex flex-col h-full">
               <LanguageTable />
             </div>
 
-            {/* Right side: Visual Display */}
-            <div className="relative rounded-xl overflow-hidden border border-border bg-muted/50">
+            {/* Right side: Visual Display (Height matched) */}
+            <div className="relative flex-1 rounded-xl overflow-hidden border border-border bg-muted">
               <Image
-                src="/images/ancient-books.png"
-                alt="Ancient Books Collection"
+                src="/images/books.jpg"
+                alt="Literature"
                 fill
                 className="object-cover"
                 priority
