@@ -17,6 +17,22 @@
     "introduction": "הקדמה",
     "help": "עזרה",
     "next": "הבא",
-    "exit": "יציאה"
+    "exit": "יציאה",
+    "books": "הספרים שלנו",
+    "organizations": "הארגונים שלנו",
+    "authors": "הסופרים שלנו"
+  },
+  "Orgs": {
+    "title": "הארגונים שלנו",
+    "description": "עיין וחפש בין הארגונים המופיעים במאגר המידע שלנו.",
+    "searchPlaceholder": "חפש ארגון...",
+    "table": {
+      "organisme": "ארגון",
+      "type": "סוג",
+      "pays": "מדינה",
+      "dateCreation": "תאריך יצירה",
+      "nbAuteurs": "מספר סופרים",
+      "nbTitres": "מספר כותרים"
+    }
   }
 }

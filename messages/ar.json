@@ -17,6 +17,22 @@
     "introduction": "مقدمة",
     "help": "مساعدة",
     "next": "التالي",
-    "exit": "خروج"
+    "exit": "خروج",
+    "books": "كتبنا",
+    "organizations": "منظماتنا",
+    "authors": "مؤلفونا"
+  },
+  "Orgs": {
+    "title": "منظماتنا",
+    "description": "قم بالاطلاع والبحث بين المنظمات المشار إليها في قاعدة بياناتنا.",
+    "searchPlaceholder": "ابحث عن منظمة...",
+    "table": {
+      "organisme": "المنظمة",
+      "type": "النوع",
+      "pays": "البلد",
+      "dateCreation": "تاريخ الإنشاء",
+      "nbAuteurs": "عدد المؤلفين",
+      "nbTitres": "عدد العناوين"
+    }
   }
 }

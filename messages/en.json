@@ -17,6 +17,22 @@
     "introduction": "Introduction",
     "help": "Help",
     "next": "Next",
-    "exit": "Exit"
+    "exit": "Exit",
+    "books": "Our books",
+    "organizations": "Our organizations",
+    "authors": "Our authors"
+  },
+  "Orgs": {
+    "title": "Our organizations",
+    "description": "Consult and search among the organizations referenced in our database.",
+    "searchPlaceholder": "Search for an organization...",
+    "table": {
+      "organisme": "Organization",
+      "type": "Type",
+      "pays": "Country",
+      "dateCreation": "Creation Date",
+      "nbAuteurs": "Nb Authors",
+      "nbTitres": "Nb Titles"
+    }
   }
 }
