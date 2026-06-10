@@ -6,7 +6,16 @@
     "selectLanguageDescription": "בחר את שפת סביבת המחקר שלך.",
     "footerTitle": "מאגר המידע STAVNET",
     "footerDescription": "נבנה עבור אנשי מקצוע וחוקרים אקדמיים.",
-    "academicAccess": "גישה אקדמית בלבד"
+    "academicAccess": "גישה אקדמית בלבד",
+    "coverTitleLine1": "עמוד",
+    "coverTitleLine2": "שער",
+    "coverMainTitle": "ספרות ישראלית",
+    "coverSubtitle": "מאגר מידע ביבליוגרפי וביוגרפי",
+    "coverDescriptionLine1": "מאגר זה מאגד כמעט את כל היצירה הספרותית של סופרים ישראלים,",
+    "coverDescriptionLine2": "שפורסמה ברובה בעברית, אך גם בערבית, בצרפתית, באנגלית, בפולנית, ברוסית...",
+    "coverDescriptionLine3": "וכן את כל התרגומים שפורסמו בחו״ל, מהקמת מדינת ישראל ועד ימינו.",
+    "back": "חזרה",
+    "next": "הבא"
   },
   "Navbar": {
     "search": "חיפוש",
@@ -33,6 +42,43 @@
       "dateCreation": "תאריך יצירה",
       "nbAuteurs": "מספר סופרים",
       "nbTitres": "מספר כותרים"
+    }
+  },
+  "Persons": {
+    "title": "האנשים שלנו",
+    "description": "עיין וחפש בין האנשים המופיעים במאגר המידע שלנו.",
+    "searchPlaceholder": "חפש אדם...",
+    "table": {
+      "nomPrenom": "שם מלא",
+      "codeLangue": "קוד שפה",
+      "nbFichesBase": "מספר כרטיסי בסיס",
+      "nbFichesTrouvees": "מספר כרטיסים שנמצאו",
+      "siDateDeces": "אם תאריך פטירה",
+      "siLieuDeces": "אם מקום פטירה",
+      "nbContribAuteurs": "מספר תרומות סופרים",
+      "nbContribTitres": "מספר תרומות כותרים",
+      "activitePro": "פעילות מקצועית",
+      "biographie": "ביוגרפיה",
+      "dateDeces": "תאריך פטירה",
+      "dateNaissance": "תאריך לידה",
+      "lieuDeces": "מקום פטירה",
+      "paysResidence": "ארץ מגורים",
+      "villeNaissance": "עיר לידה",
+      "anneePub": "שנת הוצאה",
+      "auteurOriginal": "סופר מקורי",
+      "coteLivre": "סיווג ספר",
+      "langueTrad": "שפת תרגום",
+      "titre": "כותרת",
+      "typeContrib": "סוג תרומה",
+      "nbLanguesTrad": "מספר שפות תרגום",
+      "nbTitresOrig": "מספר כותרים מקוריים",
+      "nbTitresTrad": "מספר כותרים מתורגמים",
+      "nbPaysPub": "מספר ארצות הוצאה",
+      "nbReedPoche": "מספר מהדורות כיס",
+      "nbReedReg": "מספר מהדורות רגילות",
+      "nbPrix": "מספר פרסים",
+      "langueEcriture": "שפת כתיבה",
+      "typePersonne": "סוג אדם"
     }
   }
 }

@@ -6,7 +6,16 @@
     "selectLanguageDescription": "اختر لغة بيئة البحث الخاصة بك.",
     "footerTitle": "قاعدة بيانات STAVNET",
     "footerDescription": "بنيت للمهنيين والباحثين الأكاديميين.",
-    "academicAccess": "الوصول الأكاديمي فقط"
+    "academicAccess": "الوصول الأكاديمي فقط",
+    "coverTitleLine1": "صفحة",
+    "coverTitleLine2": "الغلاف",
+    "coverMainTitle": "الأدب الإسرائيلي",
+    "coverSubtitle": "قاعدة بيانات ببليوغرافية وبيوغرافية",
+    "coverDescriptionLine1": "تجمع قاعدة البيانات هذه شبه كامل النتاج الأدبي لمؤلفين إسرائيليين،",
+    "coverDescriptionLine2": "نشر معظمه بالعبرية، وكذلك بالعربية والفرنسية والإنجليزية والبولندية والروسية...",
+    "coverDescriptionLine3": "إضافة إلى كل الترجمات الصادرة في الخارج، منذ قيام دولة إسرائيل حتى اليوم.",
+    "back": "رجوع",
+    "next": "التالي"
   },
   "Navbar": {
     "search": "بحث",
@@ -33,6 +42,43 @@
       "dateCreation": "تاريخ الإنشاء",
       "nbAuteurs": "عدد المؤلفين",
       "nbTitres": "عدد العناوين"
+    }
+  },
+  "Persons": {
+    "title": "أشخاصنا",
+    "description": "قم بالاطلاع والبحث بين الأشخاص المشار إليهم في قاعدة بياناتنا.",
+    "searchPlaceholder": "ابحث عن شخص...",
+    "table": {
+      "nomPrenom": "الاسم الكامل",
+      "codeLangue": "رمز اللغة",
+      "nbFichesBase": "عدد بطاقات الأساس",
+      "nbFichesTrouvees": "عدد البطاقات الموجودة",
+      "siDateDeces": "في حالة تاريخ الوفاة",
+      "siLieuDeces": "في حالة مكان الوفاة",
+      "nbContribAuteurs": "عدد مساهمات المؤلفين",
+      "nbContribTitres": "عدد مساهمات العناوين",
+      "activitePro": "النشاط المهني",
+      "biographie": "السيرة الذاتية",
+      "dateDeces": "تاريخ الوفاة",
+      "dateNaissance": "تاريخ الميلاد",
+      "lieuDeces": "مكان الوفاة",
+      "paysResidence": "بلد الإقامة",
+      "villeNaissance": "مدينة الميلاد",
+      "anneePub": "سنة النشر",
+      "auteurOriginal": "المؤلف الأصلي",
+      "coteLivre": "تصنيف الكتاب",
+      "langueTrad": "لغة الترجمة",
+      "titre": "العنوان",
+      "typeContrib": "نوع المساهمة",
+      "nbLanguesTrad": "عدد لغات الترجمة",
+      "nbTitresOrig": "عدد العناوين الأصلية",
+      "nbTitresTrad": "عدد العناوين المترجمة",
+      "nbPaysPub": "عدد بلدان النشر",
+      "nbReedPoche": "عدد إعادة الطبع الورقي",
+      "nbReedReg": "عدد إعادة الطبع العادي",
+      "nbPrix": "عدد الجوائز",
+      "langueEcriture": "لغة الكتابة",
+      "typePersonne": "نوع الشخص"
     }
   }
 }

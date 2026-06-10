@@ -6,7 +6,16 @@
     "selectLanguageDescription": "Select your research environment language.",
     "footerTitle": "STAVNET Database",
     "footerDescription": "Built for professionals and academic researchers.",
-    "academicAccess": "Academic Access Only"
+    "academicAccess": "Academic Access Only",
+    "coverTitleLine1": "Cover",
+    "coverTitleLine2": "page",
+    "coverMainTitle": "Israeli literature",
+    "coverSubtitle": "Bibliographic and biographical database",
+    "coverDescriptionLine1": "This database brings together almost all literary creation by Israeli authors,",
+    "coverDescriptionLine2": "published mostly in Hebrew, but also in Arabic, French, English, Polish, Russian...",
+    "coverDescriptionLine3": "as well as all translations published abroad, from the creation of the State of Israel to the present day.",
+    "back": "Back",
+    "next": "Next"
   },
   "Navbar": {
     "search": "Search",
@@ -33,6 +42,43 @@
       "dateCreation": "Creation Date",
       "nbAuteurs": "Nb Authors",
       "nbTitres": "Nb Titles"
+    }
+  },
+  "Persons": {
+    "title": "Our people",
+    "description": "Consult and search among the people referenced in our database.",
+    "searchPlaceholder": "Search for a person...",
+    "table": {
+      "nomPrenom": "Full Name",
+      "codeLangue": "Lang Code",
+      "nbFichesBase": "Nb. Base Cards",
+      "nbFichesTrouvees": "Nb. Found Cards",
+      "siDateDeces": "If Death Date",
+      "siLieuDeces": "If Death Place",
+      "nbContribAuteurs": "Nb. Author Contrib.",
+      "nbContribTitres": "Nb. Title Contrib.",
+      "activitePro": "Activity",
+      "biographie": "Biography",
+      "dateDeces": "Death Date",
+      "dateNaissance": "Birth Date",
+      "lieuDeces": "Death Place",
+      "paysResidence": "Country of Res.",
+      "villeNaissance": "Birth City",
+      "anneePub": "Pub. Year",
+      "auteurOriginal": "Original Author",
+      "coteLivre": "Book Cote",
+      "langueTrad": "Trans. Lang.",
+      "titre": "Title",
+      "typeContrib": "Contrib. Type",
+      "nbLanguesTrad": "Nb. Trans. Lang.",
+      "nbTitresOrig": "Nb. Orig. Titles",
+      "nbTitresTrad": "Nb. Trans. Titles",
+      "nbPaysPub": "Nb. Pub. Country",
+      "nbReedPoche": "Nb. Pocket Repr.",
+      "nbReedReg": "Nb. Regular Repr.",
+      "nbPrix": "Nb. Awards",
+      "langueEcriture": "Writing Lang.",
+      "typePersonne": "Person Type"
     }
   }
 }

@@ -6,7 +6,16 @@
     "selectLanguageDescription": "Seleccione el idioma de su entorno de investigación.",
     "footerTitle": "Base de datos STAVNET",
     "footerDescription": "Creado para profesionales e investigadores académicos.",
-    "academicAccess": "Acceso académico únicamente"
+    "academicAccess": "Acceso académico únicamente",
+    "coverTitleLine1": "Página",
+    "coverTitleLine2": "de portada",
+    "coverMainTitle": "Literatura israelí",
+    "coverSubtitle": "Base de datos bibliográfica y biográfica",
+    "coverDescriptionLine1": "Esta base de datos reúne casi la totalidad de la creación literaria de autores israelíes,",
+    "coverDescriptionLine2": "publicados en su mayoría en hebreo, pero también en árabe, francés, inglés, polaco, ruso...",
+    "coverDescriptionLine3": "así como todas las traducciones publicadas en el extranjero, desde la creación del Estado de Israel hasta hoy.",
+    "back": "Volver",
+    "next": "Siguiente"
   },
   "Navbar": {
     "search": "Buscar",
@@ -33,6 +42,43 @@
       "dateCreation": "Fecha de creación",
       "nbAuteurs": "Nb Autores",
       "nbTitres": "Nb Títulos"
+    }
+  },
+  "Persons": {
+    "title": "Nuestras personas",
+    "description": "Consulte y busque entre las personas referenciadas en nuestra base de datos.",
+    "searchPlaceholder": "Buscar una persona...",
+    "table": {
+      "nomPrenom": "Nombre completo",
+      "codeLangue": "Código idioma",
+      "nbFichesBase": "Nb. Fichas base",
+      "nbFichesTrouvees": "Nb. Fichas encontradas",
+      "siDateDeces": "Si Fecha defunción",
+      "siLieuDeces": "Si Lugar defunción",
+      "nbContribAuteurs": "Nb. Contr. Autores",
+      "nbContribTitres": "Nb. Contr. Títulos",
+      "activitePro": "Actividad profesional",
+      "biographie": "Biografía",
+      "dateDeces": "Fecha de defunción",
+      "dateNaissance": "Fecha de nacimiento",
+      "lieuDeces": "Lugar de defunción",
+      "paysResidence": "País de residencia",
+      "villeNaissance": "Ciudad de nacimiento",
+      "anneePub": "Año publicación",
+      "auteurOriginal": "Autor original",
+      "coteLivre": "Cote libro",
+      "langueTrad": "Idioma traducción",
+      "titre": "Título",
+      "typeContrib": "Tipo contribución",
+      "nbLanguesTrad": "Nb. Idiomas trad.",
+      "nbTitresOrig": "Nb. Títulos originales",
+      "nbTitresTrad": "Nb. Títulos traducidos",
+      "nbPaysPub": "Nb. País publicación",
+      "nbReedPoche": "Nb. Reeds. bolsillo",
+      "nbReedReg": "Nb. Reeds. regulares",
+      "nbPrix": "Nb. Premios",
+      "langueEcriture": "Idioma escritura",
+      "typePersonne": "Tipo persona"
     }
   }
 }

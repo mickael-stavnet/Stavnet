@@ -54,9 +54,9 @@ export default function OrgsPage({
     <div className="flex flex-col min-h-screen bg-background/30 backdrop-blur-[2px]">
       <Navbar />
 
-      <main className="flex-1 container max-w-5xl mx-auto py-16">
+      <main className="flex-1 container max-w-7xl mx-auto py-16">
         <section className="flex flex-col items-center text-center gap-6 mb-12">
-          <h1 className="text-4xl font-bold tracking-tighter sm:text-6xl text-[#1e1e1e]">
+          <h1 className="text-4xl font-bold tracking-tighter sm:text-6xl text-[#382e60]">
             {t('title')}
           </h1>
           <p className="max-w-[700px] text-lg text-muted-foreground sm:text-xl leading-relaxed">
@@ -67,7 +67,7 @@ export default function OrgsPage({
             <Input 
               type="search" 
               placeholder={t('searchPlaceholder')} 
-              className="pl-9" 
+              className="pl-9 focus-visible:ring-[#e6be1e]" 
               value={search}
               onChange={(e) => {
                 setSearch(e.target.value)
@@ -77,16 +77,16 @@ export default function OrgsPage({
           </div>
         </section>
 
-        <div className="rounded-xl border border-border bg-card shadow-sm">
+        <div className="rounded-xl border border-border bg-card shadow-sm overflow-hidden">
           <Table>
-            <TableHeader className="bg-muted/50">
-              <TableRow className="hover:bg-transparent">
-                <TableHead className="px-6 h-12 text-foreground font-semibold"><div className="flex items-center gap-2"><Building2 className="h-4 w-4 text-muted-foreground" /> {t('table.organisme')}</div></TableHead>
-                <TableHead className="px-6 h-12 text-foreground font-semibold"><div className="flex items-center gap-2"><Tag className="h-4 w-4 text-muted-foreground" /> {t('table.type')}</div></TableHead>
-                <TableHead className="px-6 h-12 text-foreground font-semibold"><div className="flex items-center gap-2"><Globe2 className="h-4 w-4 text-muted-foreground" /> {t('table.pays')}</div></TableHead>
-                <TableHead className="px-6 h-12 text-foreground font-semibold"><div className="flex items-center gap-2"><CalendarDays className="h-4 w-4 text-muted-foreground" /> {t('table.dateCreation')}</div></TableHead>
-                <TableHead className="px-6 h-12 text-foreground font-semibold"><div className="flex items-center gap-2"><Users className="h-4 w-4 text-muted-foreground" /> {t('table.nbAuteurs')}</div></TableHead>
-                <TableHead className="px-6 h-12 text-foreground font-semibold"><div className="flex items-center gap-2"><BookOpenText className="h-4 w-4 text-muted-foreground" /> {t('table.nbTitres')}</div></TableHead>
+            <TableHeader className="bg-[#382e60] text-white">
+              <TableRow className="hover:bg-[#382e60]">
+                <TableHead className="px-6 h-12 text-white font-semibold"><div className="flex items-center gap-2"><Building2 className="h-4 w-4" /> {t('table.organisme')}</div></TableHead>
+                <TableHead className="px-6 h-12 text-white font-semibold"><div className="flex items-center gap-2"><Tag className="h-4 w-4" /> {t('table.type')}</div></TableHead>
+                <TableHead className="px-6 h-12 text-white font-semibold"><div className="flex items-center gap-2"><Globe2 className="h-4 w-4" /> {t('table.pays')}</div></TableHead>
+                <TableHead className="px-6 h-12 text-white font-semibold"><div className="flex items-center gap-2"><CalendarDays className="h-4 w-4" /> {t('table.dateCreation')}</div></TableHead>
+                <TableHead className="px-6 h-12 text-white font-semibold"><div className="flex items-center gap-2"><Users className="h-4 w-4" /> {t('table.nbAuteurs')}</div></TableHead>
+                <TableHead className="px-6 h-12 text-white font-semibold"><div className="flex items-center gap-2"><BookOpenText className="h-4 w-4" /> {t('table.nbTitres')}</div></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -99,8 +99,8 @@ export default function OrgsPage({
                   </TableRow>
                 ))
               ) : (
-                data.map((org) => (
-                  <TableRow key={org.id} className="hover:bg-muted/30">
+                data.map((org, index) => (
+                  <TableRow key={`${org.id}-${index}`} className="hover:bg-muted/30">
                     <TableCell className="px-6 py-4 font-medium">{fixEncoding(org.Organisme)}</TableCell>
                     <TableCell className="px-6 py-4">{fixEncoding(org.Type)}</TableCell>
                     <TableCell className="px-6 py-4">{fixEncoding(org.Pays)}</TableCell>

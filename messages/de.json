@@ -6,7 +6,16 @@
     "selectLanguageDescription": "Wählen Sie Ihre Forschungsumgebungssprache aus.",
     "footerTitle": "STAVNET-Datenbank",
     "footerDescription": "Entwickelt für Fachleute und akademische Forscher.",
-    "academicAccess": "Nur akademischer Zugang"
+    "academicAccess": "Nur akademischer Zugang",
+    "coverTitleLine1": "Titel",
+    "coverTitleLine2": "seite",
+    "coverMainTitle": "Israelische Literatur",
+    "coverSubtitle": "Bibliografische und biografische Datenbank",
+    "coverDescriptionLine1": "Diese Datenbank versammelt nahezu das gesamte literarische Schaffen israelischer Autorinnen und Autoren,",
+    "coverDescriptionLine2": "veröffentlicht überwiegend auf Hebräisch, aber auch auf Arabisch, Französisch, Englisch, Polnisch, Russisch...",
+    "coverDescriptionLine3": "sowie alle im Ausland erschienenen Übersetzungen, von der Gründung des Staates Israel bis heute.",
+    "back": "Zurück",
+    "next": "Weiter"
   },
   "Navbar": {
     "search": "Suche",
@@ -33,6 +42,43 @@
       "dateCreation": "Erstellungsdatum",
       "nbAuteurs": "Nb Autoren",
       "nbTitres": "Nb Titel"
+    }
+  },
+  "Persons": {
+    "title": "Unsere Personen",
+    "description": "Durchsuchen Sie die in unserer Datenbank referenzierten Personen.",
+    "searchPlaceholder": "Person suchen...",
+    "table": {
+      "nomPrenom": "Vollständiger Name",
+      "codeLangue": "Sprachcode",
+      "nbFichesBase": "Nb. Basis-Karten",
+      "nbFichesTrouvees": "Nb. Gefundene Karten",
+      "siDateDeces": "Wenn Todesdatum",
+      "siLieuDeces": "Wenn Todesort",
+      "nbContribAuteurs": "Nb. Autor-Contrib.",
+      "nbContribTitres": "Nb. Titel-Contrib.",
+      "activitePro": "Berufliche Tätigkeit",
+      "biographie": "Biografie",
+      "dateDeces": "Todesdatum",
+      "dateNaissance": "Geburtsdatum",
+      "lieuDeces": "Todesort",
+      "paysResidence": "Wohnsitzland",
+      "villeNaissance": "Geburtsort",
+      "anneePub": "Publikationsjahr",
+      "auteurOriginal": "Originalautor",
+      "coteLivre": "Buchtitel",
+      "langueTrad": "Übersetzungssprache",
+      "titre": "Titel",
+      "typeContrib": "Beitragsart",
+      "nbLanguesTrad": "Nb. Übers. Sprachen",
+      "nbTitresOrig": "Nb. Orig. Titel",
+      "nbTitresTrad": "Nb. Übers. Titel",
+      "nbPaysPub": "Nb. Publikationsland",
+      "nbReedPoche": "Nb. Taschenbuch-Repr.",
+      "nbReedReg": "Nb. Reguläre Repr.",
+      "nbPrix": "Nb. Auszeichnungen",
+      "langueEcriture": "Schreibsprache",
+      "typePersonne": "Personentyp"
     }
   }
 }
