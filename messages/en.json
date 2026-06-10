@@ -17,6 +17,20 @@
     "back": "Back",
     "next": "Next"
   },
+  "HomeMenu": {
+    "continue": "Click on the Icon of Your Choice to Continue",
+    "actions": {
+      "search": "Search",
+      "menu": "Menu",
+      "close": "Close",
+      "video": "Video",
+      "diaporama": "Diaporama",
+      "sound": "Sound",
+      "introduction": "Introduction",
+      "help": "Help",
+      "next": "Next"
+    }
+  },
   "Navbar": {
     "search": "Search",
     "menu": "Menu",

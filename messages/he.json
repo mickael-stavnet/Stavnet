@@ -17,6 +17,20 @@
     "back": "חזרה",
     "next": "הבא"
   },
+  "HomeMenu": {
+    "continue": "לחץ על הסמל שבחרת כדי להמשיך",
+    "actions": {
+      "search": "חיפוש",
+      "menu": "תפריט",
+      "close": "סגור",
+      "video": "וידאו",
+      "diaporama": "מצגת",
+      "sound": "קול",
+      "introduction": "הקדמה",
+      "help": "עזרה",
+      "next": "הבא"
+    }
+  },
   "Navbar": {
     "search": "חיפוש",
     "menu": "תפריט",

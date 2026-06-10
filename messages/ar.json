@@ -17,6 +17,20 @@
     "back": "رجوع",
     "next": "التالي"
   },
+  "HomeMenu": {
+    "continue": "انقر على الأيقونة التي تختارها للمتابعة",
+    "actions": {
+      "search": "بحث",
+      "menu": "قائمة",
+      "close": "إغلاق",
+      "video": "فيديو",
+      "diaporama": "عرض شرائح",
+      "sound": "صوت",
+      "introduction": "مقدمة",
+      "help": "مساعدة",
+      "next": "التالي"
+    }
+  },
   "Navbar": {
     "search": "بحث",
     "menu": "قائمة",

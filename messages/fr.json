@@ -17,6 +17,20 @@
     "back": "Retour",
     "next": "Suite"
   },
+  "HomeMenu": {
+    "continue": "Cliquez sur l'icône de votre choix pour continuer",
+    "actions": {
+      "search": "Recherche",
+      "menu": "Menu",
+      "close": "Fermer",
+      "video": "Vidéo",
+      "diaporama": "Diaporama",
+      "sound": "Son",
+      "introduction": "Introduction",
+      "help": "Aide",
+      "next": "Suite"
+    }
+  },
   "Navbar": {
     "search": "Recherche",
     "menu": "Menu",

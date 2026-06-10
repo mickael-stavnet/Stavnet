@@ -17,6 +17,7 @@
 - For now, real data is not required in the frontend. Use fake/mock data until the user asks otherwise.
 - The real data exists in Supabase, but Supabase integration is not the current focus.
 - The current focus is page creation and linking between pages.
+- The `/[locale]/home` page is the FileMaker language/menu screen. It uses the STAVNET logo, a multilingual welcome panel, a language table, a books-table image, and a bottom icon navigation row.
 
 ## Frontend Requirements
 

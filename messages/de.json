@@ -17,6 +17,20 @@
     "back": "Zurück",
     "next": "Weiter"
   },
+  "HomeMenu": {
+    "continue": "Klicken Sie auf das Symbol Ihrer Wahl, um fortzufahren",
+    "actions": {
+      "search": "Suche",
+      "menu": "Menü",
+      "close": "Schließen",
+      "video": "Video",
+      "diaporama": "Diashow",
+      "sound": "Ton",
+      "introduction": "Einführung",
+      "help": "Hilfe",
+      "next": "Weiter"
+    }
+  },
   "Navbar": {
     "search": "Suche",
     "menu": "Menü",
