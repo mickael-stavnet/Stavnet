@@ -31,6 +31,82 @@
       "next": "Suite"
     }
   },
+  "MenuPage": {
+    "header": {
+      "cardTitle": "Menu",
+      "title": "Littérature israélienne",
+      "subtitle": "Base de données bibliographiques et biographiques"
+    },
+    "intro": {
+      "leftLine1": "Pour ouvrir directement un des trois fichiers de consultation,",
+      "leftLine2": "cliquez sur l'icône de votre choix.",
+      "rightLine1": "Pour effectuer une recherche précise,",
+      "rightLine2": "cliquez sur l'icône."
+    },
+    "columns": {
+      "books": {
+        "title": "Ouvrages",
+        "subtitleLine1": "Titres originaux,",
+        "subtitleLine2": "Traductions, Rééditions...",
+        "items": {
+          "0": "Fiche d'ouvrage",
+          "1": "Quatrième de couverture",
+          "2": "Table des matières",
+          "3": "Extraits",
+          "4": "Critiques de presse",
+          "5": "Localisation",
+          "6": "Langues de parution",
+          "7": "Statistiques"
+        }
+      },
+      "persons": {
+        "title": "Personnes",
+        "subtitleLine1": "Auteurs, Traducteurs,",
+        "subtitleLine2": "Illustrateurs, Préfaciers...",
+        "items": {
+          "0": "Fiche personne",
+          "1": "Titres originaux",
+          "2": "Titres traduits",
+          "3": "Articles de l'auteur",
+          "4": "Publications sur l’auteur",
+          "5": "Critiques de presse",
+          "6": "Prix et distinctions",
+          "7": "Statistiques"
+        }
+      },
+      "organizations": {
+        "title": "Organismes",
+        "subtitleLine1": "Editeurs, Diffuseurs,",
+        "subtitleLine2": "Bibliothèques, Sites Internet...",
+        "items": {
+          "0": "Fiche organisme",
+          "1": "Diffuseur",
+          "2": "Distributeur",
+          "3": "Comptoir de vente",
+          "4": "Comité de lecture",
+          "5": "Personnel",
+          "6": "Prix littéraires",
+          "7": "Statistiques"
+        }
+      }
+    },
+    "quickActions": {
+      "libraries": "Bibliothèques",
+      "editions": "Editions",
+      "bookstores": "Librairies",
+      "statistics": "Statistiques"
+    },
+    "bottom": {
+      "back": "Retour",
+      "welcome": "Bienvenue",
+      "close": "Quitter",
+      "video": "Vidéo",
+      "diaporama": "Diaporama",
+      "sound": "Son",
+      "introduction": "Introduction",
+      "help": "Aide"
+    }
+  },
   "Navbar": {
     "search": "Recherche",
     "menu": "Menu",

@@ -31,6 +31,82 @@
       "next": "Weiter"
     }
   },
+  "MenuPage": {
+    "header": {
+      "cardTitle": "Menü",
+      "title": "Israelische Literatur",
+      "subtitle": "Bibliografische und biografische Datenbank"
+    },
+    "intro": {
+      "leftLine1": "Um eine der drei Konsultationsdateien direkt zu öffnen,",
+      "leftLine2": "klicken Sie auf das Symbol Ihrer Wahl.",
+      "rightLine1": "Um eine präzise Suche durchzuführen,",
+      "rightLine2": "klicken Sie auf das Symbol."
+    },
+    "columns": {
+      "books": {
+        "title": "Werke",
+        "subtitleLine1": "Originaltitel,",
+        "subtitleLine2": "Übersetzungen, Neuauflagen...",
+        "items": {
+          "0": "Werkeintrag",
+          "1": "Buchrückseite",
+          "2": "Inhaltsverzeichnis",
+          "3": "Auszüge",
+          "4": "Pressestimmen",
+          "5": "Standort",
+          "6": "Erscheinungssprachen",
+          "7": "Statistiken"
+        }
+      },
+      "persons": {
+        "title": "Personen",
+        "subtitleLine1": "Autoren, Übersetzer,",
+        "subtitleLine2": "Illustratoren, Vorwortautoren...",
+        "items": {
+          "0": "Personeneintrag",
+          "1": "Originaltitel",
+          "2": "Übersetzte Titel",
+          "3": "Artikel des Autors",
+          "4": "Veröffentlichungen über den Autor",
+          "5": "Pressestimmen",
+          "6": "Preise und Auszeichnungen",
+          "7": "Statistiken"
+        }
+      },
+      "organizations": {
+        "title": "Organisationen",
+        "subtitleLine1": "Verlage, Vertriebe,",
+        "subtitleLine2": "Bibliotheken, Websites...",
+        "items": {
+          "0": "Organisationseintrag",
+          "1": "Vertrieb",
+          "2": "Distributor",
+          "3": "Verkaufsstelle",
+          "4": "Lesekomitee",
+          "5": "Personal",
+          "6": "Literaturpreise",
+          "7": "Statistiken"
+        }
+      }
+    },
+    "quickActions": {
+      "libraries": "Bibliotheken",
+      "editions": "Verlage",
+      "bookstores": "Buchhandlungen",
+      "statistics": "Statistiken"
+    },
+    "bottom": {
+      "back": "Zurück",
+      "welcome": "Willkommen",
+      "close": "Beenden",
+      "video": "Video",
+      "diaporama": "Diashow",
+      "sound": "Ton",
+      "introduction": "Einführung",
+      "help": "Hilfe"
+    }
+  },
   "Navbar": {
     "search": "Suche",
     "menu": "Menü",

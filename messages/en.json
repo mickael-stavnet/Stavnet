@@ -31,6 +31,82 @@
       "next": "Next"
     }
   },
+  "MenuPage": {
+    "header": {
+      "cardTitle": "Menu",
+      "title": "Israeli literature",
+      "subtitle": "Bibliographic and biographical database"
+    },
+    "intro": {
+      "leftLine1": "To open directly one of the three consultation files,",
+      "leftLine2": "click the icon of your choice.",
+      "rightLine1": "To perform a precise search,",
+      "rightLine2": "click the icon."
+    },
+    "columns": {
+      "books": {
+        "title": "Books",
+        "subtitleLine1": "Original titles,",
+        "subtitleLine2": "Translations, Reissues...",
+        "items": {
+          "0": "Book record",
+          "1": "Back cover",
+          "2": "Table of contents",
+          "3": "Extracts",
+          "4": "Press reviews",
+          "5": "Location",
+          "6": "Publication languages",
+          "7": "Statistics"
+        }
+      },
+      "persons": {
+        "title": "Persons",
+        "subtitleLine1": "Authors, Translators,",
+        "subtitleLine2": "Illustrators, Preface writers...",
+        "items": {
+          "0": "Person record",
+          "1": "Original titles",
+          "2": "Translated titles",
+          "3": "Author articles",
+          "4": "Publications about the author",
+          "5": "Press reviews",
+          "6": "Awards and distinctions",
+          "7": "Statistics"
+        }
+      },
+      "organizations": {
+        "title": "Organizations",
+        "subtitleLine1": "Publishers, Distributors,",
+        "subtitleLine2": "Libraries, Websites...",
+        "items": {
+          "0": "Organization record",
+          "1": "Distributor",
+          "2": "Wholesaler",
+          "3": "Sales counter",
+          "4": "Reading committee",
+          "5": "Staff",
+          "6": "Literary prizes",
+          "7": "Statistics"
+        }
+      }
+    },
+    "quickActions": {
+      "libraries": "Libraries",
+      "editions": "Publishers",
+      "bookstores": "Bookstores",
+      "statistics": "Statistics"
+    },
+    "bottom": {
+      "back": "Back",
+      "welcome": "Welcome",
+      "close": "Exit",
+      "video": "Video",
+      "diaporama": "Diaporama",
+      "sound": "Sound",
+      "introduction": "Introduction",
+      "help": "Help"
+    }
+  },
   "Navbar": {
     "search": "Search",
     "menu": "Menu",

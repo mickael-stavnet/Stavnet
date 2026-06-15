@@ -7,6 +7,7 @@ import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 import { routing } from "@/i18n/routing";
 import { notFound } from "next/navigation";
+import { PageMotion } from "@/components/stavnet/page-motion";
 
 const geistHeading = Geist({ subsets: ["latin"], variable: "--font-heading" });
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
@@ -57,7 +58,7 @@ export default async function RootLayout({
     >
       <body className="min-h-full flex flex-col relative">
         <NextIntlClientProvider messages={messages}>
-          {children}
+          <PageMotion>{children}</PageMotion>
         </NextIntlClientProvider>
       </body>
     </html>
