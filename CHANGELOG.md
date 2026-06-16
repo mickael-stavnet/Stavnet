@@ -32,6 +32,14 @@
 
 # 16-06-2026
 
+- 15:49 - Renforcement ciblé du responsive de `/[locale]/books` avec onglets défilants sur mobile, remplacement des tableaux bibliographiques par des cartes lisibles sur petit écran, passage des blocs de métadonnées en grille souple et allègement du footer mobile en deux colonnes.
+- 15:43 - Augmentation supplémentaire de la largeur de l’aside interne gauche sur `/[locale]/books` pour donner encore un peu plus d’espace au bloc latéral de langue et de traduction.
+- 15:42 - Élargissement de l’aside interne gauche dans la grande card de `/[locale]/books` afin de redonner de l’air au bloc `Translation / French` sans casser l’équilibre général de la fiche.
+- 15:40 - Correction du bloc bas `Category / Subject / Gender / Target audience` dans `/[locale]/books` : suppression d’une grille imbriquée erronée qui écrasait les cartes à gauche, afin de rétablir une vraie rangée pleine largeur sur quatre colonnes.
+- 15:37 - Réorganisation verticale du contenu de la fiche livre dans `/[locale]/books` pour qu’il occupe réellement toute la hauteur de la grande card, avec une distribution du bloc supérieur, des tableaux centraux et des cartes basses jusqu’au bord inférieur.
+- 15:35 - Élargissement plus marqué de la zone de contenu dans la grande card de `/[locale]/books` en réduisant davantage les colonnes latérales externes et internes, afin de desserrer visiblement les blocs d’informations du livre.
+- 15:25 - Correction de la traduction française du libellé `summary` sur `/[locale]/books` et remplacement des champs vides de la fiche livre par des données factices réalistes afin de visualiser plus fidèlement le rendu final de la page.
+- 15:22 - Correction du panneau principal de `/[locale]/books` après un premier ajustement trop large : la zone qui affiche les informations du livre est maintenant réellement agrandie sur desktop via une hauteur explicite plus généreuse, avec recalage de l’ancrage bas de la composition.
 - 15:11 - Audit et correction responsive des nouvelles pages `/[locale]/books` et `/[locale]/search` avec adaptation mobile des hauteurs de champs et boutons, empilement du panneau principal de la fiche livre sur petit écran, sécurisation des tableaux vides par scroll horizontal et ajustement des grilles du footer mobile pour éviter les blocs trop tassés.
 - 15:07 - Remontée légère du logo STAVNET dans le header partagé `src/components/stavnet/header.tsx` pour corriger son alignement vertical et éviter qu’il paraisse trop bas.
 - 15:05 - Réduction de la taille du logo STAVNET dans le header partagé `src/components/stavnet/header.tsx` pour alléger sa présence visuelle sur les pages qui l’utilisent.
