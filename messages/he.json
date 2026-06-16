@@ -171,6 +171,76 @@
       "help": "עזרה"
     }
   },
+  "BookDetailsPage": {
+    "header": {
+      "cardTitle": "כרטיס ספר",
+      "title": "ספרות ישראלית",
+      "subtitle": "מאגר ביבליוגרפי וביוגרפי"
+    },
+    "logoName": "Mickael Pariente",
+    "bookVertical": "BOOK",
+    "missingFile": "<קובץ חסר>",
+    "summary": "תקציר",
+    "tabs": {
+      "bookCard": "כרטיס ספר",
+      "backCover": "כריכה אחורית",
+      "tableOfContents": "תוכן העניינים",
+      "extracts": "קטעים",
+      "pressCritiques": "ביקורות עיתונות",
+      "availability": "זמינות",
+      "publishing": "פרסום",
+      "statistics": "סטטיסטיקות"
+    },
+    "side": {
+      "translation": "תרגום",
+      "language": "צרפתית",
+      "expandedCard": "כרטיס מורחב"
+    },
+    "fields": {
+      "title": "כותרת: כותרת וכותרת משנה",
+      "originalEnglish": "כותרת מקורית באנגלית",
+      "transcription": "כותרת מקורית בתעתיק",
+      "originalLanguage": "כותרת מקורית בשפת הכתיבה"
+    },
+    "content": {
+      "backCover": "כריכה אחורית",
+      "tableOfContents": "תוכן העניינים",
+      "extracts": "קטעים",
+      "pressCritiques": "ביקורות עיתונות",
+      "availability": "זמינות",
+      "publishing": "פרסום",
+      "statistics": "סטטיסטיקות"
+    },
+    "tables": {
+      "authors": "מחברים, מחברים שותפים, עורכים: שם פרטי, שם משפחה",
+      "authorType": "סוג המחבר",
+      "writingLanguage": "שפת כתיבה",
+      "contributors": "תורמים: מתרגמים, מאיירים...",
+      "contributionType": "סוג התרומה",
+      "publishers": "מוציאים לאור",
+      "country": "מדינה",
+      "isbn": "ISBN",
+      "yearPages": "שנה, מספר עמודים, מידות, כריכה, מחיר קמעונאי",
+      "category": "קטגוריה",
+      "subject": "נושא",
+      "gender": "ז'אנר",
+      "targetAudience": "קהל יעד"
+    },
+    "right": {
+      "bookCardsFound": "כרטיסי ספר שנמצאו",
+      "database": "המאגר",
+      "records": "4653"
+    },
+    "footer": {
+      "back": "חזרה",
+      "menu": "תפריט",
+      "list": "רשימה",
+      "close": "סגור",
+      "help": "עזרה",
+      "search": "חיפוש",
+      "move": "הזזה"
+    }
+  },
   "Navbar": {
     "search": "חיפוש",
     "menu": "תפריט",

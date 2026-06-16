@@ -171,6 +171,76 @@
       "help": "Hilfe"
     }
   },
+  "BookDetailsPage": {
+    "header": {
+      "cardTitle": "Buchkartei",
+      "title": "Israelische Literatur",
+      "subtitle": "Bibliografische und biografische Datenbank"
+    },
+    "logoName": "Mickael Pariente",
+    "bookVertical": "BOOK",
+    "missingFile": "<Fehlende Datei>",
+    "summary": "Zusammenfassung",
+    "tabs": {
+      "bookCard": "Buchkarte",
+      "backCover": "Rückseite",
+      "tableOfContents": "Inhaltsverzeichnis",
+      "extracts": "Auszüge",
+      "pressCritiques": "Pressekritiken",
+      "availability": "Verfügbarkeit",
+      "publishing": "Veröffentlichung",
+      "statistics": "Statistiken"
+    },
+    "side": {
+      "translation": "Übersetzung",
+      "language": "Französisch",
+      "expandedCard": "Erweiterte Karte"
+    },
+    "fields": {
+      "title": "Titel: Titel und Untertitel",
+      "originalEnglish": "Originaltitel auf Englisch",
+      "transcription": "Originaltitel in Umschrift",
+      "originalLanguage": "Originaltitel in Schreibsprache"
+    },
+    "content": {
+      "backCover": "Rückseite",
+      "tableOfContents": "Inhaltsverzeichnis",
+      "extracts": "Auszüge",
+      "pressCritiques": "Pressekritiken",
+      "availability": "Verfügbarkeit",
+      "publishing": "Veröffentlichung",
+      "statistics": "Statistiken"
+    },
+    "tables": {
+      "authors": "Autoren, Mitautoren, Herausgeber: Vorname, Nachname",
+      "authorType": "Autorentyp",
+      "writingLanguage": "Schriftsprache",
+      "contributors": "Mitwirkende: Übersetzer, Illustratoren...",
+      "contributionType": "Beitragsart",
+      "publishers": "Verlage",
+      "country": "Land",
+      "isbn": "ISBN",
+      "yearPages": "Jahr, Seitenzahl, Maße, Bindung, Verkaufspreis",
+      "category": "Kategorie",
+      "subject": "Thema",
+      "gender": "Genre",
+      "targetAudience": "Zielpublikum"
+    },
+    "right": {
+      "bookCardsFound": "Gefundene Buchkarten",
+      "database": "Die Datenbank",
+      "records": "4653"
+    },
+    "footer": {
+      "back": "Zurück",
+      "menu": "Menü",
+      "list": "Liste",
+      "close": "Schließen",
+      "help": "Hilfe",
+      "search": "Suche",
+      "move": "Verschieben"
+    }
+  },
   "Navbar": {
     "search": "Suche",
     "menu": "Menü",

@@ -171,6 +171,76 @@
       "help": "Aide"
     }
   },
+  "BookDetailsPage": {
+    "header": {
+      "cardTitle": "Fiche Livre",
+      "title": "Littérature israélienne",
+      "subtitle": "Base de données bibliographiques et biographiques"
+    },
+    "logoName": "Mickaël Pariente",
+    "bookVertical": "BOOK",
+    "missingFile": "<Fichier manquant>",
+    "summary": "Summary",
+    "tabs": {
+      "bookCard": "Fiche Livre",
+      "backCover": "Quatrième de couverture",
+      "tableOfContents": "Table des matières",
+      "extracts": "Extraits",
+      "pressCritiques": "Critiques de presse",
+      "availability": "Disponibilité",
+      "publishing": "Parution",
+      "statistics": "Statistiques"
+    },
+    "side": {
+      "translation": "Traduction",
+      "language": "Français",
+      "expandedCard": "Fiche développée"
+    },
+    "fields": {
+      "title": "Titre : titre et sous-titre",
+      "originalEnglish": "Titre original en anglais",
+      "transcription": "Titre original en transcription",
+      "originalLanguage": "Titre original en langue d'écriture"
+    },
+    "content": {
+      "backCover": "Quatrième de couverture",
+      "tableOfContents": "Table des matières",
+      "extracts": "Extraits",
+      "pressCritiques": "Critiques de presse",
+      "availability": "Disponibilité",
+      "publishing": "Parution",
+      "statistics": "Statistiques"
+    },
+    "tables": {
+      "authors": "Auteurs, co-auteurs, éditeurs : prénom, nom",
+      "authorType": "Type d'auteur",
+      "writingLanguage": "Langue d'écriture",
+      "contributors": "Contributeurs : traducteurs, illustrateurs...",
+      "contributionType": "Type de contribution",
+      "publishers": "Editeurs",
+      "country": "Pays",
+      "isbn": "ISBN",
+      "yearPages": "Année, nombre de pages, dimensions, reliure, prix de vente",
+      "category": "Catégorie",
+      "subject": "Sujet",
+      "gender": "Genre",
+      "targetAudience": "Public visé"
+    },
+    "right": {
+      "bookCardsFound": "Fiches livres trouvées",
+      "database": "La base de données",
+      "records": "4653"
+    },
+    "footer": {
+      "back": "Retour",
+      "menu": "Menu",
+      "list": "Liste",
+      "close": "Fermer",
+      "help": "Aide",
+      "search": "Recherche",
+      "move": "Déplacer"
+    }
+  },
   "Navbar": {
     "search": "Recherche",
     "menu": "Menu",

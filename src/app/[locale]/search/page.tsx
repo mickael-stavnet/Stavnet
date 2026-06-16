@@ -1,3 +1,5 @@
+"use client";
+
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { StavnetHeader } from "@/components/stavnet/header";
@@ -29,9 +31,9 @@ function SearchField({
 }) {
   return (
     <label className={`flex flex-col gap-[6px] ${className ?? ""}`}>
-      <span className="text-[17px] leading-none text-black">{label}</span>
+      <span className="text-[16px] leading-none text-black md:text-[17px]">{label}</span>
       <Input
-        className="h-[32px] rounded-none border-[#78b8cd] bg-[#a9ddf0] px-[8px] text-[16px] font-bold text-black shadow-[inset_0_1px_0_rgba(255,255,255,0.5)] focus-visible:border-[#4d8da6] focus-visible:ring-0"
+        className="h-11 rounded-none border-[#78b8cd] bg-[#a9ddf0] px-[8px] text-[16px] font-bold text-black shadow-[inset_0_1px_0_rgba(255,255,255,0.5)] focus-visible:border-[#4d8da6] focus-visible:ring-0 md:h-[32px]"
       />
     </label>
   );
@@ -39,10 +41,23 @@ function SearchField({
 
 export default function SearchPage() {
   const t = useTranslations("SearchPage");
+
+  const handleQuit = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (window.confirm("Do you really want to close this tab?")) {
+      window.close();
+      setTimeout(() => {
+        if (!window.closed) {
+          alert("Your browser blocked the automatic closing of the tab. Please close it manually.");
+        }
+      }, 500);
+    }
+  };
+
   const footerItems = [
     { key: "back", icon: "/icons/icons-nav/back.png", href: "/home" as const, label: t("footer.back") },
     { key: "menu", icon: "/icons/icons-nav/menu.png", href: "/menu" as const, label: t("footer.menu") },
-    { key: "quit", icon: "/icons/icons-nav/close.png", href: "/" as const, label: t("footer.quit") },
+    { key: "quit", icon: "/icons/icons-nav/close.png", href: "/" as const, label: t("footer.quit"), onClick: handleQuit },
     { key: "help", icon: "/icons/icons-nav/help.png", href: "/search" as const, label: t("footer.help") },
   ];
 
@@ -69,38 +84,46 @@ export default function SearchPage() {
           subtitleClassName="text-[17px]"
         />
 
-        <section className="mt-6 flex flex-col gap-5 md:absolute md:left-[4.9vw] md:right-[4.9vw] md:top-[156px] md:grid md:grid-cols-[252px_minmax(0,1fr)] md:items-stretch md:gap-[22px]">
-          <aside className="h-fit rounded-[10px] border border-[#5da9c5] bg-[#9cd5eb] px-5 py-4 text-center shadow-[inset_1px_1px_0_rgba(255,255,255,0.6)] md:h-[502px] md:overflow-hidden md:pt-[14px]">
-            <p className="text-[18px] leading-[1.35]">{t("info.modeLine1")}</p>
-            <p className="text-[18px] leading-[1.35]">{t("info.modeLine2")}</p>
-            <p className="mt-3 text-[18px] leading-[1.35]">{t("info.otherAlphabetLine1")}</p>
-            <p className="text-[18px] leading-[1.35]">{t("info.otherAlphabetLine2")}</p>
-            <p className="text-[18px] leading-[1.35]">{t("info.otherAlphabetLine3")}</p>
-            <p className="mb-2 text-[18px] leading-[1.35]">{t("info.clickHere")}</p>
+        <section className="mt-6 flex flex-col gap-5 md:absolute md:left-[4.9vw] md:right-[4.9vw] md:top-[180px] md:grid md:grid-cols-[252px_1fr] md:items-stretch md:gap-[22px]">
+          <aside className="flex flex-col rounded-[10px] border border-[#5da9c5] bg-[#9cd5eb] px-5 py-4 text-center shadow-[inset_1px_1px_0_rgba(255,255,255,0.6)] md:h-[580px] md:overflow-hidden md:pt-[24px]">
+            <p className="text-[18px] font-bold leading-tight">
+              {t("info.modeLine1")} {t("info.modeLine2")}
+            </p>
+            
+            <div className="mt-6 flex flex-col gap-3">
+              <p className="text-justify text-[16px] leading-snug">
+                {t("info.otherAlphabetLine1")} {t("info.otherAlphabetLine2")} {t("info.otherAlphabetLine3")}
+              </p>
+              <Button
+                type="button"
+                className="mx-auto h-11 w-full max-w-[198px] rounded-none border border-[#caa200] bg-[#ffcc17] px-2 text-[15px] font-bold text-black shadow-none hover:bg-[#ffd43d] focus-visible:ring-0 md:h-[24px]"
+              >
+                {t("actions.otherAlphabets")}
+              </Button>
+            </div>
 
-            <Button
-              type="button"
-              className="mx-auto h-[24px] w-full max-w-[198px] rounded-none border border-[#caa200] bg-[#ffcc17] px-2 text-[16px] font-bold text-black shadow-none hover:bg-[#ffd43d] focus-visible:ring-0"
-            >
-              {t("actions.otherAlphabets")}
-            </Button>
+            <div className="mt-8 flex flex-col gap-6">
+              <div className="space-y-1">
+                <p className="text-[17px] font-bold underline decoration-[#5da9c5] underline-offset-4">{t("labels.publicationLanguage")}</p>
+                <p className="text-justify text-[15px] leading-snug opacity-90">
+                  {t("info.languageLine3")} {t("info.languageLine4")} {t("info.languageLine5")}
+                </p>
+              </div>
 
-            <p className="mt-3 text-[18px] leading-[1.35]">{t("info.languageLine1")}</p>
-            <p className="text-[18px] leading-[1.35]">{t("info.languageLine2")}</p>
-            <p className="text-[18px] leading-[1.35]">{t("info.languageLine3")}</p>
-            <p className="text-[18px] leading-[1.35]">{t("info.languageLine4")}</p>
-            <p className="text-[18px] leading-[1.35]">{t("info.languageLine5")}</p>
-            <p className="mt-3 text-[18px] leading-[1.35]">{t("info.themeLine1")}</p>
-            <p className="text-[18px] leading-[1.35]">{t("info.themeLine2")}</p>
-            <p className="text-[18px] leading-[1.35]">{t("info.themeLine3")}</p>
-            <p className="text-[18px] leading-[1.35]">{t("info.themeLine4")}</p>
+              <div className="space-y-1">
+                <p className="text-[17px] font-bold underline decoration-[#5da9c5] underline-offset-4">{t("labels.theme")}</p>
+                <p className="text-justify text-[15px] leading-snug opacity-90">
+                  {t("info.themeLine3")} {t("info.themeLine4")}
+                </p>
+              </div>
+            </div>
           </aside>
 
-          <form className="flex flex-col pb-4 md:h-[502px] md:pt-[2px]">
-            <div className="flex flex-1 flex-col justify-between">
+          <form className="flex flex-col md:h-[580px] md:pt-[24px]">
+            <div className="flex flex-1 flex-col gap-y-6">
               <SearchField label={t("labels.title")} />
 
-              <div className="flex flex-col gap-[10px]">
+              <div className="flex flex-col gap-[8px]">
                 <p className="text-[17px] leading-none text-black">{t("labels.personDescription")}</p>
                 <div className="grid gap-x-[42px] gap-y-3 md:grid-cols-2">
                   <SearchField label={t("labels.lastName")} />
@@ -111,7 +134,7 @@ export default function SearchPage() {
               <SearchField label={t("labels.organizationDescription")} />
 
               <div className="grid gap-x-[26px] gap-y-3 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_186px] md:items-end">
-                <div className="grid grid-cols-[24px_minmax(0,1fr)] items-end gap-[6px]">
+                <div className="grid grid-cols-[24px_minmax(0,1fr)] items-end gap-[6px] md:grid-cols-[24px_minmax(0,1fr)]">
                   <PickerGlyph />
                   <SearchField label={t("labels.theme")} />
                 </div>
@@ -122,12 +145,12 @@ export default function SearchPage() {
                 <SearchField label={t("labels.year")} />
               </div>
 
-              <SearchField label={t("labels.generalSearch")} className="pt-[4px]" />
+              <SearchField label={t("labels.generalSearch")} />
             </div>
 
             <Button
               type="submit"
-              className="mt-[14px] h-[32px] rounded-none border border-[#caa200] bg-[#ffcc17] text-[17px] font-bold text-black shadow-none hover:bg-[#ffd43d] focus-visible:ring-0"
+              className="mt-[32px] h-11 rounded-none border border-[#caa200] bg-[#ffcc17] text-[17px] font-bold text-black shadow-none hover:bg-[#ffd43d] focus-visible:ring-0 md:h-[32px]"
             >
               {t("actions.validate")}
             </Button>
@@ -138,6 +161,7 @@ export default function SearchPage() {
           items={footerItems}
           className="md:bottom-[2.2vh] md:left-[6vw] md:right-[6vw]"
           itemClassName="md:min-h-[64px] md:text-[14px]"
+          mobileGridClassName="grid-cols-2 sm:grid-cols-4"
           desktopMode="compact"
         />
       </div>

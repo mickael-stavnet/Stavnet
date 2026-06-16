@@ -171,6 +171,76 @@
       "help": "Ayuda"
     }
   },
+  "BookDetailsPage": {
+    "header": {
+      "cardTitle": "Ficha Libro",
+      "title": "Literatura israelí",
+      "subtitle": "Base de datos bibliográfica y biográfica"
+    },
+    "logoName": "Mickael Pariente",
+    "bookVertical": "BOOK",
+    "missingFile": "<Archivo faltante>",
+    "summary": "Resumen",
+    "tabs": {
+      "bookCard": "Ficha Libro",
+      "backCover": "Contraportada",
+      "tableOfContents": "Tabla de contenidos",
+      "extracts": "Extractos",
+      "pressCritiques": "Críticas de prensa",
+      "availability": "Disponibilidad",
+      "publishing": "Publicación",
+      "statistics": "Estadísticas"
+    },
+    "side": {
+      "translation": "Traducción",
+      "language": "Francés",
+      "expandedCard": "Ficha ampliada"
+    },
+    "fields": {
+      "title": "Título: título y subtítulo",
+      "originalEnglish": "Título original en inglés",
+      "transcription": "Título original en transcripción",
+      "originalLanguage": "Título original en lengua de escritura"
+    },
+    "content": {
+      "backCover": "Contraportada",
+      "tableOfContents": "Tabla de contenidos",
+      "extracts": "Extractos",
+      "pressCritiques": "Críticas de prensa",
+      "availability": "Disponibilidad",
+      "publishing": "Publicación",
+      "statistics": "Estadísticas"
+    },
+    "tables": {
+      "authors": "Autores, coautores, editores: nombre, apellido",
+      "authorType": "Tipo de autor",
+      "writingLanguage": "Lengua de escritura",
+      "contributors": "Contribuyentes: traductores, ilustradores...",
+      "contributionType": "Tipo de contribución",
+      "publishers": "Editores",
+      "country": "País",
+      "isbn": "ISBN",
+      "yearPages": "Año, número de páginas, dimensiones, encuadernación, precio de venta",
+      "category": "Categoría",
+      "subject": "Tema",
+      "gender": "Género",
+      "targetAudience": "Público objetivo"
+    },
+    "right": {
+      "bookCardsFound": "Fichas de libros encontradas",
+      "database": "La base de datos",
+      "records": "4653"
+    },
+    "footer": {
+      "back": "Volver",
+      "menu": "Menú",
+      "list": "Lista",
+      "close": "Cerrar",
+      "help": "Ayuda",
+      "search": "Buscar",
+      "move": "Mover"
+    }
+  },
   "Navbar": {
     "search": "Buscar",
     "menu": "Menú",

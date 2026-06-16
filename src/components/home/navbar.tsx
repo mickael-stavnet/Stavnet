@@ -36,7 +36,7 @@ export function Navbar() {
   }, []);
 
   const NAV_ITEMS = [
-    { label: t('books'), href: "/" },
+    { label: t('books'), href: "/books" },
     { label: t('organizations'), href: "/orgs" },
     { label: t('authors'), href: "/persons" },
   ];
@@ -91,7 +91,7 @@ export function Navbar() {
           <CommandList>
             <CommandEmpty>No results found.</CommandEmpty>
             <CommandGroup heading="Suggestions">
-              <CommandItem onSelect={() => { setOpen(false); router.push('/'); }}>{t('books')}</CommandItem>
+              <CommandItem onSelect={() => { setOpen(false); router.push('/books'); }}>{t('books')}</CommandItem>
               <CommandItem onSelect={() => { setOpen(false); router.push('/orgs'); }}>{t('organizations')}</CommandItem>
               <CommandItem onSelect={() => { setOpen(false); router.push('/persons'); }}>{t('authors')}</CommandItem>
             </CommandGroup>

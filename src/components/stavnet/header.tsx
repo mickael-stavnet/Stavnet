@@ -48,7 +48,7 @@ export function StavnetHeader({
     >
       <div
         className={cn(
-          "md:absolute md:left-[4.9vw] md:top-[2.8vh] md:w-[255px]",
+          "md:absolute md:left-[4.9vw] md:top-[1.8vh] md:w-[255px]",
           logoClassName,
         )}
       >
@@ -58,7 +58,7 @@ export function StavnetHeader({
           width={295}
           height={75}
           priority
-          className="h-auto w-[220px] md:w-full"
+          className="h-auto w-[190px] md:w-[228px]"
         />
       </div>
 

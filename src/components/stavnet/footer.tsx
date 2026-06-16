@@ -5,9 +5,10 @@ import { cn } from "@/lib/utils";
 
 interface StavnetFooterItem {
   key: string;
-  href: "/" | "/home" | "/menu" | "/orgs" | "/persons" | "/search";
+  href: "/" | "/home" | "/menu" | "/orgs" | "/persons" | "/search" | "/books";
   icon: string;
   label: string;
+  onClick?: (e: React.MouseEvent) => void;
 }
 
 interface StavnetFooterProps {
@@ -38,6 +39,7 @@ export function StavnetFooter({
       >
         <Link
           href={items[0].href}
+          onClick={items[0].onClick}
           className={cn(
             "flex min-h-[80px] flex-col items-start justify-end text-black md:col-start-1 md:row-start-1",
             itemClassName,
@@ -63,6 +65,7 @@ export function StavnetFooter({
 
         <Link
           href={items[1].href}
+          onClick={items[1].onClick}
           className={cn(
             "flex min-h-[80px] flex-col items-end justify-end text-black md:col-start-3 md:row-start-1",
             itemClassName,
@@ -101,6 +104,7 @@ export function StavnetFooter({
         <Link
           key={item.key}
           href={item.href}
+          onClick={item.onClick}
           className={cn(
             "flex min-h-[82px] flex-col items-center justify-end text-center text-[15px] font-bold leading-none text-black",
             itemClassName,

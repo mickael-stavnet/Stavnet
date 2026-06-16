@@ -171,6 +171,76 @@
       "help": "مساعدة"
     }
   },
+  "BookDetailsPage": {
+    "header": {
+      "cardTitle": "بطاقة كتاب",
+      "title": "الأدب الإسرائيلي",
+      "subtitle": "قاعدة بيانات ببليوغرافية وبيوغرافية"
+    },
+    "logoName": "Mickael Pariente",
+    "bookVertical": "BOOK",
+    "missingFile": "<ملف مفقود>",
+    "summary": "الملخص",
+    "tabs": {
+      "bookCard": "بطاقة كتاب",
+      "backCover": "الغلاف الخلفي",
+      "tableOfContents": "جدول المحتويات",
+      "extracts": "مقتطفات",
+      "pressCritiques": "مراجعات صحفية",
+      "availability": "التوفر",
+      "publishing": "النشر",
+      "statistics": "إحصاءات"
+    },
+    "side": {
+      "translation": "ترجمة",
+      "language": "فرنسية",
+      "expandedCard": "بطاقة موسعة"
+    },
+    "fields": {
+      "title": "العنوان: العنوان والعنوان الفرعي",
+      "originalEnglish": "العنوان الأصلي بالإنجليزية",
+      "transcription": "العنوان الأصلي بالنقل الصوتي",
+      "originalLanguage": "العنوان الأصلي بلغة الكتابة"
+    },
+    "content": {
+      "backCover": "الغلاف الخلفي",
+      "tableOfContents": "جدول المحتويات",
+      "extracts": "مقتطفات",
+      "pressCritiques": "مراجعات صحفية",
+      "availability": "التوفر",
+      "publishing": "النشر",
+      "statistics": "إحصاءات"
+    },
+    "tables": {
+      "authors": "المؤلفون، المؤلفون المشاركون، المحررون: الاسم الأول، الاسم العائلي",
+      "authorType": "نوع المؤلف",
+      "writingLanguage": "لغة الكتابة",
+      "contributors": "المساهمون: المترجمون، الرسامون...",
+      "contributionType": "نوع المساهمة",
+      "publishers": "الناشرون",
+      "country": "البلد",
+      "isbn": "ISBN",
+      "yearPages": "السنة، عدد الصفحات، الأبعاد، التجليد، سعر البيع",
+      "category": "الفئة",
+      "subject": "الموضوع",
+      "gender": "النوع",
+      "targetAudience": "الفئة المستهدفة"
+    },
+    "right": {
+      "bookCardsFound": "بطاقات الكتب المعثور عليها",
+      "database": "قاعدة البيانات",
+      "records": "4653"
+    },
+    "footer": {
+      "back": "رجوع",
+      "menu": "القائمة",
+      "list": "قائمة",
+      "close": "إغلاق",
+      "help": "مساعدة",
+      "search": "بحث",
+      "move": "نقل"
+    }
+  },
   "Navbar": {
     "search": "بحث",
     "menu": "قائمة",

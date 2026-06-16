@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/command";
 
 type MenuKey = (typeof menuColumns)[number]["key"];
-type AppHref = "/" | "/home" | "/menu" | "/orgs" | "/persons" | "/search";
+type AppHref = "/" | "/home" | "/menu" | "/orgs" | "/persons" | "/search" | "/books";
 
 interface SearchAction {
   id: string;
@@ -32,7 +32,7 @@ interface SearchAction {
 }
 
 const submenuDestinations: Record<MenuKey, AppHref> = {
-  books: "/menu",
+  books: "/books",
   persons: "/persons",
   organizations: "/orgs",
 };
@@ -58,7 +58,7 @@ const menuColumns = [
 export default function MenuPage() {
   const t = useTranslations("MenuPage");
   const router = useRouter();
-  const [activeMenu, setActiveMenu] = useState<MenuKey>("books");
+  const [activeMenu, setActiveMenu] = useState<MenuKey | null>(null);
   const [searchOpen, setSearchOpen] = useState(false);
   const centralSectionRef = useRef<HTMLElement>(null);
   const menuButtonsRef = useRef<Array<HTMLButtonElement | null>>([]);
@@ -95,6 +95,7 @@ export default function MenuPage() {
       action: () => {
         setActiveMenu("books");
         setSearchOpen(false);
+        router.push("/books");
       },
     },
     {
@@ -201,7 +202,7 @@ export default function MenuPage() {
       ease: "power2.out",
     });
 
-    const activeButton = menuButtonsRef.current[activeIndex];
+    const activeButton = activeIndex >= 0 ? menuButtonsRef.current[activeIndex] : null;
     if (activeButton) {
       gsap.to(activeButton, {
         y: -6,
@@ -268,7 +269,29 @@ export default function MenuPage() {
             titleBlockClassName="md:right-[4.9vw] md:left-auto md:w-[35vw]"
           />
 
-          <section data-stavnet-animate="menu-content" ref={centralSectionRef} className="mt-[146px] flex flex-col gap-4 md:absolute md:left-[4.5vw] md:right-[4.5vw] md:top-[245px] md:mt-0 md:h-[560px] md:gap-0">
+          <section
+            data-stavnet-animate="menu-content"
+            ref={centralSectionRef}
+            onMouseLeave={() => setActiveMenu(null)}
+            onBlurCapture={(event) => {
+              const currentTarget = event.currentTarget;
+              requestAnimationFrame(() => {
+                if (!currentTarget.contains(document.activeElement)) {
+                  setActiveMenu(null);
+                }
+              });
+            }}
+            onFocusCapture={(event) => {
+              const trigger = event.target as HTMLElement | null;
+              const menuKey = trigger?.closest("[data-menu-key]")?.getAttribute("data-menu-key") as MenuKey | null;
+              if (menuKey) {
+                setActiveMenu(menuKey);
+              } else {
+                setActiveMenu(null);
+              }
+            }}
+            className="mt-[146px] flex flex-col gap-4 md:absolute md:left-[4.5vw] md:right-[4.5vw] md:top-[245px] md:mt-0 md:h-[560px] md:gap-0"
+          >
             <div className="flex flex-col gap-4 md:absolute md:left-0 md:right-0 md:top-0 md:flex-row md:items-start md:justify-between">
             <div className="max-w-[468px] text-center md:text-left">
               <p className="text-[18px] font-bold italic leading-[1.02] text-black md:whitespace-nowrap">
@@ -312,43 +335,43 @@ export default function MenuPage() {
               </div>
             </div>
 
-            <div className="grid gap-4 md:absolute md:left-0 md:right-0 md:top-[76px] md:grid-cols-3 md:gap-5">
+            <div className="grid gap-5 md:absolute md:left-0 md:right-0 md:top-[64px] md:grid-cols-3 md:gap-5">
               {menuColumns.map((column, columnIndex) => (
                 <button
                   key={column.key}
                   type="button"
+                  data-menu-key={column.key}
                   ref={(element) => {
                     menuButtonsRef.current[columnIndex] = element;
                   }}
                   onMouseEnter={() => setActiveMenu(column.key)}
                   onFocus={() => setActiveMenu(column.key)}
-                  onClick={() => setActiveMenu(column.key)}
-                  className="flex min-w-0 items-start gap-3 text-left will-change-transform"
+                  className="flex min-w-0 items-start gap-4 text-left will-change-transform md:gap-3"
                 >
                   <Image
                     src={column.icon}
                     alt=""
-                    width={66}
-                    height={66}
+                    width={74}
+                    height={74}
                     className={`h-auto shrink-0 object-contain ${
                       column.key === "persons"
-                        ? "w-[68px]"
+                        ? "w-[74px] md:w-[68px]"
                         : column.key === "organizations"
-                          ? "w-[68px]"
-                          : "w-[62px]"
+                          ? "w-[76px] md:w-[68px]"
+                          : "w-[70px] md:w-[62px]"
                     }`}
                   />
-                  <div className="pt-[2px]">
+                  <div className="max-w-[260px] pt-[3px] md:max-w-none md:pt-[2px]">
                     <h2
-                      className="text-[20px] font-bold leading-none"
+                      className="text-[22px] font-bold leading-[1.02] md:text-[20px] md:leading-none"
                       style={{ color: column.titleColor }}
                     >
                       {t(`columns.${column.key}.title`)}
                     </h2>
-                    <p className="mt-[2px] text-[17px] font-bold italic leading-[1.04] text-[#0018c9]">
+                    <p className="mt-[3px] text-[19px] font-bold italic leading-[1.08] text-[#0018c9] md:mt-[2px] md:text-[17px] md:leading-[1.04]">
                       {t(`columns.${column.key}.subtitleLine1`)}
                     </p>
-                    <p className="text-[17px] font-bold italic leading-[1.04] text-[#0018c9]">
+                    <p className="text-[19px] font-bold italic leading-[1.08] text-[#0018c9] md:text-[17px] md:leading-[1.04]">
                       {t(`columns.${column.key}.subtitleLine2`)}
                     </p>
                   </div>
@@ -381,6 +404,7 @@ export default function MenuPage() {
                           >
                             <Link
                               href={submenuDestinations[column.key]}
+                              data-menu-key={column.key}
                               className="group inline-flex items-center gap-2 text-[#233341] transition-all duration-150 hover:translate-x-[3px] hover:text-[#102b58] focus-visible:translate-x-[3px] focus-visible:outline-none"
                             >
                               <span className="border-b border-transparent transition-colors duration-150 group-hover:border-[#102b58]/40 group-focus-visible:border-[#102b58]/40">

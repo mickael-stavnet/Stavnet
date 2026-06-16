@@ -171,6 +171,76 @@
       "help": "Help"
     }
   },
+  "BookDetailsPage": {
+    "header": {
+      "cardTitle": "Book File",
+      "title": "Israeli literature",
+      "subtitle": "Bibliography and Biography Database"
+    },
+    "logoName": "Mickael Pariente",
+    "bookVertical": "BOOK",
+    "missingFile": "<Missing file>",
+    "summary": "Summary",
+    "tabs": {
+      "bookCard": "Book Card",
+      "backCover": "Back cover",
+      "tableOfContents": "Table of contents",
+      "extracts": "Extracts",
+      "pressCritiques": "Press critiques",
+      "availability": "Availability",
+      "publishing": "Publishing",
+      "statistics": "Statistics"
+    },
+    "side": {
+      "translation": "Translation",
+      "language": "French",
+      "expandedCard": "Expanded Card"
+    },
+    "fields": {
+      "title": "Title: title and subtitle",
+      "originalEnglish": "Original title in English",
+      "transcription": "Original title in transcription",
+      "originalLanguage": "Original title in writing language"
+    },
+    "content": {
+      "backCover": "Back cover",
+      "tableOfContents": "Table of contents",
+      "extracts": "Extracts",
+      "pressCritiques": "Press critiques",
+      "availability": "Availability",
+      "publishing": "Publishing",
+      "statistics": "Statistics"
+    },
+    "tables": {
+      "authors": "Authors, co-authors, editors: first name, last name",
+      "authorType": "Type of author",
+      "writingLanguage": "Writing language",
+      "contributors": "Contributors: translators, illustrators...",
+      "contributionType": "Type of contribution",
+      "publishers": "Publishers",
+      "country": "Country",
+      "isbn": "ISBN",
+      "yearPages": "Year, number of pages, dimensions, binding, retail price",
+      "category": "Category",
+      "subject": "Subject",
+      "gender": "Gender",
+      "targetAudience": "Target audience"
+    },
+    "right": {
+      "bookCardsFound": "Book Cards found",
+      "database": "The database",
+      "records": "4653"
+    },
+    "footer": {
+      "back": "Back",
+      "menu": "Menu",
+      "list": "List",
+      "close": "Close",
+      "help": "Help",
+      "search": "Search",
+      "move": "Move"
+    }
+  },
   "Navbar": {
     "search": "Search",
     "menu": "Menu",
