@@ -241,6 +241,69 @@
       "move": "نقل"
     }
   },
+  "PersonFilePage": {
+    "header": {
+      "cardTitle": "ملف الأشخاص",
+      "title": "الأدب الإسرائيلي",
+      "subtitle": "قاعدة بيانات ببليوغرافية وبيوغرافية"
+    },
+    "tabs": {
+      "authorCard": "بطاقة المؤلف",
+      "originalTitles": "العناوين الأصلية",
+      "translatedTitles": "العناوين المترجمة",
+      "authorArticles": "مقالات المؤلف",
+      "authorPublications": "منشورات عن المؤلف",
+      "pressCritiques": "مراجعات صحفية",
+      "awards": "الجوائز والتمييزات",
+      "statistics": "إحصاءات"
+    },
+    "side": {
+      "authorCard": "بطاقة المؤلف",
+      "contribution": "مساهمة"
+    },
+    "fields": {
+      "person": "الشخص: الاسم العائلي، الاسم الأول",
+      "birth": "تاريخ ومكان الميلاد",
+      "activity": "النشاط المهني",
+      "synonyms": "مرادفات",
+      "biography": "سيرة ذاتية بالفرنسية"
+    },
+    "bibliography": {
+      "title": "بيبليوغرافيا",
+      "originalTitles": "العناوين الأصلية",
+      "translations": "الترجمات",
+      "publicationLanguages": "لغات النشر",
+      "columns": {
+        "type": "أصل./ترج.",
+        "language": "لغات النشر",
+        "title": "العناوين: أصلية أو مترجمة",
+        "year": "السنة",
+        "issue": "الصدور"
+      }
+    },
+    "content": {
+      "originalTitles": "العناوين الأصلية",
+      "translatedTitles": "العناوين المترجمة",
+      "authorArticles": "مقالات المؤلف",
+      "authorPublications": "منشورات عن المؤلف",
+      "pressCritiques": "مراجعات صحفية",
+      "awards": "الجوائز والتمييزات",
+      "statistics": "إحصاءات"
+    },
+    "right": {
+      "personCardsFound": "بطاقات الأشخاص",
+      "databaseContains": "تحتوي القاعدة على"
+    },
+    "footer": {
+      "back": "رجوع",
+      "menu": "القائمة",
+      "close": "إغلاق",
+      "list": "قائمة",
+      "search": "بحث",
+      "help": "مساعدة",
+      "move": "تنقل"
+    }
+  },
   "Navbar": {
     "search": "بحث",
     "menu": "قائمة",

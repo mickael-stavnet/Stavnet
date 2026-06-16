@@ -241,6 +241,69 @@
       "move": "Move"
     }
   },
+  "PersonFilePage": {
+    "header": {
+      "cardTitle": "People file",
+      "title": "Israeli literature",
+      "subtitle": "Bibliographic and biographical database"
+    },
+    "tabs": {
+      "authorCard": "Author card",
+      "originalTitles": "Original titles",
+      "translatedTitles": "Translated titles",
+      "authorArticles": "Author articles",
+      "authorPublications": "Publications on the author",
+      "pressCritiques": "Press critiques",
+      "awards": "Awards & distinctions",
+      "statistics": "Statistics"
+    },
+    "side": {
+      "authorCard": "Author card",
+      "contribution": "Contribution"
+    },
+    "fields": {
+      "person": "Person: last name, first name",
+      "birth": "Date and place of birth",
+      "activity": "Professional activity",
+      "synonyms": "Synonyms",
+      "biography": "Biography in French"
+    },
+    "bibliography": {
+      "title": "Bibliography",
+      "originalTitles": "Original titles",
+      "translations": "Translations",
+      "publicationLanguages": "Publication languages",
+      "columns": {
+        "type": "Orig./Trans.",
+        "language": "Publication languages",
+        "title": "Titles: original or translation",
+        "year": "Year",
+        "issue": "Issue"
+      }
+    },
+    "content": {
+      "originalTitles": "Original titles",
+      "translatedTitles": "Translated titles",
+      "authorArticles": "Author articles",
+      "authorPublications": "Publications on the author",
+      "pressCritiques": "Press critiques",
+      "awards": "Awards and distinctions",
+      "statistics": "Statistics"
+    },
+    "right": {
+      "personCardsFound": "Person cards",
+      "databaseContains": "The database contains"
+    },
+    "footer": {
+      "back": "Back",
+      "menu": "Menu",
+      "close": "Close",
+      "list": "List",
+      "search": "Search",
+      "help": "Help",
+      "move": "Navigate"
+    }
+  },
   "Navbar": {
     "search": "Search",
     "menu": "Menu",

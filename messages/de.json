@@ -241,6 +241,69 @@
       "move": "Verschieben"
     }
   },
+  "PersonFilePage": {
+    "header": {
+      "cardTitle": "Personendatei",
+      "title": "Israelische Literatur",
+      "subtitle": "Bibliografische und biografische Datenbank"
+    },
+    "tabs": {
+      "authorCard": "Autorenkarte",
+      "originalTitles": "Originaltitel",
+      "translatedTitles": "Übersetzte Titel",
+      "authorArticles": "Artikel des Autors",
+      "authorPublications": "Publikationen über den Autor",
+      "pressCritiques": "Pressekritiken",
+      "awards": "Preise & Auszeichnungen",
+      "statistics": "Statistiken"
+    },
+    "side": {
+      "authorCard": "Autorenkarte",
+      "contribution": "Beitrag"
+    },
+    "fields": {
+      "person": "Person: Nachname, Vorname",
+      "birth": "Geburtsdatum und -ort",
+      "activity": "Berufliche Tätigkeit",
+      "synonyms": "Synonyme",
+      "biography": "Biografie auf Französisch"
+    },
+    "bibliography": {
+      "title": "Bibliografie",
+      "originalTitles": "Originaltitel",
+      "translations": "Übersetzungen",
+      "publicationLanguages": "Publikationssprachen",
+      "columns": {
+        "type": "Orig./Übers.",
+        "language": "Publikationssprachen",
+        "title": "Titel: Original oder Übersetzung",
+        "year": "Jahr",
+        "issue": "Ausgabe"
+      }
+    },
+    "content": {
+      "originalTitles": "Originaltitel",
+      "translatedTitles": "Übersetzte Titel",
+      "authorArticles": "Artikel des Autors",
+      "authorPublications": "Publikationen über den Autor",
+      "pressCritiques": "Pressekritiken",
+      "awards": "Preise und Auszeichnungen",
+      "statistics": "Statistiken"
+    },
+    "right": {
+      "personCardsFound": "Personenkarten",
+      "databaseContains": "Die Datenbank enthält"
+    },
+    "footer": {
+      "back": "Zurück",
+      "menu": "Menü",
+      "close": "Schließen",
+      "list": "Liste",
+      "search": "Suche",
+      "help": "Hilfe",
+      "move": "Navigieren"
+    }
+  },
   "Navbar": {
     "search": "Suche",
     "menu": "Menü",

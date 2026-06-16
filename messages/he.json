@@ -241,6 +241,69 @@
       "move": "הזזה"
     }
   },
+  "PersonFilePage": {
+    "header": {
+      "cardTitle": "קובץ אנשים",
+      "title": "ספרות ישראלית",
+      "subtitle": "מאגר ביבליוגרפי וביוגרפי"
+    },
+    "tabs": {
+      "authorCard": "כרטיס מחבר",
+      "originalTitles": "כותרות מקוריות",
+      "translatedTitles": "כותרות מתורגמות",
+      "authorArticles": "מאמרי המחבר",
+      "authorPublications": "פרסומים על המחבר",
+      "pressCritiques": "ביקורות עיתונות",
+      "awards": "פרסים והוקרות",
+      "statistics": "סטטיסטיקות"
+    },
+    "side": {
+      "authorCard": "כרטיס מחבר",
+      "contribution": "תרומה"
+    },
+    "fields": {
+      "person": "אדם: שם משפחה, שם פרטי",
+      "birth": "תאריך ומקום לידה",
+      "activity": "פעילות מקצועית",
+      "synonyms": "שמות נרדפים",
+      "biography": "ביוגרפיה בצרפתית"
+    },
+    "bibliography": {
+      "title": "ביבליוגרפיה",
+      "originalTitles": "כותרות מקוריות",
+      "translations": "תרגומים",
+      "publicationLanguages": "שפות פרסום",
+      "columns": {
+        "type": "מקור./תרג.",
+        "language": "שפות פרסום",
+        "title": "כותרות: מקור או תרגום",
+        "year": "שנה",
+        "issue": "פרסום"
+      }
+    },
+    "content": {
+      "originalTitles": "כותרות מקוריות",
+      "translatedTitles": "כותרות מתורגמות",
+      "authorArticles": "מאמרי המחבר",
+      "authorPublications": "פרסומים על המחבר",
+      "pressCritiques": "ביקורות עיתונות",
+      "awards": "פרסים והוקרות",
+      "statistics": "סטטיסטיקות"
+    },
+    "right": {
+      "personCardsFound": "כרטיסי אנשים",
+      "databaseContains": "המאגר מכיל"
+    },
+    "footer": {
+      "back": "חזרה",
+      "menu": "תפריט",
+      "close": "סגור",
+      "list": "רשימה",
+      "search": "חיפוש",
+      "help": "עזרה",
+      "move": "ניווט"
+    }
+  },
   "Navbar": {
     "search": "חיפוש",
     "menu": "תפריט",

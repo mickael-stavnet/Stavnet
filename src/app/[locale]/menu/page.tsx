@@ -346,6 +346,7 @@ export default function MenuPage() {
                   }}
                   onMouseEnter={() => setActiveMenu(column.key)}
                   onFocus={() => setActiveMenu(column.key)}
+                  onClick={() => router.push(submenuDestinations[column.key])}
                   className="flex min-w-0 items-start gap-4 text-left will-change-transform md:gap-3"
                 >
                   <Image

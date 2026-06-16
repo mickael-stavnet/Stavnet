@@ -241,6 +241,69 @@
       "move": "Déplacer"
     }
   },
+  "PersonFilePage": {
+    "header": {
+      "cardTitle": "Fichier personnes",
+      "title": "Littérature israélienne",
+      "subtitle": "Base de données bibliographiques et biographiques"
+    },
+    "tabs": {
+      "authorCard": "Fiche auteur",
+      "originalTitles": "Titres originaux",
+      "translatedTitles": "Titres traduits",
+      "authorArticles": "Articles de l'auteur",
+      "authorPublications": "Publications sur l'auteur",
+      "pressCritiques": "Critiques de presse",
+      "awards": "Prix & Distinctions",
+      "statistics": "Statistiques"
+    },
+    "side": {
+      "authorCard": "Fiche auteur",
+      "contribution": "Contribution"
+    },
+    "fields": {
+      "person": "Personne : nom, prenom",
+      "birth": "Date et lieu de naissance",
+      "activity": "Activité professionnelle",
+      "synonyms": "Synonymes",
+      "biography": "Biographie en français"
+    },
+    "bibliography": {
+      "title": "Bibliographie",
+      "originalTitles": "Titres originaux",
+      "translations": "Traductions",
+      "publicationLanguages": "Langues de publication",
+      "columns": {
+        "type": "Orig./Trad.",
+        "language": "Langues de parution",
+        "title": "Titres : original ou traduction",
+        "year": "Année",
+        "issue": "Parution"
+      }
+    },
+    "content": {
+      "originalTitles": "Titres originaux",
+      "translatedTitles": "Titres traduits",
+      "authorArticles": "Articles de l'auteur",
+      "authorPublications": "Publications sur l'auteur",
+      "pressCritiques": "Critiques de presse",
+      "awards": "Prix et distinctions",
+      "statistics": "Statistiques"
+    },
+    "right": {
+      "personCardsFound": "Fiches personnes",
+      "databaseContains": "La base contient"
+    },
+    "footer": {
+      "back": "Retour",
+      "menu": "Menu",
+      "close": "Quitter",
+      "list": "Liste",
+      "search": "Rechercher",
+      "help": "Aide",
+      "move": "Naviguer"
+    }
+  },
   "Navbar": {
     "search": "Recherche",
     "menu": "Menu",

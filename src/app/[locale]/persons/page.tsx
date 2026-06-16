@@ -1,345 +1,290 @@
-'use client'
+"use client";
 
-import { useDeferredValue, useEffect, useState } from 'react'
-import { useTranslations } from 'next-intl'
-import { Search } from 'lucide-react'
-import { Navbar } from '@/components/home/navbar'
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
-import { Input } from '@/components/ui/input'
-import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination'
-import { Skeleton } from '@/components/ui/skeleton'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { fixEncoding } from '@/lib/encoding'
+import Image from "next/image";
+import { useTranslations } from "next-intl";
+import { useState } from "react";
+import { StavnetFooter } from "@/components/stavnet/footer";
+import { StavnetHeader } from "@/components/stavnet/header";
 
-interface Person {
-  id: string
-  'Prénom Nom': string | null
-  'Nom Prénom': string | null
-  'Code Langue': string | null
-  'Nb. Fiches Base': number | null
-  'Nb. Fiches Trouvées': number | null
-  'Si Date Décès': string | null
-  'Si Lieu Décès': string | null
-  'Nb. Contributions Auteurs': number | null
-  'Nb. Contributions Titres': number | null
-  'Activité Professionnelle': string | null
-  'Biographie': string | null
-  'Date de Décès': string | null
-  'Date de Naissance': number | null
-  'Lieu de Décès': string | null
-  'Pays de Résidence': string | null
-  'Ville de Naissance': string | null
-  'Année Publication': string | null
-  'Auteur Original': string | null
-  'Cote Livre': string | null
-  'Langue Traduction': string | null
-  'Titre': string | null
-  'Type Contribution': string | null
-  'Nb. Langues Traduction': number | null
-  'Nb. Titres Originaux': number | null
-  'Nb. Titres Traduits': number | null
-  'Nb. Pays Publication': number | null
-  'Nb. Rééditions Poche': number | null
-  'Nb. Rééditions Régulières': number | null
-  'Nb. Prix Distinctions': number | null
-  'Langue Écriture': string | null
-  'Type Personne': string | null
-}
-
-interface PersonsResponse {
-  data?: Person[]
-  error?: string
-}
-
-function TruncatedCell({ text, limit = 30 }: { text: string | null; limit?: number }) {
-  const content = fixEncoding(text)
-
-  if (!content) {
-    return null
-  }
-
-  if (content.length <= limit) {
-    return <>{content}</>
-  }
-
-  return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <button className="min-h-11 text-left text-xs text-primary hover:underline">
-          {content.substring(0, limit)}...
-        </button>
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle>Détail</DialogTitle>
-          <DialogDescription className="mt-2 text-foreground">{content}</DialogDescription>
-        </DialogHeader>
-      </DialogContent>
-    </Dialog>
-  )
-}
-
-function MobileStat({
-  label,
+function FilledBox({
   value,
+  className = "",
 }: {
-  label: string
-  value: number | string | null
+  value: string;
+  className?: string;
 }) {
-  if (value === null || value === '') {
-    return null
-  }
-
   return (
-    <div className="rounded-lg bg-muted/40 px-3 py-2">
-      <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">{label}</p>
-      <p className="mt-1 text-sm font-medium text-foreground">{value}</p>
+    <div className={`flex min-h-[38px] items-center border border-[#7aa8b7] bg-[#a7dcee] px-2 text-[13px] font-bold text-black ${className}`}>
+      {value}
     </div>
-  )
+  );
+}
+
+function LabelCell({ label }: { label: string }) {
+  return (
+    <div className="border border-[#7aa8b7] bg-[#fff8c8] px-2 py-[3px] text-[12px] uppercase leading-none text-black">
+      {label}
+    </div>
+  );
+}
+
+function BlankTabPanel({
+  title,
+  rows = 3,
+}: {
+  title: string;
+  rows?: number;
+}) {
+  return (
+    <section className="border border-[#7aa8b7] bg-[#a7dcee]">
+      <div className="border-b border-[#7aa8b7] bg-[#fff8c8] px-2 py-[4px] text-[12px] uppercase leading-none text-black">
+        {title}
+      </div>
+      <div className="p-[10px]">
+        <div className="border border-[#7aa8b7] bg-[#b2e0ef]">
+          {Array.from({ length: rows }).map((_, index) => (
+            <div
+              key={index}
+              className={`h-[92px] border-b border-[#7aa8b7] ${index === rows - 1 ? "border-b-0" : ""}`}
+            />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
 }
 
 export default function PersonsPage() {
-  const t = useTranslations('Persons')
-  const [data, setData] = useState<Person[]>([])
-  const [loading, setLoading] = useState(true)
-  const [page, setPage] = useState(1)
-  const [search, setSearch] = useState('')
-  const deferredSearch = useDeferredValue(search)
-  const pageSize = 20
+  const t = useTranslations("PersonFilePage");
+  const tabs = [
+    "authorCard",
+    "originalTitles",
+    "translatedTitles",
+    "authorArticles",
+    "authorPublications",
+    "pressCritiques",
+    "awards",
+    "statistics",
+  ] as const;
+  const [activeTab, setActiveTab] = useState<(typeof tabs)[number]>("authorCard");
 
-  useEffect(() => {
-    const controller = new AbortController()
+  const samplePerson = {
+    fullName: "Nicolas Moshe Lazar",
+    birthInfo: "Jerusalem, 1921",
+    professionalActivity: "Poet, translator, literary critic",
+    synonym: "Nicolas Moshe Lazar",
+    biography:
+      "French-language biography of the author, summarizing his literary career, publications, translations and editorial contribution within Israeli literature.",
+    bibliographyStats: {
+      originalTitles: "0",
+      translations: "1",
+      publicationLanguages: "1",
+    },
+    bibliographyRows: [
+      ["O", "T", "French", "Poetes israeliennes d'aujourd'hui", "1960", "E01"],
+      ["", "", "", "", "", ""],
+      ["", "", "", "", "", ""],
+    ],
+  };
 
-    async function fetchData() {
-      setLoading(true)
-
-      try {
-        const response = await fetch(
-          `/api/persons?page=${page}&search=${encodeURIComponent(deferredSearch)}`,
-          { signal: controller.signal },
-        )
-
-        if (!response.ok) {
-          setData([])
-          return
-        }
-
-        const result: PersonsResponse = await response.json()
-        setData(Array.isArray(result.data) ? result.data : [])
-      } catch (error) {
-        if (!(error instanceof DOMException && error.name === 'AbortError')) {
-          setData([])
-        }
-      } finally {
-        if (!controller.signal.aborted) {
-          setLoading(false)
-        }
-      }
-    }
-
-    void fetchData()
-
-    return () => controller.abort()
-  }, [deferredSearch, page])
+  const footerItems = [
+    { key: "back", icon: "/icons/icons-nav/back.png", href: "/home" as const, label: t("footer.back") },
+    { key: "menu", icon: "/icons/icons-nav/menu.png", href: "/menu" as const, label: t("footer.menu") },
+    { key: "close", icon: "/icons/icons-nav/close.png", href: "/" as const, label: t("footer.close") },
+    { key: "list", icon: "/icons/icons-nav/book.png", href: "/persons" as const, label: t("footer.list") },
+    { key: "search", icon: "/icons/icons-nav/rechercher.png", href: "/search" as const, label: t("footer.search") },
+    { key: "help", icon: "/icons/icons-nav/help.png", href: "/persons" as const, label: t("footer.help") },
+    { key: "move", icon: "/icons/icons-nav/next.png", href: "/persons" as const, label: t("footer.move") },
+  ];
 
   return (
-    <div className="flex min-h-screen flex-col bg-background/30 backdrop-blur-[2px]">
-      <Navbar />
+    <main className="relative min-h-[100svh] overflow-x-hidden bg-[#e7f2f7] font-[Arial,Helvetica,sans-serif] text-black md:h-screen md:overflow-hidden">
+      <Image
+        src="/background/background.png"
+        alt=""
+        fill
+        priority
+        sizes="100vw"
+        className="object-cover"
+      />
 
-      <main className="mx-auto flex w-full max-w-[95rem] flex-1 flex-col px-4 py-8 sm:px-6 sm:py-12 lg:px-8 lg:py-16">
-        <section className="mb-8 flex flex-col items-center gap-5 text-center sm:mb-12 sm:gap-6">
-          <h1 className="text-3xl font-bold tracking-tighter text-[#382e60] sm:text-5xl lg:text-6xl">
-            {t('title')}
-          </h1>
-          <p className="max-w-[700px] text-base leading-relaxed text-muted-foreground sm:text-lg lg:text-xl">
-            {t('description')}
-          </p>
-          <div className="relative mt-2 w-full max-w-xl">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-            <Input
-              type="search"
-              placeholder={t('searchPlaceholder')}
-              className="h-12 pl-10 focus-visible:ring-[#e6be1e]"
-              value={search}
-              onChange={(event) => {
-                setSearch(event.target.value)
-                setPage(1)
-              }}
-            />
-          </div>
+      <div className="relative z-10 mx-auto flex min-h-[100svh] w-full max-w-[1120px] flex-col px-4 pb-5 pt-4 md:h-screen md:max-w-none md:px-0 md:pb-0 md:pt-0">
+        <StavnetHeader
+          pageName={t("header.cardTitle")}
+          title={t("header.title")}
+          subtitle={t("header.subtitle")}
+          headerClassName="md:h-[146px]"
+          badgeClassName="md:h-[112px] md:w-[236px]"
+          titleBlockClassName="md:right-[4.7vw] md:left-auto md:w-[44vw]"
+          titleClassName="text-[34px] md:text-[32px]"
+          subtitleClassName="text-[17px]"
+        />
+
+        <section className="mt-6 flex flex-col gap-5 md:absolute md:left-[4.8vw] md:right-[4.8vw] md:top-[154px] md:bottom-[108px] md:grid md:grid-cols-[102px_1fr_24px] md:gap-[10px]">
+          <aside className="relative order-2 flex flex-col gap-4 md:order-1 md:pt-[24px]">
+            <div className="hidden md:block md:h-[170px]" />
+
+            <button
+              type="button"
+              className="hidden h-[36px] w-[86px] self-center border border-[#d1bb48] bg-[#ffea56] text-[12px] leading-[1.05] shadow-[3px_3px_5px_rgba(0,0,0,0.2)] md:block"
+            >
+              {t("side.contribution")}
+            </button>
+          </aside>
+
+          <section className="order-1 min-w-0 md:order-2">
+            <nav className="flex gap-2 overflow-x-auto pb-2 md:grid md:grid-cols-[92px_repeat(7,minmax(0,1fr))] md:items-end md:gap-[6px] md:overflow-visible md:pb-0">
+              {tabs.map((tabKey) => (
+                <button
+                  key={tabKey}
+                  type="button"
+                  onClick={() => setActiveTab(tabKey)}
+                  className={`min-h-[42px] min-w-[140px] shrink-0 border border-[#d1bb48] px-3 py-[8px] text-center text-[13px] leading-[1.02] shadow-[3px_3px_5px_rgba(0,0,0,0.28)] transition-colors md:min-w-0 ${
+                    activeTab === tabKey
+                      ? "bg-[#91d3ea] text-black md:min-h-[58px] md:text-[17px] md:font-bold"
+                      : "bg-[#ffea56] text-black hover:bg-[#fff16f]"
+                  }`}
+                >
+                  {t(`tabs.${tabKey}`)}
+                </button>
+              ))}
+            </nav>
+
+            <div className="mt-[2px] flex min-h-[620px] flex-col border border-[#7aa8b7] bg-[linear-gradient(180deg,#8ecfe8_0%,#a8dbed_100%)] shadow-[7px_7px_10px_rgba(0,0,0,0.24)] md:h-[610px] md:flex-row">
+              <aside className="border-b border-[#7aa8b7] px-3 py-4 md:w-[110px] md:border-b-0 md:border-r">
+                <p className="text-center text-[18px] font-bold leading-tight text-black">{t("side.authorCard")}</p>
+              </aside>
+
+              <div className="min-w-0 flex-1 px-[12px] py-[12px]">
+                {activeTab === "authorCard" ? (
+                  <div className="grid h-full grid-rows-[auto_auto_1fr_auto] gap-y-[12px]">
+                    <div className="grid gap-[10px] md:grid-cols-[1.9fr_1fr]">
+                      <section className="border border-[#7aa8b7] bg-[#a7dcee]">
+                        <LabelCell label={t("fields.person")} />
+                        <FilledBox value={samplePerson.fullName} className="border-x-0 border-b text-[18px]" />
+                        <div className="grid md:grid-cols-3">
+                          <div className="md:col-span-2">
+                            <LabelCell label={t("fields.birth")} />
+                            <FilledBox value={samplePerson.birthInfo} className="border-x-0 border-b md:border-b-0" />
+                          </div>
+                          <div>
+                            <LabelCell label="" />
+                            <FilledBox value="" className="border-x-0" />
+                          </div>
+                        </div>
+                        <div className="grid md:grid-cols-[1.6fr_1fr]">
+                          <div>
+                            <LabelCell label={t("fields.activity")} />
+                            <FilledBox value={samplePerson.professionalActivity} className="border-x-0 border-b-0" />
+                          </div>
+                          <div>
+                            <LabelCell label="" />
+                            <FilledBox value="" className="border-x-0 border-b-0" />
+                          </div>
+                        </div>
+                      </section>
+
+                      <section className="border border-[#7aa8b7] bg-[#a7dcee]">
+                        <LabelCell label={t("fields.synonyms")} />
+                        <div className="grid grid-rows-[38px_repeat(4,1fr)]">
+                          <FilledBox value={samplePerson.synonym} className="border-x-0 border-b text-[14px] font-normal" />
+                          <div className="border-b border-[#7aa8b7]" />
+                          <div className="border-b border-[#7aa8b7]" />
+                          <div className="border-b border-[#7aa8b7]" />
+                          <div />
+                        </div>
+                      </section>
+                    </div>
+
+                    <section className="border border-[#7aa8b7] bg-[#a7dcee]">
+                      <LabelCell label={t("fields.biography")} />
+                      <div className="h-[92px] overflow-auto px-2 py-2 text-[13px] leading-[1.45] text-black md:h-[78px]">
+                        {samplePerson.biography}
+                      </div>
+                    </section>
+
+                    <div />
+
+                    <section className="space-y-[8px]">
+                      <div className="flex flex-wrap items-center gap-x-6 gap-y-2 px-1 text-[16px] font-bold leading-none text-black">
+                        <span>{t("bibliography.title")} :</span>
+                        <span className="text-[#ff1d1d]">{samplePerson.bibliographyStats.originalTitles}</span>
+                        <span>{t("bibliography.originalTitles")}</span>
+                        <span className="text-[#ff1d1d]">{samplePerson.bibliographyStats.translations}</span>
+                        <span>{t("bibliography.translations")}</span>
+                        <span className="text-[#ff1d1d]">{samplePerson.bibliographyStats.publicationLanguages}</span>
+                        <span>{t("bibliography.publicationLanguages")}</span>
+                      </div>
+
+                      <section className="overflow-x-auto border border-[#7aa8b7] bg-[#a7dcee]">
+                        <div
+                          className="grid min-w-[620px] border-b border-[#7aa8b7] bg-[#fff8c8] text-[12px] uppercase leading-none text-black"
+                          style={{ gridTemplateColumns: "80px 140px 1.6fr 70px 60px" }}
+                        >
+                          <div className="border-r border-[#7aa8b7] px-2 py-[3px]">{t("bibliography.columns.type")}</div>
+                          <div className="border-r border-[#7aa8b7] px-2 py-[3px]">{t("bibliography.columns.language")}</div>
+                          <div className="border-r border-[#7aa8b7] px-2 py-[3px]">{t("bibliography.columns.title")}</div>
+                          <div className="border-r border-[#7aa8b7] px-2 py-[3px]">{t("bibliography.columns.year")}</div>
+                          <div className="px-2 py-[3px]">{t("bibliography.columns.issue")}</div>
+                        </div>
+
+                        {samplePerson.bibliographyRows.map((row, rowIndex) => (
+                          <div
+                            key={rowIndex}
+                            className="grid min-w-[620px]"
+                            style={{ gridTemplateColumns: "80px 140px 1.6fr 70px 60px" }}
+                          >
+                            <div className="flex h-[34px] items-center border-r border-t border-[#7aa8b7] px-2 text-[13px] text-black">
+                              {row[0]} {row[1]}
+                            </div>
+                            <div className="flex h-[34px] items-center border-r border-t border-[#7aa8b7] px-2 text-[13px] text-black">
+                              {row[2]}
+                            </div>
+                            <div className="flex h-[34px] items-center border-r border-t border-[#7aa8b7] px-2 text-[13px] text-black">
+                              {row[3]}
+                            </div>
+                            <div className="flex h-[34px] items-center border-r border-t border-[#7aa8b7] px-2 text-[13px] text-black">
+                              {row[4]}
+                            </div>
+                            <div className="flex h-[34px] items-center border-t border-[#7aa8b7] px-2 text-[13px] text-black">
+                              {row[5]}
+                            </div>
+                          </div>
+                        ))}
+                      </section>
+                    </section>
+                  </div>
+                ) : null}
+
+                {activeTab === "originalTitles" ? <BlankTabPanel title={t("content.originalTitles")} rows={3} /> : null}
+                {activeTab === "translatedTitles" ? <BlankTabPanel title={t("content.translatedTitles")} rows={3} /> : null}
+                {activeTab === "authorArticles" ? <BlankTabPanel title={t("content.authorArticles")} rows={3} /> : null}
+                {activeTab === "authorPublications" ? <BlankTabPanel title={t("content.authorPublications")} rows={3} /> : null}
+                {activeTab === "pressCritiques" ? <BlankTabPanel title={t("content.pressCritiques")} rows={3} /> : null}
+                {activeTab === "awards" ? <BlankTabPanel title={t("content.awards")} rows={3} /> : null}
+                {activeTab === "statistics" ? <BlankTabPanel title={t("content.statistics")} rows={3} /> : null}
+              </div>
+            </div>
+          </section>
+
+          <aside className="order-3 hidden items-center justify-center md:flex">
+            <div className="flex h-full flex-col items-center justify-between py-[110px] text-[14px] leading-none text-black">
+              <span className="[writing-mode:vertical-rl]">{t("right.personCardsFound")}</span>
+              <span className="[writing-mode:vertical-rl] text-[#ff1d1d]">1</span>
+              <span className="[writing-mode:vertical-rl]">{t("right.databaseContains")}</span>
+              <span className="[writing-mode:vertical-rl] text-[#ff1d1d]">686</span>
+            </div>
+          </aside>
         </section>
 
-        <div className="space-y-4 md:hidden">
-          {loading ? (
-            Array.from({ length: 6 }).map((_, index) => (
-              <div key={index} className="rounded-xl border border-border bg-card p-4 shadow-sm">
-                <Skeleton className="h-6 w-2/3" />
-                <Skeleton className="mt-3 h-4 w-full" />
-                <Skeleton className="mt-2 h-4 w-5/6" />
-                <div className="mt-4 grid grid-cols-2 gap-3">
-                  <Skeleton className="h-14 w-full" />
-                  <Skeleton className="h-14 w-full" />
-                </div>
-              </div>
-            ))
-          ) : (
-            data.map((person, index) => (
-              <article key={`${person.id}-${index}`} className="rounded-xl border border-border bg-card p-4 shadow-sm">
-                <div className="space-y-3">
-                  <div>
-                    <p className="text-lg font-semibold text-foreground">
-                      {fixEncoding(person['Prénom Nom'] || person['Nom Prénom']) || t('table.nomPrenom')}
-                    </p>
-                    <p className="mt-1 text-sm text-muted-foreground">
-                      {fixEncoding(person['Type Personne']) || fixEncoding(person['Activité Professionnelle']) || '—'}
-                    </p>
-                  </div>
-
-                  <div className="space-y-2 text-sm">
-                    <div>
-                      <span className="font-medium text-foreground">{t('table.titre')}:</span>{' '}
-                      <span className="text-muted-foreground">{fixEncoding(person['Titre']) || '—'}</span>
-                    </div>
-                    <div>
-                      <span className="font-medium text-foreground">{t('table.auteurOriginal')}:</span>{' '}
-                      <span className="text-muted-foreground">{fixEncoding(person['Auteur Original']) || '—'}</span>
-                    </div>
-                    <div>
-                      <span className="font-medium text-foreground">{t('table.biographie')}:</span>{' '}
-                      <span className="text-muted-foreground">{fixEncoding(person['Biographie']) || '—'}</span>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-3">
-                    <MobileStat label={t('table.codeLangue')} value={fixEncoding(person['Code Langue'])} />
-                    <MobileStat label={t('table.langueEcriture')} value={fixEncoding(person['Langue Écriture'])} />
-                    <MobileStat label={t('table.nbFichesBase')} value={person['Nb. Fiches Base']} />
-                    <MobileStat label={t('table.nbFichesTrouvees')} value={person['Nb. Fiches Trouvées']} />
-                    <MobileStat label={t('table.nbContribAuteurs')} value={person['Nb. Contributions Auteurs']} />
-                    <MobileStat label={t('table.nbContribTitres')} value={person['Nb. Contributions Titres']} />
-                  </div>
-                </div>
-              </article>
-            ))
-          )}
-        </div>
-
-        <div className="hidden overflow-hidden rounded-xl border border-border bg-card shadow-sm md:block">
-          <div className="overflow-x-auto">
-            <Table>
-              <TableHeader className="bg-[#382e60] text-white">
-                <TableRow className="hover:bg-[#382e60]">
-                  <TableHead className="h-12 px-6 font-semibold text-white">{t('table.auteurOriginal')}</TableHead>
-                  <TableHead className="h-12 px-6 font-semibold text-white">{t('table.titre')}</TableHead>
-                  <TableHead className="h-12 px-6 font-semibold text-white">{t('table.langueTrad')}</TableHead>
-                  <TableHead className="h-12 px-6 font-semibold text-white">{t('table.coteLivre')}</TableHead>
-                  <TableHead className="h-12 px-6 font-semibold text-white">{t('table.typeContrib')}</TableHead>
-                  <TableHead className="h-12 px-6 font-semibold text-white">{t('table.nomPrenom')}</TableHead>
-                  <TableHead className="h-12 px-6 font-semibold text-white">{t('table.codeLangue')}</TableHead>
-                  <TableHead className="h-12 px-6 font-semibold text-white">{t('table.nbFichesBase')}</TableHead>
-                  <TableHead className="h-12 px-6 font-semibold text-white">{t('table.nbFichesTrouvees')}</TableHead>
-                  <TableHead className="h-12 px-6 font-semibold text-white">{t('table.siDateDeces')}</TableHead>
-                  <TableHead className="h-12 px-6 font-semibold text-white">{t('table.siLieuDeces')}</TableHead>
-                  <TableHead className="h-12 px-6 font-semibold text-white">{t('table.nbContribAuteurs')}</TableHead>
-                  <TableHead className="h-12 px-6 font-semibold text-white">{t('table.nbContribTitres')}</TableHead>
-                  <TableHead className="h-12 px-6 font-semibold text-white">{t('table.activitePro')}</TableHead>
-                  <TableHead className="h-12 px-6 font-semibold text-white">{t('table.biographie')}</TableHead>
-                  <TableHead className="h-12 px-6 font-semibold text-white">{t('table.dateDeces')}</TableHead>
-                  <TableHead className="h-12 px-6 font-semibold text-white">{t('table.dateNaissance')}</TableHead>
-                  <TableHead className="h-12 px-6 font-semibold text-white">{t('table.lieuDeces')}</TableHead>
-                  <TableHead className="h-12 px-6 font-semibold text-white">{t('table.paysResidence')}</TableHead>
-                  <TableHead className="h-12 px-6 font-semibold text-white">{t('table.villeNaissance')}</TableHead>
-                  <TableHead className="h-12 px-6 font-semibold text-white">{t('table.anneePub')}</TableHead>
-                  <TableHead className="h-12 px-6 font-semibold text-white">{t('table.nbLanguesTrad')}</TableHead>
-                  <TableHead className="h-12 px-6 font-semibold text-white">{t('table.nbTitresOrig')}</TableHead>
-                  <TableHead className="h-12 px-6 font-semibold text-white">{t('table.nbTitresTrad')}</TableHead>
-                  <TableHead className="h-12 px-6 font-semibold text-white">{t('table.nbPaysPub')}</TableHead>
-                  <TableHead className="h-12 px-6 font-semibold text-white">{t('table.nbReedPoche')}</TableHead>
-                  <TableHead className="h-12 px-6 font-semibold text-white">{t('table.nbReedReg')}</TableHead>
-                  <TableHead className="h-12 px-6 font-semibold text-white">{t('table.nbPrix')}</TableHead>
-                  <TableHead className="h-12 px-6 font-semibold text-white">{t('table.langueEcriture')}</TableHead>
-                  <TableHead className="h-12 px-6 font-semibold text-white">{t('table.typePersonne')}</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {loading ? (
-                  Array.from({ length: pageSize }).map((_, rowIndex) => (
-                    <TableRow key={rowIndex}>
-                      {Array.from({ length: 30 }).map((_, cellIndex) => (
-                        <TableCell key={cellIndex} className="px-6 py-4">
-                          <Skeleton className="h-5 w-24" />
-                        </TableCell>
-                      ))}
-                    </TableRow>
-                  ))
-                ) : (
-                  data.map((person, index) => (
-                    <TableRow key={`${person.id}-${index}`} className="hover:bg-muted/30">
-                      <TableCell className="px-3 py-2 text-xs">{fixEncoding(person['Auteur Original'])}</TableCell>
-                      <TableCell className="px-3 py-2 text-xs">{fixEncoding(person['Titre'])}</TableCell>
-                      <TableCell className="px-3 py-2 text-xs">{fixEncoding(person['Langue Traduction'])}</TableCell>
-                      <TableCell className="px-3 py-2 text-xs">{fixEncoding(person['Cote Livre'])}</TableCell>
-                      <TableCell className="px-3 py-2 text-xs">{fixEncoding(person['Type Contribution'])}</TableCell>
-                      <TableCell className="whitespace-nowrap px-3 py-2 font-medium">
-                        <TruncatedCell text={person['Prénom Nom'] || person['Nom Prénom']} limit={20} />
-                      </TableCell>
-                      <TableCell className="px-3 py-2 text-xs">{fixEncoding(person['Code Langue'])}</TableCell>
-                      <TableCell className="px-3 py-2 text-xs">{person['Nb. Fiches Base']}</TableCell>
-                      <TableCell className="px-3 py-2 text-xs">{person['Nb. Fiches Trouvées']}</TableCell>
-                      <TableCell className="px-3 py-2 text-xs">{person['Si Date Décès']}</TableCell>
-                      <TableCell className="px-3 py-2 text-xs">{person['Si Lieu Décès']}</TableCell>
-                      <TableCell className="px-3 py-2 text-xs">{person['Nb. Contributions Auteurs']}</TableCell>
-                      <TableCell className="px-3 py-2 text-xs">{person['Nb. Contributions Titres']}</TableCell>
-                      <TableCell className="px-3 py-2 text-xs">
-                        <TruncatedCell text={fixEncoding(person['Activité Professionnelle'])} limit={15} />
-                      </TableCell>
-                      <TableCell className="max-w-[150px] px-3 py-2 text-xs truncate">
-                        <TruncatedCell text={fixEncoding(person['Biographie'])} limit={25} />
-                      </TableCell>
-                      <TableCell className="px-3 py-2 text-xs">{person['Date de Décès']}</TableCell>
-                      <TableCell className="px-3 py-2 text-xs">{person['Date de Naissance']}</TableCell>
-                      <TableCell className="px-3 py-2 text-xs">{fixEncoding(person['Lieu de Décès'])}</TableCell>
-                      <TableCell className="px-3 py-2 text-xs">{fixEncoding(person['Pays de Résidence'])}</TableCell>
-                      <TableCell className="px-3 py-2 text-xs">{fixEncoding(person['Ville de Naissance'])}</TableCell>
-                      <TableCell className="px-3 py-2 text-xs">{person['Année Publication']}</TableCell>
-                      <TableCell className="px-3 py-2 text-xs">{person['Nb. Langues Traduction']}</TableCell>
-                      <TableCell className="px-3 py-2 text-xs">{person['Nb. Titres Originaux']}</TableCell>
-                      <TableCell className="px-3 py-2 text-xs">{person['Nb. Titres Traduits']}</TableCell>
-                      <TableCell className="px-3 py-2 text-xs">{person['Nb. Pays Publication']}</TableCell>
-                      <TableCell className="px-3 py-2 text-xs">{person['Nb. Rééditions Poche']}</TableCell>
-                      <TableCell className="px-3 py-2 text-xs">{person['Nb. Rééditions Régulières']}</TableCell>
-                      <TableCell className="px-3 py-2 text-xs">{person['Nb. Prix Distinctions']}</TableCell>
-                      <TableCell className="px-3 py-2 text-xs">{fixEncoding(person['Langue Écriture'])}</TableCell>
-                      <TableCell className="px-3 py-2 text-xs">{fixEncoding(person['Type Personne'])}</TableCell>
-                    </TableRow>
-                  ))
-                )}
-              </TableBody>
-            </Table>
-          </div>
-        </div>
-
-        <Pagination className="mt-6">
-          <PaginationContent className="flex flex-wrap justify-center gap-2">
-            <PaginationItem>
-              <PaginationPrevious onClick={() => setPage((currentPage) => Math.max(1, currentPage - 1))} />
-            </PaginationItem>
-            {Array.from({ length: 5 }).map((_, index) => (
-              <PaginationItem key={index + 1}>
-                <PaginationLink
-                  onClick={() => setPage(index + 1)}
-                  isActive={page === index + 1}
-                >
-                  {index + 1}
-                </PaginationLink>
-              </PaginationItem>
-            ))}
-            <PaginationItem>
-              <PaginationNext onClick={() => setPage((currentPage) => currentPage + 1)} />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
-      </main>
-    </div>
-  )
+        <StavnetFooter
+          items={footerItems}
+          className="md:bottom-[2.2vh] md:left-[4.8vw] md:right-[4.8vw]"
+          itemClassName="md:min-h-[70px] md:text-[14px]"
+          mobileGridClassName="grid-cols-2 sm:grid-cols-4"
+          desktopMode="compact"
+        />
+      </div>
+    </main>
+  );
 }

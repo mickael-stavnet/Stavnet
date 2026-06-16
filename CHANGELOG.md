@@ -32,6 +32,8 @@
 
 # 16-06-2026
 
+- 16:25 - Activation de la navigation directe au clic sur les tuiles principales du menu `/[locale]/menu` : `Ouvrages` ouvre désormais `/[locale]/books` et `Personnes` ouvre `/[locale]/persons`, en plus du comportement de survol déjà présent.
+- 16:18 - Remplacement complet de la page `/[locale]/persons` par une fiche auteur inspirée de la maquette FileMaker, avec header STAVNET, onglets supérieurs fonctionnels, panneau biographique, bloc bibliographique rempli par des données factices et nouvelles traductions `PersonFilePage` dans les six langues du projet.
 - 15:49 - Renforcement ciblé du responsive de `/[locale]/books` avec onglets défilants sur mobile, remplacement des tableaux bibliographiques par des cartes lisibles sur petit écran, passage des blocs de métadonnées en grille souple et allègement du footer mobile en deux colonnes.
 - 15:43 - Augmentation supplémentaire de la largeur de l’aside interne gauche sur `/[locale]/books` pour donner encore un peu plus d’espace au bloc latéral de langue et de traduction.
 - 15:42 - Élargissement de l’aside interne gauche dans la grande card de `/[locale]/books` afin de redonner de l’air au bloc `Translation / French` sans casser l’équilibre général de la fiche.

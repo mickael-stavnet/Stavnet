@@ -241,6 +241,69 @@
       "move": "Mover"
     }
   },
+  "PersonFilePage": {
+    "header": {
+      "cardTitle": "Archivo personas",
+      "title": "Literatura israelí",
+      "subtitle": "Base de datos bibliográfica y biográfica"
+    },
+    "tabs": {
+      "authorCard": "Ficha autor",
+      "originalTitles": "Títulos originales",
+      "translatedTitles": "Títulos traducidos",
+      "authorArticles": "Artículos del autor",
+      "authorPublications": "Publicaciones sobre el autor",
+      "pressCritiques": "Críticas de prensa",
+      "awards": "Premios y distinciones",
+      "statistics": "Estadísticas"
+    },
+    "side": {
+      "authorCard": "Ficha autor",
+      "contribution": "Contribución"
+    },
+    "fields": {
+      "person": "Persona: apellido, nombre",
+      "birth": "Fecha y lugar de nacimiento",
+      "activity": "Actividad profesional",
+      "synonyms": "Sinónimos",
+      "biography": "Biografía en francés"
+    },
+    "bibliography": {
+      "title": "Bibliografía",
+      "originalTitles": "Títulos originales",
+      "translations": "Traducciones",
+      "publicationLanguages": "Lenguas de publicación",
+      "columns": {
+        "type": "Orig./Trad.",
+        "language": "Lenguas de publicación",
+        "title": "Títulos: original o traducción",
+        "year": "Año",
+        "issue": "Edición"
+      }
+    },
+    "content": {
+      "originalTitles": "Títulos originales",
+      "translatedTitles": "Títulos traducidos",
+      "authorArticles": "Artículos del autor",
+      "authorPublications": "Publicaciones sobre el autor",
+      "pressCritiques": "Críticas de prensa",
+      "awards": "Premios y distinciones",
+      "statistics": "Estadísticas"
+    },
+    "right": {
+      "personCardsFound": "Fichas de personas",
+      "databaseContains": "La base contiene"
+    },
+    "footer": {
+      "back": "Volver",
+      "menu": "Menú",
+      "close": "Cerrar",
+      "list": "Lista",
+      "search": "Buscar",
+      "help": "Ayuda",
+      "move": "Navegar"
+    }
+  },
   "Navbar": {
     "search": "Buscar",
     "menu": "Menú",
