@@ -8,12 +8,12 @@ import { StavnetFooter } from "@/components/stavnet/footer";
 export default function HomeMenuPage() {
   const t = useTranslations("HomeMenu");
   const footerItems = [
-    { key: "search", icon: "/icons/icons-nav/back.png", href: "/home" as const, label: t("actions.search") },
+    { key: "search", icon: "/icons/icons-nav/rechercher.png", href: "/search" as const, label: t("actions.search") },
     { key: "menu", icon: "/icons/icons-nav/menu.png", href: "/menu" as const, label: t("actions.menu") },
-    { key: "video", icon: "/icons/icons-nav/cart-2.png", href: "/home" as const, label: t("actions.video") },
+    { key: "video", icon: "/icons/icons-nav/video.png", href: "/home" as const, label: t("actions.video") },
     { key: "diaporama", icon: "/icons/icons-nav/diapo.png", href: "/home" as const, label: t("actions.diaporama") },
     { key: "sound", icon: "/icons/icons-nav/sound.png", href: "/home" as const, label: t("actions.sound") },
-    { key: "introduction", icon: "/icons/icons-nav/welcome.png", href: "/home" as const, label: t("actions.introduction") },
+    { key: "introduction", icon: "/icons/icons-nav/introduction.png", href: "/home" as const, label: t("actions.introduction") },
     { key: "help", icon: "/icons/icons-nav/help.png", href: "/home" as const, label: t("actions.help") },
     { key: "next", icon: "/icons/icons-nav/next.png", href: "/" as const, label: t("actions.next") },
     { key: "close", icon: "/icons/icons-nav/close.png", href: "/home" as const, label: t("actions.close") },

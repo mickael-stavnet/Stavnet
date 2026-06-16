@@ -6,7 +6,6 @@ import { useTranslations, useLocale } from 'next-intl';
 import { useRouter, usePathname } from '@/i18n/routing';
 import { cn } from "@/lib/utils";
 
-// Drapeaux minimalistes en SVG
 const Flags = {
   fr: () => <svg viewBox="0 0 3 2" className="h-4 w-6 rounded-sm"><path fill="#002654" d="M0 0h1v2H0z"/><path fill="#fff" d="M1 0h1v2H1z"/><path fill="#ce1126" d="M2 0h1v2H2z"/></svg>,
   en: () => <svg viewBox="0 0 3 2" className="h-4 w-6 rounded-sm"><path fill="#012169" d="M0 0h3v2H0z"/><path fill="#fff" d="M0 0h3v1H0zM1 0h1v2H1z"/><path fill="#C8102E" d="M1 0h1v1H0v1h1zM2 1h1v1H2zM0 1h1v1H0z"/></svg>,

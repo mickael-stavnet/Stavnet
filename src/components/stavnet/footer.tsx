@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 
 interface StavnetFooterItem {
   key: string;
-  href: "/" | "/home" | "/menu" | "/orgs" | "/persons";
+  href: "/" | "/home" | "/menu" | "/orgs" | "/persons" | "/search";
   icon: string;
   label: string;
 }
@@ -39,17 +39,17 @@ export function StavnetFooter({
         <Link
           href={items[0].href}
           className={cn(
-            "flex min-h-[72px] flex-col items-start justify-end text-black md:col-start-1 md:row-start-1",
+            "flex min-h-[80px] flex-col items-start justify-end text-black md:col-start-1 md:row-start-1",
             itemClassName,
           )}
         >
-          <div className="flex h-[42px] w-[58px] items-center justify-center">
+          <div className="flex h-[48px] w-[68px] items-center justify-center">
             <Image
               src={items[0].icon}
               alt=""
-              width={58}
-              height={42}
-              className="max-h-[42px] w-auto object-contain"
+              width={68}
+              height={48}
+              className="max-h-[48px] w-auto object-contain"
             />
           </div>
           <span className="mt-[8px] block min-h-[16px] text-[15px] font-bold leading-none">
@@ -64,17 +64,17 @@ export function StavnetFooter({
         <Link
           href={items[1].href}
           className={cn(
-            "flex min-h-[72px] flex-col items-end justify-end text-black md:col-start-3 md:row-start-1",
+            "flex min-h-[80px] flex-col items-end justify-end text-black md:col-start-3 md:row-start-1",
             itemClassName,
           )}
         >
-          <div className="flex h-[42px] w-[58px] items-center justify-center">
+          <div className="flex h-[48px] w-[68px] items-center justify-center">
             <Image
               src={items[1].icon}
               alt=""
-              width={58}
-              height={42}
-              className="max-h-[42px] w-auto object-contain"
+              width={68}
+              height={48}
+              className="max-h-[48px] w-auto object-contain"
             />
           </div>
           <span className="mt-[8px] block min-h-[16px] text-[15px] font-bold leading-none">
@@ -102,17 +102,17 @@ export function StavnetFooter({
           key={item.key}
           href={item.href}
           className={cn(
-            "flex min-h-[74px] flex-col items-center justify-end text-center text-[15px] font-bold leading-none text-black",
+            "flex min-h-[82px] flex-col items-center justify-end text-center text-[15px] font-bold leading-none text-black",
             itemClassName,
           )}
         >
-          <div className="flex h-[42px] w-[58px] items-center justify-center">
+          <div className="flex h-[48px] w-[68px] items-center justify-center">
             <Image
               src={item.icon}
               alt=""
-              width={58}
-              height={42}
-              className="max-h-[42px] w-auto object-contain"
+              width={68}
+              height={48}
+              className="max-h-[48px] w-auto object-contain"
             />
           </div>
           <span className="mt-[8px] block min-h-[16px]">{item.label}</span>

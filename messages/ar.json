@@ -43,6 +43,22 @@
       "rightLine1": "لإجراء بحث دقيق،",
       "rightLine2": "انقر على الأيقونة."
     },
+    "search": {
+      "label": "البحث في القائمة",
+      "introLine1": "لإجراء بحث دقيق،",
+      "introLine2": "استخدم الحقل أو الاختصار.",
+      "placeholder": "ابحث في القائمة...",
+      "shortcut": "Ctrl K / Cmd K",
+      "dialogTitle": "بحث",
+      "dialogDescription": "ابحث في القائمة والأقسام والتنقلات المتاحة.",
+      "dialogPlaceholder": "اكتب قسمًا أو عنصرًا أو وجهة...",
+      "empty": "لم يتم العثور على نتائج.",
+      "groups": {
+        "consultation": "الاستشارة",
+        "shortcuts": "وصول سريع",
+        "navigation": "التنقل"
+      }
+    },
     "columns": {
       "books": {
         "title": "المؤلفات",
@@ -104,6 +120,54 @@
       "diaporama": "عرض شرائح",
       "sound": "صوت",
       "introduction": "مقدمة",
+      "help": "مساعدة"
+    }
+  },
+  "SearchPage": {
+    "header": {
+      "cardTitle": "بحث",
+      "title": "الأدب الإسرائيلي",
+      "subtitle": "قاعدة بيانات ببليوغرافية وبيوغرافية"
+    },
+    "info": {
+      "modeLine1": "أنت في وضع البحث",
+      "modeLine2": "بالأبجدية اللاتينية.",
+      "otherAlphabetLine1": "إذا كنت ترغب في إجراء بحث",
+      "otherAlphabetLine2": "بأبجدية أخرى:",
+      "otherAlphabetLine3": "العبرية، العربية، السيريلية، الصينية...",
+      "clickHere": "انقر هنا",
+      "languageLine1": "للبحث حسب",
+      "languageLine2": "\" اللغة \"",
+      "languageLine3": "يقترح الحقل المقابل",
+      "languageLine4": "قائمة لغات النشر",
+      "languageLine5": "الموجودة في القاعدة.",
+      "themeLine1": "للبحث حسب",
+      "themeLine2": "\" الموضوع \"",
+      "themeLine3": "يقترح الحقل المقابل",
+      "themeLine4": "قائمة الموضوعات الموجودة في القاعدة."
+    },
+    "labels": {
+      "title": "العنوان",
+      "personDescription": "شخص: مؤلف، مؤلف مشارك، مدير عمل، مترجم، رسام، كاتب مقدمة...",
+      "lastName": "الاسم العائلي",
+      "firstName": "الاسم الأول",
+      "organizationDescription": "هيئة: ناشر، موزع، مكتبة، مكتبة بيع، موقع إلكتروني...",
+      "theme": "الموضوع",
+      "publicationLanguage": "لغة النشر",
+      "year": "السنة",
+      "generalSearch": "بحث عام (الملخص وحقول أخرى)"
+    },
+    "actions": {
+      "otherAlphabets": "أبجديات أخرى",
+      "validate": "اعتماد البحث"
+    },
+    "defaults": {
+      "title": "مختارات"
+    },
+    "footer": {
+      "back": "رجوع",
+      "menu": "القائمة",
+      "quit": "خروج",
       "help": "مساعدة"
     }
   },

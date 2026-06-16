@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Search, X } from "lucide-react";
+import { Search } from "lucide-react";
 import { Link, useRouter } from '@/i18n/routing';
 import { useTranslations } from 'next-intl';
 import dynamic from "next/dynamic";
@@ -44,34 +44,44 @@ export function Navbar() {
   return (
     <>
       <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container flex h-14 max-w-7xl items-center justify-between mx-auto px-4 md:px-8">
-          <div className="flex items-center gap-8">
-            <Link href="/" className="font-bold text-[#1e1e1e] tracking-tight uppercase">
+        <div className="container mx-auto flex max-w-7xl flex-col gap-3 px-4 py-3 md:flex-row md:items-center md:justify-between md:px-8">
+          <div className="flex items-center justify-between gap-4 md:min-w-0 md:flex-1">
+            <Link href="/" className="shrink-0 font-bold uppercase tracking-tight text-[#1e1e1e]">
               STAVNET
             </Link>
-            <nav className="flex items-center gap-6 text-sm font-medium">
+            <button
+              onClick={() => setOpen(true)}
+              className="flex h-11 min-w-0 items-center gap-2 rounded-md border bg-muted/50 px-3 text-sm text-muted-foreground hover:bg-muted md:hidden"
+            >
+              <Search className="h-4 w-4 shrink-0" />
+              <span className="truncate">Search...</span>
+            </button>
+          </div>
+
+          <div className="flex flex-col gap-3 md:flex-row md:items-center md:gap-4">
+            <nav className="flex items-center gap-2 overflow-x-auto pb-1 text-sm font-medium md:gap-6 md:pb-0">
               {NAV_ITEMS.map((item) => (
                 <Link
                   key={item.label}
                   href={item.href}
-                  className="transition-colors hover:text-foreground/80 text-foreground/60"
+                  className="min-h-11 shrink-0 rounded-md px-3 py-2 text-foreground/60 transition-colors hover:bg-muted/70 hover:text-foreground/80"
                 >
                   {item.label}
                 </Link>
               ))}
             </nav>
-          </div>
 
-          <button
-            onClick={() => setOpen(true)}
-            className="flex items-center gap-2 px-3 py-1.5 text-sm border rounded-md bg-muted/50 hover:bg-muted text-muted-foreground w-48"
-          >
-            <Search className="h-4 w-4" />
-            <span>Search...</span>
-            <kbd className="pointer-events-none ml-auto hidden h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100 sm:flex">
-              <span className="text-xs">Ctrl</span>K
-            </kbd>
-          </button>
+            <button
+              onClick={() => setOpen(true)}
+              className="hidden h-11 items-center gap-2 rounded-md border bg-muted/50 px-3 text-sm text-muted-foreground hover:bg-muted md:flex md:w-48"
+            >
+              <Search className="h-4 w-4 shrink-0" />
+              <span>Search...</span>
+              <kbd className="pointer-events-none ml-auto hidden h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100 lg:flex">
+                <span className="text-xs">Ctrl</span>K
+              </kbd>
+            </button>
+          </div>
         </div>
       </header>
 

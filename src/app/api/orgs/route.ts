@@ -20,8 +20,6 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 
   const { data, error } = await query;
 
-  console.log('Supabase query result:', { data, error, range: { from, to } });
-
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }

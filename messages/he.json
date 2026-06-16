@@ -43,6 +43,22 @@
       "rightLine1": "כדי לבצע חיפוש מדויק,",
       "rightLine2": "לחץ על הסמל."
     },
+    "search": {
+      "label": "חיפוש בתפריט",
+      "introLine1": "כדי לבצע חיפוש מדויק,",
+      "introLine2": "השתמש בשדה או בקיצור.",
+      "placeholder": "חפש בתפריט...",
+      "shortcut": "Ctrl K / Cmd K",
+      "dialogTitle": "חיפוש",
+      "dialogDescription": "חפש בתפריט, בקטעים ובניווט הזמין.",
+      "dialogPlaceholder": "הקלד קטע, פריט או יעד...",
+      "empty": "לא נמצאו תוצאות.",
+      "groups": {
+        "consultation": "עיון",
+        "shortcuts": "גישה מהירה",
+        "navigation": "ניווט"
+      }
+    },
     "columns": {
       "books": {
         "title": "ספרים",
@@ -104,6 +120,54 @@
       "diaporama": "מצגת",
       "sound": "קול",
       "introduction": "הקדמה",
+      "help": "עזרה"
+    }
+  },
+  "SearchPage": {
+    "header": {
+      "cardTitle": "חיפוש",
+      "title": "ספרות ישראלית",
+      "subtitle": "מאגר ביבליוגרפי וביוגרפי"
+    },
+    "info": {
+      "modeLine1": "אתם נמצאים במצב חיפוש",
+      "modeLine2": "באלפבית לטיני.",
+      "otherAlphabetLine1": "אם ברצונכם לבצע חיפוש",
+      "otherAlphabetLine2": "באלפבית אחר:",
+      "otherAlphabetLine3": "עברית, ערבית, קירילית, סינית...",
+      "clickHere": "לחצו כאן",
+      "languageLine1": "לחיפוש לפי",
+      "languageLine2": "\" שפה \"",
+      "languageLine3": "השדה המתאים מציע",
+      "languageLine4": "את רשימת שפות הפרסום",
+      "languageLine5": "הקיימות במאגר.",
+      "themeLine1": "לחיפוש לפי",
+      "themeLine2": "\" נושא \"",
+      "themeLine3": "השדה המתאים מציע",
+      "themeLine4": "את רשימת הנושאים הקיימים במאגר."
+    },
+    "labels": {
+      "title": "כותרת",
+      "personDescription": "אדם: מחבר, מחבר שותף, עורך, מתרגם, מאייר, כותב הקדמה...",
+      "lastName": "שם משפחה",
+      "firstName": "שם פרטי",
+      "organizationDescription": "ארגון: הוצאה לאור, מפיץ, ספרייה, חנות ספרים, אתר אינטרנט...",
+      "theme": "נושא",
+      "publicationLanguage": "שפת פרסום",
+      "year": "שנה",
+      "generalSearch": "חיפוש כללי (תקציר ושדות נוספים)"
+    },
+    "actions": {
+      "otherAlphabets": "אלפביתים אחרים",
+      "validate": "אשרו את החיפוש"
+    },
+    "defaults": {
+      "title": "אנתולוגיה"
+    },
+    "footer": {
+      "back": "חזרה",
+      "menu": "תפריט",
+      "quit": "יציאה",
       "help": "עזרה"
     }
   },

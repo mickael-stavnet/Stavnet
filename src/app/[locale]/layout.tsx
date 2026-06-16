@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Inter } from "next/font/google";
 import "@/styles/globals.css";
 import { cn } from "@/lib/utils";
-import Image from "next/image";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 import { routing } from "@/i18n/routing";
@@ -30,13 +29,15 @@ interface RootLayoutProps {
   params: Promise<{ locale: string }>;
 }
 
+type AppLocale = (typeof routing.locales)[number];
+
 export default async function RootLayout({
   children,
   params,
 }: RootLayoutProps) {
   const { locale } = await params;
 
-  if (!routing.locales.includes(locale as any)) {
+  if (!routing.locales.includes(locale as AppLocale)) {
     notFound();
   }
 

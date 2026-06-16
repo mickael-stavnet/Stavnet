@@ -1,9 +1,10 @@
 "use client";
 
+import * as React from "react";
 import { Command } from "@/components/ui/command";
-import dynamic from "next/dynamic";
 
-// On utilise le composant Command de base, mais encapsulé dans un wrapper client
-export default function CommandWrapper(props: any) {
+export default function CommandWrapper(
+  props: React.ComponentProps<typeof Command>,
+) {
   return <Command {...props} />;
 }

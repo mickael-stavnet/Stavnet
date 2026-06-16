@@ -43,6 +43,22 @@
       "rightLine1": "Para realizar una búsqueda precisa,",
       "rightLine2": "haga clic en el icono."
     },
+    "search": {
+      "label": "Buscar en el menú",
+      "introLine1": "Para realizar una búsqueda precisa,",
+      "introLine2": "use el campo o el atajo.",
+      "placeholder": "Buscar en el menú...",
+      "shortcut": "Ctrl K / Cmd K",
+      "dialogTitle": "Búsqueda",
+      "dialogDescription": "Busque en el menú, las secciones y la navegación disponible.",
+      "dialogPlaceholder": "Escriba una sección, un elemento o un destino...",
+      "empty": "No se encontró ningún resultado.",
+      "groups": {
+        "consultation": "Consulta",
+        "shortcuts": "Accesos rápidos",
+        "navigation": "Navegación"
+      }
+    },
     "columns": {
       "books": {
         "title": "Obras",
@@ -104,6 +120,54 @@
       "diaporama": "Diapositivas",
       "sound": "Sonido",
       "introduction": "Introducción",
+      "help": "Ayuda"
+    }
+  },
+  "SearchPage": {
+    "header": {
+      "cardTitle": "Buscar",
+      "title": "Literatura israelí",
+      "subtitle": "Base de datos bibliográfica y biográfica"
+    },
+    "info": {
+      "modeLine1": "Está en modo de búsqueda",
+      "modeLine2": "en alfabeto latino.",
+      "otherAlphabetLine1": "Si desea realizar una búsqueda",
+      "otherAlphabetLine2": "en otro alfabeto:",
+      "otherAlphabetLine3": "hebreo, árabe, cirílico, chino...",
+      "clickHere": "haga clic aquí",
+      "languageLine1": "Para una búsqueda por",
+      "languageLine2": "\" Idioma \"",
+      "languageLine3": "el campo correspondiente ofrece",
+      "languageLine4": "la lista de idiomas de publicación",
+      "languageLine5": "presentes en la base.",
+      "themeLine1": "Para una búsqueda por",
+      "themeLine2": "\" Tema \"",
+      "themeLine3": "el campo correspondiente ofrece",
+      "themeLine4": "la lista de temas presentes en la base."
+    },
+    "labels": {
+      "title": "Título",
+      "personDescription": "Persona: Autor, Coautor, Director de obra, Traductor, Ilustrador, Prologuista...",
+      "lastName": "Apellido",
+      "firstName": "Nombre",
+      "organizationDescription": "Organismo: Editor, Difusor, Biblioteca, Librería, Sitio web...",
+      "theme": "Tema",
+      "publicationLanguage": "Idioma de publicación",
+      "year": "Año",
+      "generalSearch": "Búsqueda general (Resumen y otros campos)"
+    },
+    "actions": {
+      "otherAlphabets": "Otros alfabetos",
+      "validate": "Validar la búsqueda"
+    },
+    "defaults": {
+      "title": "antología"
+    },
+    "footer": {
+      "back": "Volver",
+      "menu": "Menú",
+      "quit": "Salir",
       "help": "Ayuda"
     }
   },

@@ -43,6 +43,22 @@
       "rightLine1": "To perform a precise search,",
       "rightLine2": "click the icon."
     },
+    "search": {
+      "label": "Search in the menu",
+      "introLine1": "To perform a precise search,",
+      "introLine2": "use the field or shortcut.",
+      "placeholder": "Search the menu...",
+      "shortcut": "Ctrl K / Cmd K",
+      "dialogTitle": "Search",
+      "dialogDescription": "Search the menu, sections and available navigation.",
+      "dialogPlaceholder": "Type a section, item or destination...",
+      "empty": "No result found.",
+      "groups": {
+        "consultation": "Consultation",
+        "shortcuts": "Quick access",
+        "navigation": "Navigation"
+      }
+    },
     "columns": {
       "books": {
         "title": "Books",
@@ -104,6 +120,54 @@
       "diaporama": "Diaporama",
       "sound": "Sound",
       "introduction": "Introduction",
+      "help": "Help"
+    }
+  },
+  "SearchPage": {
+    "header": {
+      "cardTitle": "Search",
+      "title": "Israeli literature",
+      "subtitle": "Bibliographic and biographical database"
+    },
+    "info": {
+      "modeLine1": "You are currently searching",
+      "modeLine2": "in the Latin alphabet.",
+      "otherAlphabetLine1": "If you would like to search",
+      "otherAlphabetLine2": "in another alphabet:",
+      "otherAlphabetLine3": "Hebrew, Arabic, Cyrillic, Chinese...",
+      "clickHere": "click here",
+      "languageLine1": "For a search by",
+      "languageLine2": "\" Language \"",
+      "languageLine3": "the corresponding field offers",
+      "languageLine4": "the list of publication languages",
+      "languageLine5": "available in the database.",
+      "themeLine1": "For a search by",
+      "themeLine2": "\" Theme \"",
+      "themeLine3": "the corresponding field offers",
+      "themeLine4": "the list of themes available in the database."
+    },
+    "labels": {
+      "title": "Title",
+      "personDescription": "Person: Author, Co-author, Editor, Translator, Illustrator, Preface writer...",
+      "lastName": "Last name",
+      "firstName": "First name",
+      "organizationDescription": "Organization: Publisher, Distributor, Library, Bookstore, Website...",
+      "theme": "Theme",
+      "publicationLanguage": "Publication language",
+      "year": "Year",
+      "generalSearch": "General search (Summary and other fields)"
+    },
+    "actions": {
+      "otherAlphabets": "Other alphabets",
+      "validate": "Validate search"
+    },
+    "defaults": {
+      "title": "anthology"
+    },
+    "footer": {
+      "back": "Back",
+      "menu": "Menu",
+      "quit": "Exit",
       "help": "Help"
     }
   },

@@ -17,7 +17,6 @@ import {
 } from "@/components/ui/input-group"
 import { SearchIcon, CheckIcon } from "lucide-react"
 
-// Retour aux versions primitives sans les logs ni les vérifications de montage
 function Command({
   className,
   ...props

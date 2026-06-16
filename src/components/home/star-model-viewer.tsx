@@ -23,12 +23,6 @@ export function StarModelViewer() {
     renderer.setClearColor(0x000000, 0);
     renderer.domElement.className = "h-full w-full";
     container.appendChild(renderer.domElement);
-    console.log("[DEBUG LOG]: star viewer initialized " + JSON.stringify({
-      containerWidth: container.clientWidth,
-      containerHeight: container.clientHeight,
-      devicePixelRatio: window.devicePixelRatio,
-      rendererPixelRatio: renderer.getPixelRatio(),
-    }));
 
     const ambientLight = new THREE.AmbientLight(0xffffff, 1.4);
     const keyLight = new THREE.DirectionalLight(0xffffff, 2.1);
@@ -46,8 +40,6 @@ export function StarModelViewer() {
 
     let loadedModel: THREE.Object3D | null = null;
     let frameId = 0;
-    let frameCount = 0;
-
     const loader = new GLTFLoader();
     loader.load("/models/star.glb", (gltf) => {
       loadedModel = gltf.scene;
@@ -61,32 +53,10 @@ export function StarModelViewer() {
       modelGroup.add(loadedModel);
       const scaledBox = new THREE.Box3().setFromObject(modelGroup);
       const scaledSize = scaledBox.getSize(new THREE.Vector3());
-      const scaledCenter = scaledBox.getCenter(new THREE.Vector3());
       const maxDimension = Math.max(scaledSize.x, scaledSize.y, scaledSize.z) || 1;
       const distance = maxDimension / (2 * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)));
       camera.position.set(0, maxDimension * 0.02, distance * 0.78);
       camera.lookAt(0, 0, 0);
-      console.log("[DEBUG LOG]: star model loaded " + JSON.stringify({
-        originalCenter: center.toArray(),
-        originalSize: size.toArray(),
-        largestAxis,
-        scale: loadedModel.scale.x,
-        pivotPosition: pivotGroup.position.toArray(),
-        modelRotationYDegrees: THREE.MathUtils.radToDeg(modelGroup.rotation.y),
-        scaledCenter: scaledCenter.toArray(),
-        scaledSize: scaledSize.toArray(),
-        maxDimension,
-        cameraPosition: camera.position.toArray(),
-        cameraFov: camera.fov,
-      }));
-    }, (event) => {
-      console.log("[DEBUG LOG]: star model loading progress " + JSON.stringify({
-        loaded: event.loaded,
-        total: event.total,
-        percent: event.total ? Math.round((event.loaded / event.total) * 100) : null,
-      }));
-    }, (error) => {
-      console.error("[DEBUG LOG]: star model loading error", error);
     });
 
     const resize = () => {
@@ -98,12 +68,6 @@ export function StarModelViewer() {
       camera.aspect = width / height;
       camera.updateProjectionMatrix();
       renderer.setSize(width, height, false);
-      console.log("[DEBUG LOG]: star viewer resized " + JSON.stringify({
-        width,
-        height,
-        aspect: camera.aspect,
-        cameraPosition: camera.position.toArray(),
-      }));
     };
 
     const resizeObserver = new ResizeObserver(resize);
@@ -112,15 +76,7 @@ export function StarModelViewer() {
 
     const render = () => {
       frameId = window.requestAnimationFrame(render);
-      frameCount += 1;
       modelGroup.rotation.y += 0.001;
-      if (frameCount % 240 === 0) {
-        console.log("[DEBUG LOG]: star model rotation " + JSON.stringify({
-          frameCount,
-          rotationYDegrees: THREE.MathUtils.radToDeg(modelGroup.rotation.y),
-          pivotPosition: pivotGroup.position.toArray(),
-        }));
-      }
       renderer.render(scene, camera);
     };
     render();

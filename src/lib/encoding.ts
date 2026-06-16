@@ -3,7 +3,7 @@ export function fixEncoding(text: string | null | number): string {
   const str = String(text);
   try {
     return decodeURIComponent(escape(str));
-  } catch (e) {
+  } catch {
     return str
       .replace(/[\uFFFD\uFFFD]/g, "é")
       .replace(/Ma.ariv/g, "Ma'ariv")

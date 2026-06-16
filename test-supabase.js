@@ -1,4 +1,3 @@
-import { createClient } from '@supabase/supabase-js';
 import * as dotenv from 'dotenv';
 import { resolve } from 'path';
 
@@ -17,7 +16,6 @@ async function testConnection() {
     process.exit(1);
   }
 
-  // Utiliser la fonction fetch native sans Realtime pour éviter les problèmes de WebSocket dans Node.js
   try {
     const response = await fetch(`${supabaseUrl}/rest/v1/data-organism`, {
       method: 'GET',

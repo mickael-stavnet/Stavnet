@@ -43,6 +43,22 @@
       "rightLine1": "Pour effectuer une recherche précise,",
       "rightLine2": "cliquez sur l'icône."
     },
+    "search": {
+      "label": "Rechercher dans le menu",
+      "introLine1": "Pour effectuer une recherche précise,",
+      "introLine2": "utilisez le champ ou le raccourci.",
+      "placeholder": "Rechercher dans le menu...",
+      "shortcut": "Ctrl K / Cmd K",
+      "dialogTitle": "Recherche",
+      "dialogDescription": "Recherchez dans le menu, les sections et la navigation disponible.",
+      "dialogPlaceholder": "Tapez une section, un item ou une destination...",
+      "empty": "Aucun résultat trouvé.",
+      "groups": {
+        "consultation": "Consultation",
+        "shortcuts": "Accès rapides",
+        "navigation": "Navigation"
+      }
+    },
     "columns": {
       "books": {
         "title": "Ouvrages",
@@ -104,6 +120,54 @@
       "diaporama": "Diaporama",
       "sound": "Son",
       "introduction": "Introduction",
+      "help": "Aide"
+    }
+  },
+  "SearchPage": {
+    "header": {
+      "cardTitle": "Rechercher",
+      "title": "Littérature israélienne",
+      "subtitle": "Base de données bibliographiques et biographiques"
+    },
+    "info": {
+      "modeLine1": "Vous êtes en mode recherche",
+      "modeLine2": "en alphabet latin.",
+      "otherAlphabetLine1": "Si vous désirez effectuer une",
+      "otherAlphabetLine2": "recherche dans un autre alphabet :",
+      "otherAlphabetLine3": "hébreu, arabe, cyrillique, chinois...",
+      "clickHere": "cliquez sur",
+      "languageLine1": "Pour une recherche par",
+      "languageLine2": "“ Langue “",
+      "languageLine3": "le champ correspondant vous",
+      "languageLine4": "propose la liste des langues de",
+      "languageLine5": "parution qui se trouvent dans la base.",
+      "themeLine1": "Pour une recherche par",
+      "themeLine2": "“ Thème “",
+      "themeLine3": "le champ correspondant",
+      "themeLine4": "vous propose la liste des thèmes qui se trouvent dans la base."
+    },
+    "labels": {
+      "title": "Titre",
+      "personDescription": "Personne : Auteur, Co-auteur, Directeur d’ouvrage, Traducteur, illustrateur, Préfacier...",
+      "lastName": "Nom",
+      "firstName": "Prénom",
+      "organizationDescription": "Organisme : Editeur, Diffuseur, Bibliothèque, Librairie, Site Internet...",
+      "theme": "Thème",
+      "publicationLanguage": "Langue de parution",
+      "year": "Année",
+      "generalSearch": "Recherche générale (Résumé et autres champs)"
+    },
+    "actions": {
+      "otherAlphabets": "Autres alphabet",
+      "validate": "Validez la recherche"
+    },
+    "defaults": {
+      "title": "anthologie"
+    },
+    "footer": {
+      "back": "Retour",
+      "menu": "Menu",
+      "quit": "Quitter",
       "help": "Aide"
     }
   },
