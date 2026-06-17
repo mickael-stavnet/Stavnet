@@ -7,6 +7,10 @@ This version has breaking changes — APIs, conventions, and file structure may 
 # Project Rules
 
 - Use `GEMINI.md` as a source of project rules and conventions.
+- Keep `CHANGELOG.md` concise and ordered.
+- Add an entry to `CHANGELOG.md` only for major milestones: creation or replacement of a page, major visual redesign of a screen, important interaction changes, or shared architectural UI changes.
+- Do not add changelog entries for minor tweaks such as removing a label or button, changing a small spacing value, or other micro-adjustments.
+- In `CHANGELOG.md`, keep date sections in chronological order and list entries within each date from earliest time to latest time.
 - Never write comments in code files. Avoid line comments, block comments, JSX comments, and explanatory TODO comments.
 - The current priority is frontend reproduction of the original FileMaker Pro application.
 - FileMaker screenshots are the visual source of truth. Reproduce pages and interactions as closely as possible, pixel-perfect when screenshots are provided.

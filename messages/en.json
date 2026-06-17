@@ -304,6 +304,74 @@
       "move": "Navigate"
     }
   },
+  "OrganizationFilePage": {
+    "header": {
+      "cardTitle": "Organization file",
+      "title": "Israeli literature",
+      "subtitle": "Bibliographic and biographical database"
+    },
+    "tabs": {
+      "editorCard": "Publisher card",
+      "diffuser": "Diffuser",
+      "distributor": "Distributor",
+      "salesCounter": "Sales outlet",
+      "readingCommittee": "Reading committee",
+      "staff": "Staff",
+      "literaryPrizes": "Literary prizes",
+      "statistics": "Statistics"
+    },
+    "side": {
+      "editorCard": "Publisher card",
+      "collections": "Collections",
+      "creationDate": "Creation date",
+      "titlesAtCatalog": "No. of titles in catalog"
+    },
+    "fields": {
+      "editor": "Publisher",
+      "address": "Address",
+      "postalCode": "Postal code",
+      "city": "City",
+      "country": "Country",
+      "telephone": "Telephone",
+      "fax": "Fax",
+      "website": "Website",
+      "email": "E-mail",
+      "synonyms": "Synonyms",
+      "group": "Group affiliation"
+    },
+    "published": {
+      "title": "Published books",
+      "titlesCount": "Titles",
+      "authorsCount": "Authors",
+      "columns": {
+        "titles": "Titles",
+        "authors": "Authors: first name, last name",
+        "year": "Year"
+      }
+    },
+    "content": {
+      "diffuser": "Diffuser",
+      "distributor": "Distributor",
+      "salesCounter": "Sales outlet",
+      "readingCommittee": "Reading committee",
+      "staff": "Staff",
+      "literaryPrizes": "Literary prizes",
+      "statistics": "Statistics"
+    },
+    "right": {
+      "organizationCardsFound": "Organization cards found",
+      "databaseContains": "The database contains"
+    },
+    "footer": {
+      "back": "Back",
+      "menu": "Menu",
+      "close": "Close",
+      "list": "List",
+      "search": "Search",
+      "help": "Help",
+      "move": "Navigate"
+    }
+  },
   "Navbar": {
     "search": "Search",
     "menu": "Menu",

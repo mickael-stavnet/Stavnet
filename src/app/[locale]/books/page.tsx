@@ -219,8 +219,8 @@ export default function BooksPage() {
           subtitleClassName="text-[17px]"
         />
 
-        <section className="mt-6 flex flex-col gap-5 md:absolute md:left-[4.2vw] md:right-[4.2vw] md:top-[154px] md:bottom-[108px] md:grid md:grid-cols-[102px_1fr_22px] md:gap-[10px]">
-          <aside className="relative order-2 flex flex-col gap-4 md:order-1 md:pt-[24px]">
+        <section className="mt-6 flex flex-col gap-5 md:absolute md:left-[4.8vw] md:right-[4.8vw] md:top-[154px] md:bottom-[108px] md:grid md:grid-cols-[88px_1fr_42px] md:gap-[4px]">
+          <aside className="relative order-2 flex flex-col gap-4 md:order-1 md:translate-x-[42px] md:overflow-visible md:pt-[24px]">
             <div className="md:absolute md:left-[-4px] md:top-[-82px] md:flex md:w-[180px] md:items-end md:justify-between">
               <div className="translate-y-[10px] text-[17px] font-bold tracking-[0.2em] text-[#2b2578] [writing-mode:vertical-rl]">
                 {t("bookVertical")}
@@ -231,16 +231,16 @@ export default function BooksPage() {
               {missingFileByLocale[locale] ?? missingFileByLocale.en}
             </div>
 
-            <div className="hidden md:block md:h-[172px]" />
+            <div className="hidden md:block md:h-[92px]" />
 
             <button
               type="button"
-              className="hidden h-[36px] w-[88px] self-center border border-[#d1bb48] bg-[#ffea56] text-[12px] font-bold leading-[1.05] shadow-[3px_3px_5px_rgba(0,0,0,0.2)] md:block"
+              className="hidden h-[36px] w-[88px] self-start border border-[#d1bb48] bg-[#ffea56] text-[12px] font-bold leading-[1.05] shadow-[3px_3px_5px_rgba(0,0,0,0.2)] md:ml-[12px] md:block"
             >
               {t("side.expandedCard")}
             </button>
 
-            <div className="border border-[#7aa8b7] bg-[#d8dde2] md:mt-[72px]">
+            <div className="border border-[#7aa8b7] bg-[#d8dde2] md:mt-[12px] md:ml-[6px] md:w-[250px]">
               <div className="border-b border-[#7aa8b7] bg-[#fff8c8] px-2 py-[3px] text-[12px] uppercase leading-none text-black">
                 {t("summary")}
               </div>
@@ -250,14 +250,14 @@ export default function BooksPage() {
             </div>
           </aside>
 
-          <section className="order-1 min-w-0 md:order-2">
-            <nav className="flex gap-2 overflow-x-auto pb-2 md:grid md:grid-cols-[92px_repeat(7,minmax(0,1fr))] md:items-end md:gap-[6px] md:overflow-visible md:pb-0">
+          <section className="order-1 min-w-0 md:order-2 md:mx-auto md:w-full md:max-w-[930px]">
+            <nav className="flex gap-2 overflow-x-auto pb-2 md:grid md:grid-cols-[92px_repeat(7,minmax(0,1fr))] md:items-end md:gap-[10px] md:overflow-visible md:pb-0">
               {tabs.map((tabKey) => (
                 <button
                   key={tabKey}
                   type="button"
                   onClick={() => setActiveTab(tabKey)}
-                  className={`min-h-[42px] min-w-[150px] shrink-0 border border-[#d1bb48] px-3 py-[8px] text-center text-[13px] leading-[1.02] shadow-[3px_3px_5px_rgba(0,0,0,0.28)] transition-colors md:min-w-0 ${
+                  className={`min-h-[42px] min-w-[150px] shrink-0 rounded-t-[8px] border border-[#d1bb48] px-3 py-[8px] text-center text-[13px] leading-[1.02] shadow-[3px_3px_5px_rgba(0,0,0,0.28)] transition-colors md:min-w-0 ${
                     activeTab === tabKey
                       ? "bg-[#91d3ea] text-black md:min-h-[58px] md:text-[17px] md:font-bold"
                       : "bg-[#ffea56] text-black hover:bg-[#fff16f]"
@@ -268,7 +268,7 @@ export default function BooksPage() {
               ))}
             </nav>
 
-            <div className="mt-[2px] flex min-h-[420px] flex-col border border-[#7aa8b7] bg-[linear-gradient(180deg,#8ecfe8_0%,#a8dbed_100%)] shadow-[7px_7px_10px_rgba(0,0,0,0.24)] md:h-[660px] md:flex-row">
+            <div className="mt-[2px] flex min-h-[420px] flex-col rounded-[8px] border border-[#7aa8b7] bg-[linear-gradient(180deg,#8ecfe8_0%,#a8dbed_100%)] shadow-[4px_4px_8px_rgba(0,0,0,0.18)] md:h-[660px] md:flex-row">
               <aside className="border-b border-[#7aa8b7] px-3 py-4 md:w-[128px] md:border-b-0 md:border-r">
                 <p className="text-[18px] font-bold leading-tight text-[#ff1313]">{t("side.translation")}</p>
                 <p className="mt-[2px] text-[16px] font-bold leading-tight text-black">{t("side.language")}</p>
@@ -371,7 +371,7 @@ export default function BooksPage() {
           </section>
 
           <aside className="order-3 hidden items-center justify-center md:flex">
-            <div className="flex h-full flex-col items-center justify-between py-[94px] text-[14px] leading-none text-black">
+            <div className="flex h-full flex-col items-center justify-between py-[126px] text-[14px] leading-none text-black">
               <span className="[writing-mode:vertical-rl]">{t("right.bookCardsFound")}</span>
               <span className="[writing-mode:vertical-rl]">{t("right.database")}</span>
               <span className="[writing-mode:vertical-rl] text-[#ff1d1d]">{t("right.records")}</span>

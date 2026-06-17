@@ -304,6 +304,74 @@
       "move": "Naviguer"
     }
   },
+  "OrganizationFilePage": {
+    "header": {
+      "cardTitle": "Fichier organismes",
+      "title": "Littérature israélienne",
+      "subtitle": "Base de données bibliographiques et biographiques"
+    },
+    "tabs": {
+      "editorCard": "Fiche éditeur",
+      "diffuser": "Diffuseur",
+      "distributor": "Distributeur",
+      "salesCounter": "Comptoir de vente",
+      "readingCommittee": "Comité de lecture",
+      "staff": "Personnel",
+      "literaryPrizes": "Prix littéraires",
+      "statistics": "Statistiques"
+    },
+    "side": {
+      "editorCard": "Fiche éditeur",
+      "collections": "Collections",
+      "creationDate": "Date de création",
+      "titlesAtCatalog": "Nb. de titres au catalogue"
+    },
+    "fields": {
+      "editor": "Editeur",
+      "address": "Adresse",
+      "postalCode": "Code postal",
+      "city": "Ville",
+      "country": "Pays",
+      "telephone": "Téléphone",
+      "fax": "Fax",
+      "website": "Site Internet",
+      "email": "E-mail",
+      "synonyms": "Synonymes",
+      "group": "Groupe d’appartenance"
+    },
+    "published": {
+      "title": "Ouvrages publiés",
+      "titlesCount": "Titres",
+      "authorsCount": "Auteurs",
+      "columns": {
+        "titles": "Titres",
+        "authors": "Auteurs : prénom, nom",
+        "year": "Année"
+      }
+    },
+    "content": {
+      "diffuser": "Diffuseur",
+      "distributor": "Distributeur",
+      "salesCounter": "Comptoir de vente",
+      "readingCommittee": "Comité de lecture",
+      "staff": "Personnel",
+      "literaryPrizes": "Prix littéraires",
+      "statistics": "Statistiques"
+    },
+    "right": {
+      "organizationCardsFound": "Fiches organismes trouvées",
+      "databaseContains": "La base contient"
+    },
+    "footer": {
+      "back": "Retour",
+      "menu": "Menu",
+      "close": "Quitter",
+      "list": "Liste",
+      "search": "Rechercher",
+      "help": "Aide",
+      "move": "Naviguer"
+    }
+  },
   "Navbar": {
     "search": "Recherche",
     "menu": "Menu",

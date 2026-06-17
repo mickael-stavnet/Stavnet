@@ -1,251 +1,357 @@
-'use client'
+"use client";
 
-import { useDeferredValue, useEffect, useState } from 'react'
-import { useTranslations } from 'next-intl'
-import { BookOpenText, Building2, CalendarDays, Globe2, Search, Tag, Users } from 'lucide-react'
-import { Navbar } from '@/components/home/navbar'
-import { Input } from '@/components/ui/input'
-import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination'
-import { Skeleton } from '@/components/ui/skeleton'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { fixEncoding } from '@/lib/encoding'
+import Image from "next/image";
+import { useTranslations } from "next-intl";
+import { useState } from "react";
+import { StavnetFooter } from "@/components/stavnet/footer";
+import { StavnetHeader } from "@/components/stavnet/header";
 
-interface Organisme {
-  id: string
-  Organisme: string
-  Type: string | null
-  Pays: string | null
-  Date_Creation: string | null
-  Nb_Auteurs: number | null
-  Nb_Titres: number | null
-}
-
-interface OrgsResponse {
-  data?: Organisme[]
-  error?: string
-}
-
-function MobileInfo({
-  icon: Icon,
-  label,
-  value,
+function MobilePublishedCard({
+  title,
+  author,
+  year,
 }: {
-  icon: typeof Building2
-  label: string
-  value: number | string | null
+  title: string;
+  author: string;
+  year: string;
 }) {
-  if (value === null || value === '') {
-    return null
-  }
-
   return (
-    <div className="flex items-start gap-3 rounded-lg bg-muted/40 px-3 py-3">
-      <Icon className="mt-0.5 h-4 w-4 shrink-0 text-[#382e60]" />
-      <div className="min-w-0">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">{label}</p>
-        <p className="mt-1 break-words text-sm font-medium text-foreground">{value}</p>
+    <article className="rounded-[6px] border border-[#7aa8b7] bg-[#b2e0ef] p-3">
+      <div className="space-y-1">
+        <p className="text-[11px] font-bold uppercase tracking-[0.04em] text-[#07384a]">Title</p>
+        <p className="text-[13px] text-black" dir="rtl">{title || "—"}</p>
       </div>
+      <div className="mt-3 space-y-1">
+        <p className="text-[11px] font-bold uppercase tracking-[0.04em] text-[#07384a]">Author</p>
+        <p className="text-[13px] text-black">{author || "—"}</p>
+      </div>
+      <div className="mt-3 space-y-1">
+        <p className="text-[11px] font-bold uppercase tracking-[0.04em] text-[#07384a]">Year</p>
+        <p className="text-[13px] text-black">{year || "—"}</p>
+      </div>
+    </article>
+  );
+}
+
+function LabelCell({ label }: { label: string }) {
+  return (
+    <div className="border-b border-[#7aa8b7] bg-[#fff8c8] px-2 py-[3px] text-[12px] uppercase leading-none text-black">
+      {label}
     </div>
-  )
+  );
+}
+
+function FilledCell({
+  value,
+  className = "",
+}: {
+  value: string;
+  className?: string;
+}) {
+  return (
+    <div className={`flex min-h-[38px] items-center border-b border-[#7aa8b7] bg-[#a7dcee] px-2 text-[13px] text-black ${className}`}>
+      {value}
+    </div>
+  );
+}
+
+function EmptyRows({ rows }: { rows: number }) {
+  return (
+    <>
+      {Array.from({ length: rows }).map((_, index) => (
+        <div key={index} className={`min-h-[38px] border-b border-[#7aa8b7] bg-[#a7dcee] ${index === rows - 1 ? "border-b-0" : ""}`} />
+      ))}
+    </>
+  );
+}
+
+function BlankTabPanel({
+  title,
+  rows = 4,
+}: {
+  title: string;
+  rows?: number;
+}) {
+  return (
+    <section className="border border-[#7aa8b7] bg-[#a7dcee]">
+      <div className="border-b border-[#7aa8b7] bg-[#fff8c8] px-2 py-[4px] text-[12px] uppercase leading-none text-black">
+        {title}
+      </div>
+      <div className="p-[10px]">
+        <div className="border border-[#7aa8b7] bg-[#b2e0ef]">
+          {Array.from({ length: rows }).map((_, index) => (
+            <div
+              key={index}
+              className={`h-[82px] border-b border-[#7aa8b7] ${index === rows - 1 ? "border-b-0" : ""}`}
+            />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function RedMarker() {
+  return <span className="mr-2 inline-block h-[11px] w-[11px] rounded-full border-[2px] border-[#ff1d1d]" />;
 }
 
 export default function OrgsPage() {
-  const t = useTranslations('Orgs')
-  const [data, setData] = useState<Organisme[]>([])
-  const [loading, setLoading] = useState(true)
-  const [page, setPage] = useState(1)
-  const [search, setSearch] = useState('')
-  const deferredSearch = useDeferredValue(search)
-  const pageSize = 20
+  const t = useTranslations("OrganizationFilePage");
+  const tabs = [
+    "editorCard",
+    "diffuser",
+    "distributor",
+    "salesCounter",
+    "readingCommittee",
+    "staff",
+    "literaryPrizes",
+    "statistics",
+  ] as const;
+  const [activeTab, setActiveTab] = useState<(typeof tabs)[number]>("editorCard");
 
-  useEffect(() => {
-    const controller = new AbortController()
+  const sampleOrganization = {
+    name: "Eked",
+    synonym: "Eked",
+    group: "",
+    publishedStats: {
+      titles: "14",
+      authors: "10",
+    },
+    rows: [
+      ["על קו המשווה", "Ben-Zion Tomer", "1969"],
+      ["מזל דגים", "Shulamit Lapid", "1969"],
+      ["שועל בערפל", "Moshé Ben-Shaul", "1970"],
+      ["שירים חצויים", "David Avidan", "1970"],
+      ["הלך זרוע", "Israël Eliraz", "1970"],
+      ["אין אפשר לאהוב", "Naïm Araidi", "1972"],
+    ],
+  };
 
-    async function fetchData() {
-      setLoading(true)
-
-      try {
-        const response = await fetch(
-          `/api/orgs?page=${page}&search=${encodeURIComponent(deferredSearch)}`,
-          { signal: controller.signal },
-        )
-
-        if (!response.ok) {
-          setData([])
-          return
-        }
-
-        const result: OrgsResponse = await response.json()
-        setData(Array.isArray(result.data) ? result.data : [])
-      } catch (error) {
-        if (!(error instanceof DOMException && error.name === 'AbortError')) {
-          setData([])
-        }
-      } finally {
-        if (!controller.signal.aborted) {
-          setLoading(false)
-        }
-      }
-    }
-
-    void fetchData()
-
-    return () => controller.abort()
-  }, [deferredSearch, page])
+  const footerItems = [
+    { key: "back", icon: "/icons/icons-nav/back.png", href: "/home" as const, label: t("footer.back") },
+    { key: "menu", icon: "/icons/icons-nav/menu.png", href: "/menu" as const, label: t("footer.menu") },
+    { key: "close", icon: "/icons/icons-nav/close.png", href: "/" as const, label: t("footer.close") },
+    { key: "list", icon: "/icons/icons-nav/book.png", href: "/orgs" as const, label: t("footer.list") },
+    { key: "search", icon: "/icons/icons-nav/rechercher.png", href: "/search" as const, label: t("footer.search") },
+    { key: "help", icon: "/icons/icons-nav/help.png", href: "/orgs" as const, label: t("footer.help") },
+    { key: "move", icon: "/icons/icons-nav/next.png", href: "/orgs" as const, label: t("footer.move") },
+  ];
 
   return (
-    <div className="flex min-h-screen flex-col bg-background/30 backdrop-blur-[2px]">
-      <Navbar />
+    <main className="relative min-h-[100svh] overflow-x-hidden bg-[#e7f2f7] font-[Arial,Helvetica,sans-serif] text-black md:h-screen md:overflow-hidden">
+      <Image
+        src="/background/background.png"
+        alt=""
+        fill
+        priority
+        sizes="100vw"
+        className="object-cover"
+      />
 
-      <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col px-4 py-8 sm:px-6 sm:py-12 lg:px-8 lg:py-16">
-        <section className="mb-8 flex flex-col items-center gap-5 text-center sm:mb-12 sm:gap-6">
-          <h1 className="text-3xl font-bold tracking-tighter text-[#382e60] sm:text-5xl lg:text-6xl">
-            {t('title')}
-          </h1>
-          <p className="max-w-[700px] text-base leading-relaxed text-muted-foreground sm:text-lg lg:text-xl">
-            {t('description')}
-          </p>
-          <div className="relative mt-2 w-full max-w-xl">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-            <Input
-              type="search"
-              placeholder={t('searchPlaceholder')}
-              className="h-12 pl-10 focus-visible:ring-[#e6be1e]"
-              value={search}
-              onChange={(event) => {
-                setSearch(event.target.value)
-                setPage(1)
-              }}
-            />
-          </div>
+      <div className="relative z-10 mx-auto flex min-h-[100svh] w-full max-w-[1120px] flex-col px-4 pb-5 pt-4 md:h-screen md:max-w-none md:px-0 md:pb-0 md:pt-0">
+        <StavnetHeader
+          pageName={t("header.cardTitle")}
+          title={t("header.title")}
+          subtitle={t("header.subtitle")}
+          headerClassName="md:h-[146px]"
+          badgeClassName="md:h-[112px] md:w-[236px]"
+          titleBlockClassName="md:right-[4.7vw] md:left-auto md:w-[44vw]"
+          titleClassName="text-[34px] md:text-[32px]"
+          subtitleClassName="text-[17px]"
+        />
+
+        <section className="mt-6 flex flex-col gap-4 md:absolute md:left-[4.8vw] md:right-[4.8vw] md:top-[154px] md:bottom-[108px] md:grid md:grid-cols-[92px_1fr_42px] md:gap-[4px]">
+          <aside className="relative order-2 hidden flex-col gap-4 md:order-1 md:flex md:translate-x-[32px] md:overflow-visible md:pt-[26px]">
+            <div className="hidden md:block md:h-[86px]" />
+
+            <div className="border border-black bg-transparent md:ml-[10px] md:h-[130px] md:w-[128px]" />
+
+            <div className="space-y-[8px] text-center text-[14px] leading-[1.1] text-black md:ml-[10px] md:w-[128px]">
+              <p>{t("side.creationDate")}</p>
+            </div>
+
+            <button
+              type="button"
+              className="hidden h-[36px] w-[88px] self-start border border-[#d1bb48] bg-[#ffea56] text-[12px] font-bold leading-[1.05] shadow-[3px_3px_5px_rgba(0,0,0,0.2)] md:ml-[18px] md:block"
+            >
+              {t("side.collections")}
+            </button>
+
+            <div className="space-y-[8px] text-center text-[14px] leading-[1.1] text-black md:ml-[10px] md:w-[128px]">
+              <p>{t("side.titlesAtCatalog")}</p>
+            </div>
+          </aside>
+
+          <section className="order-1 min-w-0 md:order-2 md:mx-auto md:w-full md:max-w-[930px]">
+            <nav className="flex gap-2 overflow-x-auto pb-2 md:grid md:grid-cols-[96px_repeat(7,minmax(0,1fr))] md:items-end md:gap-[8px] md:overflow-visible md:pb-0">
+              {tabs.map((tabKey) => (
+                <button
+                  key={tabKey}
+                  type="button"
+                  onClick={() => setActiveTab(tabKey)}
+                  className={`min-h-[42px] min-w-[136px] shrink-0 rounded-t-[8px] border border-[#d1bb48] px-2 py-[8px] text-center text-[13px] leading-[1.02] shadow-[3px_3px_5px_rgba(0,0,0,0.28)] transition-colors md:min-w-0 ${
+                    activeTab === tabKey
+                      ? "bg-[#91d3ea] text-black md:min-h-[58px] md:text-[17px] md:font-bold"
+                      : "bg-[#ffea56] text-black hover:bg-[#fff16f]"
+                  }`}
+                >
+                  {t(`tabs.${tabKey}`)}
+                </button>
+              ))}
+            </nav>
+
+            <div className="mt-[2px] flex min-h-[540px] flex-col rounded-[8px] border border-[#7aa8b7] bg-[linear-gradient(180deg,#8ecfe8_0%,#a8dbed_100%)] shadow-[4px_4px_8px_rgba(0,0,0,0.18)] md:h-[430px] md:flex-row">
+              <aside className="border-b border-[#7aa8b7] px-3 py-4 md:w-[114px] md:border-b-0 md:border-r">
+                <p className="text-center text-[18px] font-bold leading-tight text-black">{t("side.editorCard")}</p>
+              </aside>
+
+              <div className="min-w-0 flex-1 px-[10px] py-[12px]">
+                {activeTab === "editorCard" ? (
+                  <div className="grid h-full grid-rows-[auto_auto_1fr] gap-y-[14px]">
+                    <div className="grid gap-[10px] md:grid-cols-[2fr_1fr]">
+                      <section className="border border-[#7aa8b7] bg-[#a7dcee]">
+                        <LabelCell label={t("fields.editor")} />
+                        <FilledCell value={sampleOrganization.name} className="text-[16px] font-bold text-[#07384a]" />
+                        <LabelCell label={t("fields.address")} />
+                        <FilledCell value="" />
+                        <div className="grid md:grid-cols-[96px_1fr_1fr]">
+                          <div className="border-r border-[#7aa8b7]">
+                            <LabelCell label={t("fields.postalCode")} />
+                            <FilledCell value="" className="border-b-0" />
+                          </div>
+                          <div className="border-r border-[#7aa8b7]">
+                            <LabelCell label={t("fields.city")} />
+                            <FilledCell value="" className="border-b-0" />
+                          </div>
+                          <div>
+                            <LabelCell label={t("fields.country")} />
+                            <FilledCell value="" className="border-b-0" />
+                          </div>
+                        </div>
+                        <div className="grid md:grid-cols-2">
+                          <div className="border-t border-r border-[#7aa8b7]">
+                            <LabelCell label={t("fields.telephone")} />
+                            <FilledCell value="" className="border-b-0" />
+                          </div>
+                          <div className="border-t border-[#7aa8b7]">
+                            <LabelCell label={t("fields.fax")} />
+                            <FilledCell value="" className="border-b-0" />
+                          </div>
+                        </div>
+                        <div className="grid md:grid-cols-2">
+                          <div className="border-t border-r border-[#7aa8b7]">
+                            <LabelCell label={t("fields.website")} />
+                            <FilledCell value="" className="border-b-0" />
+                          </div>
+                          <div className="border-t border-[#7aa8b7]">
+                            <LabelCell label={t("fields.email")} />
+                            <FilledCell value="" className="border-b-0" />
+                          </div>
+                        </div>
+                      </section>
+
+                      <div className="space-y-[8px]">
+                        <section className="border border-[#7aa8b7] bg-[#a7dcee]">
+                          <LabelCell label={t("fields.synonyms")} />
+                          <FilledCell value={sampleOrganization.synonym} className="text-[14px]" />
+                          <EmptyRows rows={4} />
+                        </section>
+
+                        <section className="border border-[#7aa8b7] bg-[#fff15a]">
+                          <div className="border-b border-[#7aa8b7] bg-[#fff8c8] px-2 py-[3px] text-[12px] uppercase leading-none text-black">
+                            {t("fields.group")}
+                          </div>
+                          <div className="flex min-h-[31px] items-center px-2 text-[13px] text-black">
+                            <RedMarker />
+                            {sampleOrganization.group}
+                          </div>
+                        </section>
+                      </div>
+                    </div>
+
+                    <section className="space-y-[8px]">
+                      <div className="flex flex-wrap items-center gap-x-4 gap-y-2 px-1 text-[16px] font-bold leading-none text-black">
+                        <span>{t("published.title")} :</span>
+                        <span className="text-[#ff1d1d]">{sampleOrganization.publishedStats.titles}</span>
+                        <span>{t("published.titlesCount")}</span>
+                        <span className="text-[#ff1d1d]">{sampleOrganization.publishedStats.authors}</span>
+                        <span>{t("published.authorsCount")}</span>
+                      </div>
+
+                      <div className="space-y-3 md:hidden">
+                        {sampleOrganization.rows.map((row, rowIndex) => (
+                          <MobilePublishedCard
+                            key={rowIndex}
+                            title={row[0]}
+                            author={row[1]}
+                            year={row[2]}
+                          />
+                        ))}
+                      </div>
+
+                      <section className="hidden overflow-x-auto border border-[#7aa8b7] bg-[#a7dcee] md:block">
+                        <div
+                          className="grid min-w-[620px] border-b border-[#7aa8b7] bg-[#fff8c8] text-[12px] uppercase leading-none text-black"
+                          style={{ gridTemplateColumns: "1.8fr 1fr 72px" }}
+                        >
+                          <div className="border-r border-[#7aa8b7] px-2 py-[3px]">{t("published.columns.titles")}</div>
+                          <div className="border-r border-[#7aa8b7] px-2 py-[3px]">{t("published.columns.authors")}</div>
+                          <div className="px-2 py-[3px]">{t("published.columns.year")}</div>
+                        </div>
+
+                        {sampleOrganization.rows.map((row, rowIndex) => (
+                          <div
+                            key={rowIndex}
+                            className="grid min-w-[620px]"
+                            style={{ gridTemplateColumns: "1.8fr 1fr 72px" }}
+                          >
+                            <div className="flex h-[29px] items-center justify-end border-r border-t border-[#7aa8b7] px-2 text-[13px] text-black" dir="rtl">
+                              <span className="text-right">{row[0]}</span>
+                            </div>
+                            <div className="flex h-[29px] items-center border-r border-t border-[#7aa8b7] px-2 text-[13px] text-black">
+                              {row[1]}
+                            </div>
+                            <div className="flex h-[29px] items-center border-t border-[#7aa8b7] px-2 text-[13px] text-black">
+                              {row[2]}
+                            </div>
+                          </div>
+                        ))}
+                      </section>
+                    </section>
+
+                    <div />
+                  </div>
+                ) : null}
+
+                {activeTab === "diffuser" ? <BlankTabPanel title={t("content.diffuser")} rows={4} /> : null}
+                {activeTab === "distributor" ? <BlankTabPanel title={t("content.distributor")} rows={4} /> : null}
+                {activeTab === "salesCounter" ? <BlankTabPanel title={t("content.salesCounter")} rows={4} /> : null}
+                {activeTab === "readingCommittee" ? <BlankTabPanel title={t("content.readingCommittee")} rows={4} /> : null}
+                {activeTab === "staff" ? <BlankTabPanel title={t("content.staff")} rows={4} /> : null}
+                {activeTab === "literaryPrizes" ? <BlankTabPanel title={t("content.literaryPrizes")} rows={4} /> : null}
+                {activeTab === "statistics" ? <BlankTabPanel title={t("content.statistics")} rows={4} /> : null}
+              </div>
+            </div>
+          </section>
+
+          <aside className="order-3 hidden items-center justify-center md:flex">
+            <div className="flex h-full -translate-x-[8px] flex-col items-center justify-between py-[108px] text-[14px] leading-none text-black">
+              <span className="[writing-mode:vertical-rl]">{t("right.organizationCardsFound")}</span>
+              <span className="[writing-mode:vertical-rl] text-[#ff1d1d]">1201</span>
+              <span className="[writing-mode:vertical-rl]">{t("right.databaseContains")}</span>
+              <span className="[writing-mode:vertical-rl] text-[#ff1d1d]">1202</span>
+            </div>
+          </aside>
         </section>
 
-        <div className="space-y-4 md:hidden">
-          {loading ? (
-            Array.from({ length: 6 }).map((_, index) => (
-              <div key={index} className="rounded-xl border border-border bg-card p-4 shadow-sm">
-                <Skeleton className="h-6 w-2/3" />
-                <div className="mt-4 space-y-3">
-                  <Skeleton className="h-14 w-full" />
-                  <Skeleton className="h-14 w-full" />
-                  <Skeleton className="h-14 w-full" />
-                </div>
-              </div>
-            ))
-          ) : (
-            data.map((org, index) => (
-              <article key={`${org.id}-${index}`} className="rounded-xl border border-border bg-card p-4 shadow-sm">
-                <div className="space-y-4">
-                  <div>
-                    <p className="text-lg font-semibold text-foreground">{fixEncoding(org.Organisme)}</p>
-                    <p className="mt-1 text-sm text-muted-foreground">{fixEncoding(org.Type) || '—'}</p>
-                  </div>
-
-                  <div className="grid gap-3">
-                    <MobileInfo icon={Tag} label={t('table.type')} value={fixEncoding(org.Type)} />
-                    <MobileInfo icon={Globe2} label={t('table.pays')} value={fixEncoding(org.Pays)} />
-                    <MobileInfo icon={CalendarDays} label={t('table.dateCreation')} value={fixEncoding(org.Date_Creation)} />
-                    <MobileInfo icon={Users} label={t('table.nbAuteurs')} value={org.Nb_Auteurs} />
-                    <MobileInfo icon={BookOpenText} label={t('table.nbTitres')} value={org.Nb_Titres} />
-                  </div>
-                </div>
-              </article>
-            ))
-          )}
-        </div>
-
-        <div className="hidden overflow-hidden rounded-xl border border-border bg-card shadow-sm md:block">
-          <div className="overflow-x-auto">
-            <Table>
-              <TableHeader className="bg-[#382e60] text-white">
-                <TableRow className="hover:bg-[#382e60]">
-                  <TableHead className="h-12 px-6 font-semibold text-white">
-                    <div className="flex items-center gap-2">
-                      <Building2 className="h-4 w-4" />
-                      {t('table.organisme')}
-                    </div>
-                  </TableHead>
-                  <TableHead className="h-12 px-6 font-semibold text-white">
-                    <div className="flex items-center gap-2">
-                      <Tag className="h-4 w-4" />
-                      {t('table.type')}
-                    </div>
-                  </TableHead>
-                  <TableHead className="h-12 px-6 font-semibold text-white">
-                    <div className="flex items-center gap-2">
-                      <Globe2 className="h-4 w-4" />
-                      {t('table.pays')}
-                    </div>
-                  </TableHead>
-                  <TableHead className="h-12 px-6 font-semibold text-white">
-                    <div className="flex items-center gap-2">
-                      <CalendarDays className="h-4 w-4" />
-                      {t('table.dateCreation')}
-                    </div>
-                  </TableHead>
-                  <TableHead className="h-12 px-6 font-semibold text-white">
-                    <div className="flex items-center gap-2">
-                      <Users className="h-4 w-4" />
-                      {t('table.nbAuteurs')}
-                    </div>
-                  </TableHead>
-                  <TableHead className="h-12 px-6 font-semibold text-white">
-                    <div className="flex items-center gap-2">
-                      <BookOpenText className="h-4 w-4" />
-                      {t('table.nbTitres')}
-                    </div>
-                  </TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {loading ? (
-                  Array.from({ length: pageSize }).map((_, rowIndex) => (
-                    <TableRow key={rowIndex}>
-                      {Array.from({ length: 6 }).map((_, cellIndex) => (
-                        <TableCell key={cellIndex} className="px-6 py-4">
-                          <Skeleton className="h-5 w-full" />
-                        </TableCell>
-                      ))}
-                    </TableRow>
-                  ))
-                ) : (
-                  data.map((org, index) => (
-                    <TableRow key={`${org.id}-${index}`} className="hover:bg-muted/30">
-                      <TableCell className="px-6 py-4 font-medium">{fixEncoding(org.Organisme)}</TableCell>
-                      <TableCell className="px-6 py-4">{fixEncoding(org.Type)}</TableCell>
-                      <TableCell className="px-6 py-4">{fixEncoding(org.Pays)}</TableCell>
-                      <TableCell className="px-6 py-4">{fixEncoding(org.Date_Creation)}</TableCell>
-                      <TableCell className="px-6 py-4 font-mono">{org.Nb_Auteurs}</TableCell>
-                      <TableCell className="px-6 py-4 font-mono">{org.Nb_Titres}</TableCell>
-                    </TableRow>
-                  ))
-                )}
-              </TableBody>
-            </Table>
-          </div>
-        </div>
-
-        <Pagination className="mt-6">
-          <PaginationContent className="flex flex-wrap justify-center gap-2">
-            <PaginationItem>
-              <PaginationPrevious onClick={() => setPage((currentPage) => Math.max(1, currentPage - 1))} />
-            </PaginationItem>
-            {Array.from({ length: 5 }).map((_, index) => (
-              <PaginationItem key={index + 1}>
-                <PaginationLink
-                  onClick={() => setPage(index + 1)}
-                  isActive={page === index + 1}
-                >
-                  {index + 1}
-                </PaginationLink>
-              </PaginationItem>
-            ))}
-            <PaginationItem>
-              <PaginationNext onClick={() => setPage((currentPage) => currentPage + 1)} />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
-      </main>
-    </div>
-  )
+        <StavnetFooter
+          items={footerItems}
+          className="md:bottom-[2.2vh] md:left-[4.8vw] md:right-[4.8vw]"
+          itemClassName="md:min-h-[70px] md:text-[14px]"
+          mobileGridClassName="grid-cols-2 sm:grid-cols-4"
+          desktopMode="compact"
+        />
+      </div>
+    </main>
+  );
 }

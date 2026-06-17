@@ -304,6 +304,74 @@
       "move": "تنقل"
     }
   },
+  "OrganizationFilePage": {
+    "header": {
+      "cardTitle": "ملف الهيئات",
+      "title": "الأدب الإسرائيلي",
+      "subtitle": "قاعدة بيانات ببليوغرافية وسيرية"
+    },
+    "tabs": {
+      "editorCard": "بطاقة الناشر",
+      "diffuser": "الناشر الموزع",
+      "distributor": "الموزع",
+      "salesCounter": "نقطة البيع",
+      "readingCommittee": "لجنة القراءة",
+      "staff": "الموظفون",
+      "literaryPrizes": "الجوائز الأدبية",
+      "statistics": "إحصاءات"
+    },
+    "side": {
+      "editorCard": "بطاقة الناشر",
+      "collections": "المجموعات",
+      "creationDate": "تاريخ الإنشاء",
+      "titlesAtCatalog": "عدد العناوين في الفهرس"
+    },
+    "fields": {
+      "editor": "الناشر",
+      "address": "العنوان",
+      "postalCode": "الرمز البريدي",
+      "city": "المدينة",
+      "country": "البلد",
+      "telephone": "الهاتف",
+      "fax": "فاكس",
+      "website": "الموقع الإلكتروني",
+      "email": "البريد الإلكتروني",
+      "synonyms": "مرادفات",
+      "group": "مجموعة الانتماء"
+    },
+    "published": {
+      "title": "الأعمال المنشورة",
+      "titlesCount": "عناوين",
+      "authorsCount": "مؤلفون",
+      "columns": {
+        "titles": "العناوين",
+        "authors": "المؤلفون: الاسم، الكنية",
+        "year": "السنة"
+      }
+    },
+    "content": {
+      "diffuser": "الناشر الموزع",
+      "distributor": "الموزع",
+      "salesCounter": "نقطة البيع",
+      "readingCommittee": "لجنة القراءة",
+      "staff": "الموظفون",
+      "literaryPrizes": "الجوائز الأدبية",
+      "statistics": "إحصاءات"
+    },
+    "right": {
+      "organizationCardsFound": "بطاقات الهيئات المعثور عليها",
+      "databaseContains": "تحتوي قاعدة البيانات على"
+    },
+    "footer": {
+      "back": "رجوع",
+      "menu": "القائمة",
+      "close": "إغلاق",
+      "list": "قائمة",
+      "search": "بحث",
+      "help": "مساعدة",
+      "move": "تنقل"
+    }
+  },
   "Navbar": {
     "search": "بحث",
     "menu": "قائمة",

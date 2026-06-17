@@ -304,6 +304,74 @@
       "move": "Navegar"
     }
   },
+  "OrganizationFilePage": {
+    "header": {
+      "cardTitle": "Archivo de organismos",
+      "title": "Literatura israelí",
+      "subtitle": "Base de datos bibliográfica y biográfica"
+    },
+    "tabs": {
+      "editorCard": "Ficha editorial",
+      "diffuser": "Difusor",
+      "distributor": "Distribuidor",
+      "salesCounter": "Punto de venta",
+      "readingCommittee": "Comité de lectura",
+      "staff": "Personal",
+      "literaryPrizes": "Premios literarios",
+      "statistics": "Estadísticas"
+    },
+    "side": {
+      "editorCard": "Ficha editorial",
+      "collections": "Colecciones",
+      "creationDate": "Fecha de creación",
+      "titlesAtCatalog": "N.º de títulos en catálogo"
+    },
+    "fields": {
+      "editor": "Editor",
+      "address": "Dirección",
+      "postalCode": "Código postal",
+      "city": "Ciudad",
+      "country": "País",
+      "telephone": "Teléfono",
+      "fax": "Fax",
+      "website": "Sitio web",
+      "email": "E-mail",
+      "synonyms": "Sinónimos",
+      "group": "Grupo de pertenencia"
+    },
+    "published": {
+      "title": "Obras publicadas",
+      "titlesCount": "Títulos",
+      "authorsCount": "Autores",
+      "columns": {
+        "titles": "Títulos",
+        "authors": "Autores: nombre, apellido",
+        "year": "Año"
+      }
+    },
+    "content": {
+      "diffuser": "Difusor",
+      "distributor": "Distribuidor",
+      "salesCounter": "Punto de venta",
+      "readingCommittee": "Comité de lectura",
+      "staff": "Personal",
+      "literaryPrizes": "Premios literarios",
+      "statistics": "Estadísticas"
+    },
+    "right": {
+      "organizationCardsFound": "Fichas de organismos encontradas",
+      "databaseContains": "La base contiene"
+    },
+    "footer": {
+      "back": "Volver",
+      "menu": "Menú",
+      "close": "Cerrar",
+      "list": "Lista",
+      "search": "Buscar",
+      "help": "Ayuda",
+      "move": "Navegar"
+    }
+  },
   "Navbar": {
     "search": "Buscar",
     "menu": "Menú",

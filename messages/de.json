@@ -304,6 +304,74 @@
       "move": "Navigieren"
     }
   },
+  "OrganizationFilePage": {
+    "header": {
+      "cardTitle": "Organisationsdatei",
+      "title": "Israelische Literatur",
+      "subtitle": "Bibliografische und biografische Datenbank"
+    },
+    "tabs": {
+      "editorCard": "Verlagskarte",
+      "diffuser": "Vertrieb",
+      "distributor": "Distributor",
+      "salesCounter": "Verkaufsstelle",
+      "readingCommittee": "Lesekomitee",
+      "staff": "Personal",
+      "literaryPrizes": "Literaturpreise",
+      "statistics": "Statistiken"
+    },
+    "side": {
+      "editorCard": "Verlagskarte",
+      "collections": "Sammlungen",
+      "creationDate": "Gründungsdatum",
+      "titlesAtCatalog": "Anz. Titel im Katalog"
+    },
+    "fields": {
+      "editor": "Verlag",
+      "address": "Adresse",
+      "postalCode": "Postleitzahl",
+      "city": "Stadt",
+      "country": "Land",
+      "telephone": "Telefon",
+      "fax": "Fax",
+      "website": "Website",
+      "email": "E-Mail",
+      "synonyms": "Synonyme",
+      "group": "Zugehörige Gruppe"
+    },
+    "published": {
+      "title": "Veröffentlichte Werke",
+      "titlesCount": "Titel",
+      "authorsCount": "Autoren",
+      "columns": {
+        "titles": "Titel",
+        "authors": "Autoren: Vorname, Nachname",
+        "year": "Jahr"
+      }
+    },
+    "content": {
+      "diffuser": "Vertrieb",
+      "distributor": "Distributor",
+      "salesCounter": "Verkaufsstelle",
+      "readingCommittee": "Lesekomitee",
+      "staff": "Personal",
+      "literaryPrizes": "Literaturpreise",
+      "statistics": "Statistiken"
+    },
+    "right": {
+      "organizationCardsFound": "Gefundene Organisationskarten",
+      "databaseContains": "Die Datenbank enthält"
+    },
+    "footer": {
+      "back": "Zurück",
+      "menu": "Menü",
+      "close": "Schließen",
+      "list": "Liste",
+      "search": "Suche",
+      "help": "Hilfe",
+      "move": "Navigieren"
+    }
+  },
   "Navbar": {
     "search": "Suche",
     "menu": "Menü",

@@ -304,6 +304,74 @@
       "move": "ניווט"
     }
   },
+  "OrganizationFilePage": {
+    "header": {
+      "cardTitle": "קובץ ארגונים",
+      "title": "ספרות ישראלית",
+      "subtitle": "מאגר ביבליוגרפי וביוגרפי"
+    },
+    "tabs": {
+      "editorCard": "כרטיס מו\"ל",
+      "diffuser": "מפיץ",
+      "distributor": "משווק",
+      "salesCounter": "דלפק מכירה",
+      "readingCommittee": "ועדת קריאה",
+      "staff": "צוות",
+      "literaryPrizes": "פרסים ספרותיים",
+      "statistics": "סטטיסטיקות"
+    },
+    "side": {
+      "editorCard": "כרטיס מו\"ל",
+      "collections": "סדרות",
+      "creationDate": "תאריך יצירה",
+      "titlesAtCatalog": "מספר כותרים בקטלוג"
+    },
+    "fields": {
+      "editor": "מו\"ל",
+      "address": "כתובת",
+      "postalCode": "מיקוד",
+      "city": "עיר",
+      "country": "מדינה",
+      "telephone": "טלפון",
+      "fax": "פקס",
+      "website": "אתר אינטרנט",
+      "email": "דוא\"ל",
+      "synonyms": "מילים נרדפות",
+      "group": "קבוצת שיוך"
+    },
+    "published": {
+      "title": "ספרים שפורסמו",
+      "titlesCount": "כותרים",
+      "authorsCount": "מחברים",
+      "columns": {
+        "titles": "כותרות",
+        "authors": "מחברים: שם פרטי, שם משפחה",
+        "year": "שנה"
+      }
+    },
+    "content": {
+      "diffuser": "מפיץ",
+      "distributor": "משווק",
+      "salesCounter": "דלפק מכירה",
+      "readingCommittee": "ועדת קריאה",
+      "staff": "צוות",
+      "literaryPrizes": "פרסים ספרותיים",
+      "statistics": "סטטיסטיקות"
+    },
+    "right": {
+      "organizationCardsFound": "כרטיסי ארגונים שנמצאו",
+      "databaseContains": "המאגר מכיל"
+    },
+    "footer": {
+      "back": "חזרה",
+      "menu": "תפריט",
+      "close": "סגור",
+      "list": "רשימה",
+      "search": "חיפוש",
+      "help": "עזרה",
+      "move": "ניווט"
+    }
+  },
   "Navbar": {
     "search": "חיפוש",
     "menu": "תפריט",
