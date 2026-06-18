@@ -23,7 +23,7 @@ export default function HomePage() {
         className="object-cover"
       />
 
-      <div className="relative z-10 flex min-h-[100svh] w-full flex-col justify-center px-6 py-10 md:block md:min-h-screen md:p-0">
+      <div className="relative z-10 flex min-h-[100svh] w-full flex-col justify-center px-6 pb-10 pt-0 md:block md:min-h-screen md:p-0">
         <StavnetHeader
           pageName={
             <>

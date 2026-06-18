@@ -6,6 +6,33 @@ import { useState } from "react";
 import { StavnetFooter } from "@/components/stavnet/footer";
 import { StavnetHeader } from "@/components/stavnet/header";
 
+type OrganizationTab =
+  | "editorCard"
+  | "diffuser"
+  | "distributor"
+  | "salesCounter"
+  | "readingCommittee"
+  | "staff"
+  | "literaryPrizes"
+  | "statistics";
+
+interface PublishedRow {
+  title: string;
+  author: string;
+  year: string;
+}
+
+interface OrganizationSample {
+  name: string;
+  synonym: string;
+  group: string;
+  publishedStats: {
+    titles: string;
+    authors: string;
+  };
+  rows: PublishedRow[];
+}
+
 function MobilePublishedCard({
   title,
   author,
@@ -97,7 +124,7 @@ function RedMarker() {
 
 export default function OrganizationsDetailPage() {
   const t = useTranslations("OrganizationFilePage");
-  const tabs = [
+  const tabs: OrganizationTab[] = [
     "editorCard",
     "diffuser",
     "distributor",
@@ -106,10 +133,10 @@ export default function OrganizationsDetailPage() {
     "staff",
     "literaryPrizes",
     "statistics",
-  ] as const;
-  const [activeTab, setActiveTab] = useState<(typeof tabs)[number]>("editorCard");
+  ];
+  const [activeTab, setActiveTab] = useState<OrganizationTab>("editorCard");
 
-  const sampleOrganization = {
+  const sampleOrganization: OrganizationSample = {
     name: "Eked",
     synonym: "Eked",
     group: "",
@@ -118,12 +145,12 @@ export default function OrganizationsDetailPage() {
       authors: "10",
     },
     rows: [
-      ["על קו המשווה", "Ben-Zion Tomer", "1969"],
-      ["מזל דגים", "Shulamit Lapid", "1969"],
-      ["שועל בערפל", "Moshé Ben-Shaul", "1970"],
-      ["שירים חצויים", "David Avidan", "1970"],
-      ["הלך זרוע", "Israël Eliraz", "1970"],
-      ["אין אפשר לאהוב", "Naïm Araidi", "1972"],
+      { title: "על קו המשווה", author: "Ben-Zion Tomer", year: "1969" },
+      { title: "מזל דגים", author: "Shulamit Lapid", year: "1969" },
+      { title: "שועל בערפל", author: "Moshé Ben-Shaul", year: "1970" },
+      { title: "שירים חצויים", author: "David Avidan", year: "1970" },
+      { title: "הלך זרוע", author: "Israël Eliraz", year: "1970" },
+      { title: "אין אפשר לאהוב", author: "Naïm Araidi", year: "1972" },
     ],
   };
 
@@ -161,6 +188,35 @@ export default function OrganizationsDetailPage() {
         />
 
         <section className="mt-6 flex flex-col gap-4 md:absolute md:left-[4.8vw] md:right-[4.8vw] md:top-[154px] md:bottom-[154px] md:grid md:grid-cols-[92px_1fr_42px] md:gap-[4px]">
+          <section className="grid gap-2 md:hidden">
+            <div className="grid grid-cols-2 gap-2">
+              <div className="rounded-[8px] border border-[#7aa8b7] bg-[#d8dde2] px-3 py-2">
+                <p className="text-[11px] uppercase tracking-[0.04em] text-[#07384a]">{t("right.organizationCardsFound")}</p>
+                <p className="mt-1 text-[18px] font-bold text-[#ff1d1d]">1201</p>
+              </div>
+              <div className="rounded-[8px] border border-[#7aa8b7] bg-[#d8dde2] px-3 py-2">
+                <p className="text-[11px] uppercase tracking-[0.04em] text-[#07384a]">{t("right.databaseContains")}</p>
+                <p className="mt-1 text-[18px] font-bold text-[#ff1d1d]">1202</p>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              <div className="rounded-[8px] border border-[#7aa8b7] bg-[#d8dde2] px-3 py-2">
+                <p className="text-[11px] uppercase tracking-[0.04em] text-[#07384a]">{t("side.creationDate")}</p>
+                <p className="mt-1 text-[14px] text-black">—</p>
+              </div>
+              <div className="rounded-[8px] border border-[#7aa8b7] bg-[#d8dde2] px-3 py-2">
+                <p className="text-[11px] uppercase tracking-[0.04em] text-[#07384a]">{t("side.titlesAtCatalog")}</p>
+                <p className="mt-1 text-[14px] text-black">—</p>
+              </div>
+            </div>
+            <button
+              type="button"
+              className="min-h-11 rounded-[8px] border border-[#d1bb48] bg-[#ffea56] px-4 text-[13px] font-bold text-black shadow-[3px_3px_5px_rgba(0,0,0,0.2)]"
+            >
+              {t("side.collections")}
+            </button>
+          </section>
+
           <aside className="relative order-2 hidden flex-col gap-4 md:order-1 md:flex md:translate-x-[32px] md:overflow-visible md:pt-[26px]">
             <div className="hidden md:block md:h-[86px]" />
             <div className="border border-black bg-transparent md:ml-[10px] md:h-[130px] md:w-[128px]" />
@@ -179,13 +235,13 @@ export default function OrganizationsDetailPage() {
           </aside>
 
           <section className="order-1 min-w-0 md:order-2 md:mx-auto md:w-full md:max-w-[1230px]">
-            <nav className="flex gap-2 overflow-x-auto pb-2 md:grid md:grid-cols-[96px_repeat(7,minmax(0,1fr))] md:items-end md:gap-[8px] md:overflow-visible md:pb-0">
+            <nav className="flex snap-x gap-2 overflow-x-auto pb-2 md:grid md:grid-cols-[96px_repeat(7,minmax(0,1fr))] md:items-end md:gap-[8px] md:overflow-visible md:pb-0">
               {tabs.map((tabKey) => (
                 <button
                   key={tabKey}
                   type="button"
                   onClick={() => setActiveTab(tabKey)}
-                  className={`min-h-[42px] min-w-[136px] shrink-0 rounded-t-[8px] border border-[#d1bb48] px-2 py-[8px] text-center text-[13px] leading-[1.02] shadow-[3px_3px_5px_rgba(0,0,0,0.28)] transition-colors md:min-w-0 ${
+                  className={`min-h-11 min-w-[136px] shrink-0 snap-start rounded-t-[8px] border border-[#d1bb48] px-3 py-[8px] text-center text-[13px] leading-[1.02] shadow-[3px_3px_5px_rgba(0,0,0,0.28)] transition-colors md:min-h-[42px] md:min-w-0 md:px-2 ${
                     activeTab === tabKey
                       ? "bg-[#91d3ea] text-black md:min-h-[58px] md:text-[17px] md:font-bold"
                       : "bg-[#ffea56] text-black hover:bg-[#fff16f]"
@@ -196,7 +252,7 @@ export default function OrganizationsDetailPage() {
               ))}
             </nav>
 
-            <div className="mt-[2px] flex min-h-[620px] flex-col rounded-[8px] border border-[#7aa8b7] bg-[linear-gradient(180deg,#8ecfe8_0%,#a8dbed_100%)] shadow-[4px_4px_8px_rgba(0,0,0,0.18)] md:h-[540px] md:flex-row">
+            <div className="mt-[2px] flex min-h-[560px] flex-col rounded-[8px] border border-[#7aa8b7] bg-[linear-gradient(180deg,#8ecfe8_0%,#a8dbed_100%)] shadow-[4px_4px_8px_rgba(0,0,0,0.18)] md:h-[540px] md:flex-row">
               <aside className="border-b border-[#7aa8b7] px-3 py-4 md:w-[114px] md:border-b-0 md:border-r">
                 <p className="text-center text-[18px] font-bold leading-tight text-black">{t("side.editorCard")}</p>
               </aside>
@@ -210,36 +266,36 @@ export default function OrganizationsDetailPage() {
                         <FilledCell value={sampleOrganization.name} className="text-[16px] font-bold text-[#07384a]" />
                         <LabelCell label={t("fields.address")} />
                         <FilledCell value="" />
-                        <div className="grid md:grid-cols-[96px_1fr_1fr]">
-                          <div className="border-r border-[#7aa8b7]">
+                        <div className="grid gap-px bg-[#7aa8b7] md:grid-cols-[96px_1fr_1fr]">
+                          <div className="bg-[#a7dcee]">
                             <LabelCell label={t("fields.postalCode")} />
                             <FilledCell value="" className="border-b-0" />
                           </div>
-                          <div className="border-r border-[#7aa8b7]">
+                          <div className="bg-[#a7dcee]">
                             <LabelCell label={t("fields.city")} />
                             <FilledCell value="" className="border-b-0" />
                           </div>
-                          <div>
+                          <div className="bg-[#a7dcee]">
                             <LabelCell label={t("fields.country")} />
                             <FilledCell value="" className="border-b-0" />
                           </div>
                         </div>
-                        <div className="grid md:grid-cols-2">
-                          <div className="border-t border-r border-[#7aa8b7]">
+                        <div className="grid gap-px bg-[#7aa8b7] md:grid-cols-2">
+                          <div className="bg-[#a7dcee]">
                             <LabelCell label={t("fields.telephone")} />
                             <FilledCell value="" className="border-b-0" />
                           </div>
-                          <div className="border-t border-[#7aa8b7]">
+                          <div className="bg-[#a7dcee]">
                             <LabelCell label={t("fields.fax")} />
                             <FilledCell value="" className="border-b-0" />
                           </div>
                         </div>
-                        <div className="grid md:grid-cols-2">
-                          <div className="border-t border-r border-[#7aa8b7]">
+                        <div className="grid gap-px bg-[#7aa8b7] md:grid-cols-2">
+                          <div className="bg-[#a7dcee]">
                             <LabelCell label={t("fields.website")} />
                             <FilledCell value="" className="border-b-0" />
                           </div>
-                          <div className="border-t border-[#7aa8b7]">
+                          <div className="bg-[#a7dcee]">
                             <LabelCell label={t("fields.email")} />
                             <FilledCell value="" className="border-b-0" />
                           </div>
@@ -278,18 +334,15 @@ export default function OrganizationsDetailPage() {
                         {sampleOrganization.rows.map((row, rowIndex) => (
                           <MobilePublishedCard
                             key={rowIndex}
-                            title={row[0]}
-                            author={row[1]}
-                            year={row[2]}
+                            title={row.title}
+                            author={row.author}
+                            year={row.year}
                           />
                         ))}
                       </div>
 
                       <section className="hidden min-w-0 overflow-x-auto border border-[#7aa8b7] bg-[#a7dcee] md:block">
-                        <div
-                          className="grid w-full min-w-0 border-b border-[#7aa8b7] bg-[#fff8c8] text-[12px] uppercase leading-none text-black"
-                          style={{ gridTemplateColumns: "minmax(0,1.8fr) minmax(0,1fr) 72px" }}
-                        >
+                        <div className="grid w-full min-w-0 grid-cols-[minmax(0,1.8fr)_minmax(0,1fr)_72px] border-b border-[#7aa8b7] bg-[#fff8c8] text-[12px] uppercase leading-none text-black">
                           <div className="border-r border-[#7aa8b7] px-2 py-[3px]">{t("published.columns.titles")}</div>
                           <div className="border-r border-[#7aa8b7] px-2 py-[3px]">{t("published.columns.authors")}</div>
                           <div className="px-2 py-[3px]">{t("published.columns.year")}</div>
@@ -298,17 +351,16 @@ export default function OrganizationsDetailPage() {
                         {sampleOrganization.rows.map((row, rowIndex) => (
                           <div
                             key={rowIndex}
-                            className="grid w-full min-w-0"
-                            style={{ gridTemplateColumns: "minmax(0,1.8fr) minmax(0,1fr) 72px" }}
+                            className="grid w-full min-w-0 grid-cols-[minmax(0,1.8fr)_minmax(0,1fr)_72px]"
                           >
                             <div className="flex h-[29px] items-center justify-end border-r border-t border-[#7aa8b7] px-2 text-[13px] text-black" dir="rtl">
-                              <span className="text-right">{row[0]}</span>
+                              <span className="text-right">{row.title}</span>
                             </div>
                             <div className="flex h-[29px] items-center border-r border-t border-[#7aa8b7] px-2 text-[13px] text-black">
-                              {row[1]}
+                              {row.author}
                             </div>
                             <div className="flex h-[29px] items-center border-t border-[#7aa8b7] px-2 text-[13px] text-black">
-                              {row[2]}
+                              {row.year}
                             </div>
                           </div>
                         ))}

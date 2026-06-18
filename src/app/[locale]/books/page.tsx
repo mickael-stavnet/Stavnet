@@ -1,198 +1,152 @@
 "use client";
 
 import Image from "next/image";
-import { useLocale, useTranslations } from "next-intl";
-import { useState } from "react";
-import { StavnetHeader } from "@/components/stavnet/header";
+import { useTranslations } from "next-intl";
+import { useMemo, useState } from "react";
 import { StavnetFooter } from "@/components/stavnet/footer";
+import { StavnetHeader } from "@/components/stavnet/header";
+import { Link } from "@/i18n/routing";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 
-function MobileDataSection({
-  title,
-  columns,
-  rows,
-}: {
+interface BookRecord {
   title: string;
-  columns: string[];
-  rows: string[][];
-}) {
-  return (
-    <section className="rounded-[6px] border border-[#7aa8b7] bg-[#a7dcee] md:hidden">
-      <div className="border-b border-[#7aa8b7] bg-[#fff8c8] px-2 py-[4px] text-[12px] uppercase leading-none text-black">
-        {title}
-      </div>
-      <div className="space-y-3 p-3">
-        {rows.map((row, rowIndex) => (
-          <div key={`${title}-${rowIndex}`} className="space-y-2 rounded-[4px] border border-[#7aa8b7] bg-[#b2e0ef] p-3">
-            {columns.map((column, columnIndex) => (
-              <div key={`${column}-${columnIndex}`} className="space-y-1">
-                <p className="text-[11px] font-bold uppercase tracking-[0.04em] text-[#07384a]">
-                  {column}
-                </p>
-                <p className="text-[13px] leading-[1.35] text-black">
-                  {row[columnIndex] ?? ""}
-                </p>
-              </div>
-            ))}
-          </div>
-        ))}
-      </div>
-    </section>
-  );
+  author: string;
+  publisher: string;
+  language: string;
+  year: string;
+  publication: string;
+  issue: string;
+  edition: string;
 }
 
-function FilledInput({
-  value,
-  className = "",
-}: {
-  value: string;
-  className?: string;
-}) {
-  return (
-    <div className={`flex h-12 items-center border border-[#7aa8b7] bg-[#a7dcee] px-2 text-[15px] font-bold text-[#07384a] md:h-[40px] md:text-[15px] ${className}`}>
-      {value}
-    </div>
-  );
-}
+const BOOKS_GRID_TEMPLATE = "3.2fr 1.65fr 1.25fr 1.02fr 0.62fr 0.64fr 0.62fr 0.62fr";
 
-function FilledTable({
-  columns,
-  data,
-  rows = 1,
-  className = "",
+const sampleBooks: BookRecord[] = [
+  { title: "אין אפשר לאהוב", author: "Naïm Araidi", publisher: "Eked", language: "Hébreu", year: "1972", publication: "O", issue: "E01", edition: "R" },
+  { title: "חתלה וכחול", author: "Naïm Araidi", publisher: "Eked", language: "Hébreu", year: "1975", publication: "O", issue: "E01", edition: "R" },
+  { title: "חזרתי אל הכפר", author: "Naïm Araidi", publisher: "Am Oved", language: "Hébreu", year: "1986", publication: "O", issue: "E01", edition: "R" },
+  { title: "אולי זה אהבה", author: "Naïm Araidi", publisher: "Ma’ariv", language: "Hébreu", year: "1990", publication: "O", issue: "E01", edition: "R" },
+  { title: "בחמישה מימדים", author: "Naïm Araidi", publisher: "Sifriat Poalim", language: "Hébreu", year: "1991", publication: "O", issue: "E01", edition: "R" },
+  { title: "תבילה קטלנית", author: "Naïm Araidi", publisher: "Bitan", language: "Hébreu", year: "1992", publication: "O", issue: "E01", edition: "R" },
+  { title: "יעקובי ולידנטל", author: "Hanokh Levin", publisher: "University Publishing Projects", language: "Hébreu", year: "1974", publication: "O", issue: "E01", edition: "R" },
+  { title: "פרעות", author: "Israel Hameiri", publisher: "Hakibbutz Hameuchad", language: "Hébreu", year: "1972", publication: "O", issue: "E01", edition: "R" },
+  { title: "הרבעי", author: "Israel Hameiri", publisher: "Hakibbutz Hameuchad", language: "Hébreu", year: "1981", publication: "O", issue: "E01", edition: "R" },
+  { title: "אש בקוצים", author: "Israel Hameiri", publisher: "Am Oved", language: "Hébreu", year: "1983", publication: "O", issue: "E01", edition: "R" },
+  { title: "הלבנים", author: "Israel Hameiri", publisher: "Am Oved", language: "Hébreu", year: "1985", publication: "O", issue: "E01", edition: "R" },
+  { title: "מיכאל שלי", author: "Amos Oz", publisher: "Am Oved", language: "Hébreu", year: "1968", publication: "O", issue: "E03", edition: "R" },
+  { title: "קופסה שחורה", author: "Amos Oz", publisher: "Keter", language: "Hébreu", year: "1987", publication: "O", issue: "E01", edition: "R" },
+  { title: "אותו הים", author: "Amos Oz", publisher: "Keter", language: "Hébreu", year: "1999", publication: "O", issue: "E01", edition: "R" },
+  { title: "סיפור על אהבה וחושך", author: "Amos Oz", publisher: "Keter", language: "Hébreu", year: "2002", publication: "O", issue: "E01", edition: "R" },
+  { title: "פתאום בעומק היער", author: "Amos Oz", publisher: "Keter", language: "Hébreu", year: "2005", publication: "O", issue: "E01", edition: "R" },
+  { title: "חיוך הגדי", author: "David Grossman", publisher: "Hakibbutz Hameuchad", language: "Hébreu", year: "1983", publication: "O", issue: "E01", edition: "R" },
+  { title: "עיין ערך: אהבה", author: "David Grossman", publisher: "Hakibbutz Hameuchad", language: "Hébreu", year: "1986", publication: "O", issue: "E01", edition: "R" },
+  { title: "ספר הדקדוק הפנימי", author: "David Grossman", publisher: "Hakibbutz Hameuchad", language: "Hébreu", year: "1991", publication: "O", issue: "E01", edition: "R" },
+  { title: "מישהו לרוץ אתו", author: "David Grossman", publisher: "Hakibbutz Hameuchad", language: "Hébreu", year: "2000", publication: "O", issue: "E01", edition: "R" },
+  { title: "אשה בורחת מבשורה", author: "David Grossman", publisher: "Hakibbutz Hameuchad", language: "Hébreu", year: "2008", publication: "O", issue: "E01", edition: "R" },
+  { title: "געגועי לקיסינג'ר", author: "Etgar Keret", publisher: "Zmora-Bitan", language: "Hébreu", year: "1994", publication: "O", issue: "E01", edition: "R" },
+  { title: "הקייטנה של קנלר", author: "Etgar Keret", publisher: "Am Oved", language: "Hébreu", year: "1998", publication: "O", issue: "E01", edition: "R" },
+  { title: "פתאום דפיקה בדלת", author: "Etgar Keret", publisher: "Kinneret Zmora-Bitan", language: "Hébreu", year: "2010", publication: "O", issue: "E01", edition: "R" },
+  { title: "והוא האור", author: "Lea Goldberg", publisher: "Sifriat Poalim", language: "Hébreu", year: "1946", publication: "O", issue: "E01", edition: "R" },
+  { title: "דירה להשכיר", author: "Lea Goldberg", publisher: "Sifriat Poalim", language: "Hébreu", year: "1948", publication: "O", issue: "E05", edition: "P" },
+  { title: "פגישה עם משורר", author: "Lea Goldberg", publisher: "Hakibbutz Hameuchad", language: "Hébreu", year: "1952", publication: "O", issue: "E01", edition: "R" },
+  { title: "אניהו", author: "Lea Goldberg", publisher: "Sifriat Poalim", language: "Hébreu", year: "1971", publication: "O", issue: "E01", edition: "R" },
+  { title: "חבלים", author: "Haim Gouri", publisher: "Sifriat Poalim", language: "Hébreu", year: "1971", publication: "O", issue: "E01", edition: "R" },
+  { title: "מול תא הזכוכית", author: "Haim Gouri", publisher: "Hakibbutz Hameuchad", language: "Hébreu", year: "1968", publication: "O", issue: "E01", edition: "R" },
+  { title: "עיבל", author: "Haim Gouri", publisher: "Hakibbutz Hameuchad", language: "Hébreu", year: "1982", publication: "O", issue: "E01", edition: "R" },
+  { title: "תאום כוונות", author: "Yehuda Amichai", publisher: "Schocken", language: "Hébreu", year: "1958", publication: "O", issue: "E01", edition: "R" },
+  { title: "עכשיו ברעש", author: "Yehuda Amichai", publisher: "Schocken", language: "Hébreu", year: "1968", publication: "O", issue: "E01", edition: "R" },
+  { title: "פתוח סגור פתוח", author: "Yehuda Amichai", publisher: "Schocken", language: "Hébreu", year: "1998", publication: "O", issue: "E01", edition: "R" },
+  { title: "לא מעכשיו לא מכאן", author: "Yehoshua Kenaz", publisher: "Am Oved", language: "Hébreu", year: "1968", publication: "O", issue: "E01", edition: "R" },
+  { title: "התגנבות יחידים", author: "Yehoshua Kenaz", publisher: "Am Oved", language: "Hébreu", year: "1986", publication: "O", issue: "E01", edition: "R" },
+  { title: "מחזיר אהבות קודמות", author: "Yehoshua Kenaz", publisher: "Keter", language: "Hébreu", year: "1997", publication: "O", issue: "E01", edition: "R" },
+  { title: "רומן רוסי", author: "Meir Shalev", publisher: "Am Oved", language: "Hébreu", year: "1988", publication: "O", issue: "E01", edition: "R" },
+  { title: "עשו", author: "Meir Shalev", publisher: "Am Oved", language: "Hébreu", year: "1991", publication: "O", issue: "E01", edition: "R" },
+  { title: "כימים אחדים", author: "Meir Shalev", publisher: "Am Oved", language: "Hébreu", year: "1994", publication: "O", issue: "E01", edition: "R" },
+  { title: "יונה ונער", author: "Meir Shalev", publisher: "Am Oved", language: "Hébreu", year: "2006", publication: "O", issue: "E01", edition: "R" },
+  { title: "תרנגול כפרות", author: "Eli Amir", publisher: "Am Oved", language: "Hébreu", year: "1983", publication: "O", issue: "E01", edition: "R" },
+  { title: "מפריח היונים", author: "Eli Amir", publisher: "Am Oved", language: "Hébreu", year: "1992", publication: "O", issue: "E01", edition: "R" },
+  { title: "יסמין", author: "Eli Amir", publisher: "Am Oved", language: "Hébreu", year: "2005", publication: "O", issue: "E01", edition: "R" },
+  { title: "באדנהיים עיר נופש", author: "Aharon Appelfeld", publisher: "Keter", language: "Hébreu", year: "1979", publication: "O", issue: "E01", edition: "R" },
+  { title: "עד שיעלה עמוד השחר", author: "Aharon Appelfeld", publisher: "Keter", language: "Hébreu", year: "1995", publication: "O", issue: "E01", edition: "R" },
+  { title: "חסד נעורים", author: "Aharon Appelfeld", publisher: "Kinneret", language: "Hébreu", year: "2011", publication: "O", issue: "E01", edition: "R" },
+];
+
+const BOOKS_PER_PAGE = 13;
+
+function MobileBookCard({
+  book,
+  t,
 }: {
-  columns: string[];
-  data: string[][];
-  rows?: number;
-  className?: string;
+  book: BookRecord;
+  t: ReturnType<typeof useTranslations<"Books">>;
 }) {
   return (
-    <section className={`overflow-x-auto border border-[#7aa8b7] bg-[#a7dcee] ${className}`}>
-      <div
-        className="grid min-w-[520px] border-b border-[#7aa8b7] bg-[#fff8c8] text-[12px] uppercase leading-none text-black"
-        style={{ gridTemplateColumns: `repeat(${columns.length}, minmax(0, 1fr))` }}
+    <article className="border-b border-[#b1bac0] px-1 py-3 last:border-b-0">
+      <div className="min-w-0">
+        <p className="text-right text-[16px] font-bold leading-tight text-black" dir="rtl">
+          {book.title}
+        </p>
+        <p className="mt-1 text-[13px] leading-tight text-[#21323b]">{book.author}</p>
+      </div>
+
+      <div className="mt-3 grid grid-cols-2 gap-3 text-[12px] leading-[1.35] text-black">
+        <div>
+          <p className="font-bold uppercase text-[#4a5a63]">{t("columns.publishers")}</p>
+          <p className="mt-1 break-words">{book.publisher}</p>
+        </div>
+        <div>
+          <p className="font-bold uppercase text-[#4a5a63]">{t("columns.year")}</p>
+          <p className="mt-1">{book.year}</p>
+        </div>
+      </div>
+
+      <Link
+        href="/books/details"
+        className="mt-3 inline-block text-[13px] font-bold text-[#0f4c81] underline underline-offset-2"
       >
-        {columns.map((column) => (
-          <div key={column} className="border-r border-[#7aa8b7] px-2 py-[3px] last:border-r-0">
-            {column}
-          </div>
-        ))}
-      </div>
-      {Array.from({ length: rows }).map((_, rowIndex) => (
-        <div
-          key={rowIndex}
-          className="grid min-w-[520px]"
-          style={{ gridTemplateColumns: `repeat(${columns.length}, minmax(0, 1fr))` }}
-        >
-          {columns.map((column, columnIndex) => (
-            <div
-              key={`${column}-${columnIndex}`}
-              className="flex h-[38px] items-center border-r border-t border-[#7aa8b7] px-2 text-[13px] text-black last:border-r-0"
-            >
-              {data[rowIndex]?.[columnIndex] ?? ""}
-            </div>
-          ))}
-        </div>
-      ))}
-    </section>
+        Voir plus
+      </Link>
+    </article>
   );
 }
 
-function MiniCard({
-  title,
-  values = [],
-}: {
-  title: string;
-  values?: string[];
-}) {
-  return (
-    <section className="border border-[#7aa8b7] bg-[#a7dcee]">
-      <div className="border-b border-[#7aa8b7] bg-[#fff8c8] px-2 py-[3px] text-[12px] uppercase leading-none text-black">
-        {title}
-      </div>
-      <div className="flex min-h-[54px] items-center border-b border-[#7aa8b7] px-2 py-2 text-[13px] text-black">
-        {values[0] ?? ""}
-      </div>
-      <div className="flex min-h-[42px] items-center px-2 py-2 text-[13px] text-black">
-        {values[1] ?? ""}
-      </div>
-    </section>
-  );
-}
+export default function BooksListPage() {
+  const t = useTranslations("Books");
+  const [currentPage, setCurrentPage] = useState(1);
+  const totalPages = Math.ceil(sampleBooks.length / BOOKS_PER_PAGE);
+  const visibleBooks = useMemo(() => {
+    const start = (currentPage - 1) * BOOKS_PER_PAGE;
+    return sampleBooks.slice(start, start + BOOKS_PER_PAGE);
+  }, [currentPage]);
+  const paginationItems = useMemo(() => {
+    if (totalPages <= 7) {
+      return Array.from({ length: totalPages }, (_, index) => index + 1);
+    }
 
-function BlankContent({
-  title,
-  rows = 1,
-}: {
-  title: string;
-  rows?: number;
-}) {
-  return (
-    <section className="border border-[#7aa8b7] bg-[#a7dcee]">
-      <div className="border-b border-[#7aa8b7] bg-[#fff8c8] px-2 py-[4px] text-[12px] uppercase leading-none text-black">
-        {title}
-      </div>
-      <div className="p-[10px]">
-        <div className="min-h-[220px] border border-[#7aa8b7] bg-[#b2e0ef] md:min-h-[404px]">
-          {Array.from({ length: rows }).map((_, index) => (
-            <div
-              key={index}
-              className={`h-[72px] border-b border-[#7aa8b7] md:h-[96px] ${index === rows - 1 ? "border-b-0" : ""}`}
-            />
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
+    if (currentPage <= 4) {
+      return [1, 2, 3, 4, 5, "ellipsis-right", totalPages];
+    }
 
-export default function BooksPage() {
-  const locale = useLocale();
-  const t = useTranslations("BookDetailsPage");
-  const missingFileByLocale: Record<string, string> = {
-    ar: "<ملف مفقود>",
-    de: "<Fehlende Datei>",
-    en: "<Missing file>",
-    es: "<Archivo faltante>",
-    fr: "<Fichier manquant>",
-    he: "<קובץ חסר>",
-  };
-  const tabs = [
-    "bookCard",
-    "backCover",
-    "tableOfContents",
-    "extracts",
-    "pressCritiques",
-    "availability",
-    "publishing",
-    "statistics",
-  ] as const;
-  const sampleBook = {
-    title: "Poetes israeliennes d'aujourd'hui",
-    originalEnglish: "Israeli women poets of today",
-    transcription: "Poetot israeliyot shel hayom",
-    originalLanguage: "Hebrew",
-    authors: [["Nicolas Moshe Lazar", "Director", "Hebrew"]],
-    contributors: [
-      ["Nicolas-Moshe Lazar", "Translation", "French"],
-      ["Lea Goldberg", "Preface", "Hebrew"],
-    ],
-    publishers: [["Albin Michel", "France", "978-2-226-08977-1"]],
-    yearPages: "1960, 159 p., 21 x 14 cm, paperback, EUR 18.50",
-    category: ["Literature"],
-    subject: ["Israeli poetry"],
-    gender: ["Anthology", "Poetry"],
-    targetAudience: ["General public"],
-    summary:
-      "Anthology of modern Israeli poetry in French translation with editorial notes and contextual introduction.",
-  };
-  const [activeTab, setActiveTab] = useState<(typeof tabs)[number]>("bookCard");
+    if (currentPage >= totalPages - 3) {
+      return [1, "ellipsis-left", totalPages - 4, totalPages - 3, totalPages - 2, totalPages - 1, totalPages];
+    }
+
+    return [1, "ellipsis-left", currentPage - 1, currentPage, currentPage + 1, "ellipsis-right", totalPages];
+  }, [currentPage, totalPages]);
   const footerItems = [
     { key: "back", icon: "/icons/icons-nav/back.png", href: "/home" as const, label: t("footer.back") },
     { key: "menu", icon: "/icons/icons-nav/menu.png", href: "/menu" as const, label: t("footer.menu") },
-    { key: "list", icon: "/icons/icons-nav/book.png", href: "/books" as const, label: t("footer.list") },
     { key: "close", icon: "/icons/icons-nav/close.png", href: "/" as const, label: t("footer.close") },
-    { key: "help", icon: "/icons/icons-nav/help.png", href: "/books" as const, label: t("footer.help") },
     { key: "search", icon: "/icons/icons-nav/rechercher.png", href: "/search" as const, label: t("footer.search") },
+    { key: "help", icon: "/icons/icons-nav/help.png", href: "/books" as const, label: t("footer.help") },
     { key: "move", icon: "/icons/icons-nav/next.png", href: "/books" as const, label: t("footer.move") },
   ];
 
@@ -207,177 +161,143 @@ export default function BooksPage() {
         className="object-cover"
       />
 
-      <div className="relative z-10 mx-auto flex min-h-[100svh] w-full max-w-[1120px] flex-col px-4 pb-5 pt-4 md:h-screen md:max-w-none md:px-0 md:pb-0 md:pt-0">
+      <div className="relative z-10 mx-auto flex min-h-[100svh] w-full max-w-[1120px] flex-col px-4 pb-5 pt-0 md:h-screen md:max-w-none md:px-0 md:pb-0 md:pt-0">
         <StavnetHeader
           pageName={t("header.cardTitle")}
           title={t("header.title")}
           subtitle={t("header.subtitle")}
           headerClassName="md:h-[146px]"
-          badgeClassName="md:left-[calc(50%-88px)] md:h-[112px] md:w-[236px] md:-translate-x-1/2"
-          titleBlockClassName="md:left-[calc(50%+23px)] md:w-[1230px] md:-translate-x-1/2 md:text-right"
-          titleClassName="text-[34px] md:text-[32px]"
+          badgeClassName="md:h-[112px] md:w-[236px]"
+          titleBlockClassName="md:right-[4.7vw] md:left-auto md:w-[44vw]"
+          titleClassName="text-[28px] md:text-[32px]"
           subtitleClassName="text-[17px]"
         />
 
-        <section className="mt-6 flex flex-col gap-5 md:absolute md:left-[4.8vw] md:right-[4.8vw] md:top-[154px] md:bottom-[154px] md:grid md:grid-cols-[88px_1fr_42px] md:gap-[4px]">
-          <aside className="relative order-2 flex flex-col gap-4 md:order-1 md:translate-x-[42px] md:overflow-visible md:pt-[24px]">
-            <div className="text-[15px] font-bold text-black md:pt-[6px]">
-              {missingFileByLocale[locale] ?? missingFileByLocale.en}
+        <section className="mt-6 min-w-0 flex flex-col gap-4 md:absolute md:left-1/2 md:top-[154px] md:bottom-[128px] md:w-[min(1240px,94vw)] md:-translate-x-1/2">
+          <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end sm:justify-end sm:gap-6">
+            <div className="flex items-center gap-3 text-[18px] leading-none text-black">
+              <span>{t("stats.cardsFound")}</span>
+              <span>:</span>
+              <span className="font-bold text-[#ff1d1d]">{t("stats.cardsFoundCount")}</span>
             </div>
-
-            <div className="hidden md:block md:h-[92px]" />
-
-            <button
-              type="button"
-              className="hidden h-[36px] w-[88px] self-start border border-[#d1bb48] bg-[#ffea56] text-[12px] font-bold leading-[1.05] shadow-[3px_3px_5px_rgba(0,0,0,0.2)] md:ml-[12px] md:block"
-            >
-              {t("side.expandedCard")}
-            </button>
-
-            <div className="border border-[#7aa8b7] bg-[#d8dde2] md:mt-[12px] md:ml-[-10px] md:w-[220px]">
-              <div className="border-b border-[#7aa8b7] bg-[#fff8c8] px-2 py-[3px] text-[12px] uppercase leading-none text-black">
-                {t("summary")}
-              </div>
-              <div className="h-[180px] overflow-auto px-2 py-2 text-[12px] leading-[1.45] text-black md:h-[244px] md:text-[13px]">
-                {sampleBook.summary}
-              </div>
+            <div className="flex items-center gap-3 text-[18px] leading-none text-black">
+              <span>{t("stats.databaseContains")}</span>
+              <span>:</span>
+              <span className="font-bold text-[#ff1d1d]">{t("stats.databaseContainsCount")}</span>
             </div>
-          </aside>
+          </div>
 
-          <section className="order-1 min-w-0 md:order-2 md:mx-auto md:w-full md:max-w-[1230px]">
-            <nav className="flex gap-2 overflow-x-auto pb-2 md:grid md:grid-cols-[92px_repeat(7,minmax(0,1fr))] md:items-end md:gap-[10px] md:overflow-visible md:pb-0">
-              {tabs.map((tabKey) => (
-                <button
-                  key={tabKey}
-                  type="button"
-                  onClick={() => setActiveTab(tabKey)}
-                  className={`min-h-[42px] min-w-[150px] shrink-0 rounded-t-[8px] border border-[#d1bb48] px-3 py-[8px] text-center text-[13px] leading-[1.02] shadow-[3px_3px_5px_rgba(0,0,0,0.28)] transition-colors md:min-w-0 ${
-                    activeTab === tabKey
-                      ? "bg-[#91d3ea] text-black md:min-h-[58px] md:text-[17px] md:font-bold"
-                      : "bg-[#ffea56] text-black hover:bg-[#fff16f]"
-                  }`}
-                >
-                  {t(`tabs.${tabKey}`)}
-                </button>
+          <section className="overflow-hidden rounded-[8px] border border-[#9aa8b0] bg-[#d8dde2] shadow-[4px_4px_8px_rgba(0,0,0,0.12)]">
+            <div className="space-y-3 p-3 md:hidden">
+              {visibleBooks.map((book) => (
+                <MobileBookCard key={`${book.title}-${book.year}`} book={book} t={t} />
               ))}
-            </nav>
+            </div>
 
-            <div className="mt-[2px] flex min-h-[420px] flex-col rounded-[8px] border border-[#7aa8b7] bg-[linear-gradient(180deg,#8ecfe8_0%,#a8dbed_100%)] shadow-[4px_4px_8px_rgba(0,0,0,0.18)] md:h-[660px] md:flex-row">
-              <aside className="border-b border-[#7aa8b7] px-3 py-4 md:w-[128px] md:border-b-0 md:border-r">
-                <p className="text-[18px] font-bold leading-tight text-[#ff1313]">{t("side.translation")}</p>
-                <p className="mt-[2px] text-[16px] font-bold leading-tight text-black">{t("side.language")}</p>
-              </aside>
+            <div className="hidden flex-col md:flex">
+              <div
+                className="grid min-w-[1160px] border-b border-[#9aa8b0] bg-[#fff68f] text-[11px] uppercase leading-none text-black"
+                style={{ gridTemplateColumns: BOOKS_GRID_TEMPLATE }}
+              >
+                <div className="rounded-tl-[10px] border-r border-[#9aa8b0] px-3 py-[9px] text-center">{t("columns.titles")}</div>
+                <div className="rounded-t-[10px] border-r border-[#9aa8b0] px-3 py-[9px] text-center">{t("columns.authors")}</div>
+                <div className="rounded-t-[10px] border-r border-[#9aa8b0] px-3 py-[9px] text-center">{t("columns.publishers")}</div>
+                <div className="rounded-t-[10px] border-r border-[#9aa8b0] px-3 py-[9px] text-center">{t("columns.languages")}</div>
+                <div className="rounded-t-[10px] border-r border-[#9aa8b0] px-3 py-[9px] text-center">{t("columns.year")}</div>
+                <div className="rounded-t-[10px] border-r border-[#9aa8b0] px-3 py-[9px] text-center">{t("columns.publication")}</div>
+                <div className="rounded-t-[10px] border-r border-[#9aa8b0] px-3 py-[9px] text-center">{t("columns.issue")}</div>
+                <div className="rounded-tr-[10px] px-3 py-[9px] text-center">{t("columns.edition")}</div>
+              </div>
 
-              <div className="min-w-0 flex-1 px-[12px] py-[10px] md:px-[16px]">
-                {activeTab === "bookCard" ? (
-                  <div className="grid h-full grid-rows-[auto_auto_auto_1fr] gap-y-[14px]">
-                    <section className="border border-[#7aa8b7] bg-[#a7dcee]">
-                      <div className="border-b border-[#7aa8b7] bg-[#fff8c8] px-2 py-[3px] text-[12px] uppercase leading-none text-black">
-                        {t("fields.title")}
-                      </div>
-                      <FilledInput value={sampleBook.title} className="border-x-0 border-b" />
-                      <div className="grid gap-0 md:grid-cols-3">
-                        <div className="border-b border-[#7aa8b7] md:border-b-0 md:border-r">
-                          <div className="border-b border-[#7aa8b7] bg-[#fff8c8] px-2 py-[3px] text-[12px] uppercase leading-none text-black">
-                            {t("fields.originalEnglish")}
-                          </div>
-                          <FilledInput value={sampleBook.originalEnglish} />
-                        </div>
-                        <div className="border-b border-[#7aa8b7] md:border-b-0 md:border-r">
-                          <div className="border-b border-[#7aa8b7] bg-[#fff8c8] px-2 py-[3px] text-[12px] uppercase leading-none text-black">
-                            {t("fields.transcription")}
-                          </div>
-                          <FilledInput value={sampleBook.transcription} />
-                        </div>
-                        <div>
-                          <div className="border-b border-[#7aa8b7] bg-[#fff8c8] px-2 py-[3px] text-[12px] uppercase leading-none text-black">
-                            {t("fields.originalLanguage")}
-                          </div>
-                          <FilledInput value={sampleBook.originalLanguage} />
-                        </div>
-                      </div>
-                    </section>
-
-                    <div className="space-y-[14px]">
-                      <MobileDataSection
-                        title={t("tables.authors")}
-                        columns={[t("tables.authors"), t("tables.authorType"), t("tables.writingLanguage")]}
-                        rows={sampleBook.authors}
-                      />
-                      <div className="hidden md:block">
-                        <FilledTable columns={[t("tables.authors"), t("tables.authorType"), t("tables.writingLanguage")]} data={sampleBook.authors} rows={1} />
-                      </div>
-
-                      <MobileDataSection
-                        title={t("tables.contributors")}
-                        columns={[t("tables.contributors"), t("tables.contributionType"), t("tables.writingLanguage")]}
-                        rows={sampleBook.contributors}
-                      />
-                      <div className="hidden md:block">
-                        <FilledTable columns={[t("tables.contributors"), t("tables.contributionType"), t("tables.writingLanguage")]} data={sampleBook.contributors} rows={2} />
-                      </div>
-
-                      <MobileDataSection
-                        title={t("tables.publishers")}
-                        columns={[t("tables.publishers"), t("tables.country"), t("tables.isbn")]}
-                        rows={sampleBook.publishers}
-                      />
-                      <div className="hidden md:block">
-                        <FilledTable columns={[t("tables.publishers"), t("tables.country"), t("tables.isbn")]} data={sampleBook.publishers} rows={1} />
-                      </div>
+              <div className="overflow-auto">
+                {visibleBooks.map((book, rowIndex) => (
+                  <div
+                    key={`${book.title}-${currentPage}-${rowIndex}`}
+                    className="grid min-w-[1160px] border-b border-[#b1bac0] text-[14px] leading-none text-black last:border-b-0"
+                    style={{ gridTemplateColumns: BOOKS_GRID_TEMPLATE }}
+                  >
+                    <div className="border-r border-[#b1bac0] px-3 py-[15px]">
+                      <Link href="/books/details" className="flex items-center text-black hover:underline">
+                        <span className="w-full text-right text-[15px] font-bold" dir="rtl">
+                          {book.title}
+                        </span>
+                      </Link>
                     </div>
-
-                    <section className="border border-[#7aa8b7] bg-[#a7dcee]">
-                      <div className="border-b border-[#7aa8b7] bg-[#fff8c8] px-2 py-[3px] text-[12px] uppercase leading-none text-black">
-                        {t("tables.yearPages")}
-                      </div>
-                      <FilledInput value={sampleBook.yearPages} />
-                    </section>
-
-                    <div className="self-end grid gap-[12px] sm:grid-cols-2 md:grid-cols-4">
-                      <MiniCard title={t("tables.category")} values={sampleBook.category} />
-                      <MiniCard title={t("tables.subject")} values={sampleBook.subject} />
-                      <MiniCard title={t("tables.gender")} values={sampleBook.gender} />
-                      <MiniCard title={t("tables.targetAudience")} values={sampleBook.targetAudience} />
-                    </div>
+                    <div className="border-r border-[#b1bac0] px-3 py-[15px]">{book.author}</div>
+                    <div className="border-r border-[#b1bac0] px-3 py-[15px]">{book.publisher}</div>
+                    <div className="border-r border-[#b1bac0] px-3 py-[15px]">{book.language}</div>
+                    <div className="border-r border-[#b1bac0] px-3 py-[15px] text-center">{book.year}</div>
+                    <div className="border-r border-[#b1bac0] px-3 py-[15px] text-center">{book.publication}</div>
+                    <div className="border-r border-[#b1bac0] px-3 py-[15px] text-center">{book.issue}</div>
+                    <div className="px-3 py-[15px] text-center">{book.edition}</div>
                   </div>
-                ) : null}
-
-                {activeTab === "backCover" ? <BlankContent title={t("content.backCover")} rows={1} /> : null}
-                {activeTab === "tableOfContents" ? <BlankContent title={t("content.tableOfContents")} rows={3} /> : null}
-                {activeTab === "extracts" ? <BlankContent title={t("content.extracts")} rows={3} /> : null}
-                {activeTab === "pressCritiques" ? <BlankContent title={t("content.pressCritiques")} rows={3} /> : null}
-                {activeTab === "availability" ? <BlankContent title={t("content.availability")} rows={2} /> : null}
-                {activeTab === "publishing" ? <BlankContent title={t("content.publishing")} rows={2} /> : null}
-                {activeTab === "statistics" ? (
-                  <div className="space-y-[14px]">
-                    <BlankContent title={t("content.statistics")} rows={2} />
-                    <div className="grid gap-[10px] sm:grid-cols-2 md:grid-cols-4">
-                      <MiniCard title={t("tables.category")} />
-                      <MiniCard title={t("tables.subject")} />
-                      <MiniCard title={t("tables.gender")} />
-                      <MiniCard title={t("tables.targetAudience")} />
-                    </div>
-                  </div>
-                ) : null}
+                ))}
               </div>
             </div>
           </section>
 
-          <aside className="order-3 hidden items-center justify-center md:flex">
-            <div className="flex h-full flex-col items-center justify-between py-[126px] text-[14px] leading-none text-black">
-              <span className="[writing-mode:vertical-rl]">{t("right.bookCardsFound")}</span>
-              <span className="[writing-mode:vertical-rl]">{t("right.database")}</span>
-              <span className="[writing-mode:vertical-rl] text-[#ff1d1d]">{t("right.records")}</span>
-            </div>
-          </aside>
+          <div className="flex flex-col items-center gap-3">
+            <p className="text-center text-[13px] font-bold leading-none text-black">
+              {t("pagination.results", {
+                start: String((currentPage - 1) * BOOKS_PER_PAGE + 1),
+                end: String(Math.min(currentPage * BOOKS_PER_PAGE, sampleBooks.length)),
+                total: String(sampleBooks.length),
+              })}
+            </p>
+            <Pagination>
+              <PaginationContent className="flex-wrap justify-center">
+                <PaginationItem>
+                  <PaginationPrevious
+                    href="#"
+                    text={t("pagination.previous")}
+                    onClick={(event) => {
+                      event.preventDefault();
+                      setCurrentPage((page) => Math.max(1, page - 1));
+                    }}
+                    className={currentPage === 1 ? "pointer-events-none opacity-50" : ""}
+                  />
+                </PaginationItem>
+                {paginationItems.map((item) =>
+                  typeof item === "number" ? (
+                    <PaginationItem key={item}>
+                      <PaginationLink
+                        href="#"
+                        isActive={item === currentPage}
+                        onClick={(event) => {
+                          event.preventDefault();
+                          setCurrentPage(item);
+                        }}
+                      >
+                        {item}
+                      </PaginationLink>
+                    </PaginationItem>
+                  ) : (
+                    <PaginationItem key={item}>
+                      <PaginationEllipsis />
+                    </PaginationItem>
+                  ),
+                )}
+                <PaginationItem>
+                  <PaginationNext
+                    href="#"
+                    text={t("pagination.next")}
+                    onClick={(event) => {
+                      event.preventDefault();
+                      setCurrentPage((page) => Math.min(totalPages, page + 1));
+                    }}
+                    className={currentPage === totalPages ? "pointer-events-none opacity-50" : ""}
+                  />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
+          </div>
         </section>
 
         <StavnetFooter
           items={footerItems}
-          className="md:bottom-[3.2vh] md:left-[calc(50%+23px)] md:right-auto md:w-[min(1410px,94vw)] md:-translate-x-1/2"
+          className="md:bottom-[2.6vh] md:left-[6vw] md:right-[6vw]"
           itemClassName="md:min-h-[70px] md:text-[14px]"
-          mobileGridClassName="grid-cols-2 sm:grid-cols-4"
+          mobileGridClassName="grid-cols-2 sm:grid-cols-3"
           desktopMode="compact"
         />
       </div>

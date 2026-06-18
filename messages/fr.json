@@ -406,6 +406,11 @@
       "titlesPublished": "Nb. de titres parus",
       "authorsPublished": "Nb. d’auteur publies"
     },
+    "pagination": {
+      "previous": "Précédent",
+      "next": "Suivant",
+      "results": "Résultats {start} à {end} sur {total}"
+    },
     "footer": {
       "back": "Retour",
       "menu": "Menu",
@@ -416,40 +421,77 @@
     }
   },
   "Persons": {
-    "title": "Nos personnes",
-    "description": "Consultez et recherchez parmi les personnes référencées dans notre base de données.",
-    "searchPlaceholder": "Rechercher une personne...",
-    "table": {
-      "nomPrenom": "Nom Prénom",
-      "codeLangue": "Code Langue",
-      "nbFichesBase": "Nb. Fiches Base",
-      "nbFichesTrouvees": "Nb. Fiches Trouvées",
-      "siDateDeces": "Si Date Décès",
-      "siLieuDeces": "Si Lieu Décès",
-      "nbContribAuteurs": "Nb. Contr. Auteurs",
-      "nbContribTitres": "Nb. Contr. Titres",
-      "activitePro": "Activité Professionnelle",
-      "biographie": "Biographie",
-      "dateDeces": "Date de Décès",
-      "dateNaissance": "Date de Naissance",
-      "lieuDeces": "Lieu de Décès",
-      "paysResidence": "Pays de Résidence",
-      "villeNaissance": "Ville de Naissance",
-      "anneePub": "Année Publication",
-      "auteurOriginal": "Auteur Original",
-      "coteLivre": "Cote Livre",
-      "langueTrad": "Langue Traduction",
-      "titre": "Titre",
-      "typeContrib": "Type Contribution",
-      "nbLanguesTrad": "Nb. Langues Trad.",
-      "nbTitresOrig": "Nb. Titres Originaux",
-      "nbTitresTrad": "Nb. Titres Traduits",
-      "nbPaysPub": "Nb. Pays Publication",
-      "nbReedPoche": "Nb. Rééd. Poche",
-      "nbReedReg": "Nb. Rééd. Régulières",
-      "nbPrix": "Nb. Prix Distinctions",
-      "langueEcriture": "Langue Écriture",
-      "typePersonne": "Type Personne"
+    "header": {
+      "cardTitle": "Liste personnes",
+      "title": "Littérature israélienne",
+      "subtitle": "Base de données bibliographiques et biographiques"
+    },
+    "stats": {
+      "cardsFound": "Fiches personnes",
+      "cardsFoundCount": "686",
+      "databaseContains": "La base contient",
+      "databaseContainsCount": "686"
+    },
+    "columns": {
+      "persons": "Personnes : nom, prénom",
+      "type": "Type personne : auteur/contributeur",
+      "language": "Langue d’écriture",
+      "originalTitles": "Titres originaux",
+      "translatedTitles": "Titres traduits",
+      "translationLanguages": "Langues de traduction",
+      "awards": "Prix & distinctions",
+      "regularReissues": "Rééditions régulières",
+      "pocketReissues": "Rééditions poche",
+      "publicationCountries": "Pays de publication"
+    },
+    "pagination": {
+      "previous": "Précédent",
+      "next": "Suivant",
+      "results": "Résultats {start} à {end} sur {total}"
+    },
+    "footer": {
+      "back": "Retour",
+      "menu": "Menu",
+      "close": "Quitter",
+      "search": "Rechercher",
+      "help": "Aide",
+      "move": "Naviguer"
+    }
+  },
+  "Books": {
+    "header": {
+      "cardTitle": "Liste ouvrages",
+      "title": "Littérature israélienne",
+      "subtitle": "Base de données bibliographiques et biographiques"
+    },
+    "stats": {
+      "cardsFound": "Fiches ouvrages trouvées",
+      "cardsFoundCount": "4656",
+      "databaseContains": "La base contient",
+      "databaseContainsCount": "4656"
+    },
+    "columns": {
+      "titles": "Titres : originaux, traductions",
+      "authors": "Auteurs : nom, prénom",
+      "publishers": "Editeurs",
+      "languages": "Langues de parution",
+      "year": "Année",
+      "publication": "Publication",
+      "issue": "Parution",
+      "edition": "Edition"
+    },
+    "pagination": {
+      "previous": "Précédent",
+      "next": "Suivant",
+      "results": "Résultats {start} à {end} sur {total}"
+    },
+    "footer": {
+      "back": "Retour",
+      "menu": "Menu",
+      "close": "Quitter",
+      "search": "Rechercher",
+      "help": "Aide",
+      "move": "Naviguer"
     }
   }
 }

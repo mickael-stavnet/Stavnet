@@ -80,7 +80,7 @@ export default function SearchPage() {
         className="object-cover"
       />
 
-      <div className="relative z-10 mx-auto flex min-h-[100svh] w-full max-w-[1120px] flex-col px-4 pb-5 pt-4 md:h-screen md:max-w-none md:px-0 md:pb-0 md:pt-0">
+      <div className="relative z-10 mx-auto flex min-h-[100svh] w-full max-w-[1120px] flex-col px-4 pb-5 pt-0 md:h-screen md:max-w-none md:px-0 md:pb-0 md:pt-0">
         <StavnetHeader
           pageName={t("header.cardTitle")}
           title={t("header.title")}
@@ -88,11 +88,12 @@ export default function SearchPage() {
           headerClassName="md:h-[146px]"
           badgeClassName="md:h-[112px] md:w-[236px]"
           titleBlockClassName="md:right-[4.7vw] md:left-auto md:w-[40vw]"
-          titleClassName="text-[34px] md:text-[32px]"
+          titleClassName="text-[28px] md:text-[32px]"
           subtitleClassName="text-[17px]"
         />
 
-        <section className="mt-6 flex flex-col gap-5 md:absolute md:left-[4.9vw] md:right-[4.9vw] md:top-[286px] md:mx-auto md:w-full md:max-w-[1104px] md:grid md:grid-cols-[264px_1fr] md:items-stretch md:gap-[22px]">
+        <section className="mt-6 rounded-[16px] border border-[#9fc6d5] bg-[rgba(232,246,251,0.82)] p-4 shadow-[0_10px_24px_rgba(80,126,145,0.18)] backdrop-blur-[1px] md:absolute md:left-[4.9vw] md:right-[4.9vw] md:top-[286px] md:mx-auto md:w-full md:max-w-[1104px] md:p-5">
+          <div className="flex flex-col gap-5 md:grid md:grid-cols-[264px_1fr] md:items-stretch md:gap-[22px]">
           <aside className="flex flex-col rounded-[10px] border border-[#5da9c5] bg-[#9cd5eb] px-3 py-5 text-center shadow-[inset_1px_1px_0_rgba(255,255,255,0.6)] md:overflow-hidden">
             <p className="text-[18px] font-bold leading-tight">
               {t("info.modeLine1")} {t("info.modeLine2")}
@@ -165,13 +166,14 @@ export default function SearchPage() {
               {t("actions.validate")}
             </Button>
           </form>
+          </div>
         </section>
 
         <StavnetFooter
           items={footerItems}
-          className="md:bottom-[2.2vh] md:left-[6vw] md:right-[6vw]"
+          className="md:bottom-[2.2vh] md:left-1/2 md:right-auto md:w-fit md:-translate-x-1/2 md:justify-center md:gap-10"
+          mobileGridClassName="grid-cols-2 gap-x-1 sm:grid-cols-4"
           itemClassName="md:min-h-[64px] md:text-[14px]"
-          mobileGridClassName="grid-cols-2 sm:grid-cols-4"
           desktopMode="compact"
         />
       </div>

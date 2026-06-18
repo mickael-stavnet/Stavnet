@@ -8,16 +8,6 @@ import { Link, useRouter } from "@/i18n/routing";
 import { StavnetHeader } from "@/components/stavnet/header";
 import { StavnetFooter } from "@/components/stavnet/footer";
 import { Input } from "@/components/ui/input";
-import {
-  Command,
-  CommandDialog,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-  CommandShortcut,
-} from "@/components/ui/command";
 
 type MenuKey = (typeof menuColumns)[number]["key"];
 type AppHref =
@@ -28,15 +18,6 @@ type AppHref =
   | "/persons"
   | "/search"
   | "/books";
-
-interface SearchAction {
-  id: string;
-  group: string;
-  label: string;
-  keywords: string;
-  shortcut?: string;
-  action: () => void;
-}
 
 const submenuDestinations: Record<MenuKey, AppHref> = {
   books: "/books",
@@ -66,7 +47,6 @@ export default function MenuPage() {
   const t = useTranslations("MenuPage");
   const router = useRouter();
   const [activeMenu, setActiveMenu] = useState<MenuKey | null>(null);
-  const [searchOpen, setSearchOpen] = useState(false);
   const centralSectionRef = useRef<HTMLElement>(null);
   const menuButtonsRef = useRef<Array<HTMLButtonElement | null>>([]);
   const submenuItemsRef = useRef<Array<HTMLLIElement | null>>([]);
@@ -130,87 +110,6 @@ export default function MenuPage() {
     },
   ];
   const submenuIndexes = Array.from({ length: 8 }, (_, index) => index);
-  const searchActions: SearchAction[] = [
-    {
-      id: "menu-books",
-      group: t("search.groups.consultation"),
-      label: t("columns.books.title"),
-      keywords: [
-        t("columns.books.subtitleLine1"),
-        t("columns.books.subtitleLine2"),
-        ...submenuIndexes.map((index) => t(`columns.books.items.${index}`)),
-      ].join(" "),
-      shortcut: "B",
-      action: () => {
-        setActiveMenu("books");
-        setSearchOpen(false);
-        router.push("/books");
-      },
-    },
-    {
-      id: "menu-persons",
-      group: t("search.groups.consultation"),
-      label: t("columns.persons.title"),
-      keywords: [
-        t("columns.persons.subtitleLine1"),
-        t("columns.persons.subtitleLine2"),
-        ...submenuIndexes.map((index) => t(`columns.persons.items.${index}`)),
-      ].join(" "),
-      shortcut: "P",
-      action: () => {
-        setActiveMenu("persons");
-        setSearchOpen(false);
-        router.push("/persons");
-      },
-    },
-    {
-      id: "menu-organizations",
-      group: t("search.groups.consultation"),
-      label: t("columns.organizations.title"),
-      keywords: [
-        t("columns.organizations.subtitleLine1"),
-        t("columns.organizations.subtitleLine2"),
-        ...submenuIndexes.map((index) =>
-          t(`columns.organizations.items.${index}`),
-        ),
-      ].join(" "),
-      shortcut: "O",
-      action: () => {
-        setActiveMenu("organizations");
-        setSearchOpen(false);
-        router.push("/orgs");
-      },
-    },
-    ...quickActions.map(([key, href]) => ({
-      id: `quick-${key}`,
-      group: t("search.groups.shortcuts"),
-      label: t(`quickActions.${key}`),
-      keywords: t(`quickActions.${key}`),
-      action: () => {
-        setSearchOpen(false);
-        router.push(href);
-      },
-    })),
-    ...footerItems.map((item) => ({
-      id: `footer-${item.key}`,
-      group: t("search.groups.navigation"),
-      label: item.label,
-      keywords: item.label,
-      action: () => {
-        setSearchOpen(false);
-        router.push(item.href as AppHref);
-      },
-    })),
-  ];
-  const groupedSearchActions = Array.from(
-    searchActions.reduce((groups, action) => {
-      const groupActions = groups.get(action.group) ?? [];
-      groupActions.push(action);
-      groups.set(action.group, groupActions);
-      return groups;
-    }, new Map<string, SearchAction[]>()),
-  );
-
   useEffect(() => {
     if (!centralSectionRef.current) {
       return;
@@ -284,21 +183,6 @@ export default function MenuPage() {
     );
   }, [activeMenu]);
 
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key.toLowerCase() === "k" && (event.metaKey || event.ctrlKey)) {
-        event.preventDefault();
-        setSearchOpen((value) => !value);
-      }
-    };
-
-    document.addEventListener("keydown", handleKeyDown);
-
-    return () => {
-      document.removeEventListener("keydown", handleKeyDown);
-    };
-  }, []);
-
   return (
     <>
       <main className="relative min-h-[100svh] overflow-x-hidden bg-[#e7f2f7] font-[Arial,Helvetica,sans-serif] text-[#0c2740] md:h-screen md:overflow-hidden">
@@ -311,7 +195,7 @@ export default function MenuPage() {
           className="object-cover"
         />
 
-        <div className="relative z-10 mx-auto flex min-h-[100svh] w-full max-w-[1120px] flex-col px-4 pb-5 pt-4 md:h-screen md:max-w-none md:px-0 md:pb-0 md:pt-0">
+        <div className="relative z-10 mx-auto flex min-h-[100svh] w-full max-w-[1120px] flex-col px-4 pb-5 pt-0 md:h-screen md:max-w-none md:px-0 md:pb-0 md:pt-0">
           <StavnetHeader
             pageName={t("header.cardTitle")}
             title={t("header.title")}
@@ -368,8 +252,8 @@ export default function MenuPage() {
                       readOnly
                       value=""
                       placeholder={t("search.placeholder")}
-                      onFocus={() => setSearchOpen(true)}
-                      onClick={() => setSearchOpen(true)}
+                      onFocus={() => router.push("/search")}
+                      onClick={() => router.push("/search")}
                       className="h-[44px] cursor-pointer rounded-[12px] border-[#bdb6a2] bg-[#f3efe0] pr-28 text-[15px] text-[#243d64] placeholder:text-[#6e6b5b] focus-visible:ring-0"
                     />
                     <div className="pointer-events-none absolute right-[8px] top-1/2 flex h-[32px] items-center gap-2 rounded-[10px] border border-[#c9c3b4] bg-[#efede7] px-3 -translate-y-1/2 text-[#5f6068] shadow-[inset_0_0_0_1px_rgba(255,255,255,0.55)]">
@@ -503,38 +387,6 @@ export default function MenuPage() {
           />
         </div>
       </main>
-
-      <CommandDialog
-        open={searchOpen}
-        onOpenChange={setSearchOpen}
-        title={t("search.dialogTitle")}
-        description={t("search.dialogDescription")}
-        className="max-w-[640px] border border-[#b8b39c] bg-[#f5f0db]"
-      >
-        <Command className="bg-[#f5f0db]">
-          <CommandInput placeholder={t("search.dialogPlaceholder")} />
-          <CommandList>
-            <CommandEmpty>{t("search.empty")}</CommandEmpty>
-            {groupedSearchActions.map(([group, actions]) => (
-              <CommandGroup key={group} heading={group}>
-                {actions.map((action) => (
-                  <CommandItem
-                    key={action.id}
-                    keywords={[action.keywords]}
-                    onSelect={action.action}
-                    className="data-selected:bg-[#e8dfbc] data-selected:text-[#102b58]"
-                  >
-                    {action.label}
-                    {action.shortcut ? (
-                      <CommandShortcut>{action.shortcut}</CommandShortcut>
-                    ) : null}
-                  </CommandItem>
-                ))}
-              </CommandGroup>
-            ))}
-          </CommandList>
-        </Command>
-      </CommandDialog>
     </>
   );
 }

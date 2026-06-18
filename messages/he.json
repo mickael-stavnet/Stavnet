@@ -406,6 +406,11 @@
       "titlesPublished": "מס׳ כותרים שפורסמו",
       "authorsPublished": "מס׳ מחברים שפורסמו"
     },
+    "pagination": {
+      "previous": "הקודם",
+      "next": "הבא",
+      "results": "תוצאות {start} עד {end} מתוך {total}"
+    },
     "footer": {
       "back": "חזרה",
       "menu": "תפריט",
@@ -416,40 +421,77 @@
     }
   },
   "Persons": {
-    "title": "האנשים שלנו",
-    "description": "עיין וחפש בין האנשים המופיעים במאגר המידע שלנו.",
-    "searchPlaceholder": "חפש אדם...",
-    "table": {
-      "nomPrenom": "שם מלא",
-      "codeLangue": "קוד שפה",
-      "nbFichesBase": "מספר כרטיסי בסיס",
-      "nbFichesTrouvees": "מספר כרטיסים שנמצאו",
-      "siDateDeces": "אם תאריך פטירה",
-      "siLieuDeces": "אם מקום פטירה",
-      "nbContribAuteurs": "מספר תרומות סופרים",
-      "nbContribTitres": "מספר תרומות כותרים",
-      "activitePro": "פעילות מקצועית",
-      "biographie": "ביוגרפיה",
-      "dateDeces": "תאריך פטירה",
-      "dateNaissance": "תאריך לידה",
-      "lieuDeces": "מקום פטירה",
-      "paysResidence": "ארץ מגורים",
-      "villeNaissance": "עיר לידה",
-      "anneePub": "שנת הוצאה",
-      "auteurOriginal": "סופר מקורי",
-      "coteLivre": "סיווג ספר",
-      "langueTrad": "שפת תרגום",
-      "titre": "כותרת",
-      "typeContrib": "סוג תרומה",
-      "nbLanguesTrad": "מספר שפות תרגום",
-      "nbTitresOrig": "מספר כותרים מקוריים",
-      "nbTitresTrad": "מספר כותרים מתורגמים",
-      "nbPaysPub": "מספר ארצות הוצאה",
-      "nbReedPoche": "מספר מהדורות כיס",
-      "nbReedReg": "מספר מהדורות רגילות",
-      "nbPrix": "מספר פרסים",
-      "langueEcriture": "שפת כתיבה",
-      "typePersonne": "סוג אדם"
+    "header": {
+      "cardTitle": "Persons list",
+      "title": "Israeli literature",
+      "subtitle": "Bibliographic and biographical database"
+    },
+    "stats": {
+      "cardsFound": "Person cards",
+      "cardsFoundCount": "686",
+      "databaseContains": "The database contains",
+      "databaseContainsCount": "686"
+    },
+    "columns": {
+      "persons": "אנשים: שם משפחה, שם פרטי",
+      "type": "סוג אדם: מחבר/תורם",
+      "language": "שפת כתיבה",
+      "originalTitles": "כותרות מקוריות",
+      "translatedTitles": "כותרות מתורגמות",
+      "translationLanguages": "שפות תרגום",
+      "awards": "פרסים והבחנות",
+      "regularReissues": "מהדורות חוזרות רגילות",
+      "pocketReissues": "מהדורות כיס",
+      "publicationCountries": "מדינות פרסום"
+    },
+    "pagination": {
+      "previous": "הקודם",
+      "next": "הבא",
+      "results": "תוצאות {start} עד {end} מתוך {total}"
+    },
+    "footer": {
+      "back": "חזרה",
+      "menu": "תפריט",
+      "close": "סגור",
+      "search": "חיפוש",
+      "help": "עזרה",
+      "move": "ניווט"
+    }
+  },
+  "Books": {
+    "header": {
+      "cardTitle": "Books list",
+      "title": "Israeli literature",
+      "subtitle": "Bibliographic and biographical database"
+    },
+    "stats": {
+      "cardsFound": "Book cards found",
+      "cardsFoundCount": "4656",
+      "databaseContains": "The database contains",
+      "databaseContainsCount": "4656"
+    },
+    "columns": {
+      "titles": "Titles: originals, translations",
+      "authors": "Authors: last name, first name",
+      "publishers": "Publishers",
+      "languages": "Publication languages",
+      "year": "Year",
+      "publication": "Publication",
+      "issue": "Issue",
+      "edition": "Edition"
+    },
+    "pagination": {
+      "previous": "Previous",
+      "next": "Next",
+      "results": "Results {start} to {end} of {total}"
+    },
+    "footer": {
+      "back": "Back",
+      "menu": "Menu",
+      "close": "Close",
+      "search": "Search",
+      "help": "Help",
+      "move": "Navigate"
     }
   }
 }

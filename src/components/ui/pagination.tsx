@@ -23,7 +23,7 @@ function PaginationContent({
   return (
     <ul
       data-slot="pagination-content"
-      className={cn("flex items-center gap-0.5", className)}
+      className={cn("flex items-center gap-1.5", className)}
       {...props}
     />
   )
@@ -47,9 +47,12 @@ function PaginationLink({
   return (
     <Button
       asChild
-      variant={isActive ? "outline" : "ghost"}
+      variant="ghost"
       size={size}
-      className={cn(className)}
+      className={cn(
+        "h-8 min-w-8 rounded-[8px] border border-[#d1bb48] bg-[#ffea56] px-2 text-[13px] font-bold text-black shadow-[2px_2px_4px_rgba(0,0,0,0.22)] hover:bg-[#fff16f] hover:text-black data-[active=true]:border-[#7aa8b7] data-[active=true]:bg-[#91d3ea] data-[active=true]:text-black",
+        className
+      )}
     >
       <a
         aria-current={isActive ? "page" : undefined}
@@ -70,7 +73,7 @@ function PaginationPrevious({
     <PaginationLink
       aria-label="Go to previous page"
       size="default"
-      className={cn("pl-1.5!", className)}
+      className={cn("min-w-[92px] pl-1.5!", className)}
       {...props}
     >
       <ChevronLeftIcon data-icon="inline-start" />
@@ -88,7 +91,7 @@ function PaginationNext({
     <PaginationLink
       aria-label="Go to next page"
       size="default"
-      className={cn("pr-1.5!", className)}
+      className={cn("min-w-[92px] pr-1.5!", className)}
       {...props}
     >
       <span className="hidden sm:block">{text}</span>
@@ -107,6 +110,7 @@ function PaginationEllipsis({
       data-slot="pagination-ellipsis"
       className={cn(
         "flex size-8 items-center justify-center [&_svg:not([class*='size-'])]:size-4",
+        "rounded-[8px] border border-[#d1bb48] bg-[#fff6a8] text-black shadow-[2px_2px_4px_rgba(0,0,0,0.16)]",
         className
       )}
       {...props}

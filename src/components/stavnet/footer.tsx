@@ -9,9 +9,11 @@ interface StavnetFooterItem {
     | "/"
     | "/home"
     | "/menu"
+    | "/books/details"
     | "/orgs"
     | "/orgs/details"
     | "/persons"
+    | "/persons/details"
     | "/search"
     | "/books";
   icon: string;

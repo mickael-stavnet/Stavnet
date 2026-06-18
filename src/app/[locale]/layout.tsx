@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Inter } from "next/font/google";
 import "@/styles/globals.css";
 import { cn } from "@/lib/utils";
 import { NextIntlClientProvider } from "next-intl";
@@ -7,14 +6,6 @@ import { getMessages } from "next-intl/server";
 import { routing } from "@/i18n/routing";
 import { notFound } from "next/navigation";
 import { PageMotion } from "@/components/stavnet/page-motion";
-
-const geistHeading = Geist({ subsets: ["latin"], variable: "--font-heading" });
-const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
-const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
   title: "STAVNET",
@@ -46,15 +37,7 @@ export default async function RootLayout({
   return (
     <html
       lang={locale}
-      className={cn(
-        "h-full",
-        "antialiased",
-        geistSans.variable,
-        geistMono.variable,
-        "font-sans",
-        inter.variable,
-        geistHeading.variable,
-      )}
+      className={cn("h-full", "antialiased", "font-sans")}
       dir={locale === "ar" || locale === "he" ? "rtl" : "ltr"}
     >
       <body className="min-h-full flex flex-col relative">

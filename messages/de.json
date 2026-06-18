@@ -406,6 +406,11 @@
       "titlesPublished": "Anz. erschienene Titel",
       "authorsPublished": "Anz. veröff. Autoren"
     },
+    "pagination": {
+      "previous": "Zurück",
+      "next": "Weiter",
+      "results": "Ergebnisse {start} bis {end} von {total}"
+    },
     "footer": {
       "back": "Zurück",
       "menu": "Menü",
@@ -416,40 +421,77 @@
     }
   },
   "Persons": {
-    "title": "Unsere Personen",
-    "description": "Durchsuchen Sie die in unserer Datenbank referenzierten Personen.",
-    "searchPlaceholder": "Person suchen...",
-    "table": {
-      "nomPrenom": "Vollständiger Name",
-      "codeLangue": "Sprachcode",
-      "nbFichesBase": "Nb. Basis-Karten",
-      "nbFichesTrouvees": "Nb. Gefundene Karten",
-      "siDateDeces": "Wenn Todesdatum",
-      "siLieuDeces": "Wenn Todesort",
-      "nbContribAuteurs": "Nb. Autor-Contrib.",
-      "nbContribTitres": "Nb. Titel-Contrib.",
-      "activitePro": "Berufliche Tätigkeit",
-      "biographie": "Biografie",
-      "dateDeces": "Todesdatum",
-      "dateNaissance": "Geburtsdatum",
-      "lieuDeces": "Todesort",
-      "paysResidence": "Wohnsitzland",
-      "villeNaissance": "Geburtsort",
-      "anneePub": "Publikationsjahr",
-      "auteurOriginal": "Originalautor",
-      "coteLivre": "Buchtitel",
-      "langueTrad": "Übersetzungssprache",
-      "titre": "Titel",
-      "typeContrib": "Beitragsart",
-      "nbLanguesTrad": "Nb. Übers. Sprachen",
-      "nbTitresOrig": "Nb. Orig. Titel",
-      "nbTitresTrad": "Nb. Übers. Titel",
-      "nbPaysPub": "Nb. Publikationsland",
-      "nbReedPoche": "Nb. Taschenbuch-Repr.",
-      "nbReedReg": "Nb. Reguläre Repr.",
-      "nbPrix": "Nb. Auszeichnungen",
-      "langueEcriture": "Schreibsprache",
-      "typePersonne": "Personentyp"
+    "header": {
+      "cardTitle": "Persons list",
+      "title": "Israeli literature",
+      "subtitle": "Bibliographic and biographical database"
+    },
+    "stats": {
+      "cardsFound": "Person cards",
+      "cardsFoundCount": "686",
+      "databaseContains": "The database contains",
+      "databaseContainsCount": "686"
+    },
+    "columns": {
+      "persons": "Personen: Nachname, Vorname",
+      "type": "Personentyp: Autor/Mitwirkender",
+      "language": "Schriftsprache",
+      "originalTitles": "Originaltitel",
+      "translatedTitles": "Übersetzte Titel",
+      "translationLanguages": "Übersetzungssprachen",
+      "awards": "Preise und Auszeichnungen",
+      "regularReissues": "Regelmäßige Neuauflagen",
+      "pocketReissues": "Taschenbuch-Neuauflagen",
+      "publicationCountries": "Veröffentlichungsländer"
+    },
+    "pagination": {
+      "previous": "Zurück",
+      "next": "Weiter",
+      "results": "Ergebnisse {start} bis {end} von {total}"
+    },
+    "footer": {
+      "back": "Zurück",
+      "menu": "Menü",
+      "close": "Schließen",
+      "search": "Suche",
+      "help": "Hilfe",
+      "move": "Navigieren"
+    }
+  },
+  "Books": {
+    "header": {
+      "cardTitle": "Books list",
+      "title": "Israeli literature",
+      "subtitle": "Bibliographic and biographical database"
+    },
+    "stats": {
+      "cardsFound": "Book cards found",
+      "cardsFoundCount": "4656",
+      "databaseContains": "The database contains",
+      "databaseContainsCount": "4656"
+    },
+    "columns": {
+      "titles": "Titles: originals, translations",
+      "authors": "Authors: last name, first name",
+      "publishers": "Publishers",
+      "languages": "Publication languages",
+      "year": "Year",
+      "publication": "Publication",
+      "issue": "Issue",
+      "edition": "Edition"
+    },
+    "pagination": {
+      "previous": "Previous",
+      "next": "Next",
+      "results": "Results {start} to {end} of {total}"
+    },
+    "footer": {
+      "back": "Back",
+      "menu": "Menu",
+      "close": "Close",
+      "search": "Search",
+      "help": "Help",
+      "move": "Navigate"
     }
   }
 }
