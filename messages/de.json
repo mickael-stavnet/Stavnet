@@ -387,16 +387,32 @@
     "authors": "Unsere Autoren"
   },
   "Orgs": {
-    "title": "Unsere Organisationen",
-    "description": "Durchsuchen Sie die in unserer Datenbank referenzierten Organisationen.",
-    "searchPlaceholder": "Organisation suchen...",
-    "table": {
-      "organisme": "Organisation",
-      "type": "Typ",
-      "pays": "Land",
-      "dateCreation": "Erstellungsdatum",
-      "nbAuteurs": "Nb Autoren",
-      "nbTitres": "Nb Titel"
+    "header": {
+      "cardTitle": "Organisationsliste",
+      "title": "Israelische Literatur",
+      "subtitle": "Bibliografische und biografische Datenbank"
+    },
+    "stats": {
+      "cardsFound": "Organisationskarten",
+      "cardsFoundCount": "1201",
+      "databaseContains": "Die Datenbank enthält",
+      "databaseContainsCount": "1202"
+    },
+    "columns": {
+      "organizations": "Organisationen: Verlage, Bibliotheken, Buchhandlungen, Websites",
+      "type": "Organisationstyp",
+      "creationDate": "Gründungsdatum",
+      "country": "Land (Sitz)",
+      "titlesPublished": "Anz. erschienene Titel",
+      "authorsPublished": "Anz. veröff. Autoren"
+    },
+    "footer": {
+      "back": "Zurück",
+      "menu": "Menü",
+      "close": "Schließen",
+      "search": "Suche",
+      "help": "Hilfe",
+      "move": "Navigieren"
     }
   },
   "Persons": {

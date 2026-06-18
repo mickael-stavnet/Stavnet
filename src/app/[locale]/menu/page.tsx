@@ -20,7 +20,14 @@ import {
 } from "@/components/ui/command";
 
 type MenuKey = (typeof menuColumns)[number]["key"];
-type AppHref = "/" | "/home" | "/menu" | "/orgs" | "/persons" | "/search" | "/books";
+type AppHref =
+  | "/"
+  | "/home"
+  | "/menu"
+  | "/orgs"
+  | "/persons"
+  | "/search"
+  | "/books";
 
 interface SearchAction {
   id: string;
@@ -63,7 +70,9 @@ export default function MenuPage() {
   const centralSectionRef = useRef<HTMLElement>(null);
   const menuButtonsRef = useRef<Array<HTMLButtonElement | null>>([]);
   const submenuItemsRef = useRef<Array<HTMLLIElement | null>>([]);
-  const activeIndex = menuColumns.findIndex((column) => column.key === activeMenu);
+  const activeIndex = menuColumns.findIndex(
+    (column) => column.key === activeMenu,
+  );
   const quickActions = [
     ["libraries", "/orgs"],
     ["editions", "/menu"],
@@ -71,14 +80,54 @@ export default function MenuPage() {
     ["statistics", "/menu"],
   ] as const;
   const footerItems = [
-    { key: "back", icon: "/icons/icons-nav/back.png", href: "/home" as const, label: t("bottom.back") },
-    { key: "welcome", icon: "/icons/icons-nav/welcome.png", href: "/home" as const, label: t("bottom.welcome") },
-    { key: "video", icon: "/icons/icons-nav/video.png", href: "/menu" as const, label: t("bottom.video") },
-    { key: "diaporama", icon: "/icons/icons-nav/diapo.png", href: "/menu" as const, label: t("bottom.diaporama") },
-    { key: "sound", icon: "/icons/icons-nav/sound.png", href: "/menu" as const, label: t("bottom.sound") },
-    { key: "introduction", icon: "/icons/icons-nav/introduction.png", href: "/menu" as const, label: t("bottom.introduction") },
-    { key: "help", icon: "/icons/icons-nav/help.png", href: "/menu" as const, label: t("bottom.help") },
-    { key: "close", icon: "/icons/icons-nav/close.png", href: "/menu" as const, label: t("bottom.close") },
+    {
+      key: "back",
+      icon: "/icons/icons-nav/back.png",
+      href: "/home" as const,
+      label: t("bottom.back"),
+    },
+    {
+      key: "welcome",
+      icon: "/icons/icons-nav/welcome.png",
+      href: "/home" as const,
+      label: t("bottom.welcome"),
+    },
+    {
+      key: "video",
+      icon: "/icons/icons-nav/video.png",
+      href: "/menu" as const,
+      label: t("bottom.video"),
+    },
+    {
+      key: "diaporama",
+      icon: "/icons/icons-nav/diapo.png",
+      href: "/menu" as const,
+      label: t("bottom.diaporama"),
+    },
+    {
+      key: "sound",
+      icon: "/icons/icons-nav/sound.png",
+      href: "/menu" as const,
+      label: t("bottom.sound"),
+    },
+    {
+      key: "introduction",
+      icon: "/icons/icons-nav/introduction.png",
+      href: "/menu" as const,
+      label: t("bottom.introduction"),
+    },
+    {
+      key: "help",
+      icon: "/icons/icons-nav/help.png",
+      href: "/menu" as const,
+      label: t("bottom.help"),
+    },
+    {
+      key: "close",
+      icon: "/icons/icons-nav/close.png",
+      href: "/menu" as const,
+      label: t("bottom.close"),
+    },
   ];
   const submenuIndexes = Array.from({ length: 8 }, (_, index) => index);
   const searchActions: SearchAction[] = [
@@ -121,7 +170,9 @@ export default function MenuPage() {
       keywords: [
         t("columns.organizations.subtitleLine1"),
         t("columns.organizations.subtitleLine2"),
-        ...submenuIndexes.map((index) => t(`columns.organizations.items.${index}`)),
+        ...submenuIndexes.map((index) =>
+          t(`columns.organizations.items.${index}`),
+        ),
       ].join(" "),
       shortcut: "O",
       action: () => {
@@ -202,7 +253,8 @@ export default function MenuPage() {
       ease: "power2.out",
     });
 
-    const activeButton = activeIndex >= 0 ? menuButtonsRef.current[activeIndex] : null;
+    const activeButton =
+      activeIndex >= 0 ? menuButtonsRef.current[activeIndex] : null;
     if (activeButton) {
       gsap.to(activeButton, {
         y: -6,
@@ -266,7 +318,8 @@ export default function MenuPage() {
             subtitle={t("header.subtitle")}
             headerClassName="md:h-[146px]"
             badgeClassName="md:h-[112px] md:w-[236px]"
-            titleBlockClassName="md:right-[4.9vw] md:left-auto md:w-[35vw]"
+            titleBlockClassName="mx-auto flex w-full max-w-[520px] flex-col items-center md:right-[4.9vw] md:left-auto md:w-[35vw] md:max-w-none md:items-end"
+            subtitleClassName="text-center md:text-right"
           />
 
           <section
@@ -283,23 +336,27 @@ export default function MenuPage() {
             }}
             onFocusCapture={(event) => {
               const trigger = event.target as HTMLElement | null;
-              const menuKey = trigger?.closest("[data-menu-key]")?.getAttribute("data-menu-key") as MenuKey | null;
+              const menuKey = trigger
+                ?.closest("[data-menu-key]")
+                ?.getAttribute("data-menu-key") as MenuKey | null;
               if (menuKey) {
                 setActiveMenu(menuKey);
               } else {
                 setActiveMenu(null);
               }
             }}
-            className="mt-[146px] flex flex-col gap-4 md:absolute md:left-[4.5vw] md:right-[4.5vw] md:top-[245px] md:mt-0 md:h-[560px] md:gap-0"
+            className="mt-[146px] flex flex-col gap-4 md:absolute md:left-[11vw] md:right-[11vw] md:top-[220px] md:mt-0 md:h-[600px] md:gap-0"
           >
-            <div className="flex flex-col gap-4 md:absolute md:left-0 md:right-0 md:top-0 md:flex-row md:items-start md:justify-between">
-            <div className="max-w-[468px] text-center md:text-left">
-              <p className="text-[18px] font-bold italic leading-[1.02] text-black md:whitespace-nowrap">
-                {t("intro.leftLine1")} {t("intro.leftLine2")}
-              </p>
-            </div>
+            <div className="flex flex-col gap-4 md:absolute md:left-0 md:right-0 md:top-0 md:flex-row md:items-center md:justify-between">
+              <div className="max-w-[560px] text-left">
+                <p className="text-[18px] font-bold italic leading-[1.08] text-black">
+                  <span className="whitespace-nowrap">{t("intro.leftLine1")}</span>
+                  <br />
+                  <span className="whitespace-nowrap">{t("intro.leftLine2")}</span>
+                </p>
+              </div>
 
-              <div className="flex w-full max-w-[470px] items-start justify-center self-center md:mr-[0.4vw] md:mt-[3px] md:w-[470px] md:self-start">
+              <div className="flex w-full max-w-[470px] items-center justify-center self-center md:mr-[0.4vw] md:w-[470px] md:self-auto">
                 <div className="w-full text-center md:text-right">
                   <label htmlFor="menu-search-input" className="sr-only">
                     {t("search.label")}
@@ -328,7 +385,9 @@ export default function MenuPage() {
                       >
                         <path d="M7.25 8.15V5.7a2.2 2.2 0 1 0-2.2 2.2h2.2Zm0 3.7v2.45a2.2 2.2 0 1 1-2.2-2.2h2.2Zm5.5-3.7V5.7a2.2 2.2 0 1 1 2.2 2.2h-2.2Zm0 3.7v2.45a2.2 2.2 0 1 0 2.2-2.2h-2.2ZM8.15 7.25h3.7v5.5h-3.7z" />
                       </svg>
-                      <span className="text-[11px] font-bold tracking-[0.12em] text-[#6a6b74]">K</span>
+                      <span className="text-[11px] font-bold tracking-[0.12em] text-[#6a6b74]">
+                        K
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -380,7 +439,7 @@ export default function MenuPage() {
               ))}
             </div>
 
-            <section className="relative overflow-hidden rounded-b-[28px] rounded-tr-[6px] px-6 py-4 shadow-[9px_9px_11px_rgba(0,0,0,0.36)] md:absolute md:left-0 md:right-0 md:top-[152px] md:min-h-[420px] md:px-4 md:py-5">
+            <section className="relative overflow-hidden rounded-b-[28px] rounded-tr-[6px] px-6 py-4 shadow-[9px_9px_11px_rgba(0,0,0,0.36)] md:absolute md:left-0 md:right-0 md:top-[152px] md:min-h-[460px] md:px-4 md:py-5">
               <Image
                 src="/images/home/home-image-banner.png"
                 alt=""
@@ -418,13 +477,13 @@ export default function MenuPage() {
                           </li>
                         ))}
                       </ul>
-                  ) : null}
+                    ) : null}
                   </article>
                 ))}
               </div>
             </section>
 
-            <div className="grid gap-4 pt-1 sm:grid-cols-2 md:absolute md:left-0 md:right-0 md:top-[602px] md:grid-cols-4 md:gap-8 md:px-[0.1vw]">
+            <div className="grid gap-4 pt-1 sm:grid-cols-2 md:absolute md:left-0 md:right-0 md:top-[640px] md:grid-cols-4 md:gap-8 md:px-[0.1vw]">
               {quickActions.map(([key, href]) => (
                 <Link
                   key={key}
@@ -439,7 +498,8 @@ export default function MenuPage() {
 
           <StavnetFooter
             items={footerItems}
-            className="md:bottom-[2.3vh]"
+            desktopMode="paired"
+            className="md:bottom-[2.3vh] md:left-[11vw] md:right-[11vw]"
           />
         </div>
       </main>
@@ -465,7 +525,9 @@ export default function MenuPage() {
                     className="data-selected:bg-[#e8dfbc] data-selected:text-[#102b58]"
                   >
                     {action.label}
-                    {action.shortcut ? <CommandShortcut>{action.shortcut}</CommandShortcut> : null}
+                    {action.shortcut ? (
+                      <CommandShortcut>{action.shortcut}</CommandShortcut>
+                    ) : null}
                   </CommandItem>
                 ))}
               </CommandGroup>

@@ -387,16 +387,32 @@
     "authors": "مؤلفونا"
   },
   "Orgs": {
-    "title": "منظماتنا",
-    "description": "قم بالاطلاع والبحث بين المنظمات المشار إليها في قاعدة بياناتنا.",
-    "searchPlaceholder": "ابحث عن منظمة...",
-    "table": {
-      "organisme": "المنظمة",
-      "type": "النوع",
-      "pays": "البلد",
-      "dateCreation": "تاريخ الإنشاء",
-      "nbAuteurs": "عدد المؤلفين",
-      "nbTitres": "عدد العناوين"
+    "header": {
+      "cardTitle": "قائمة الهيئات",
+      "title": "الأدب الإسرائيلي",
+      "subtitle": "قاعدة بيانات ببليوغرافية وسيرية"
+    },
+    "stats": {
+      "cardsFound": "بطاقات الهيئات",
+      "cardsFoundCount": "1201",
+      "databaseContains": "تحتوي القاعدة على",
+      "databaseContainsCount": "1202"
+    },
+    "columns": {
+      "organizations": "الهيئات: ناشرون، مكتبات، مكتبات بيع، مواقع إلكترونية",
+      "type": "نوع الهيئة",
+      "creationDate": "تاريخ الإنشاء",
+      "country": "البلد (المقر)",
+      "titlesPublished": "عدد العناوين الصادرة",
+      "authorsPublished": "عدد المؤلفين المنشورين"
+    },
+    "footer": {
+      "back": "رجوع",
+      "menu": "القائمة",
+      "close": "إغلاق",
+      "search": "بحث",
+      "help": "مساعدة",
+      "move": "تنقل"
     }
   },
   "Persons": {

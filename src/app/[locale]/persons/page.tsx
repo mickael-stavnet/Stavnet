@@ -155,19 +155,19 @@ export default function PersonsPage() {
           title={t("header.title")}
           subtitle={t("header.subtitle")}
           headerClassName="md:h-[146px]"
-          badgeClassName="md:h-[112px] md:w-[236px]"
-          titleBlockClassName="md:right-[4.7vw] md:left-auto md:w-[44vw]"
+          badgeClassName="md:left-[calc(50%-88px)] md:h-[112px] md:w-[236px] md:-translate-x-1/2"
+          titleBlockClassName="md:left-[calc(50%+23px)] md:w-[1230px] md:-translate-x-1/2 md:text-right"
           titleClassName="text-[34px] md:text-[32px]"
           subtitleClassName="text-[17px]"
         />
 
-        <section className="mt-6 flex flex-col gap-4 md:absolute md:left-[4.8vw] md:right-[4.8vw] md:top-[154px] md:bottom-[108px] md:grid md:grid-cols-[88px_1fr_42px] md:gap-[4px]">
+        <section className="mt-6 flex flex-col gap-4 md:absolute md:left-[4.8vw] md:right-[4.8vw] md:top-[154px] md:bottom-[154px] md:grid md:grid-cols-[88px_1fr_42px] md:gap-[4px]">
           <aside className="relative order-2 hidden flex-col gap-4 md:order-1 md:flex md:translate-x-[42px] md:overflow-visible md:pt-[24px]">
             <div className="hidden md:block md:h-[92px]" />
 
           </aside>
 
-          <section className="order-1 min-w-0 md:order-2 md:mx-auto md:w-full md:max-w-[930px]">
+          <section className="order-1 min-w-0 md:order-2 md:mx-auto md:w-full md:max-w-[1230px]">
             <nav className="flex gap-2 overflow-x-auto pb-2 md:grid md:grid-cols-[92px_repeat(7,minmax(0,1fr))] md:items-end md:gap-[10px] md:overflow-visible md:pb-0">
               {tabs.map((tabKey) => (
                 <button
@@ -327,7 +327,7 @@ export default function PersonsPage() {
 
         <StavnetFooter
           items={footerItems}
-          className="md:bottom-[2.2vh] md:left-[4.8vw] md:right-[4.8vw]"
+          className="md:bottom-[3.2vh] md:left-[calc(50%+23px)] md:right-auto md:w-[min(1410px,94vw)] md:-translate-x-1/2"
           itemClassName="md:min-h-[70px] md:text-[14px]"
           mobileGridClassName="grid-cols-2 sm:grid-cols-4"
           desktopMode="compact"

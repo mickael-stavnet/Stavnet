@@ -213,20 +213,14 @@ export default function BooksPage() {
           title={t("header.title")}
           subtitle={t("header.subtitle")}
           headerClassName="md:h-[146px]"
-          badgeClassName="md:h-[112px] md:w-[236px]"
-          titleBlockClassName="md:right-[4.7vw] md:left-auto md:w-[40vw]"
+          badgeClassName="md:left-[calc(50%-88px)] md:h-[112px] md:w-[236px] md:-translate-x-1/2"
+          titleBlockClassName="md:left-[calc(50%+23px)] md:w-[1230px] md:-translate-x-1/2 md:text-right"
           titleClassName="text-[34px] md:text-[32px]"
           subtitleClassName="text-[17px]"
         />
 
-        <section className="mt-6 flex flex-col gap-5 md:absolute md:left-[4.8vw] md:right-[4.8vw] md:top-[154px] md:bottom-[108px] md:grid md:grid-cols-[88px_1fr_42px] md:gap-[4px]">
+        <section className="mt-6 flex flex-col gap-5 md:absolute md:left-[4.8vw] md:right-[4.8vw] md:top-[154px] md:bottom-[154px] md:grid md:grid-cols-[88px_1fr_42px] md:gap-[4px]">
           <aside className="relative order-2 flex flex-col gap-4 md:order-1 md:translate-x-[42px] md:overflow-visible md:pt-[24px]">
-            <div className="md:absolute md:left-[-4px] md:top-[-82px] md:flex md:w-[180px] md:items-end md:justify-between">
-              <div className="translate-y-[10px] text-[17px] font-bold tracking-[0.2em] text-[#2b2578] [writing-mode:vertical-rl]">
-                {t("bookVertical")}
-              </div>
-            </div>
-
             <div className="text-[15px] font-bold text-black md:pt-[6px]">
               {missingFileByLocale[locale] ?? missingFileByLocale.en}
             </div>
@@ -240,7 +234,7 @@ export default function BooksPage() {
               {t("side.expandedCard")}
             </button>
 
-            <div className="border border-[#7aa8b7] bg-[#d8dde2] md:mt-[12px] md:ml-[6px] md:w-[250px]">
+            <div className="border border-[#7aa8b7] bg-[#d8dde2] md:mt-[12px] md:ml-[-10px] md:w-[220px]">
               <div className="border-b border-[#7aa8b7] bg-[#fff8c8] px-2 py-[3px] text-[12px] uppercase leading-none text-black">
                 {t("summary")}
               </div>
@@ -250,7 +244,7 @@ export default function BooksPage() {
             </div>
           </aside>
 
-          <section className="order-1 min-w-0 md:order-2 md:mx-auto md:w-full md:max-w-[930px]">
+          <section className="order-1 min-w-0 md:order-2 md:mx-auto md:w-full md:max-w-[1230px]">
             <nav className="flex gap-2 overflow-x-auto pb-2 md:grid md:grid-cols-[92px_repeat(7,minmax(0,1fr))] md:items-end md:gap-[10px] md:overflow-visible md:pb-0">
               {tabs.map((tabKey) => (
                 <button
@@ -381,7 +375,7 @@ export default function BooksPage() {
 
         <StavnetFooter
           items={footerItems}
-          className="md:bottom-[2.2vh] md:left-[4.6vw] md:right-[4.6vw]"
+          className="md:bottom-[3.2vh] md:left-[calc(50%+23px)] md:right-auto md:w-[min(1410px,94vw)] md:-translate-x-1/2"
           itemClassName="md:min-h-[70px] md:text-[14px]"
           mobileGridClassName="grid-cols-2 sm:grid-cols-4"
           desktopMode="compact"

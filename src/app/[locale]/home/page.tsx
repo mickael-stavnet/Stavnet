@@ -53,7 +53,8 @@ export default function HomeMenuPage() {
           rightControl={<LanguageSwitcher />}
           headerClassName="md:h-[146px]"
           badgeClassName="md:h-[112px] md:w-[272px]"
-          titleBlockClassName="md:right-[4.9vw] md:left-auto md:top-[2.4vh] md:flex md:h-[110px] md:w-[39vw] md:flex-col md:items-end md:justify-center md:text-right"
+          logoClassName="md:left-[4.9vw] md:top-0 md:w-[255px]"
+          titleBlockClassName="md:right-[4.9vw] md:left-auto md:top-0 md:flex md:h-[112px] md:w-[39vw] md:flex-col md:items-end md:justify-center md:text-right"
           titleClassName="font-['Comic_Sans_MS','Trebuchet_MS',cursive] text-[36px] tracking-[1px] text-[#27236b] md:text-[38px]"
           rightControlClassName="md:top-[132px] md:w-[39vw] md:flex md:justify-end"
         />

@@ -387,16 +387,32 @@
     "authors": "Nos auteurs"
   },
   "Orgs": {
-    "title": "Nos organisations",
-    "description": "Consultez et recherchez parmi les organismes référencés dans notre base de données.",
-    "searchPlaceholder": "Rechercher une organisation...",
-    "table": {
-      "organisme": "Organisme",
-      "type": "Type",
-      "pays": "Pays",
-      "dateCreation": "Date de création",
-      "nbAuteurs": "Nb Auteurs",
-      "nbTitres": "Nb Titres"
+    "header": {
+      "cardTitle": "Liste organismes",
+      "title": "Littérature israélienne",
+      "subtitle": "Base de données bibliographiques et biographiques"
+    },
+    "stats": {
+      "cardsFound": "Fiches organismes",
+      "cardsFoundCount": "1201",
+      "databaseContains": "La base contient",
+      "databaseContainsCount": "1202"
+    },
+    "columns": {
+      "organizations": "Organismes : éditeurs, bibliothèques, libraires, sites internet",
+      "type": "Type organisme",
+      "creationDate": "Date de création",
+      "country": "Pays (siège)",
+      "titlesPublished": "Nb. de titres parus",
+      "authorsPublished": "Nb. d’auteur publies"
+    },
+    "footer": {
+      "back": "Retour",
+      "menu": "Menu",
+      "close": "Quitter",
+      "search": "Rechercher",
+      "help": "Aide",
+      "move": "Naviguer"
     }
   },
   "Persons": {

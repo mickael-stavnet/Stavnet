@@ -36,10 +36,10 @@ export default function HomePage() {
           subtitle={t("coverSubtitle")}
           headerClassName="md:h-[146px]"
           badgeClassName="md:h-[112px] md:w-[272px]"
-          titleBlockClassName="md:right-[4.9vw] md:w-[35vw]"
+          titleBlockClassName="md:right-[4.9vw] md:top-0 md:flex md:h-[112px] md:w-[35vw] md:flex-col md:items-end md:justify-center"
           titleClassName="text-[30px] not-italic md:text-[38px]"
           subtitleClassName="text-[15px] md:text-[18px]"
-          logoClassName="md:left-[5.1vw] md:top-[3.4vh] md:w-[22vw] md:max-w-[350px]"
+          logoClassName="md:left-[5.1vw] md:top-0 md:w-[22vw] md:max-w-[350px]"
         />
 
         <section data-stavnet-animate="cover-content" className="mt-9 flex w-full flex-col items-center md:relative md:mt-0 md:block md:min-h-screen">

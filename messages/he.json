@@ -387,16 +387,32 @@
     "authors": "הסופרים שלנו"
   },
   "Orgs": {
-    "title": "הארגונים שלנו",
-    "description": "עיין וחפש בין הארגונים המופיעים במאגר המידע שלנו.",
-    "searchPlaceholder": "חפש ארגון...",
-    "table": {
-      "organisme": "ארגון",
-      "type": "סוג",
-      "pays": "מדינה",
-      "dateCreation": "תאריך יצירה",
-      "nbAuteurs": "מספר סופרים",
-      "nbTitres": "מספר כותרים"
+    "header": {
+      "cardTitle": "רשימת ארגונים",
+      "title": "ספרות ישראלית",
+      "subtitle": "מאגר ביבליוגרפי וביוגרפי"
+    },
+    "stats": {
+      "cardsFound": "כרטיסי ארגונים",
+      "cardsFoundCount": "1201",
+      "databaseContains": "המאגר מכיל",
+      "databaseContainsCount": "1202"
+    },
+    "columns": {
+      "organizations": "ארגונים: מו\"לים, ספריות, חנויות ספרים, אתרי אינטרנט",
+      "type": "סוג ארגון",
+      "creationDate": "תאריך יצירה",
+      "country": "מדינה (מטה)",
+      "titlesPublished": "מס׳ כותרים שפורסמו",
+      "authorsPublished": "מס׳ מחברים שפורסמו"
+    },
+    "footer": {
+      "back": "חזרה",
+      "menu": "תפריט",
+      "close": "סגור",
+      "search": "חיפוש",
+      "help": "עזרה",
+      "move": "ניווט"
     }
   },
   "Persons": {
