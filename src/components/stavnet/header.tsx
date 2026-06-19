@@ -48,7 +48,7 @@ export function StavnetHeader({
     >
       <div
         className={cn(
-          "hidden md:absolute md:left-[4.9vw] md:top-0 md:block md:w-[255px]",
+          "hidden md:absolute md:left-[4.9vw] md:top-[8px] md:block md:w-[255px]",
           logoClassName,
         )}
       >

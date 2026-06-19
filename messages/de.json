@@ -231,6 +231,82 @@
       "database": "Die Datenbank",
       "records": "4653"
     },
+    "pageData": {
+      "backCoverText": "Wie an jedem Nachmittag, seit ihre Mutter im Pflegeheim Gesundhei lebt, sitzt die Journalistin Lisie Badikhi im geräumigen Salon des Erdgeschosses und verfolgt die kleinen Dramen der Rekonvaleszenz nur halb aufmerksam, als die Nachricht kommt, dass die Oberschwester der Einrichtung, Judie Bismuth, tot in ihrem Zimmer im zweiten Stock aufgefunden wurde. Es besteht kein Zweifel: Es ist Mord. Der Kreis der Verdächtigen zieht sich rasch um die wenigen Personen zusammen, die sich zu diesem Zeitpunkt dort aufhalten: den Direktor, zwei Angestellte, die letzten drei Bewohner, die Ende Juni noch gepflegt werden, und ihre Angehörigen, die zu Besuch gekommen sind. Schon bald zeigt sich, dass die Tote eine gefürchtete Frau war, gegen die viele einen Groll hegten.",
+      "pressSectionTitle": "Auszüge aus Pressestimmen",
+      "pressColumns": {
+        "source": "Presse: Publikation, Autor, Datum",
+        "extracts": "Auszüge"
+      },
+      "pressRows": [
+        {
+          "sourceTitle": "Libération",
+          "sourceDate": "18. September 1997",
+          "excerpt": "An dem Tag, an dem Lisie Badikhi ihre Mutter im Pflegeheim Gesundhei in Beersheva besucht, wird die Leiche der ermordeten Oberschwester gefunden. Lisie, die als Journalistin arbeitet, beginnt zu ermitteln. Sie entdeckt, dass die Tote einige der alten Bewohner erpresst hat. Nach und nach fallen die Masken."
+        },
+        {
+          "sourceTitle": "Actualité juive",
+          "sourceDate": "22. Mai 1997",
+          "excerpt": "Die treuen Leser von Lisie Bidikhis Ermittlungen finden in Der Schmuck die junge Journalistin wieder, die die Fäden eines rätselhaften Doppelmordes entwirrt. Wie in ihren früheren Romanen siedelt Shulamit Lapid die Handlung in Beersheva an. Diesmal treffen Gesellschaftsroman und Krimispannung direkt aufeinander."
+        }
+      ],
+      "availabilitySectionTitle": "Standorte",
+      "availabilityColumns": {
+        "org": "Organisationen: Name",
+        "type": "Typ",
+        "shelfmark": "Signatur",
+        "city": "Stadt",
+        "country": "Land",
+        "website": "Internetadresse"
+      },
+      "availabilityRows": [
+        {
+          "org": "BnF",
+          "type": "Bibliothek",
+          "shelfmark": "8-D4 MON-3773",
+          "city": "Paris",
+          "country": "Frankreich",
+          "website": ""
+        },
+        {
+          "org": "BPI",
+          "type": "Bibliothek",
+          "shelfmark": "892.4 LAPI 4 TA",
+          "city": "Paris",
+          "country": "Frankreich",
+          "website": ""
+        },
+        {
+          "org": "ITHL",
+          "type": "Website",
+          "shelfmark": "---",
+          "city": "Ramat Gan",
+          "country": "Israel",
+          "website": ""
+        }
+      ],
+      "publishingStats": [
+        { "count": "3", "label": "Publikationssprachen" },
+        { "count": "1", "label": "Veröffentlichte Originaltitel" },
+        { "count": "4", "label": "Veröffentlichte Übersetzungen" }
+      ],
+      "publishingColumns": {
+        "status": "",
+        "language": "Publikationssprachen",
+        "title": "Titel: Originale und Übersetzungen",
+        "publisher": "Verlage",
+        "year": "Jahr",
+        "edition": "Ausgabe",
+        "publication": "Publikation"
+      },
+      "publishingRows": [
+        { "status": "O", "language": "Hebräisch", "title": "התכשיט", "publisher": "Keter", "year": "1992", "edition": "R", "publication": "E01" },
+        { "status": "T", "language": "Deutsch", "title": "", "publisher": "Goldmann", "year": "1997", "edition": "P", "publication": "E01" },
+        { "status": "T", "language": "Deutsch", "title": "", "publisher": "Bertelsmann", "year": "1999", "edition": "R", "publication": "E02" },
+        { "status": "T", "language": "Französisch", "title": "Le bijou", "publisher": "Fayard", "year": "1997", "edition": "R", "publication": "E01" },
+        { "status": "T", "language": "Französisch", "title": "Eine Untersuchung von Lisie Badikhi", "publisher": "LGF", "year": "1997", "edition": "P", "publication": "E02" }
+      ]
+    },
     "footer": {
       "back": "Zurück",
       "menu": "Menü",
@@ -492,6 +568,40 @@
       "search": "Search",
       "help": "Help",
       "move": "Navigate"
+    }
+  },
+  "DefinitionPage": {
+    "header": {
+      "cardTitle": "Definition",
+      "title": "Israelische Literatur",
+      "subtitle": "Bibliografische und biografische Datenbank"
+    },
+    "fields": {
+      "definitionLabel": "Definition",
+      "definitionValue": "Thema",
+      "keywordLabel": "Schlüsselwort",
+      "keywordValue": "Choah"
+    },
+    "stats": {
+      "count": "3959",
+      "titles": "Titel"
+    },
+    "columns": {
+      "titles": "Titel: Originale & Übersetzungen",
+      "authors": "Autoren: Vorname, Nachname",
+      "publishers": "Verlage",
+      "languages": "Publikationssprache",
+      "year": "Jahr",
+      "publication": "Publikation",
+      "issue": "Ausgabe"
+    },
+    "footer": {
+      "back": "Zurück",
+      "menu": "Menü",
+      "close": "Schließen",
+      "search": "Suche",
+      "help": "Hilfe",
+      "move": "Navigieren"
     }
   }
 }

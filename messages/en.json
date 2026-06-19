@@ -231,6 +231,82 @@
       "database": "The database",
       "records": "4653"
     },
+    "pageData": {
+      "backCoverText": "Every afternoon since her mother entered the Gesundhei nursing home, journalist Lisie Badikhi settles into the spacious ground-floor lounge, only half attentive to the routines of convalescence, when news arrives that the institution's head nurse, Judie Bismuth, has been found dead in her second-floor room. There is no doubt that it is murder, and the circle of suspects quickly closes around the few people present at the time: the director, two staff members, the last three residents still under care that late June, and their relatives who have come to visit. Before long, the victim emerges as a feared woman, one many people had reason to resent.",
+      "pressSectionTitle": "Press review extracts",
+      "pressColumns": {
+        "source": "Press: publication, author, date",
+        "extracts": "Extracts"
+      },
+      "pressRows": [
+        {
+          "sourceTitle": "Libération",
+          "sourceDate": "September 18, 1997",
+          "excerpt": "On the day Lisie Badikhi visits her mother at the Gesundhei nursing home in Beersheva, the body of the head nurse is discovered. Lisie, who is a journalist, investigates. She learns that the dead woman had been blackmailing some of the elderly residents, and one by one the masks begin to fall."
+        },
+        {
+          "sourceTitle": "Actualité juive",
+          "sourceDate": "May 22, 1997",
+          "excerpt": "Fans of Lisie Bidikhi's investigations will find in The Jewel the young journalist untangling the threads of a mysterious double murder. As in her earlier novels, Shulamit Lapid sets her story in Beersheva. This time, social observation and detective suspense meet head-on."
+        }
+      ],
+      "availabilitySectionTitle": "Location",
+      "availabilityColumns": {
+        "org": "Organizations: name",
+        "type": "Type",
+        "shelfmark": "Book call number",
+        "city": "City",
+        "country": "Country",
+        "website": "Website"
+      },
+      "availabilityRows": [
+        {
+          "org": "BnF",
+          "type": "Library",
+          "shelfmark": "8-D4 MON-3773",
+          "city": "Paris",
+          "country": "France",
+          "website": ""
+        },
+        {
+          "org": "BPI",
+          "type": "Library",
+          "shelfmark": "892.4 LAPI 4 TA",
+          "city": "Paris",
+          "country": "France",
+          "website": ""
+        },
+        {
+          "org": "ITHL",
+          "type": "Site",
+          "shelfmark": "---",
+          "city": "Ramat Gan",
+          "country": "Israel",
+          "website": ""
+        }
+      ],
+      "publishingStats": [
+        { "count": "3", "label": "Languages of publication" },
+        { "count": "1", "label": "Published original titles" },
+        { "count": "4", "label": "Published translated titles" }
+      ],
+      "publishingColumns": {
+        "status": "",
+        "language": "Languages of publication",
+        "title": "Titles: originals and translations",
+        "publisher": "Publishers",
+        "year": "Year",
+        "edition": "Edition",
+        "publication": "Publication"
+      },
+      "publishingRows": [
+        { "status": "O", "language": "Hebrew", "title": "התכשיט", "publisher": "Keter", "year": "1992", "edition": "R", "publication": "E01" },
+        { "status": "T", "language": "German", "title": "", "publisher": "Goldmann", "year": "1997", "edition": "P", "publication": "E01" },
+        { "status": "T", "language": "German", "title": "", "publisher": "Bertelsmann", "year": "1999", "edition": "R", "publication": "E02" },
+        { "status": "T", "language": "French", "title": "Le bijou", "publisher": "Fayard", "year": "1997", "edition": "R", "publication": "E01" },
+        { "status": "T", "language": "French", "title": "Une enquête de Lisie Badikhi", "publisher": "LGF", "year": "1997", "edition": "P", "publication": "E02" }
+      ]
+    },
     "footer": {
       "back": "Back",
       "menu": "Menu",
@@ -484,6 +560,40 @@
       "previous": "Previous",
       "next": "Next",
       "results": "Results {start} to {end} of {total}"
+    },
+    "footer": {
+      "back": "Back",
+      "menu": "Menu",
+      "close": "Close",
+      "search": "Search",
+      "help": "Help",
+      "move": "Navigate"
+    }
+  },
+  "DefinitionPage": {
+    "header": {
+      "cardTitle": "Definition",
+      "title": "Israeli literature",
+      "subtitle": "Bibliographic and biographical database"
+    },
+    "fields": {
+      "definitionLabel": "Definition",
+      "definitionValue": "Theme",
+      "keywordLabel": "Keyword",
+      "keywordValue": "Choah"
+    },
+    "stats": {
+      "count": "3959",
+      "titles": "Titles"
+    },
+    "columns": {
+      "titles": "Titles: originals & translations",
+      "authors": "Authors: first name, last name",
+      "publishers": "Publishers",
+      "languages": "Publication language",
+      "year": "Year",
+      "publication": "Publication",
+      "issue": "Issue"
     },
     "footer": {
       "back": "Back",

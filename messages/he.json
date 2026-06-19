@@ -231,6 +231,82 @@
       "database": "המאגר",
       "records": "4653"
     },
+    "pageData": {
+      "backCoverText": "כמו בכל אחר צהריים מאז שאמה נכנסה לבית ההבראה גזונדהיי, העיתונאית ליזי בדיחי יושבת בטרקלין המרווח שבקומת הקרקע ומקדישה רק תשומת לב חלקית להתרחשויות השגרתיות של ההחלמה, כאשר מודיעים לה שהאחות הראשית של המוסד, ג'ודי ביסמות, נמצאה מתה בחדרה שבקומה השנייה. אין ספק שמדובר ברצח, ומעגל החשודים נסגר במהירות סביב האנשים המעטים שנכחו במקום באותה שעה: המנהל, שני אנשי צוות, שלושת הדיירים האחרונים שעדיין מטופלים בסוף יוני וקרוביהם שבאו לבקר. עד מהרה מתברר שהקורבן הייתה אישה מעוררת פחד, שלרבים היו סיבות לשנוא אותה.",
+      "pressSectionTitle": "קטעים מביקורות עיתונות",
+      "pressColumns": {
+        "source": "עיתונות: פרסום, מחבר, תאריך",
+        "extracts": "קטעים"
+      },
+      "pressRows": [
+        {
+          "sourceTitle": "ליברסיון",
+          "sourceDate": "18 בספטמבר 1997",
+          "excerpt": "ביום שבו ליזי בדיחי מבקרת את אמה בבית ההבראה גזונדהיי בבאר שבע, מתגלה גופתה של האחות הראשית שנרצחה. ליזי, שהיא עיתונאית, מתחילה לחקור. היא מגלה שהמנוחה סחטה כמה מן הדיירים המבוגרים. אט אט המסכות נופלות."
+        },
+        {
+          "sourceTitle": "אקטואליטה יהודית",
+          "sourceDate": "22 במאי 1997",
+          "excerpt": "הקוראים הנאמנים לחקירותיה של ליזי בדיחי יפגשו ב\"התכשיט\" את העיתונאית הצעירה כשהיא מתירה את חוטיו של רצח כפול מסתורי. כמו ברומנים הקודמים של שולמית לפיד, גם כאן מתרחשת העלילה בבאר שבע. הפעם המבט החברתי נפגש ישירות עם מתח בלשי."
+        }
+      ],
+      "availabilitySectionTitle": "מיקומים",
+      "availabilityColumns": {
+        "org": "ארגונים: שם",
+        "type": "סוג",
+        "shelfmark": "מספר מדף",
+        "city": "עיר",
+        "country": "מדינה",
+        "website": "כתובת אינטרנט"
+      },
+      "availabilityRows": [
+        {
+          "org": "BnF",
+          "type": "ספרייה",
+          "shelfmark": "8-D4 MON-3773",
+          "city": "פריז",
+          "country": "צרפת",
+          "website": ""
+        },
+        {
+          "org": "BPI",
+          "type": "ספרייה",
+          "shelfmark": "892.4 LAPI 4 TA",
+          "city": "פריז",
+          "country": "צרפת",
+          "website": ""
+        },
+        {
+          "org": "ITHL",
+          "type": "אתר",
+          "shelfmark": "---",
+          "city": "רמת גן",
+          "country": "ישראל",
+          "website": ""
+        }
+      ],
+      "publishingStats": [
+        { "count": "3", "label": "שפות פרסום" },
+        { "count": "1", "label": "כותרים מקוריים שפורסמו" },
+        { "count": "4", "label": "כותרות מתורגמות שפורסמו" }
+      ],
+      "publishingColumns": {
+        "status": "",
+        "language": "שפות פרסום",
+        "title": "כותרים: מקור ותרגומים",
+        "publisher": "מוציאים לאור",
+        "year": "שנה",
+        "edition": "מהדורה",
+        "publication": "פרסום"
+      },
+      "publishingRows": [
+        { "status": "O", "language": "עברית", "title": "התכשיט", "publisher": "Keter", "year": "1992", "edition": "R", "publication": "E01" },
+        { "status": "T", "language": "גרמנית", "title": "", "publisher": "Goldmann", "year": "1997", "edition": "P", "publication": "E01" },
+        { "status": "T", "language": "גרמנית", "title": "", "publisher": "Bertelsmann", "year": "1999", "edition": "R", "publication": "E02" },
+        { "status": "T", "language": "צרפתית", "title": "Le bijou", "publisher": "Fayard", "year": "1997", "edition": "R", "publication": "E01" },
+        { "status": "T", "language": "צרפתית", "title": "חקירה מאת ליזי בדיחי", "publisher": "LGF", "year": "1997", "edition": "P", "publication": "E02" }
+      ]
+    },
     "footer": {
       "back": "חזרה",
       "menu": "תפריט",
@@ -492,6 +568,40 @@
       "search": "Search",
       "help": "Help",
       "move": "Navigate"
+    }
+  },
+  "DefinitionPage": {
+    "header": {
+      "cardTitle": "הגדרה",
+      "title": "ספרות ישראלית",
+      "subtitle": "מאגר ביבליוגרפי וביוגרפי"
+    },
+    "fields": {
+      "definitionLabel": "הגדרה",
+      "definitionValue": "נושא",
+      "keywordLabel": "מילת מפתח",
+      "keywordValue": "Choah"
+    },
+    "stats": {
+      "count": "3959",
+      "titles": "כותרים"
+    },
+    "columns": {
+      "titles": "כותרות: מקור ותרגום",
+      "authors": "מחברים: שם פרטי, שם משפחה",
+      "publishers": "מו\"לים",
+      "languages": "שפת פרסום",
+      "year": "שנה",
+      "publication": "פרסום",
+      "issue": "מהדורה"
+    },
+    "footer": {
+      "back": "חזרה",
+      "menu": "תפריט",
+      "close": "סגור",
+      "search": "חיפוש",
+      "help": "עזרה",
+      "move": "ניווט"
     }
   }
 }

@@ -15,5 +15,11 @@ This version has breaking changes — APIs, conventions, and file structure may 
 - The current priority is frontend reproduction of the original FileMaker Pro application.
 - FileMaker screenshots are the visual source of truth. Reproduce pages and interactions as closely as possible, pixel-perfect when screenshots are provided.
 - Custom components are allowed and expected when needed to match the FileMaker screenshots. This project-specific pixel-perfect requirement overrides generic UI-library rules from `GEMINI.md` when they conflict.
+- For visual correction requests based on screenshots, first identify the exact visual elements involved, the relationship the user wants between them, and the relevant outer containers before editing any layout code.
+- When a user refers to "this", "that", "block", "card", "truc", or another ambiguous visual target, infer the intended target from the screenshot and browser context by mapping the request to concrete page elements and layout constraints instead of making a fast structural guess.
+- Before changing a screenshot-driven layout, run a short internal reasoning pass that distinguishes: the specific elements concerned, whether the user means the content box or the outer container, whether the requested change concerns width, height, spacing, alignment, or position, and whether the relationship is local or concerns the full composition.
+- For screenshot-driven layout work, prefer matching the visible geometry of the reference image over preserving the current code structure; if necessary, replace brittle positioning with a clearer composition model.
+- When the user asks for two visual elements to match, interpret that as a strict constraint unless the screenshot clearly indicates otherwise: same height means same outer height, same width means same outer width, centered means centered in the full visible composition, and "collé" means the gap should be minimized rather than merely reduced.
+- After screenshot-based layout edits, verify that the resulting composition satisfies the user’s stated spatial relationship in the screenshot itself, not only in the DOM structure or through approximate code assumptions.
 - The app must support French, English, Hebrew, Arabic, German, and Spanish through i18n.
 - Hebrew and Arabic require proper RTL support.
