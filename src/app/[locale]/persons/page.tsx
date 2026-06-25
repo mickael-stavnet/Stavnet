@@ -135,7 +135,7 @@ export default async function PersonsListPage({ searchParams }: PersonsPageProps
             <div className="flex items-center gap-3 text-[18px] leading-none text-black">
               <span>{t("stats.databaseContains")}</span>
               <span>:</span>
-              <span className="font-bold text-[#ff1d1d]">{result.total}</span>
+              <span className="font-bold text-[#ff1d1d]">{result.databaseTotal}</span>
             </div>
           </div>
 

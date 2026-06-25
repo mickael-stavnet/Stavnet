@@ -1,5 +1,8 @@
+"use client";
+
 import Image from "next/image";
-import { ReactNode } from "react";
+import { MouseEvent, ReactNode } from "react";
+import { useRouter } from "next/navigation";
 import { Link } from "@/i18n/routing";
 import { cn } from "@/lib/utils";
 
@@ -43,6 +46,24 @@ export function StavnetFooter({
   desktopMode = "equal",
   centerContent,
 }: StavnetFooterProps) {
+  const router = useRouter();
+
+  const handleItemClick = (item: StavnetFooterItem) => (event: MouseEvent) => {
+    item.onClick?.(event);
+    if (event.defaultPrevented) {
+      return;
+    }
+    if (item.key !== "back") {
+      return;
+    }
+    event.preventDefault();
+    if (window.history.length > 1) {
+      router.back();
+      return;
+    }
+    router.push(item.href);
+  };
+
   if (desktopMode === "cover") {
     return (
       <nav
@@ -54,7 +75,7 @@ export function StavnetFooter({
       >
         <Link
           href={items[0].href}
-          onClick={items[0].onClick}
+          onClick={handleItemClick(items[0])}
           className={cn(
             "flex min-h-[80px] flex-col items-start justify-end text-black md:col-start-1 md:row-start-1",
             itemClassName,
@@ -80,7 +101,7 @@ export function StavnetFooter({
 
         <Link
           href={items[1].href}
-          onClick={items[1].onClick}
+          onClick={handleItemClick(items[1])}
           className={cn(
             "flex min-h-[80px] flex-col items-end justify-end text-black md:col-start-3 md:row-start-1",
             itemClassName,
@@ -132,7 +153,7 @@ export function StavnetFooter({
               <Link
                 key={item.key}
                 href={item.href}
-                onClick={item.onClick}
+                onClick={handleItemClick(item)}
                 className={cn(
                   "flex min-h-[82px] flex-col items-center justify-end text-center text-[15px] font-bold leading-none text-black",
                   itemClassName,
@@ -174,7 +195,7 @@ export function StavnetFooter({
         <Link
           key={item.key}
           href={item.href}
-          onClick={item.onClick}
+          onClick={handleItemClick(item)}
           className={cn(
             "flex min-h-[82px] flex-col items-center justify-end text-center text-[15px] font-bold leading-none text-black",
             itemClassName,

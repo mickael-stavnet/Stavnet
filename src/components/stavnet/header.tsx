@@ -42,7 +42,7 @@ export function StavnetHeader({
     <header
       data-stavnet-animate="header"
       className={cn(
-        "relative flex justify-center px-0 pt-0 md:absolute md:left-0 md:top-0 md:h-[146px] md:w-full md:block md:px-0",
+        "relative -mt-4 flex justify-center px-0 pt-0 md:mt-0 md:absolute md:left-0 md:top-0 md:h-[146px] md:w-full md:block md:px-0",
         headerClassName,
       )}
     >

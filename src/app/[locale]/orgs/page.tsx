@@ -109,7 +109,8 @@ export default async function OrganizationsListPage({ searchParams }: OrgsPagePr
 
   return (
     <main className="relative min-h-[100svh] overflow-x-hidden bg-[#e7f2f7] font-[Arial,Helvetica,sans-serif] text-black md:h-screen md:overflow-hidden">
-      <Image src="/background/background.png" alt="" fill priority sizes="100vw" className="object-cover" />
+      <Image src="/background/background.png" alt="" fill priority sizes="100vw" className="object-cover object-center opacity-95 saturate-[1.08]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.18),transparent_32%),linear-gradient(180deg,rgba(210,229,242,0.18),rgba(210,229,242,0.08))]" />
 
       <div className="relative z-10 mx-auto flex min-h-[100svh] w-full max-w-[1120px] flex-col px-4 pb-5 pt-0 md:h-screen md:max-w-none md:px-0 md:pb-0 md:pt-0">
         <StavnetHeader
@@ -117,13 +118,14 @@ export default async function OrganizationsListPage({ searchParams }: OrgsPagePr
           title={t("header.title")}
           subtitle={t("header.subtitle")}
           headerClassName="md:h-[146px]"
+          logoClassName="md:left-[2.4vw] md:top-[10px] md:w-[320px]"
           badgeClassName="md:h-[112px] md:w-[236px]"
           titleBlockClassName="md:right-[4.7vw] md:left-auto md:w-[44vw]"
           titleClassName="text-[28px] md:text-[32px]"
           subtitleClassName="text-[17px]"
         />
 
-        <section className="mt-6 min-w-0 flex flex-col gap-4 md:absolute md:left-1/2 md:top-[154px] md:bottom-[128px] md:w-[min(1240px,94vw)] md:-translate-x-1/2">
+        <section className="mt-6 min-w-0 flex flex-col gap-4 md:absolute md:left-1/2 md:top-[182px] md:bottom-[106px] md:w-[min(1320px,96vw)] md:-translate-x-1/2">
           <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end sm:justify-end sm:gap-6">
             <div className="flex items-center gap-3 text-[18px] leading-none text-black">
               <span>{t("stats.cardsFound")}</span>
@@ -133,11 +135,11 @@ export default async function OrganizationsListPage({ searchParams }: OrgsPagePr
             <div className="flex items-center gap-3 text-[18px] leading-none text-black">
               <span>{t("stats.databaseContains")}</span>
               <span>:</span>
-              <span className="font-bold text-[#ff1d1d]">{result.total}</span>
+              <span className="font-bold text-[#ff1d1d]">{result.databaseTotal}</span>
             </div>
           </div>
 
-          <section className="overflow-hidden rounded-[8px] border border-[#7aa8b7] bg-[#d8dde2] shadow-[4px_4px_8px_rgba(0,0,0,0.18)]">
+          <section className="overflow-hidden rounded-[8px] border border-[#9aa8b0] bg-[#d8dde2] shadow-[4px_4px_8px_rgba(0,0,0,0.12)]">
             <div className="space-y-3 p-3 md:hidden">
               {result.items.map((organization) => (
                 <MobileOrganizationCard
@@ -154,38 +156,38 @@ export default async function OrganizationsListPage({ searchParams }: OrgsPagePr
 
             <div className="hidden flex-col md:flex">
               <div
-                className="grid min-w-[1100px] border-b border-[#7aa8b7] bg-[#fff15a] text-[12px] uppercase leading-none text-black"
+                className="grid min-w-[1100px] border-b border-[#9aa8b0] bg-[#fff68f] text-[11px] uppercase leading-none text-black"
                 style={{ gridTemplateColumns: ORGS_GRID_TEMPLATE }}
               >
-                <div className="rounded-tl-[8px] border-r border-[#7aa8b7] px-3 py-[10px]">{columnLabels.organizations}</div>
-                <div className="border-r border-[#7aa8b7] px-3 py-[10px] text-center">{columnLabels.type}</div>
-                <div className="border-r border-[#7aa8b7] px-3 py-[10px] text-center">{columnLabels.creationDate}</div>
-                <div className="border-r border-[#7aa8b7] px-3 py-[10px] text-center">{columnLabels.country}</div>
-                <div className="border-r border-[#7aa8b7] px-3 py-[10px] text-center">{columnLabels.titlesPublished}</div>
-                <div className="rounded-tr-[8px] px-3 py-[10px] text-center">{columnLabels.authorsPublished}</div>
+                <div className="rounded-tl-[10px] border-r border-[#9aa8b0] px-3 py-[9px] text-center">{columnLabels.organizations}</div>
+                <div className="rounded-t-[10px] border-r border-[#9aa8b0] px-3 py-[9px] text-center">{columnLabels.type}</div>
+                <div className="rounded-t-[10px] border-r border-[#9aa8b0] px-3 py-[9px] text-center">{columnLabels.creationDate}</div>
+                <div className="rounded-t-[10px] border-r border-[#9aa8b0] px-3 py-[9px] text-center">{columnLabels.country}</div>
+                <div className="rounded-t-[10px] border-r border-[#9aa8b0] px-3 py-[9px] text-center">{columnLabels.titlesPublished}</div>
+                <div className="rounded-tr-[10px] px-3 py-[9px] text-center">{columnLabels.authorsPublished}</div>
               </div>
 
               <div className="overflow-auto">
                 {result.items.map((organization, rowIndex) => (
                   <div
                     key={`${organization.name}-${result.page}-${rowIndex}`}
-                    className="grid min-w-[1100px] border-b border-[#9bb2bc] text-[15px] leading-none text-black last:border-b-0"
+                    className="grid min-w-[1100px] border-b border-[#b1bac0] text-[14px] leading-none text-black last:border-b-0"
                     style={{ gridTemplateColumns: ORGS_GRID_TEMPLATE }}
                   >
-                    <div className="border-r border-[#9bb2bc] px-2 py-[14px]">
+                    <div className="border-r border-[#b1bac0] px-3 py-[15px]">
                       <Link
                         href={{ pathname: "/orgs/details", query: { name: organization.name } }}
                         className="flex items-center text-black hover:underline"
                       >
                         <RedMarker />
-                        <span className="min-w-0 break-words">{organization.name}</span>
+                        <span>{organization.name}</span>
                       </Link>
                     </div>
-                    <div className="border-r border-[#9bb2bc] px-2 py-[14px]">{organization.type || "—"}</div>
-                    <div className="border-r border-[#9bb2bc] px-2 py-[14px]">{organization.creationDate || "—"}</div>
-                    <div className="border-r border-[#9bb2bc] px-2 py-[14px]">{organization.country || "—"}</div>
-                    <div className="border-r border-[#9bb2bc] px-2 py-[14px] text-center">{organization.publishedTitles}</div>
-                    <div className="px-2 py-[14px] text-center">{organization.publishedAuthors}</div>
+                    <div className="border-r border-[#b1bac0] px-3 py-[15px]">{organization.type || "—"}</div>
+                    <div className="border-r border-[#b1bac0] px-3 py-[15px]">{organization.creationDate || "—"}</div>
+                    <div className="border-r border-[#b1bac0] px-3 py-[15px]">{organization.country || "—"}</div>
+                    <div className="border-r border-[#b1bac0] px-3 py-[15px] text-center">{organization.publishedTitles}</div>
+                    <div className="px-3 py-[15px] text-center">{organization.publishedAuthors}</div>
                   </div>
                 ))}
               </div>

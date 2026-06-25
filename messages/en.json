@@ -340,7 +340,9 @@
     "fields": {
       "person": "Person: last name, first name",
       "birth": "Date and place of birth",
+      "death": "Date and place of death",
       "activity": "Professional activity",
+      "language": "Writing language",
       "synonyms": "Synonyms",
       "biography": "Biography in French"
     },

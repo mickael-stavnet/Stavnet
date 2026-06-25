@@ -25,28 +25,27 @@ const submenuDestinations: Record<MenuKey, AppHref> = {
   organizations: "/orgs",
 };
 
+const DEFAULT_MENU_KEY: MenuKey = "books";
+
 const menuColumns = [
   {
     key: "books",
     icon: "/icons/icons-nav/book.png",
-    titleColor: "#ff3d00",
   },
   {
     key: "persons",
     icon: "/icons/icons-nav/personnes.png",
-    titleColor: "#ff3d00",
   },
   {
     key: "organizations",
     icon: "/icons/icons-nav/organismes.png",
-    titleColor: "#ff3d00",
   },
 ] as const;
 
 export default function MenuPage() {
   const t = useTranslations("MenuPage");
   const router = useRouter();
-  const [activeMenu, setActiveMenu] = useState<MenuKey | null>(null);
+  const [activeMenu, setActiveMenu] = useState<MenuKey>(DEFAULT_MENU_KEY);
   const centralSectionRef = useRef<HTMLElement>(null);
   const menuButtonsRef = useRef<Array<HTMLButtonElement | null>>([]);
   const submenuItemsRef = useRef<Array<HTMLLIElement | null>>([]);
@@ -202,19 +201,19 @@ export default function MenuPage() {
             subtitle={t("header.subtitle")}
             headerClassName="md:h-[146px]"
             badgeClassName="md:h-[112px] md:w-[236px]"
-            titleBlockClassName="mx-auto flex w-full max-w-[520px] flex-col items-center md:right-[4.9vw] md:left-auto md:w-[35vw] md:max-w-none md:items-end"
+            titleBlockClassName="md:right-[4.9vw] md:left-auto md:flex md:w-[35vw] md:max-w-none md:flex-col md:items-end"
             subtitleClassName="text-center md:text-right"
           />
 
           <section
             data-stavnet-animate="menu-content"
             ref={centralSectionRef}
-            onMouseLeave={() => setActiveMenu(null)}
+            onMouseLeave={() => setActiveMenu(DEFAULT_MENU_KEY)}
             onBlurCapture={(event) => {
               const currentTarget = event.currentTarget;
               requestAnimationFrame(() => {
                 if (!currentTarget.contains(document.activeElement)) {
-                  setActiveMenu(null);
+                  setActiveMenu(DEFAULT_MENU_KEY);
                 }
               });
             }}
@@ -222,25 +221,29 @@ export default function MenuPage() {
               const trigger = event.target as HTMLElement | null;
               const menuKey = trigger
                 ?.closest("[data-menu-key]")
-                ?.getAttribute("data-menu-key") as MenuKey | null;
-              if (menuKey) {
+                ?.getAttribute("data-menu-key");
+              if (
+                menuKey === "books" ||
+                menuKey === "persons" ||
+                menuKey === "organizations"
+              ) {
                 setActiveMenu(menuKey);
               } else {
-                setActiveMenu(null);
+                setActiveMenu(DEFAULT_MENU_KEY);
               }
             }}
-            className="mt-[146px] flex flex-col gap-4 md:absolute md:left-[11vw] md:right-[11vw] md:top-[220px] md:mt-0 md:h-[600px] md:gap-0"
+            className="mt-5 flex flex-col gap-5 md:absolute md:left-[11vw] md:right-[11vw] md:top-[220px] md:mt-0 md:h-[600px] md:gap-0"
           >
             <div className="flex flex-col gap-4 md:absolute md:left-0 md:right-0 md:top-0 md:flex-row md:items-center md:justify-between">
               <div className="max-w-[560px] text-left">
-                <p className="text-[18px] font-bold italic leading-[1.08] text-black">
-                  <span className="whitespace-nowrap">{t("intro.leftLine1")}</span>
+                <p className="text-[18px] font-bold italic leading-[1.12] text-black sm:text-[19px]">
+                  <span>{t("intro.leftLine1")}</span>
                   <br />
-                  <span className="whitespace-nowrap">{t("intro.leftLine2")}</span>
+                  <span>{t("intro.leftLine2")}</span>
                 </p>
               </div>
 
-              <div className="flex w-full max-w-[470px] items-center justify-center self-center md:mr-[0.4vw] md:w-[470px] md:self-auto">
+              <div className="flex w-full items-center justify-center self-center md:mr-[0.4vw] md:w-[470px] md:self-auto">
                 <div className="w-full text-center md:text-right">
                   <label htmlFor="menu-search-input" className="sr-only">
                     {t("search.label")}
@@ -254,9 +257,9 @@ export default function MenuPage() {
                       placeholder={t("search.placeholder")}
                       onFocus={() => router.push("/search")}
                       onClick={() => router.push("/search")}
-                      className="h-[44px] cursor-pointer rounded-[12px] border-[#bdb6a2] bg-[#f3efe0] pr-28 text-[15px] text-[#243d64] placeholder:text-[#6e6b5b] focus-visible:ring-0"
+                      className="h-[48px] cursor-pointer rounded-[12px] border-[#bdb6a2] bg-[#f3efe0] pr-20 text-[15px] text-[#243d64] placeholder:text-[#6e6b5b] focus-visible:ring-0 sm:pr-28 md:h-[44px]"
                     />
-                    <div className="pointer-events-none absolute right-[8px] top-1/2 flex h-[32px] items-center gap-2 rounded-[10px] border border-[#c9c3b4] bg-[#efede7] px-3 -translate-y-1/2 text-[#5f6068] shadow-[inset_0_0_0_1px_rgba(255,255,255,0.55)]">
+                    <div className="pointer-events-none absolute right-[8px] top-1/2 flex h-[34px] items-center gap-2 rounded-[10px] border border-[#c9c3b4] bg-[#efede7] px-2.5 -translate-y-1/2 text-[#5f6068] shadow-[inset_0_0_0_1px_rgba(255,255,255,0.55)] sm:px-3">
                       <svg
                         viewBox="0 0 20 20"
                         aria-hidden="true"
@@ -269,7 +272,7 @@ export default function MenuPage() {
                       >
                         <path d="M7.25 8.15V5.7a2.2 2.2 0 1 0-2.2 2.2h2.2Zm0 3.7v2.45a2.2 2.2 0 1 1-2.2-2.2h2.2Zm5.5-3.7V5.7a2.2 2.2 0 1 1 2.2 2.2h-2.2Zm0 3.7v2.45a2.2 2.2 0 1 0 2.2-2.2h-2.2ZM8.15 7.25h3.7v5.5h-3.7z" />
                       </svg>
-                      <span className="text-[11px] font-bold tracking-[0.12em] text-[#6a6b74]">
+                      <span className="hidden text-[11px] font-bold tracking-[0.12em] text-[#6a6b74] sm:inline">
                         K
                       </span>
                     </div>
@@ -278,52 +281,66 @@ export default function MenuPage() {
               </div>
             </div>
 
-            <div className="grid gap-5 md:absolute md:left-0 md:right-0 md:top-[64px] md:grid-cols-3 md:gap-5">
+            <div className="grid gap-4 md:absolute md:left-0 md:right-0 md:top-[64px] md:grid-cols-3 md:gap-5">
               {menuColumns.map((column, columnIndex) => (
-                <button
+                <article
                   key={column.key}
-                  type="button"
-                  data-menu-key={column.key}
-                  ref={(element) => {
-                    menuButtonsRef.current[columnIndex] = element;
-                  }}
-                  onMouseEnter={() => setActiveMenu(column.key)}
-                  onFocus={() => setActiveMenu(column.key)}
-                  onClick={() => router.push(submenuDestinations[column.key])}
-                  className="flex min-w-0 items-start gap-4 text-left will-change-transform md:gap-3"
+                  className="min-w-0 rounded-[18px] border border-[#b5c9d2] bg-[rgba(236,247,250,0.82)] p-4 shadow-[0_10px_18px_rgba(53,96,120,0.14)] md:rounded-none md:border-0 md:bg-transparent md:p-0 md:shadow-none"
                 >
-                  <Image
-                    src={column.icon}
-                    alt=""
-                    width={74}
-                    height={74}
-                    className={`h-auto shrink-0 object-contain ${
-                      column.key === "persons"
-                        ? "w-[74px] md:w-[68px]"
-                        : column.key === "organizations"
-                          ? "w-[76px] md:w-[68px]"
-                          : "w-[70px] md:w-[62px]"
-                    }`}
-                  />
-                  <div className="max-w-[260px] pt-[3px] md:max-w-none md:pt-[2px]">
-                    <h2
-                      className="text-[22px] font-bold leading-[1.02] md:text-[20px] md:leading-none"
-                      style={{ color: column.titleColor }}
-                    >
-                      {t(`columns.${column.key}.title`)}
-                    </h2>
-                    <p className="mt-[3px] text-[19px] font-bold italic leading-[1.08] text-[#0018c9] md:mt-[2px] md:text-[17px] md:leading-[1.04]">
-                      {t(`columns.${column.key}.subtitleLine1`)}
-                    </p>
-                    <p className="text-[19px] font-bold italic leading-[1.08] text-[#0018c9] md:text-[17px] md:leading-[1.04]">
-                      {t(`columns.${column.key}.subtitleLine2`)}
-                    </p>
-                  </div>
-                </button>
+                  <button
+                    type="button"
+                    data-menu-key={column.key}
+                    ref={(element) => {
+                      menuButtonsRef.current[columnIndex] = element;
+                    }}
+                    onMouseEnter={() => setActiveMenu(column.key)}
+                    onFocus={() => setActiveMenu(column.key)}
+                    onClick={() => router.push(submenuDestinations[column.key])}
+                    className="flex min-h-[52px] min-w-0 items-start gap-4 text-left will-change-transform md:gap-3"
+                  >
+                    <Image
+                      src={column.icon}
+                      alt=""
+                      width={74}
+                      height={74}
+                      className={`h-auto shrink-0 object-contain ${
+                        column.key === "persons"
+                          ? "w-[74px] md:w-[68px]"
+                          : column.key === "organizations"
+                            ? "w-[76px] md:w-[68px]"
+                            : "w-[70px] md:w-[62px]"
+                      }`}
+                    />
+                    <div className="min-w-0 max-w-[260px] pt-[3px] md:max-w-none md:pt-[2px]">
+                      <h2 className="text-[22px] font-bold leading-[1.02] text-[#ff3d00] md:text-[20px] md:leading-none">
+                        {t(`columns.${column.key}.title`)}
+                      </h2>
+                      <p className="mt-[3px] text-[19px] font-bold italic leading-[1.08] text-[#0018c9] md:mt-[2px] md:text-[17px] md:leading-[1.04]">
+                        {t(`columns.${column.key}.subtitleLine1`)}
+                      </p>
+                      <p className="text-[19px] font-bold italic leading-[1.08] text-[#0018c9] md:text-[17px] md:leading-[1.04]">
+                        {t(`columns.${column.key}.subtitleLine2`)}
+                      </p>
+                    </div>
+                  </button>
+
+                  <ul className="mt-4 grid gap-2 md:hidden">
+                    {submenuIndexes.map((index) => (
+                      <li key={`${column.key}-${index}`}>
+                        <Link
+                          href={submenuDestinations[column.key]}
+                          className="flex min-h-[44px] items-center rounded-[10px] border border-[#b8c8cf] bg-[rgba(255,255,255,0.54)] px-3 text-[15px] font-bold leading-[1.1] text-[#233341] transition-colors hover:bg-[rgba(255,255,255,0.7)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#356985]"
+                        >
+                          {t(`columns.${column.key}.items.${index}`)}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </article>
               ))}
             </div>
 
-            <section className="relative overflow-hidden rounded-b-[28px] rounded-tr-[6px] px-6 py-4 shadow-[9px_9px_11px_rgba(0,0,0,0.36)] md:absolute md:left-0 md:right-0 md:top-[152px] md:min-h-[460px] md:px-4 md:py-5">
+            <section className="relative hidden overflow-hidden rounded-b-[28px] rounded-tr-[6px] px-6 py-4 shadow-[9px_9px_11px_rgba(0,0,0,0.36)] md:absolute md:left-0 md:right-0 md:top-[152px] md:block md:min-h-[460px] md:px-4 md:py-5">
               <Image
                 src="/images/home/home-image-banner.png"
                 alt=""
@@ -367,12 +384,12 @@ export default function MenuPage() {
               </div>
             </section>
 
-            <div className="grid gap-4 pt-1 sm:grid-cols-2 md:absolute md:left-0 md:right-0 md:top-[640px] md:grid-cols-4 md:gap-8 md:px-[0.1vw]">
+            <div className="grid gap-3 pt-1 sm:grid-cols-2 md:absolute md:left-0 md:right-0 md:top-[640px] md:grid-cols-4 md:gap-8 md:px-[0.1vw]">
               {quickActions.map(([key, href]) => (
                 <Link
                   key={key}
                   href={href}
-                  className="flex h-[54px] items-center justify-center rounded-bl-[11px] rounded-tr-[4px] bg-[linear-gradient(90deg,#ff6d23_0%,#ffb534_46%,#fff043_100%)] px-4 text-center text-[21px] font-bold text-[#0018c9] shadow-[8px_9px_9px_rgba(0,0,0,0.32)] md:h-[52px]"
+                  className="flex min-h-[56px] items-center justify-center rounded-bl-[11px] rounded-tr-[4px] bg-[linear-gradient(90deg,#ff6d23_0%,#ffb534_46%,#fff043_100%)] px-4 py-2 text-center text-[18px] font-bold leading-[1.08] text-[#0018c9] shadow-[8px_9px_9px_rgba(0,0,0,0.32)] sm:text-[20px] md:h-[52px] md:min-h-0 md:text-[21px]"
                 >
                   {t(`quickActions.${key}`)}
                 </Link>

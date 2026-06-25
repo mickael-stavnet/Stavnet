@@ -12,7 +12,6 @@ const PERSON_DEATH_DATE_COLUMN = "Date de D�c�s";
 const PERSON_DEATH_PLACE_COLUMN = "Lieu de D�c�s";
 const PERSON_RESIDENCE_COLUMN = "Pays de R�sidence";
 const PERSON_PUBLICATION_YEAR_COLUMN = "Ann�e Publication";
-const PERSON_FOUND_COUNT_COLUMN = "Nb. Fiches Trouv�es";
 const PERSON_POCKET_REISSUES_COLUMN = "Nb. R��ditions Poche";
 const PERSON_REGULAR_REISSUES_COLUMN = "Nb. R��ditions R�guli�res";
 
@@ -69,6 +68,7 @@ export interface PersonListResult {
   pageSize: number;
   total: number;
   totalPages: number;
+  databaseTotal: number;
 }
 
 const compareByLocaleName = (left: string, right: string): number =>
@@ -94,6 +94,14 @@ function composeParts(parts: string[]): string {
   return filtered.join(", ");
 }
 
+function isDisplayablePersonName(value: string): boolean {
+  const trimmedValue = value.trim();
+  if (!trimmedValue) {
+    return false;
+  }
+  return !/^[?\s-]+$/.test(trimmedValue);
+}
+
 function mapPersonListItem(row: DatabaseRow): PersonListItem {
   return {
     name: readValue(row, [PERSON_NAME_COLUMN, PERSON_ALT_NAME_COLUMN]),
@@ -109,7 +117,7 @@ function mapPersonListItem(row: DatabaseRow): PersonListItem {
   };
 }
 
-function mapPersonDetail(row: DatabaseRow, total: number): PersonDetail {
+function mapPersonDetail(row: DatabaseRow, filteredTotal: number, databaseTotal: number): PersonDetail {
   const bibliographyRow: PersonBibliographyRow = {
     type: readValue(row, ["Type Contribution"]),
     language: readValue(row, ["Langue Traduction"]),
@@ -143,14 +151,14 @@ function mapPersonDetail(row: DatabaseRow, total: number): PersonDetail {
     },
     bibliographyRows,
     stats: {
-      cardsFound: readCount(row, [PERSON_FOUND_COUNT_COLUMN]),
-      databaseContains: String(total),
+      cardsFound: String(filteredTotal),
+      databaseContains: String(databaseTotal),
     },
   };
 }
 
 function hasPersonIdentity(row: DatabaseRow): boolean {
-  return readValue(row, [PERSON_NAME_COLUMN, PERSON_ALT_NAME_COLUMN]).length > 0;
+  return isDisplayablePersonName(readValue(row, [PERSON_NAME_COLUMN, PERSON_ALT_NAME_COLUMN]));
 }
 
 const getAllPersonsRows = cache(async (): Promise<DatabaseRow[]> => {
@@ -184,6 +192,35 @@ const getAllPersonsRows = cache(async (): Promise<DatabaseRow[]> => {
   return rows;
 });
 
+const getPersonsDatabaseTotal = cache(async (): Promise<number> => {
+  logInfo("PERSONS_DB_TOTAL_START", {
+    table: PERSONS_TABLE,
+    strategy: "exact_count_head",
+  });
+  const { count, error, status, statusText } = await supabase
+    .from(PERSONS_TABLE)
+    .select("*", { count: "exact", head: true });
+
+  if (error) {
+    logError("PERSONS_DB_TOTAL_ERROR", {
+      table: PERSONS_TABLE,
+      status,
+      statusText,
+      error,
+    });
+    throw new Error(error.message);
+  }
+
+  const total = count ?? 0;
+  logInfo("PERSONS_DB_TOTAL_RESULT", {
+    table: PERSONS_TABLE,
+    status,
+    statusText,
+    total,
+  });
+  return total;
+});
+
 export async function getPersonsPage(page: number, pageSize = PERSONS_PAGE_SIZE): Promise<PersonListResult> {
   const currentPage = Math.max(1, page);
   const from = (currentPage - 1) * pageSize;
@@ -196,7 +233,7 @@ export async function getPersonsPage(page: number, pageSize = PERSONS_PAGE_SIZE)
     orderBy: "local:name",
   });
 
-  const rows = await getAllPersonsRows();
+  const [rows, databaseTotal] = await Promise.all([getAllPersonsRows(), getPersonsDatabaseTotal()]);
   const sortedRows = rows.slice().sort((left, right) =>
     compareByLocaleName(
       readValue(left, [PERSON_ALT_NAME_COLUMN, PERSON_NAME_COLUMN]),
@@ -220,6 +257,7 @@ export async function getPersonsPage(page: number, pageSize = PERSONS_PAGE_SIZE)
     pageSize,
     total,
     totalPages,
+    databaseTotal,
   };
 }
 
@@ -237,7 +275,7 @@ export const getPersonDetailByName = cache(async (name: string): Promise<PersonD
     },
   });
 
-  const rows = await getAllPersonsRows();
+  const [rows, databaseTotal] = await Promise.all([getAllPersonsRows(), getPersonsDatabaseTotal()]);
   const data =
     rows.find((row) => readValue(row, [PERSON_NAME_COLUMN, PERSON_ALT_NAME_COLUMN]) === trimmedName) ??
     rows.find((row) => readValue(row, [PERSON_ALT_NAME_COLUMN, PERSON_NAME_COLUMN]) === trimmedName) ??
@@ -260,7 +298,7 @@ export const getPersonDetailByName = cache(async (name: string): Promise<PersonD
     strategy: "local_lookup",
     row: data,
   });
-  return mapPersonDetail(data as DatabaseRow, rows.length);
+  return mapPersonDetail(data as DatabaseRow, rows.length, databaseTotal);
 });
 
 export const getDefaultPersonDetail = cache(async (): Promise<PersonDetail | null> => {
@@ -268,7 +306,7 @@ export const getDefaultPersonDetail = cache(async (): Promise<PersonDetail | nul
     table: PERSONS_TABLE,
     orderBy: "local:name",
   });
-  const rows = await getAllPersonsRows();
+  const [rows, databaseTotal] = await Promise.all([getAllPersonsRows(), getPersonsDatabaseTotal()]);
   const data =
     rows
       .slice()
@@ -292,5 +330,5 @@ export const getDefaultPersonDetail = cache(async (): Promise<PersonDetail | nul
     strategy: "local_sort_pick_first",
     row: data,
   });
-  return mapPersonDetail(data as DatabaseRow, rows.length);
+  return mapPersonDetail(data as DatabaseRow, rows.length, databaseTotal);
 });

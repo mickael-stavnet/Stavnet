@@ -40,7 +40,11 @@ export interface OrganizationListResult {
   pageSize: number;
   total: number;
   totalPages: number;
+  databaseTotal: number;
 }
+
+const compareByLocaleName = (left: string, right: string): number =>
+  left.localeCompare(right, "fr", { sensitivity: "base", ignorePunctuation: true });
 
 function readValue(row: DatabaseRow, keys: string[]): string {
   for (const key of keys) {
@@ -57,6 +61,14 @@ function readCount(row: DatabaseRow, keys: string[]): string {
   return value || "0";
 }
 
+function isDisplayableOrganizationName(value: string): boolean {
+  const trimmedValue = value.trim();
+  if (!trimmedValue) {
+    return false;
+  }
+  return !/^[?\s-]+$/.test(trimmedValue);
+}
+
 function mapOrganizationListItem(row: DatabaseRow): OrganizationListItem {
   return {
     name: readValue(row, ["Organisme"]),
@@ -68,7 +80,7 @@ function mapOrganizationListItem(row: DatabaseRow): OrganizationListItem {
   };
 }
 
-function mapOrganizationDetail(row: DatabaseRow, total: number): OrganizationDetail {
+function mapOrganizationDetail(row: DatabaseRow, filteredTotal: number, databaseTotal: number): OrganizationDetail {
   return {
     name: readValue(row, ["Organisme"]),
     synonym: readValue(row, ["Organisme"]),
@@ -80,16 +92,51 @@ function mapOrganizationDetail(row: DatabaseRow, total: number): OrganizationDet
       authors: readCount(row, ["Nb_Auteurs"]),
     },
     stats: {
-      cardsFound: "1",
-      databaseContains: String(total),
+      cardsFound: String(filteredTotal),
+      databaseContains: String(databaseTotal),
     },
   };
 }
 
-async function getOrganizationsTotal(): Promise<number> {
+function hasOrganizationIdentity(row: DatabaseRow): boolean {
+  return isDisplayableOrganizationName(readValue(row, ["Organisme"]));
+}
+
+const getAllOrganizationsRows = cache(async (): Promise<DatabaseRow[]> => {
+  logInfo("ORGS_DB_ALL_ROWS_START", {
+    table: ORGS_TABLE,
+    strategy: "plain_select_then_local_sort_and_filter",
+  });
+  const { data, error, status, statusText } = await supabase
+    .from(ORGS_TABLE)
+    .select("*")
+    .range(0, 5000);
+
+  if (error) {
+    logError("ORGS_DB_ALL_ROWS_ERROR", {
+      table: ORGS_TABLE,
+      status,
+      statusText,
+      error,
+    });
+    throw new Error(error.message);
+  }
+
+  const rows = ((data ?? []) as DatabaseRow[]).filter(hasOrganizationIdentity);
+  logInfo("ORGS_DB_ALL_ROWS_RAW", {
+    table: ORGS_TABLE,
+    status,
+    statusText,
+    rowCount: rows.length,
+    sampleRow: rows[0] ?? null,
+  });
+  return rows;
+});
+
+const getOrganizationsDatabaseTotal = cache(async (): Promise<number> => {
   logInfo("ORGS_DB_TOTAL_START", {
     table: ORGS_TABLE,
-    action: "count",
+    strategy: "exact_count_head",
   });
   const { count, error, status, statusText } = await supabase
     .from(ORGS_TABLE)
@@ -105,14 +152,15 @@ async function getOrganizationsTotal(): Promise<number> {
     throw new Error(error.message);
   }
 
+  const total = count ?? 0;
   logInfo("ORGS_DB_TOTAL_DONE", {
     table: ORGS_TABLE,
     status,
     statusText,
-    count,
+    total,
   });
-  return count ?? 0;
-}
+  return total;
+});
 
 export async function getOrganizationsPage(
   page: number,
@@ -126,47 +174,31 @@ export async function getOrganizationsPage(
     page: currentPage,
     pageSize,
     range: { from, to },
-    orderBy: "Organisme",
+    orderBy: "local:name",
   });
 
-  const [{ data, error, status, statusText }, total] = await Promise.all([
-    supabase
-      .from(ORGS_TABLE)
-      .select("*")
-      .order("Organisme", { ascending: true })
-      .range(from, to),
-    getOrganizationsTotal(),
-  ]);
-
-  if (error) {
-    logError("ORGS_DB_PAGE_ERROR", {
-      table: ORGS_TABLE,
-      page: currentPage,
-      pageSize,
-      range: { from, to },
-      status,
-      statusText,
-      error,
-    });
-    throw new Error(error.message);
-  }
-
-  const rows = (data ?? []) as DatabaseRow[];
-  logInfo("ORGS_DB_PAGE_RAW", {
+  const [rows, databaseTotal] = await Promise.all([getAllOrganizationsRows(), getOrganizationsDatabaseTotal()]);
+  const sortedRows = rows.slice().sort((left, right) =>
+    compareByLocaleName(readValue(left, ["Organisme"]), readValue(right, ["Organisme"])),
+  );
+  const pagedRows = sortedRows.slice(from, to + 1);
+  const total = sortedRows.length;
+  logInfo("ORGS_DB_PAGE_LOCAL_RESULT", {
     table: ORGS_TABLE,
-    status,
-    statusText,
-    rowCount: rows.length,
-    sampleRow: rows[0] ?? null,
+    strategy: "local_sort_and_slice",
+    totalRows: rows.length,
+    pageRowCount: pagedRows.length,
+    sampleRow: pagedRows[0] ?? null,
   });
   const totalPages = Math.max(1, Math.ceil(total / pageSize));
 
   return {
-    items: rows.map(mapOrganizationListItem),
+    items: pagedRows.map(mapOrganizationListItem),
     page: currentPage,
     pageSize,
     total,
     totalPages,
+    databaseTotal,
   };
 }
 
@@ -179,96 +211,59 @@ export const getOrganizationDetailByName = cache(async (name: string): Promise<O
   logInfo("ORGS_DB_DETAIL_START", {
     table: ORGS_TABLE,
     filter: {
-      column: "Organisme",
+      column: "local:name",
       value: trimmedName,
     },
   });
 
-  const [{ data, error, status, statusText }, total] = await Promise.all([
-    supabase
-      .from(ORGS_TABLE)
-      .select("*")
-      .eq("Organisme", trimmedName)
-      .limit(1)
-      .maybeSingle(),
-    getOrganizationsTotal(),
-  ]);
-
-  if (error) {
-    logError("ORGS_DB_DETAIL_ERROR", {
-      table: ORGS_TABLE,
-      status,
-      statusText,
-      filter: {
-        column: "Organisme",
-        value: trimmedName,
-      },
-      error,
-    });
-    throw new Error(error.message);
-  }
+  const [rows, databaseTotal] = await Promise.all([getAllOrganizationsRows(), getOrganizationsDatabaseTotal()]);
+  const data = rows.find((row) => readValue(row, ["Organisme"]) === trimmedName) ?? null;
 
   if (!data) {
     logWarn("ORGS_DB_DETAIL_NOT_FOUND", {
       table: ORGS_TABLE,
       filter: {
-        column: "Organisme",
+        column: "local:name",
         value: trimmedName,
       },
-      status,
-      statusText,
+      totalRows: rows.length,
     });
     return null;
   }
 
   logInfo("ORGS_DB_DETAIL_RAW", {
     table: ORGS_TABLE,
-    status,
-    statusText,
+    strategy: "local_lookup",
     row: data,
   });
-  return mapOrganizationDetail(data as DatabaseRow, total);
+  return mapOrganizationDetail(data as DatabaseRow, rows.length, databaseTotal);
 });
 
 export const getDefaultOrganizationDetail = cache(async (): Promise<OrganizationDetail | null> => {
   logInfo("ORGS_DB_DEFAULT_DETAIL_START", {
     table: ORGS_TABLE,
-    orderBy: "Organisme",
+    orderBy: "local:name",
   });
-  const [{ data, error, status, statusText }, total] = await Promise.all([
-    supabase
-      .from(ORGS_TABLE)
-      .select("*")
-      .order("Organisme", { ascending: true })
-      .limit(1)
-      .maybeSingle(),
-    getOrganizationsTotal(),
-  ]);
-
-  if (error) {
-    logError("ORGS_DB_DEFAULT_DETAIL_ERROR", {
-      table: ORGS_TABLE,
-      status,
-      statusText,
-      error,
-    });
-    throw new Error(error.message);
-  }
+  const [rows, databaseTotal] = await Promise.all([getAllOrganizationsRows(), getOrganizationsDatabaseTotal()]);
+  const data =
+    rows
+      .slice()
+      .sort((left, right) =>
+        compareByLocaleName(readValue(left, ["Organisme"]), readValue(right, ["Organisme"])),
+      )[0] ?? null;
 
   if (!data) {
     logWarn("ORGS_DB_DEFAULT_DETAIL_EMPTY", {
       table: ORGS_TABLE,
-      status,
-      statusText,
+      totalRows: rows.length,
     });
     return null;
   }
 
   logInfo("ORGS_DB_DEFAULT_DETAIL_RAW", {
     table: ORGS_TABLE,
-    status,
-    statusText,
+    strategy: "local_sort_pick_first",
     row: data,
   });
-  return mapOrganizationDetail(data as DatabaseRow, total);
+  return mapOrganizationDetail(data as DatabaseRow, rows.length, databaseTotal);
 });
