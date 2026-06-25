@@ -108,6 +108,43 @@ function InfoTable({
   );
 }
 
+function MobileInfoTable({
+  columns,
+  rows,
+}: {
+  columns: string[];
+  rows: string[][];
+}) {
+  return (
+    <section className="space-y-3 md:hidden">
+      {rows.map((row, rowIndex) => (
+        <article key={`${row[0]}-${rowIndex}`} className="rounded-[6px] border border-[#7ea8b8] bg-[#a6d9eb] p-3">
+          {columns.map((column, columnIndex) => (
+            <div
+              key={`${column}-${columnIndex}`}
+              className={columnIndex === 0 ? "space-y-1" : "mt-3 space-y-1"}
+            >
+              <p className="text-[11px] font-bold uppercase tracking-[0.04em] text-[#07384a]">
+                {column}
+              </p>
+              <div className="text-[14px] leading-[1.35] text-black">
+                {columnIndex === 0 ? (
+                  <span className="flex min-w-0 items-start gap-2">
+                    <RedMarker />
+                    <span className="break-words">{row[columnIndex] ?? ""}</span>
+                  </span>
+                ) : (
+                  <span className="break-words">{row[columnIndex] ?? ""}</span>
+                )}
+              </div>
+            </div>
+          ))}
+        </article>
+      ))}
+    </section>
+  );
+}
+
 function PressExtractsTable({
   rows,
   sourceLabel,
@@ -119,12 +156,44 @@ function PressExtractsTable({
 }) {
   return (
     <section className="border border-[#7ea8b8] bg-[#a6d9eb]">
-      <div className="grid border-b border-[#7ea8b8] bg-[#fff6bf] text-[10px] uppercase leading-[1.05] text-black md:grid-cols-[280px_minmax(0,1fr)] md:text-[11px]">
+      <div className="hidden border-b border-[#7ea8b8] bg-[#fff6bf] text-[10px] uppercase leading-[1.05] text-black md:grid md:grid-cols-[280px_minmax(0,1fr)] md:text-[11px]">
         <div className="border-r border-[#7ea8b8] px-2 py-[2px]">{sourceLabel}</div>
         <div className="px-2 py-[2px]">{extractsLabel}</div>
       </div>
+      <div className="space-y-3 p-3 md:hidden">
+        {rows.map((row, rowIndex) => {
+          const sourceLines = row[0]?.split("\n") ?? [];
+          return (
+            <article key={`${rowIndex}-${row[0]}`} className="rounded-[6px] border border-[#7ea8b8] bg-[#b6e2ef] p-3">
+              <div className="space-y-1">
+                <p className="text-[11px] font-bold uppercase tracking-[0.04em] text-[#07384a]">
+                  {sourceLabel}
+                </p>
+                <div className="text-[14px] leading-[1.35] text-black">
+                  <div className="flex items-start gap-2">
+                    <RedMarker />
+                    <div className="min-w-0">
+                      {sourceLines.map((line, lineIndex) => (
+                        <div key={`${line}-${lineIndex}`} className={lineIndex === 0 ? "font-bold" : ""}>
+                          {line}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="mt-3 space-y-1">
+                <p className="text-[11px] font-bold uppercase tracking-[0.04em] text-[#07384a]">
+                  {extractsLabel}
+                </p>
+                <p className="text-[14px] leading-[1.45] text-black">{row[1]}</p>
+              </div>
+            </article>
+          );
+        })}
+      </div>
       {rows.map((row, rowIndex) => (
-        <div key={`${rowIndex}-${row[0]}`} className="grid md:grid-cols-[280px_minmax(0,1fr)]">
+        <div key={`${rowIndex}-${row[0]}`} className="hidden md:grid md:grid-cols-[280px_minmax(0,1fr)]">
           <div className={`border-r border-[#7ea8b8] px-2 py-[6px] text-[15px] leading-[1.35] text-black ${rowIndex > 0 ? "border-t" : ""}`}>
             {row[0].split("\n").map((line) => (
               <div key={line} className={line === row[0].split("\n")[0] ? "font-bold" : ""}>
@@ -178,23 +247,23 @@ export default function BookPressCritiquesPage() {
         />
 
         <section className="mt-6 flex min-w-0 flex-col gap-3 md:absolute md:left-1/2 md:top-1/2 md:w-[1436px] md:max-w-[calc(100vw-24px)] md:-translate-x-1/2 md:-translate-y-1/2 md:grid md:grid-cols-[1fr] md:gap-x-0 md:gap-y-[10px]">
-          <div className="md:relative md:h-[404px]">
-            <aside className="order-2 min-w-0 md:absolute md:left-0 md:top-0 md:h-[404px] md:order-1 md:self-start md:overflow-visible md:pt-0">
-              <div className="w-fit border border-[#b7ab92] bg-[#f3ead4] p-[6px] shadow-[2px_2px_4px_rgba(0,0,0,0.12)] md:h-[404px] md:w-[270px]">
+          <div className="flex min-w-0 flex-col gap-3 md:relative md:h-[404px] md:block">
+            <aside className="order-1 min-w-0 md:absolute md:left-0 md:top-0 md:h-[404px] md:self-start md:overflow-visible md:pt-0">
+              <div className="w-full max-w-[270px] border border-[#b7ab92] bg-[#f3ead4] p-[6px] shadow-[2px_2px_4px_rgba(0,0,0,0.12)] md:h-[404px] md:w-[270px]">
                 <Image
                   src="/images/book-cover.jpg"
                   alt={sampleBook.title}
                   width={258}
                   height={387}
                   priority
-                  className="h-auto w-[258px] object-cover md:h-full md:w-full"
+                  className="h-auto w-full object-cover md:h-full md:w-full"
                 />
               </div>
             </aside>
 
-            <section className="min-w-0 md:h-[404px]">
+            <section className="order-2 min-w-0 md:h-[404px]">
               <div className="md:ml-[282px] md:h-[404px] md:w-[1120px] md:max-w-none">
-                <div className="flex h-[404px] min-w-0 flex-col overflow-hidden rounded-[8px] border border-[#7aa8b7] bg-[linear-gradient(180deg,#8ecfe8_0%,#a8dbed_100%)] shadow-[4px_4px_8px_rgba(0,0,0,0.18)]">
+                <div className="flex min-h-0 min-w-0 flex-col overflow-hidden rounded-[8px] border border-[#7aa8b7] bg-[linear-gradient(180deg,#8ecfe8_0%,#a8dbed_100%)] shadow-[4px_4px_8px_rgba(0,0,0,0.18)] md:h-[404px]">
                   <div className="flex h-full min-w-0 flex-col gap-[8px] px-3 py-3 md:px-[12px] md:py-[10px]">
                     <InfoField
                       label={t("fields.title")}
@@ -220,21 +289,30 @@ export default function BookPressCritiquesPage() {
                       />
                     </div>
 
-                    <InfoTable
-                      columns={[t("tables.authors"), t("tables.authorType"), t("tables.writingLanguage")]}
-                      rows={sampleBook.authors}
-                      gridTemplateColumns="2.3fr 0.95fr 1.05fr"
-                    />
-                    <InfoTable
-                      columns={[t("tables.contributors"), t("tables.contributionType"), t("tables.writingLanguage")]}
-                      rows={sampleBook.contributors}
-                      gridTemplateColumns="2.3fr 0.95fr 1.05fr"
-                    />
-                    <InfoTable
-                      columns={[t("tables.publishers"), t("tables.country"), t("tables.isbn")]}
-                      rows={sampleBook.publishers}
-                      gridTemplateColumns="1.7fr 0.9fr 1.1fr"
-                    />
+                    <MobileInfoTable columns={[t("tables.authors"), t("tables.authorType"), t("tables.writingLanguage")]} rows={sampleBook.authors} />
+                    <div className="hidden md:block">
+                      <InfoTable
+                        columns={[t("tables.authors"), t("tables.authorType"), t("tables.writingLanguage")]}
+                        rows={sampleBook.authors}
+                        gridTemplateColumns="2.3fr 0.95fr 1.05fr"
+                      />
+                    </div>
+                    <MobileInfoTable columns={[t("tables.contributors"), t("tables.contributionType"), t("tables.writingLanguage")]} rows={sampleBook.contributors} />
+                    <div className="hidden md:block">
+                      <InfoTable
+                        columns={[t("tables.contributors"), t("tables.contributionType"), t("tables.writingLanguage")]}
+                        rows={sampleBook.contributors}
+                        gridTemplateColumns="2.3fr 0.95fr 1.05fr"
+                      />
+                    </div>
+                    <MobileInfoTable columns={[t("tables.publishers"), t("tables.country"), t("tables.isbn")]} rows={sampleBook.publishers} />
+                    <div className="hidden md:block">
+                      <InfoTable
+                        columns={[t("tables.publishers"), t("tables.country"), t("tables.isbn")]}
+                        rows={sampleBook.publishers}
+                        gridTemplateColumns="1.7fr 0.9fr 1.1fr"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>

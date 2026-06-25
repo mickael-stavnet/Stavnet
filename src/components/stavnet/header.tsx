@@ -58,7 +58,7 @@ export function StavnetHeader({
           width={295}
           height={75}
           priority
-          className="h-auto w-[104px] md:w-[114px]"
+          className="h-auto w-[128px] drop-shadow-[0_4px_12px_rgba(0,0,0,0.18)] md:w-[168px]"
         />
       </div>
 

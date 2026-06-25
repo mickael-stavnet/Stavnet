@@ -1,28 +1,85 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
+import { NextRequest, NextResponse } from "next/server";
+import {
+  getDefaultPersonDetail,
+  getPersonDetailByName,
+  getPersonsPage,
+  PERSONS_PAGE_SIZE,
+} from "@/lib/data/persons";
+import { logError, logInfo } from "@/lib/server-log";
+
+function parsePage(value: string | null): number {
+  const parsed = Number.parseInt(value ?? "1", 10);
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : 1;
+}
+
+function parsePageSize(value: string | null, fallback: number): number {
+  const parsed = Number.parseInt(value ?? "", 10);
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
+}
 
 export async function GET(request: NextRequest): Promise<NextResponse> {
-  const { searchParams } = new URL(request.url);
-  const page = parseInt(searchParams.get('page') || '1', 10);
-  const search = searchParams.get('search') || '';
-  const pageSize = 20;
-  const from = (page - 1) * pageSize;
-  const to = from + pageSize - 1;
+  try {
+    const { searchParams } = new URL(request.url);
+    const name = searchParams.get("name");
+    logInfo("API_PERSONS_GET_START", {
+      method: request.method,
+      url: request.url,
+      query: Object.fromEntries(searchParams.entries()),
+      body: null,
+    });
 
-  let query = supabase
-    .from('data-person')
-    .select('*')
-    .range(from, to);
+    if (name) {
+      const data = await getPersonDetailByName(name);
+      logInfo("API_PERSONS_GET_DONE", {
+        mode: "detail",
+        responseStatus: 200,
+        responseBody: { data },
+      });
+      return NextResponse.json({ data });
+    }
 
-  if (search) {
-    query = query.ilike('Prénom Nom', `%${search}%`);
+    if (searchParams.get("default") === "true") {
+      const data = await getDefaultPersonDetail();
+      logInfo("API_PERSONS_GET_DONE", {
+        mode: "default-detail",
+        responseStatus: 200,
+        responseBody: { data },
+      });
+      return NextResponse.json({ data });
+    }
+
+    const page = parsePage(searchParams.get("page"));
+    const pageSize = parsePageSize(searchParams.get("pageSize"), PERSONS_PAGE_SIZE);
+    const result = await getPersonsPage(page, pageSize);
+
+    const responseBody = {
+      data: result.items,
+      pagination: {
+        page: result.page,
+        pageSize: result.pageSize,
+        total: result.total,
+        totalPages: result.totalPages,
+      },
+      stats: {
+        cardsFound: result.total,
+        databaseContains: result.total,
+      },
+    };
+    logInfo("API_PERSONS_GET_DONE", {
+      mode: "list",
+      responseStatus: 200,
+      responseBody,
+    });
+    return NextResponse.json(responseBody);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Unknown error";
+    logError("API_PERSONS_GET_ERROR", {
+      method: request.method,
+      url: request.url,
+      error,
+      responseStatus: 500,
+      responseBody: { error: message },
+    });
+    return NextResponse.json({ error: message }, { status: 500 });
   }
-
-  const { data, error } = await query;
-
-  if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
-  }
-
-  return NextResponse.json({ data });
 }

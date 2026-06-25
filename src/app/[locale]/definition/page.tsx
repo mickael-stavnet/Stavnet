@@ -46,17 +46,19 @@ function MobileDefinitionCard({
 }) {
   return (
     <article className="border-b border-[#b1bac0] px-1 py-3 last:border-b-0">
-      <div className="flex items-start">
-        <RedMarker />
-        <div className="min-w-0 flex-1">
-          <p className="text-right text-[16px] font-bold leading-tight text-black" dir="rtl">
-            {record.title}
-          </p>
-          <p className="mt-1 text-[13px] leading-tight text-[#21323b]">{record.author}</p>
+      <Link href="/books/details" className="block rounded-[4px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2a728b]">
+        <div className="flex items-start">
+          <RedMarker />
+          <div className="min-w-0 flex-1">
+            <p className="text-right text-[16px] font-bold leading-tight text-black" dir="rtl">
+              {record.title}
+            </p>
+            <p className="mt-1 text-[13px] leading-tight text-[#21323b]">{record.author}</p>
+          </div>
         </div>
-      </div>
+      </Link>
 
-      <div className="mt-3 grid grid-cols-2 gap-3 text-[12px] leading-[1.35] text-black">
+      <div className="mt-3 grid grid-cols-2 gap-3 text-[12px] leading-[1.35] text-black sm:grid-cols-4">
         <div>
           <p className="font-bold uppercase text-[#4a5a63]">{t("columns.publishers")}</p>
           <p className="mt-1 break-words">{record.publisher}</p>
@@ -64,6 +66,14 @@ function MobileDefinitionCard({
         <div>
           <p className="font-bold uppercase text-[#4a5a63]">{t("columns.year")}</p>
           <p className="mt-1">{record.year}</p>
+        </div>
+        <div>
+          <p className="font-bold uppercase text-[#4a5a63]">{t("columns.publication")}</p>
+          <p className="mt-1">{record.publication}</p>
+        </div>
+        <div>
+          <p className="font-bold uppercase text-[#4a5a63]">{t("columns.issue")}</p>
+          <p className="mt-1">{record.issue}</p>
         </div>
       </div>
     </article>

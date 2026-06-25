@@ -275,19 +275,19 @@ export default function BooksPage() {
         />
 
         <section className="mt-6 flex min-w-0 flex-col gap-5 md:absolute md:left-1/2 md:top-[154px] md:bottom-[154px] md:w-[1436px] md:max-w-[calc(100vw-24px)] md:-translate-x-1/2 md:grid md:grid-cols-[1fr] md:gap-x-0 md:gap-y-[4px]">
-          <aside className="order-2 flex min-w-0 flex-col gap-[12px] md:absolute md:left-0 md:top-0 md:order-1 md:self-start md:overflow-visible md:pt-0">
-            <div className="w-fit border border-[#b7ab92] bg-[#f3ead4] p-[6px] shadow-[2px_2px_4px_rgba(0,0,0,0.12)] md:w-[270px]">
+          <aside className="order-1 flex min-w-0 flex-col gap-[12px] md:absolute md:left-0 md:top-0 md:self-start md:overflow-visible md:pt-0">
+            <div className="w-full max-w-[270px] border border-[#b7ab92] bg-[#f3ead4] p-[6px] shadow-[2px_2px_4px_rgba(0,0,0,0.12)] md:w-[270px]">
               <Image
                 src="/images/book-cover.jpg"
                 alt={sampleBook.title}
                 width={258}
                 height={387}
                 priority
-                className="h-auto w-[258px] object-cover"
+                className="h-auto w-full object-cover"
               />
             </div>
 
-            <div className="min-w-0 border border-[#7aa8b7] bg-[#d8dde2] md:w-[270px]">
+            <div className="min-w-0 max-w-[270px] border border-[#7aa8b7] bg-[#d8dde2] md:w-[270px]">
               <div className="border-b border-[#7aa8b7] bg-[#fff8c8] px-2 py-[3px] text-[12px] uppercase leading-none text-black">
                 {t("summary")}
               </div>
@@ -297,7 +297,7 @@ export default function BooksPage() {
             </div>
           </aside>
 
-          <section className="order-1 min-w-0 md:order-2 md:col-start-1 md:col-end-2 md:ml-[282px] md:w-[1120px] md:max-w-none">
+          <section className="order-2 min-w-0 md:col-start-1 md:col-end-2 md:ml-[282px] md:w-[1120px] md:max-w-none">
             <nav className="flex gap-2 overflow-x-auto pb-2 md:grid md:grid-cols-[92px_repeat(7,minmax(0,1fr))] md:items-end md:gap-[10px] md:overflow-visible md:pb-0">
               {tabs.map((tabKey) =>
                 tabKey === "backCover" ? (

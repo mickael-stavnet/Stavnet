@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { StavnetFooter } from "@/components/stavnet/footer";
 import { StavnetHeader } from "@/components/stavnet/header";
+import type { OrganizationDetail } from "@/lib/data/orgs";
 
 type OrganizationTab =
   | "editorCard"
@@ -16,68 +17,18 @@ type OrganizationTab =
   | "literaryPrizes"
   | "statistics";
 
-interface PublishedRow {
-  title: string;
-  author: string;
-  year: string;
-}
-
-interface OrganizationSample {
-  name: string;
-  synonym: string;
-  group: string;
-  publishedStats: {
-    titles: string;
-    authors: string;
-  };
-  rows: PublishedRow[];
-}
-
-function MobilePublishedCard({
-  title,
-  author,
-  year,
-}: {
-  title: string;
-  author: string;
-  year: string;
-}) {
-  return (
-    <article className="rounded-[6px] border border-[#7aa8b7] bg-[#b2e0ef] p-3">
-      <div className="space-y-1">
-        <p className="text-[11px] font-bold uppercase tracking-[0.04em] text-[#07384a]">Title</p>
-        <p className="text-[13px] text-black" dir="rtl">{title || "—"}</p>
-      </div>
-      <div className="mt-3 space-y-1">
-        <p className="text-[11px] font-bold uppercase tracking-[0.04em] text-[#07384a]">Author</p>
-        <p className="text-[13px] text-black">{author || "—"}</p>
-      </div>
-      <div className="mt-3 space-y-1">
-        <p className="text-[11px] font-bold uppercase tracking-[0.04em] text-[#07384a]">Year</p>
-        <p className="text-[13px] text-black">{year || "—"}</p>
-      </div>
-    </article>
-  );
+interface OrganizationDetailPageProps {
+  organization: OrganizationDetail;
 }
 
 function LabelCell({ label }: { label: string }) {
-  return (
-    <div className="border-b border-[#7aa8b7] bg-[#fff8c8] px-2 py-[3px] text-[12px] uppercase leading-none text-black">
-      {label}
-    </div>
-  );
+  return <div className="border-b border-[#7aa8b7] bg-[#fff8c8] px-2 py-[3px] text-[12px] uppercase leading-none text-black">{label}</div>;
 }
 
-function FilledCell({
-  value,
-  className = "",
-}: {
-  value: string;
-  className?: string;
-}) {
+function FilledCell({ value, className = "" }: { value: string; className?: string }) {
   return (
     <div className={`flex min-h-[38px] items-center border-b border-[#7aa8b7] bg-[#a7dcee] px-2 text-[13px] text-black ${className}`}>
-      {value}
+      {value || "—"}
     </div>
   );
 }
@@ -92,25 +43,14 @@ function EmptyRows({ rows }: { rows: number }) {
   );
 }
 
-function BlankTabPanel({
-  title,
-  rows = 4,
-}: {
-  title: string;
-  rows?: number;
-}) {
+function BlankTabPanel({ title, rows = 4 }: { title: string; rows?: number }) {
   return (
     <section className="border border-[#7aa8b7] bg-[#a7dcee]">
-      <div className="border-b border-[#7aa8b7] bg-[#fff8c8] px-2 py-[4px] text-[12px] uppercase leading-none text-black">
-        {title}
-      </div>
+      <div className="border-b border-[#7aa8b7] bg-[#fff8c8] px-2 py-[4px] text-[12px] uppercase leading-none text-black">{title}</div>
       <div className="p-[10px]">
         <div className="border border-[#7aa8b7] bg-[#b2e0ef]">
           {Array.from({ length: rows }).map((_, index) => (
-            <div
-              key={index}
-              className={`h-[82px] border-b border-[#7aa8b7] ${index === rows - 1 ? "border-b-0" : ""}`}
-            />
+            <div key={index} className={`h-[82px] border-b border-[#7aa8b7] ${index === rows - 1 ? "border-b-0" : ""}`} />
           ))}
         </div>
       </div>
@@ -122,7 +62,7 @@ function RedMarker() {
   return <span className="mr-2 inline-block h-[11px] w-[11px] rounded-full border-[2px] border-[#ff1d1d]" />;
 }
 
-export default function OrganizationsDetailPage() {
+export default function OrganizationsDetailPage({ organization }: OrganizationDetailPageProps) {
   const t = useTranslations("OrganizationFilePage");
   const tabs: OrganizationTab[] = [
     "editorCard",
@@ -135,25 +75,6 @@ export default function OrganizationsDetailPage() {
     "statistics",
   ];
   const [activeTab, setActiveTab] = useState<OrganizationTab>("editorCard");
-
-  const sampleOrganization: OrganizationSample = {
-    name: "Eked",
-    synonym: "Eked",
-    group: "",
-    publishedStats: {
-      titles: "14",
-      authors: "10",
-    },
-    rows: [
-      { title: "על קו המשווה", author: "Ben-Zion Tomer", year: "1969" },
-      { title: "מזל דגים", author: "Shulamit Lapid", year: "1969" },
-      { title: "שועל בערפל", author: "Moshé Ben-Shaul", year: "1970" },
-      { title: "שירים חצויים", author: "David Avidan", year: "1970" },
-      { title: "הלך זרוע", author: "Israël Eliraz", year: "1970" },
-      { title: "אין אפשר לאהוב", author: "Naïm Araidi", year: "1972" },
-    ],
-  };
-
   const footerItems = [
     { key: "back", icon: "/icons/icons-nav/back.png", href: "/home" as const, label: t("footer.back") },
     { key: "menu", icon: "/icons/icons-nav/menu.png", href: "/menu" as const, label: t("footer.menu") },
@@ -166,14 +87,7 @@ export default function OrganizationsDetailPage() {
 
   return (
     <main className="relative min-h-[100svh] overflow-x-hidden bg-[#e7f2f7] font-[Arial,Helvetica,sans-serif] text-black md:h-screen md:overflow-hidden">
-      <Image
-        src="/background/background.png"
-        alt=""
-        fill
-        priority
-        sizes="100vw"
-        className="object-cover"
-      />
+      <Image src="/background/background.png" alt="" fill priority sizes="100vw" className="object-cover" />
 
       <div className="relative z-10 mx-auto flex min-h-[100svh] w-full max-w-[1120px] flex-col px-4 pb-5 pt-4 md:h-screen md:max-w-none md:px-0 md:pb-0 md:pt-0">
         <StavnetHeader
@@ -192,27 +106,24 @@ export default function OrganizationsDetailPage() {
             <div className="grid grid-cols-2 gap-2">
               <div className="rounded-[8px] border border-[#7aa8b7] bg-[#d8dde2] px-3 py-2">
                 <p className="text-[11px] uppercase tracking-[0.04em] text-[#07384a]">{t("right.organizationCardsFound")}</p>
-                <p className="mt-1 text-[18px] font-bold text-[#ff1d1d]">1201</p>
+                <p className="mt-1 text-[18px] font-bold text-[#ff1d1d]">{organization.stats.cardsFound}</p>
               </div>
               <div className="rounded-[8px] border border-[#7aa8b7] bg-[#d8dde2] px-3 py-2">
                 <p className="text-[11px] uppercase tracking-[0.04em] text-[#07384a]">{t("right.databaseContains")}</p>
-                <p className="mt-1 text-[18px] font-bold text-[#ff1d1d]">1202</p>
+                <p className="mt-1 text-[18px] font-bold text-[#ff1d1d]">{organization.stats.databaseContains}</p>
               </div>
             </div>
             <div className="grid grid-cols-2 gap-2">
               <div className="rounded-[8px] border border-[#7aa8b7] bg-[#d8dde2] px-3 py-2">
                 <p className="text-[11px] uppercase tracking-[0.04em] text-[#07384a]">{t("side.creationDate")}</p>
-                <p className="mt-1 text-[14px] text-black">—</p>
+                <p className="mt-1 text-[14px] text-black">{organization.creationDate || "—"}</p>
               </div>
               <div className="rounded-[8px] border border-[#7aa8b7] bg-[#d8dde2] px-3 py-2">
                 <p className="text-[11px] uppercase tracking-[0.04em] text-[#07384a]">{t("side.titlesAtCatalog")}</p>
-                <p className="mt-1 text-[14px] text-black">—</p>
+                <p className="mt-1 text-[14px] text-black">{organization.publishedStats.titles}</p>
               </div>
             </div>
-            <button
-              type="button"
-              className="min-h-11 rounded-[8px] border border-[#d1bb48] bg-[#ffea56] px-4 text-[13px] font-bold text-black shadow-[3px_3px_5px_rgba(0,0,0,0.2)]"
-            >
+            <button type="button" className="min-h-11 rounded-[8px] border border-[#d1bb48] bg-[#ffea56] px-4 text-[13px] font-bold text-black shadow-[3px_3px_5px_rgba(0,0,0,0.2)]">
               {t("side.collections")}
             </button>
           </section>
@@ -222,15 +133,14 @@ export default function OrganizationsDetailPage() {
             <div className="border border-black bg-transparent md:ml-[10px] md:h-[130px] md:w-[128px]" />
             <div className="space-y-[8px] text-center text-[14px] leading-[1.1] text-black md:ml-[10px] md:w-[128px]">
               <p>{t("side.creationDate")}</p>
+              <p className="font-bold">{organization.creationDate || "—"}</p>
             </div>
-            <button
-              type="button"
-              className="hidden h-[36px] w-[88px] self-start border border-[#d1bb48] bg-[#ffea56] text-[12px] font-bold leading-[1.05] shadow-[3px_3px_5px_rgba(0,0,0,0.2)] md:ml-[18px] md:block"
-            >
+            <button type="button" className="hidden h-[36px] w-[88px] self-start border border-[#d1bb48] bg-[#ffea56] text-[12px] font-bold leading-[1.05] shadow-[3px_3px_5px_rgba(0,0,0,0.2)] md:ml-[18px] md:block">
               {t("side.collections")}
             </button>
             <div className="space-y-[8px] text-center text-[14px] leading-[1.1] text-black md:ml-[10px] md:w-[128px]">
               <p>{t("side.titlesAtCatalog")}</p>
+              <p className="font-bold">{organization.publishedStats.titles}</p>
             </div>
           </aside>
 
@@ -242,9 +152,7 @@ export default function OrganizationsDetailPage() {
                   type="button"
                   onClick={() => setActiveTab(tabKey)}
                   className={`min-h-11 min-w-[136px] shrink-0 snap-start rounded-t-[8px] border border-[#d1bb48] px-3 py-[8px] text-center text-[13px] leading-[1.02] shadow-[3px_3px_5px_rgba(0,0,0,0.28)] transition-colors md:min-h-[42px] md:min-w-0 md:px-2 ${
-                    activeTab === tabKey
-                      ? "bg-[#91d3ea] text-black md:min-h-[58px] md:text-[17px] md:font-bold"
-                      : "bg-[#ffea56] text-black hover:bg-[#fff16f]"
+                    activeTab === tabKey ? "bg-[#91d3ea] text-black md:min-h-[58px] md:text-[17px] md:font-bold" : "bg-[#ffea56] text-black hover:bg-[#fff16f]"
                   }`}
                 >
                   {t(`tabs.${tabKey}`)}
@@ -263,7 +171,7 @@ export default function OrganizationsDetailPage() {
                     <div className="grid gap-[10px] md:grid-cols-[2fr_1fr]">
                       <section className="border border-[#7aa8b7] bg-[#a7dcee]">
                         <LabelCell label={t("fields.editor")} />
-                        <FilledCell value={sampleOrganization.name} className="text-[16px] font-bold text-[#07384a]" />
+                        <FilledCell value={organization.name} className="text-[16px] font-bold text-[#07384a]" />
                         <LabelCell label={t("fields.address")} />
                         <FilledCell value="" />
                         <div className="grid gap-px bg-[#7aa8b7] md:grid-cols-[96px_1fr_1fr]">
@@ -277,7 +185,7 @@ export default function OrganizationsDetailPage() {
                           </div>
                           <div className="bg-[#a7dcee]">
                             <LabelCell label={t("fields.country")} />
-                            <FilledCell value="" className="border-b-0" />
+                            <FilledCell value={organization.country} className="border-b-0" />
                           </div>
                         </div>
                         <div className="grid gap-px bg-[#7aa8b7] md:grid-cols-2">
@@ -305,17 +213,15 @@ export default function OrganizationsDetailPage() {
                       <div className="space-y-[8px]">
                         <section className="border border-[#7aa8b7] bg-[#a7dcee]">
                           <LabelCell label={t("fields.synonyms")} />
-                          <FilledCell value={sampleOrganization.synonym} className="text-[14px]" />
+                          <FilledCell value={organization.synonym} className="text-[14px]" />
                           <EmptyRows rows={4} />
                         </section>
 
                         <section className="border border-[#7aa8b7] bg-[#fff15a]">
-                          <div className="border-b border-[#7aa8b7] bg-[#fff8c8] px-2 py-[3px] text-[12px] uppercase leading-none text-black">
-                            {t("fields.group")}
-                          </div>
+                          <div className="border-b border-[#7aa8b7] bg-[#fff8c8] px-2 py-[3px] text-[12px] uppercase leading-none text-black">{t("fields.group")}</div>
                           <div className="flex min-h-[31px] items-center px-2 text-[13px] text-black">
                             <RedMarker />
-                            {sampleOrganization.group}
+                            {organization.type || "—"}
                           </div>
                         </section>
                       </div>
@@ -324,21 +230,10 @@ export default function OrganizationsDetailPage() {
                     <section className="space-y-[8px]">
                       <div className="flex flex-wrap items-center gap-x-4 gap-y-2 px-1 text-[16px] font-bold leading-none text-black">
                         <span>{t("published.title")} :</span>
-                        <span className="text-[#ff1d1d]">{sampleOrganization.publishedStats.titles}</span>
+                        <span className="text-[#ff1d1d]">{organization.publishedStats.titles}</span>
                         <span>{t("published.titlesCount")}</span>
-                        <span className="text-[#ff1d1d]">{sampleOrganization.publishedStats.authors}</span>
+                        <span className="text-[#ff1d1d]">{organization.publishedStats.authors}</span>
                         <span>{t("published.authorsCount")}</span>
-                      </div>
-
-                      <div className="space-y-3 md:hidden">
-                        {sampleOrganization.rows.map((row, rowIndex) => (
-                          <MobilePublishedCard
-                            key={rowIndex}
-                            title={row.title}
-                            author={row.author}
-                            year={row.year}
-                          />
-                        ))}
                       </div>
 
                       <section className="hidden min-w-0 overflow-x-auto border border-[#7aa8b7] bg-[#a7dcee] md:block">
@@ -347,23 +242,13 @@ export default function OrganizationsDetailPage() {
                           <div className="border-r border-[#7aa8b7] px-2 py-[3px]">{t("published.columns.authors")}</div>
                           <div className="px-2 py-[3px]">{t("published.columns.year")}</div>
                         </div>
-
-                        {sampleOrganization.rows.map((row, rowIndex) => (
-                          <div
-                            key={rowIndex}
-                            className="grid w-full min-w-0 grid-cols-[minmax(0,1.8fr)_minmax(0,1fr)_72px]"
-                          >
-                            <div className="flex h-[29px] items-center justify-end border-r border-t border-[#7aa8b7] px-2 text-[13px] text-black" dir="rtl">
-                              <span className="text-right">{row.title}</span>
-                            </div>
-                            <div className="flex h-[29px] items-center border-r border-t border-[#7aa8b7] px-2 text-[13px] text-black">
-                              {row.author}
-                            </div>
-                            <div className="flex h-[29px] items-center border-t border-[#7aa8b7] px-2 text-[13px] text-black">
-                              {row.year}
-                            </div>
+                        <div className="grid w-full min-w-0 grid-cols-[minmax(0,1.8fr)_minmax(0,1fr)_72px]">
+                          <div className="flex h-[29px] items-center justify-end border-r border-t border-[#7aa8b7] px-2 text-[13px] text-black">
+                            <span className="text-right">—</span>
                           </div>
-                        ))}
+                          <div className="flex h-[29px] items-center border-r border-t border-[#7aa8b7] px-2 text-[13px] text-black">—</div>
+                          <div className="flex h-[29px] items-center border-t border-[#7aa8b7] px-2 text-[13px] text-black">—</div>
+                        </div>
                       </section>
                     </section>
 
@@ -385,9 +270,9 @@ export default function OrganizationsDetailPage() {
           <aside className="order-3 hidden items-center justify-center md:flex">
             <div className="flex h-full -translate-x-[8px] flex-col items-center justify-between py-[108px] text-[14px] leading-none text-black">
               <span className="[writing-mode:vertical-rl]">{t("right.organizationCardsFound")}</span>
-              <span className="[writing-mode:vertical-rl] text-[#ff1d1d]">1201</span>
+              <span className="[writing-mode:vertical-rl] text-[#ff1d1d]">{organization.stats.cardsFound}</span>
               <span className="[writing-mode:vertical-rl]">{t("right.databaseContains")}</span>
-              <span className="[writing-mode:vertical-rl] text-[#ff1d1d]">1202</span>
+              <span className="[writing-mode:vertical-rl] text-[#ff1d1d]">{organization.stats.databaseContains}</span>
             </div>
           </aside>
         </section>

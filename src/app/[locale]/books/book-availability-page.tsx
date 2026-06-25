@@ -115,6 +115,43 @@ function InfoTable({
   );
 }
 
+function MobileInfoTable({
+  columns,
+  rows,
+}: {
+  columns: string[];
+  rows: string[][];
+}) {
+  return (
+    <section className="space-y-3 md:hidden">
+      {rows.map((row, rowIndex) => (
+        <article key={`${row[0]}-${rowIndex}`} className="rounded-[6px] border border-[#7ea8b8] bg-[#a6d9eb] p-3">
+          {columns.map((column, columnIndex) => (
+            <div
+              key={`${column}-${columnIndex}`}
+              className={columnIndex === 0 ? "space-y-1" : "mt-3 space-y-1"}
+            >
+              <p className="text-[11px] font-bold uppercase tracking-[0.04em] text-[#07384a]">
+                {column}
+              </p>
+              <div className="text-[14px] leading-[1.35] text-black">
+                {columnIndex === 0 ? (
+                  <span className="flex min-w-0 items-start gap-2">
+                    <RedMarker />
+                    <span className="break-words">{row[columnIndex] ?? ""}</span>
+                  </span>
+                ) : (
+                  <span className="break-words">{row[columnIndex] ?? ""}</span>
+                )}
+              </div>
+            </div>
+          ))}
+        </article>
+      ))}
+    </section>
+  );
+}
+
 function AvailabilityTable({
   pageData,
 }: {
@@ -122,7 +159,44 @@ function AvailabilityTable({
 }) {
   return (
     <section className="border border-[#7ea8b8] bg-[#a6d9eb]">
-      <div className="grid border-b border-[#7ea8b8] bg-[#fff6bf] text-[10px] uppercase leading-[1.05] text-black md:grid-cols-[240px_95px_140px_105px_100px_1fr] md:text-[11px]">
+      <div className="space-y-3 p-3 md:hidden">
+        {pageData.availabilityRows.map((row, rowIndex) => (
+          <article key={`${row.org}-${rowIndex}`} className="rounded-[6px] border border-[#7ea8b8] bg-[#b6e2ef] p-3">
+            <div className="space-y-1">
+              <p className="text-[11px] font-bold uppercase tracking-[0.04em] text-[#07384a]">
+                {pageData.availabilityColumns.org}
+              </p>
+              <div className="flex items-start gap-2 text-[14px] leading-[1.35] text-black">
+                <RedMarker />
+                <span className="break-words">{row.org}</span>
+              </div>
+            </div>
+            <div className="mt-3 grid gap-3 sm:grid-cols-2">
+              <div className="space-y-1">
+                <p className="text-[11px] font-bold uppercase tracking-[0.04em] text-[#07384a]">{pageData.availabilityColumns.type}</p>
+                <p className="text-[14px] leading-[1.35] text-black">{row.type}</p>
+              </div>
+              <div className="space-y-1">
+                <p className="text-[11px] font-bold uppercase tracking-[0.04em] text-[#07384a]">{pageData.availabilityColumns.shelfmark}</p>
+                <p className="text-[14px] leading-[1.35] text-black">{row.shelfmark}</p>
+              </div>
+              <div className="space-y-1">
+                <p className="text-[11px] font-bold uppercase tracking-[0.04em] text-[#07384a]">{pageData.availabilityColumns.city}</p>
+                <p className="text-[14px] leading-[1.35] text-black">{row.city}</p>
+              </div>
+              <div className="space-y-1">
+                <p className="text-[11px] font-bold uppercase tracking-[0.04em] text-[#07384a]">{pageData.availabilityColumns.country}</p>
+                <p className="text-[14px] leading-[1.35] text-black">{row.country}</p>
+              </div>
+            </div>
+            <div className="mt-3 space-y-1">
+              <p className="text-[11px] font-bold uppercase tracking-[0.04em] text-[#07384a]">{pageData.availabilityColumns.website}</p>
+              <p className="break-all text-[14px] leading-[1.35] text-black">{row.website}</p>
+            </div>
+          </article>
+        ))}
+      </div>
+      <div className="hidden border-b border-[#7ea8b8] bg-[#fff6bf] text-[10px] uppercase leading-[1.05] text-black md:grid md:grid-cols-[240px_95px_140px_105px_100px_1fr] md:text-[11px]">
         <div className="border-r border-[#7ea8b8] px-2 py-[2px]">{pageData.availabilityColumns.org}</div>
         <div className="border-r border-[#7ea8b8] px-2 py-[2px]">{pageData.availabilityColumns.type}</div>
         <div className="border-r border-[#7ea8b8] px-2 py-[2px]">{pageData.availabilityColumns.shelfmark}</div>
@@ -131,7 +205,7 @@ function AvailabilityTable({
         <div className="px-2 py-[2px]">{pageData.availabilityColumns.website}</div>
       </div>
       {pageData.availabilityRows.map((row, rowIndex) => (
-        <div key={`${row.org}-${rowIndex}`} className="grid md:grid-cols-[240px_95px_140px_105px_100px_1fr]">
+        <div key={`${row.org}-${rowIndex}`} className="hidden md:grid md:grid-cols-[240px_95px_140px_105px_100px_1fr]">
           <div className={`border-r border-[#7ea8b8] px-2 py-[5px] text-[15px] leading-[1.25] text-black ${rowIndex > 0 ? "border-t border-[#7ea8b8]" : ""}`}>
             <span className="flex min-w-0 items-center gap-2">
               <RedMarker />
@@ -145,7 +219,7 @@ function AvailabilityTable({
           <div className={`px-2 py-[5px] text-[15px] leading-[1.25] text-black ${rowIndex > 0 ? "border-t border-[#7ea8b8]" : ""}`}>{row.website}</div>
         </div>
       ))}
-      <div className="grid md:grid-cols-[240px_95px_140px_105px_100px_1fr]">
+      <div className="hidden md:grid md:grid-cols-[240px_95px_140px_105px_100px_1fr]">
         {Array.from({ length: 6 }).map((_, index) => (
           <div
             key={`empty-${index}`}
@@ -153,7 +227,7 @@ function AvailabilityTable({
           />
         ))}
       </div>
-      <div className="grid md:grid-cols-[240px_95px_140px_105px_100px_1fr]">
+      <div className="hidden md:grid md:grid-cols-[240px_95px_140px_105px_100px_1fr]">
         {Array.from({ length: 6 }).map((_, index) => (
           <div
             key={`empty-2-${index}`}
@@ -201,23 +275,23 @@ export default function BookAvailabilityPage() {
         />
 
         <section className="mt-6 flex min-w-0 flex-col gap-3 md:absolute md:left-1/2 md:top-1/2 md:w-[1436px] md:max-w-[calc(100vw-24px)] md:-translate-x-1/2 md:-translate-y-1/2 md:grid md:grid-cols-[1fr] md:gap-x-0 md:gap-y-[10px]">
-          <div className="md:relative md:h-[404px]">
-            <aside className="order-2 min-w-0 md:absolute md:left-0 md:top-0 md:h-[404px] md:order-1 md:self-start md:overflow-visible md:pt-0">
-              <div className="w-fit border border-[#b7ab92] bg-[#f3ead4] p-[6px] shadow-[2px_2px_4px_rgba(0,0,0,0.12)] md:h-[404px] md:w-[270px]">
+          <div className="flex min-w-0 flex-col gap-3 md:relative md:h-[404px] md:block">
+            <aside className="order-1 min-w-0 md:absolute md:left-0 md:top-0 md:h-[404px] md:self-start md:overflow-visible md:pt-0">
+              <div className="w-full max-w-[270px] border border-[#b7ab92] bg-[#f3ead4] p-[6px] shadow-[2px_2px_4px_rgba(0,0,0,0.12)] md:h-[404px] md:w-[270px]">
                 <Image
                   src="/images/book-cover.jpg"
                   alt={sampleBook.title}
                   width={258}
                   height={387}
                   priority
-                  className="h-auto w-[258px] object-cover md:h-full md:w-full"
+                  className="h-auto w-full object-cover md:h-full md:w-full"
                 />
               </div>
             </aside>
 
-            <section className="min-w-0 md:h-[404px]">
+            <section className="order-2 min-w-0 md:h-[404px]">
               <div className="md:ml-[282px] md:h-[404px] md:w-[1120px] md:max-w-none">
-                <div className="flex h-[404px] min-w-0 flex-col overflow-hidden rounded-[8px] border border-[#7aa8b7] bg-[linear-gradient(180deg,#8ecfe8_0%,#a8dbed_100%)] shadow-[4px_4px_8px_rgba(0,0,0,0.18)]">
+                <div className="flex min-h-0 min-w-0 flex-col overflow-hidden rounded-[8px] border border-[#7aa8b7] bg-[linear-gradient(180deg,#8ecfe8_0%,#a8dbed_100%)] shadow-[4px_4px_8px_rgba(0,0,0,0.18)] md:h-[404px]">
                   <div className="flex h-full min-w-0 flex-col gap-[8px] px-3 py-3 md:px-[12px] md:py-[10px]">
                     <InfoField
                       label={t("fields.title")}
@@ -231,21 +305,30 @@ export default function BookAvailabilityPage() {
                       <InfoField label={t("fields.originalLanguage")} value={sampleBook.originalLanguage} valueClassName="justify-end" dir="rtl" />
                     </div>
 
-                    <InfoTable
-                      columns={[t("tables.authors"), t("tables.authorType"), t("tables.writingLanguage")]}
-                      rows={sampleBook.authors}
-                      gridTemplateColumns="2.3fr 0.95fr 1.05fr"
-                    />
-                    <InfoTable
-                      columns={[t("tables.contributors"), t("tables.contributionType"), t("tables.writingLanguage")]}
-                      rows={sampleBook.contributors}
-                      gridTemplateColumns="2.3fr 0.95fr 1.05fr"
-                    />
-                    <InfoTable
-                      columns={[t("tables.publishers"), t("tables.country"), t("tables.isbn")]}
-                      rows={sampleBook.publishers}
-                      gridTemplateColumns="1.7fr 0.9fr 1.1fr"
-                    />
+                    <MobileInfoTable columns={[t("tables.authors"), t("tables.authorType"), t("tables.writingLanguage")]} rows={sampleBook.authors} />
+                    <div className="hidden md:block">
+                      <InfoTable
+                        columns={[t("tables.authors"), t("tables.authorType"), t("tables.writingLanguage")]}
+                        rows={sampleBook.authors}
+                        gridTemplateColumns="2.3fr 0.95fr 1.05fr"
+                      />
+                    </div>
+                    <MobileInfoTable columns={[t("tables.contributors"), t("tables.contributionType"), t("tables.writingLanguage")]} rows={sampleBook.contributors} />
+                    <div className="hidden md:block">
+                      <InfoTable
+                        columns={[t("tables.contributors"), t("tables.contributionType"), t("tables.writingLanguage")]}
+                        rows={sampleBook.contributors}
+                        gridTemplateColumns="2.3fr 0.95fr 1.05fr"
+                      />
+                    </div>
+                    <MobileInfoTable columns={[t("tables.publishers"), t("tables.country"), t("tables.isbn")]} rows={sampleBook.publishers} />
+                    <div className="hidden md:block">
+                      <InfoTable
+                        columns={[t("tables.publishers"), t("tables.country"), t("tables.isbn")]}
+                        rows={sampleBook.publishers}
+                        gridTemplateColumns="1.7fr 0.9fr 1.1fr"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>

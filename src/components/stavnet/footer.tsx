@@ -60,13 +60,13 @@ export function StavnetFooter({
             itemClassName,
           )}
         >
-          <div className="flex h-[48px] w-[68px] items-center justify-center">
+          <div className="relative flex h-[48px] w-[68px] items-center justify-center">
             <Image
               src={items[0].icon}
               alt=""
-              width={68}
-              height={48}
-              className="max-h-[48px] w-auto object-contain"
+              fill
+              sizes="68px"
+              className="object-contain"
             />
           </div>
           <span className="mt-[8px] block min-h-[16px] text-[15px] font-bold leading-none">
@@ -86,13 +86,13 @@ export function StavnetFooter({
             itemClassName,
           )}
         >
-          <div className="flex h-[48px] w-[68px] items-center justify-center">
+          <div className="relative flex h-[48px] w-[68px] items-center justify-center">
             <Image
               src={items[1].icon}
               alt=""
-              width={68}
-              height={48}
-              className="max-h-[48px] w-auto object-contain"
+              fill
+              sizes="68px"
+              className="object-contain"
             />
           </div>
           <span className="mt-[8px] block min-h-[16px] text-[15px] font-bold leading-none">
@@ -138,13 +138,13 @@ export function StavnetFooter({
                   itemClassName,
                 )}
               >
-                <div className="flex h-[48px] w-[68px] items-center justify-center">
+                <div className="relative flex h-[48px] w-[68px] items-center justify-center">
                   <Image
                     src={item.icon}
                     alt=""
-                    width={68}
-                    height={48}
-                    className="max-h-[48px] w-auto object-contain"
+                    fill
+                    sizes="68px"
+                    className="object-contain"
                   />
                 </div>
                 <span className="mt-[8px] block min-h-[16px]">
@@ -180,13 +180,13 @@ export function StavnetFooter({
             itemClassName,
           )}
         >
-          <div className="flex h-[48px] w-[68px] items-center justify-center">
+          <div className="relative flex h-[48px] w-[68px] items-center justify-center">
             <Image
               src={item.icon}
               alt=""
-              width={68}
-              height={48}
-              className="max-h-[48px] w-auto object-contain"
+              fill
+              sizes="68px"
+              className="object-contain"
             />
           </div>
           <span className="mt-[8px] block min-h-[16px]">{item.label}</span>
