@@ -199,10 +199,6 @@ export default function MenuPage() {
             pageName={t("header.cardTitle")}
             title={t("header.title")}
             subtitle={t("header.subtitle")}
-            headerClassName="md:h-[146px]"
-            badgeClassName="md:h-[112px] md:w-[236px]"
-            titleBlockClassName="md:right-[4.9vw] md:left-auto md:flex md:w-[35vw] md:max-w-none md:flex-col md:items-end"
-            subtitleClassName="text-center md:text-right"
           />
 
           <section
@@ -400,7 +396,6 @@ export default function MenuPage() {
           <StavnetFooter
             items={footerItems}
             desktopMode="paired"
-            className="md:bottom-[2.3vh] md:left-[11vw] md:right-[11vw]"
           />
         </div>
       </main>

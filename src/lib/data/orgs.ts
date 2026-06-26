@@ -46,6 +46,14 @@ export interface OrganizationListResult {
 const compareByLocaleName = (left: string, right: string): number =>
   left.localeCompare(right, "fr", { sensitivity: "base", ignorePunctuation: true });
 
+function normalizeSearchValue(value: string): string {
+  return value
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLocaleLowerCase("fr")
+    .trim();
+}
+
 function readValue(row: DatabaseRow, keys: string[]): string {
   for (const key of keys) {
     const value = row[key];
@@ -187,6 +195,53 @@ export async function getOrganizationsPage(
     table: ORGS_TABLE,
     strategy: "local_sort_and_slice",
     totalRows: rows.length,
+    pageRowCount: pagedRows.length,
+    sampleRow: pagedRows[0] ?? null,
+  });
+  const totalPages = Math.max(1, Math.ceil(total / pageSize));
+
+  return {
+    items: pagedRows.map(mapOrganizationListItem),
+    page: currentPage,
+    pageSize,
+    total,
+    totalPages,
+    databaseTotal,
+  };
+}
+
+export async function getOrganizationsPageByName(
+  page: number,
+  searchTerm: string,
+  pageSize = ORGS_PAGE_SIZE,
+): Promise<OrganizationListResult> {
+  const currentPage = Math.max(1, page);
+  const normalizedSearchTerm = normalizeSearchValue(searchTerm);
+  const from = (currentPage - 1) * pageSize;
+  const to = from + pageSize - 1;
+  logInfo("ORGS_DB_SEARCH_PAGE_START", {
+    table: ORGS_TABLE,
+    page: currentPage,
+    pageSize,
+    range: { from, to },
+    searchTerm,
+    normalizedSearchTerm,
+  });
+
+  const [rows, databaseTotal] = await Promise.all([getAllOrganizationsRows(), getOrganizationsDatabaseTotal()]);
+  const filteredRows = rows.filter((row) =>
+    normalizeSearchValue(readValue(row, ["Organisme"])).includes(normalizedSearchTerm),
+  );
+  const sortedRows = filteredRows.slice().sort((left, right) =>
+    compareByLocaleName(readValue(left, ["Organisme"]), readValue(right, ["Organisme"])),
+  );
+  const pagedRows = sortedRows.slice(from, to + 1);
+  const total = sortedRows.length;
+  logInfo("ORGS_DB_SEARCH_PAGE_RESULT", {
+    table: ORGS_TABLE,
+    searchTerm,
+    normalizedSearchTerm,
+    filteredRows: filteredRows.length,
     pageRowCount: pagedRows.length,
     sampleRow: pagedRows[0] ?? null,
   });

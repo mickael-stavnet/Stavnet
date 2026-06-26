@@ -71,7 +71,7 @@ function FilledBox({ value, className }: FilledBoxProps) {
   return (
     <div
       className={cn(
-        "flex min-h-[38px] items-center border border-[#7aa8b7] bg-[#a7dcee] px-[10px] text-[13px] font-semibold leading-none text-black md:min-h-[42px] md:px-3 md:text-[16px]",
+        "flex min-h-[42px] items-center border border-[#7aa8b7] bg-[#a7dcee] px-[10px] text-[13px] font-semibold leading-none text-black md:min-h-[46px] md:px-3 md:text-[16px]",
         className,
       )}
     >
@@ -91,7 +91,7 @@ function BlankTabPanel({ title, rows = 3 }: { title: string; rows?: number }) {
       <div className="p-[10px]">
         <div className="border border-[#7aa8b7] bg-[#b2e0ef]">
           {Array.from({ length: rows }).map((_, index) => (
-            <div key={index} className={cn("h-[92px] border-b border-[#7aa8b7]", index === rows - 1 && "border-b-0")} />
+            <div key={index} className={cn("h-[102px] border-b border-[#7aa8b7]", index === rows - 1 && "border-b-0")} />
           ))}
         </div>
       </div>
@@ -130,7 +130,7 @@ export default function PersonDetailPage({ person }: PersonDetailPageProps) {
   };
 
   return (
-    <main className="relative min-h-[100svh] overflow-x-hidden bg-[#e7f2f7] font-[Arial,Helvetica,sans-serif] text-black md:h-screen md:overflow-hidden">
+    <main dir="ltr" className="relative min-h-[100svh] overflow-x-hidden bg-[#e7f2f7] font-[Arial,Helvetica,sans-serif] text-black md:h-screen md:overflow-hidden">
       <Image src="/background/background.png" alt="" fill priority sizes="100vw" className="object-cover object-center opacity-95 saturate-[1.08]" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.18),transparent_32%),linear-gradient(180deg,rgba(210,229,242,0.18),rgba(210,229,242,0.08))]" />
 
@@ -139,12 +139,6 @@ export default function PersonDetailPage({ person }: PersonDetailPageProps) {
           pageName={t("header.cardTitle")}
           title={t("header.title")}
           subtitle={t("header.subtitle")}
-          headerClassName="md:h-[146px]"
-          logoClassName="md:left-[2.4vw] md:top-[10px] md:w-[320px]"
-          badgeClassName="md:left-[calc(50%-92px)] md:h-[118px] md:w-[248px] md:-translate-x-1/2"
-          titleBlockClassName="md:left-[calc(50%+18px)] md:w-[1320px] md:-translate-x-1/2 md:text-right"
-          titleClassName="text-[34px] md:text-[32px]"
-          subtitleClassName="text-[17px]"
         />
 
         <section className="mt-6 flex flex-col gap-4 md:absolute md:left-[3.8vw] md:right-[3.8vw] md:top-[172px] md:bottom-[118px] md:grid md:grid-cols-[96px_1fr] md:gap-[0px]">
@@ -152,7 +146,18 @@ export default function PersonDetailPage({ person }: PersonDetailPageProps) {
             <div className="hidden md:block md:h-[92px]" />
           </aside>
 
-          <section className="order-1 min-w-0 md:order-2 md:mx-auto md:w-full md:max-w-[1320px] md:pr-[38px]">
+          <section className="order-1 min-w-0 md:order-2 md:relative md:mx-auto md:w-full md:max-w-[1320px] md:pr-[38px]">
+            <aside className="absolute left-[-208px] top-[104px] hidden w-[182px] flex-col gap-5 md:flex">
+              <div className="relative h-[212px] w-[174px] overflow-hidden border border-[#6c99a7] bg-[#d7eef6] shadow-[3px_3px_6px_rgba(0,0,0,0.18)]">
+                <Image
+                  src="https://cdn.pixabay.com/photo/2016/12/28/22/15/moscow-1937274_1280.jpg"
+                  alt=""
+                  fill
+                  sizes="174px"
+                  className="object-cover object-center"
+                />
+              </div>
+            </aside>
             <nav className="grid grid-cols-2 gap-2 pb-2 md:grid-cols-[108px_repeat(7,minmax(0,1fr))] md:items-end md:gap-[12px] md:pb-0">
               {tabs.map((tabKey) => (
                 <button
@@ -169,7 +174,7 @@ export default function PersonDetailPage({ person }: PersonDetailPageProps) {
               ))}
             </nav>
 
-            <div className="relative mt-[2px] flex min-h-[600px] flex-col rounded-[8px] border border-[#7aa8b7] bg-[linear-gradient(180deg,#8ecfe8_0%,#a8dbed_100%)] shadow-[4px_4px_8px_rgba(0,0,0,0.18)] md:h-[690px] md:min-h-0 md:flex-row">
+            <div className="relative mt-[2px] flex min-h-[660px] flex-col rounded-[8px] border border-[#7aa8b7] bg-[linear-gradient(180deg,#8ecfe8_0%,#a8dbed_100%)] shadow-[4px_4px_8px_rgba(0,0,0,0.18)] md:h-[760px] md:min-h-0 md:flex-row">
               <aside className="border-b border-[#7aa8b7] px-3 py-4 md:w-[126px] md:border-b-0 md:border-r md:px-4 md:py-5">
                 <p className="text-center text-[18px] font-bold leading-tight text-black md:text-[22px]">{t("side.authorCard")}</p>
               </aside>
@@ -217,7 +222,7 @@ export default function PersonDetailPage({ person }: PersonDetailPageProps) {
 
                     <section className="border border-[#7aa8b7] bg-[#a7dcee]">
                       <LabelCell label={t("fields.biography")} />
-                      <div className="max-h-[140px] overflow-auto px-3 py-3 text-[13px] leading-[1.45] text-black md:h-[116px] md:max-h-none md:text-[16px] md:leading-[1.5]">
+                      <div className="max-h-[154px] overflow-auto px-3 py-3 text-[13px] leading-[1.45] text-black md:h-[128px] md:max-h-none md:text-[16px] md:leading-[1.5]">
                         {person.biography || "—"}
                       </div>
                     </section>
@@ -266,11 +271,11 @@ export default function PersonDetailPage({ person }: PersonDetailPageProps) {
                         {(person.bibliographyRows.length > 0 ? person.bibliographyRows : [{ type: "", language: "", title: "", year: "", issue: "" }]).map(
                           (row, rowIndex) => (
                             <div key={rowIndex} className="grid w-full grid-cols-[0.88fr_1.22fr_2.66fr_0.42fr_0.5fr]">
-                              <div className="flex h-[42px] items-center border-r border-t border-[#7aa8b7] px-3 text-[15px] text-black">{row.type}</div>
-                              <div className="flex h-[42px] items-center border-r border-t border-[#7aa8b7] px-3 text-[15px] text-black">{row.language}</div>
-                              <div className="flex h-[42px] items-center border-r border-t border-[#7aa8b7] px-3 text-[15px] text-black">{row.title}</div>
-                              <div className="flex h-[42px] items-center border-r border-t border-[#7aa8b7] px-3 text-[15px] text-black">{row.year}</div>
-                              <div className="flex h-[42px] items-center border-t border-[#7aa8b7] px-3 text-[15px] whitespace-nowrap text-black">{row.issue}</div>
+                              <div className="flex h-[46px] items-center border-r border-t border-[#7aa8b7] px-3 text-[15px] text-black">{row.type}</div>
+                              <div className="flex h-[46px] items-center border-r border-t border-[#7aa8b7] px-3 text-[15px] text-black">{row.language}</div>
+                              <div className="flex h-[46px] items-center border-r border-t border-[#7aa8b7] px-3 text-[15px] text-black">{row.title}</div>
+                              <div className="flex h-[46px] items-center border-r border-t border-[#7aa8b7] px-3 text-[15px] text-black">{row.year}</div>
+                              <div className="flex h-[46px] items-center border-t border-[#7aa8b7] px-3 text-[15px] whitespace-nowrap text-black">{row.issue}</div>
                             </div>
                           ),
                         )}
@@ -308,9 +313,6 @@ export default function PersonDetailPage({ person }: PersonDetailPageProps) {
 
         <StavnetFooter
           items={footerItems}
-          className="md:bottom-[1.6vh] md:left-[calc(50%+18px)] md:right-auto md:w-[min(1460px,95vw)] md:-translate-x-1/2"
-          itemClassName="md:min-h-[58px] md:text-[13px]"
-          mobileGridClassName="grid-cols-2 sm:grid-cols-4"
           desktopMode="compact"
         />
       </div>

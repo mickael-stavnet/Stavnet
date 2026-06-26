@@ -21,7 +21,7 @@ export function OrgsListSkeleton() {
           ))}
         </div>
         <div className="hidden p-3 md:block">
-          <Skeleton className="h-[470px] w-full bg-white/55" />
+          <Skeleton className="h-[520px] w-full bg-white/55" />
         </div>
       </div>
       <div className="flex flex-col items-center gap-3">

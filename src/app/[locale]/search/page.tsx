@@ -85,11 +85,6 @@ export default function SearchPage() {
           pageName={t("header.cardTitle")}
           title={t("header.title")}
           subtitle={t("header.subtitle")}
-          headerClassName="md:h-[146px]"
-          badgeClassName="md:h-[112px] md:w-[236px]"
-          titleBlockClassName="md:right-[4.7vw] md:left-auto md:w-[40vw]"
-          titleClassName="text-[28px] md:text-[32px]"
-          subtitleClassName="text-[17px]"
         />
 
         <section className="mt-6 rounded-[16px] border border-[#9fc6d5] bg-[rgba(232,246,251,0.82)] p-4 shadow-[0_10px_24px_rgba(80,126,145,0.18)] backdrop-blur-[1px] md:absolute md:left-[4.9vw] md:right-[4.9vw] md:top-[286px] md:mx-auto md:w-full md:max-w-[1104px] md:p-5">
@@ -171,9 +166,6 @@ export default function SearchPage() {
 
         <StavnetFooter
           items={footerItems}
-          className="md:bottom-[2.2vh] md:left-1/2 md:right-auto md:w-fit md:-translate-x-1/2 md:justify-center md:gap-10"
-          mobileGridClassName="grid-cols-2 gap-x-1 sm:grid-cols-4"
-          itemClassName="md:min-h-[64px] md:text-[14px]"
           desktopMode="compact"
         />
       </div>

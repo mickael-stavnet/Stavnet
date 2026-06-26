@@ -269,11 +269,6 @@ export default function BookPublishingPage() {
           pageName={t("tabs.publishing")}
           title={t("header.title")}
           subtitle={t("header.subtitle")}
-          headerClassName="md:h-[146px]"
-          badgeClassName="md:left-[calc(50%-88px)] md:h-[112px] md:w-[236px] md:-translate-x-1/2"
-          titleBlockClassName="md:left-[calc(50%+23px)] md:w-[1230px] md:-translate-x-1/2 md:text-right"
-          titleClassName="text-[34px] md:text-[32px]"
-          subtitleClassName="text-[17px]"
         />
 
         <section className="mt-6 flex min-w-0 flex-col gap-3 md:absolute md:left-1/2 md:top-1/2 md:w-[1436px] md:max-w-[calc(100vw-24px)] md:-translate-x-1/2 md:-translate-y-1/2 md:grid md:grid-cols-[1fr] md:gap-x-0 md:gap-y-[10px]">
@@ -335,9 +330,6 @@ export default function BookPublishingPage() {
 
         <StavnetFooter
           items={footerItems}
-          className="md:bottom-[3.2vh] md:left-[calc(50%+23px)] md:right-auto md:w-[min(1410px,94vw)] md:-translate-x-1/2"
-          itemClassName="md:min-h-[70px] md:text-[14px]"
-          mobileGridClassName="grid-cols-2 sm:grid-cols-4"
           desktopMode="compact"
         />
       </div>

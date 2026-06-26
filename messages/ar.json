@@ -489,6 +489,13 @@
       "next": "التالي",
       "results": "النتائج من {start} إلى {end} من أصل {total}"
     },
+    "search": {
+      "label": "البحث بالاسم",
+      "placeholder": "اسم المؤسسة...",
+      "submit": "بحث",
+      "reset": "إعادة الضبط",
+      "noResults": "لم يتم العثور على أي مؤسسة."
+    },
     "footer": {
       "back": "رجوع",
       "menu": "القائمة",
@@ -526,6 +533,13 @@
       "previous": "السابق",
       "next": "التالي",
       "results": "النتائج من {start} إلى {end} من أصل {total}"
+    },
+    "search": {
+      "label": "البحث بالاسم",
+      "placeholder": "اسم الشخص...",
+      "submit": "بحث",
+      "reset": "إعادة الضبط",
+      "noResults": "لم يتم العثور على أي شخص."
     },
     "footer": {
       "back": "رجوع",

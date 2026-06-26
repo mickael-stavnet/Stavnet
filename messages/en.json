@@ -489,6 +489,13 @@
       "next": "Next",
       "results": "Results {start} to {end} of {total}"
     },
+    "search": {
+      "label": "Search by name",
+      "placeholder": "Organization name...",
+      "submit": "Search",
+      "reset": "Reset",
+      "noResults": "No organization found."
+    },
     "footer": {
       "back": "Back",
       "menu": "Menu",
@@ -526,6 +533,13 @@
       "previous": "Previous",
       "next": "Next",
       "results": "Results {start} to {end} of {total}"
+    },
+    "search": {
+      "label": "Search by name",
+      "placeholder": "Person name...",
+      "submit": "Search",
+      "reset": "Reset",
+      "noResults": "No person found."
     },
     "footer": {
       "back": "Back",

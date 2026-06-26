@@ -4,7 +4,7 @@ import { StavnetHeader } from "@/components/stavnet/header";
 
 export default function PersonsLoading() {
   return (
-    <main className="relative min-h-[100svh] overflow-x-hidden bg-[#e7f2f7] font-[Arial,Helvetica,sans-serif] text-black md:h-screen md:overflow-hidden">
+    <main dir="ltr" className="relative min-h-[100svh] overflow-x-hidden bg-[#e7f2f7] font-[Arial,Helvetica,sans-serif] text-black md:h-screen md:overflow-hidden">
       <Image
         src="/background/background.png"
         alt=""
@@ -19,14 +19,8 @@ export default function PersonsLoading() {
           pageName="Liste personnes"
           title="Littérature israélienne"
           subtitle="Base de données bibliographiques et biographiques"
-          headerClassName="md:h-[146px]"
-          logoClassName="md:left-[2.4vw] md:top-[10px] md:w-[320px]"
-          badgeClassName="md:h-[112px] md:w-[236px]"
-          titleBlockClassName="md:right-[4.7vw] md:left-auto md:w-[44vw]"
-          titleClassName="text-[28px] md:text-[32px]"
-          subtitleClassName="text-[17px]"
         />
-        <section className="mt-6 min-w-0 flex flex-col gap-4 md:absolute md:left-1/2 md:top-[154px] md:bottom-[128px] md:w-[min(1240px,94vw)] md:-translate-x-1/2">
+        <section className="mt-6 min-w-0 flex flex-col gap-4 md:absolute md:left-1/2 md:top-[178px] md:bottom-[72px] md:w-[min(1320px,96vw)] md:-translate-x-1/2">
           <div className="flex items-center justify-center">
             <div className="rounded-full border border-[#9aa8b0] bg-[#fff6a8] px-4 py-1 text-[12px] font-bold uppercase tracking-[0.08em] text-[#34444d] shadow-[2px_2px_4px_rgba(0,0,0,0.12)]">
               Chargement des fiches personnes

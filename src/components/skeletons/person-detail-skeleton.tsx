@@ -12,7 +12,7 @@ export function PersonDetailSkeleton() {
         ))}
       </div>
 
-      <div className="relative flex min-h-[600px] flex-col rounded-[8px] border border-[#7aa8b7] bg-[linear-gradient(180deg,#8ecfe8_0%,#a8dbed_100%)] shadow-[4px_4px_8px_rgba(0,0,0,0.18)] md:h-[690px] md:min-h-0 md:flex-row">
+      <div className="relative flex min-h-[660px] flex-col rounded-[8px] border border-[#7aa8b7] bg-[linear-gradient(180deg,#8ecfe8_0%,#a8dbed_100%)] shadow-[4px_4px_8px_rgba(0,0,0,0.18)] md:h-[760px] md:min-h-0 md:flex-row">
         <aside className="border-b border-[#7aa8b7] px-3 py-4 md:w-[126px] md:border-b-0 md:border-r md:px-4 md:py-5">
           <Skeleton className="mx-auto h-8 w-[82px] bg-[#dff3f8]/80 md:h-9 md:w-[90px]" />
         </aside>
@@ -88,7 +88,7 @@ export function PersonDetailSkeleton() {
               <div className="border-b border-[#7aa8b7] bg-[#fff8c8] px-3 py-[7px]">
                 <Skeleton className="h-3 w-[104px] bg-[#efe6ab]" />
               </div>
-              <div className="space-y-3 px-3 py-3 md:h-[116px]">
+              <div className="space-y-3 px-3 py-3 md:h-[128px]">
                 <Skeleton className="h-4 w-full bg-white/50" />
                 <Skeleton className="h-4 w-[97%] bg-white/50" />
                 <Skeleton className="h-4 w-[93%] bg-white/50" />
@@ -128,7 +128,7 @@ export function PersonDetailSkeleton() {
                 {Array.from({ length: 2 }).map((_, rowIndex) => (
                   <div key={rowIndex} className="grid w-full grid-cols-[0.88fr_1.22fr_2.66fr_0.42fr_0.5fr]">
                     {["w-[74px]", "w-[94px]", "w-[280px]", "w-[36px]", "w-[28px]"].map((width, index) => (
-                      <div key={index} className={index < 4 ? "flex h-[42px] items-center border-r border-t border-[#7aa8b7] px-3" : "flex h-[42px] items-center border-t border-[#7aa8b7] px-3"}>
+                      <div key={index} className={index < 4 ? "flex h-[46px] items-center border-r border-t border-[#7aa8b7] px-3" : "flex h-[46px] items-center border-t border-[#7aa8b7] px-3"}>
                         <Skeleton className={`h-4 ${width} bg-white/50`} />
                       </div>
                     ))}

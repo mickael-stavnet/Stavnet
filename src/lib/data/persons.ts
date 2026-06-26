@@ -74,6 +74,14 @@ export interface PersonListResult {
 const compareByLocaleName = (left: string, right: string): number =>
   left.localeCompare(right, "fr", { sensitivity: "base", ignorePunctuation: true });
 
+function normalizeSearchValue(value: string): string {
+  return value
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLocaleLowerCase("fr")
+    .trim();
+}
+
 function readValue(row: DatabaseRow, keys: string[]): string {
   for (const key of keys) {
     const value = row[key];
@@ -246,6 +254,58 @@ export async function getPersonsPage(page: number, pageSize = PERSONS_PAGE_SIZE)
     table: PERSONS_TABLE,
     strategy: "local_sort_and_slice",
     totalRows: rows.length,
+    pageRowCount: pagedRows.length,
+    sampleRow: pagedRows[0] ?? null,
+  });
+  const totalPages = Math.max(1, Math.ceil(total / pageSize));
+
+  return {
+    items: pagedRows.map(mapPersonListItem),
+    page: currentPage,
+    pageSize,
+    total,
+    totalPages,
+    databaseTotal,
+  };
+}
+
+export async function getPersonsPageByName(
+  page: number,
+  searchTerm: string,
+  pageSize = PERSONS_PAGE_SIZE,
+): Promise<PersonListResult> {
+  const currentPage = Math.max(1, page);
+  const normalizedSearchTerm = normalizeSearchValue(searchTerm);
+  const from = (currentPage - 1) * pageSize;
+  const to = from + pageSize - 1;
+  logInfo("PERSONS_DB_SEARCH_PAGE_START", {
+    table: PERSONS_TABLE,
+    page: currentPage,
+    pageSize,
+    range: { from, to },
+    searchTerm,
+    normalizedSearchTerm,
+  });
+
+  const [rows, databaseTotal] = await Promise.all([getAllPersonsRows(), getPersonsDatabaseTotal()]);
+  const filteredRows = rows.filter((row) => {
+    const primaryName = normalizeSearchValue(readValue(row, [PERSON_NAME_COLUMN, PERSON_ALT_NAME_COLUMN]));
+    const alternateName = normalizeSearchValue(readValue(row, [PERSON_ALT_NAME_COLUMN, PERSON_NAME_COLUMN]));
+    return primaryName.includes(normalizedSearchTerm) || alternateName.includes(normalizedSearchTerm);
+  });
+  const sortedRows = filteredRows.slice().sort((left, right) =>
+    compareByLocaleName(
+      readValue(left, [PERSON_ALT_NAME_COLUMN, PERSON_NAME_COLUMN]),
+      readValue(right, [PERSON_ALT_NAME_COLUMN, PERSON_NAME_COLUMN]),
+    ),
+  );
+  const pagedRows = sortedRows.slice(from, to + 1);
+  const total = sortedRows.length;
+  logInfo("PERSONS_DB_SEARCH_PAGE_RESULT", {
+    table: PERSONS_TABLE,
+    searchTerm,
+    normalizedSearchTerm,
+    filteredRows: filteredRows.length,
     pageRowCount: pagedRows.length,
     sampleRow: pagedRows[0] ?? null,
   });

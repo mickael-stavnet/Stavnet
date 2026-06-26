@@ -30,7 +30,7 @@ export function PersonsListSkeleton() {
             ))}
           </div>
           <div className="overflow-auto">
-            {Array.from({ length: 13 }).map((_, rowIndex) => (
+            {Array.from({ length: 15 }).map((_, rowIndex) => (
               <div
                 key={rowIndex}
                 className="grid min-w-[1260px] grid-cols-[2.45fr_1.4fr_1.35fr_0.72fr_0.78fr_0.82fr_0.8fr_0.82fr_0.8fr_0.92fr] border-b border-[#b1bac0] last:border-b-0"

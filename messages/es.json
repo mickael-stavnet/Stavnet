@@ -489,6 +489,13 @@
       "next": "Siguiente",
       "results": "Resultados {start} a {end} de {total}"
     },
+    "search": {
+      "label": "Buscar por nombre",
+      "placeholder": "Nombre del organismo...",
+      "submit": "Buscar",
+      "reset": "Restablecer",
+      "noResults": "No se encontró ningún organismo."
+    },
     "footer": {
       "back": "Volver",
       "menu": "Menú",
@@ -526,6 +533,13 @@
       "previous": "Anterior",
       "next": "Siguiente",
       "results": "Resultados {start} a {end} de {total}"
+    },
+    "search": {
+      "label": "Buscar por nombre",
+      "placeholder": "Nombre de la persona...",
+      "submit": "Buscar",
+      "reset": "Restablecer",
+      "noResults": "No se encontró ninguna persona."
     },
     "footer": {
       "back": "Back",

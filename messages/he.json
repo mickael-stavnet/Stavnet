@@ -489,6 +489,13 @@
       "next": "הבא",
       "results": "תוצאות {start} עד {end} מתוך {total}"
     },
+    "search": {
+      "label": "חיפוש לפי שם",
+      "placeholder": "שם הארגון...",
+      "submit": "חיפוש",
+      "reset": "איפוס",
+      "noResults": "לא נמצא ארגון."
+    },
     "footer": {
       "back": "חזרה",
       "menu": "תפריט",
@@ -526,6 +533,13 @@
       "previous": "הקודם",
       "next": "הבא",
       "results": "תוצאות {start} עד {end} מתוך {total}"
+    },
+    "search": {
+      "label": "חיפוש לפי שם",
+      "placeholder": "שם האדם...",
+      "submit": "חיפוש",
+      "reset": "איפוס",
+      "noResults": "לא נמצאה אף אדם."
     },
     "footer": {
       "back": "חזרה",

@@ -47,6 +47,15 @@ export function StavnetFooter({
   centerContent,
 }: StavnetFooterProps) {
   const router = useRouter();
+  const itemCount = items.length;
+  const compactDesktopGapClass =
+    itemCount <= 2
+      ? "md:gap-32"
+      : itemCount <= 4
+        ? "md:gap-24"
+        : itemCount <= 6
+          ? "md:gap-18"
+          : "md:gap-14";
 
   const handleItemClick = (item: StavnetFooterItem) => (event: MouseEvent) => {
     item.onClick?.(event);
@@ -69,7 +78,7 @@ export function StavnetFooter({
       <nav
         data-stavnet-animate="footer"
         className={cn(
-          "mt-7 flex flex-col gap-5 pb-2 md:absolute md:left-[5.1vw] md:right-[5.1vw] md:mt-0 md:grid md:grid-cols-[92px_minmax(0,1fr)_92px] md:items-end md:gap-0 md:pb-0",
+          "mt-4 flex flex-col gap-3 pb-2 md:absolute md:bottom-[4.8vh] md:left-[5.1vw] md:right-[5.1vw] md:mt-0 md:grid md:grid-cols-[92px_minmax(0,1fr)_92px] md:items-end md:gap-0 md:pb-0",
           className,
         )}
       >
@@ -139,7 +148,8 @@ export function StavnetFooter({
       <nav
         data-stavnet-animate="footer"
         className={cn(
-          "mt-7 grid gap-x-3 gap-y-4 pb-2 md:absolute md:left-[4.8vw] md:right-[4.8vw] md:mt-0 md:grid-cols-4 md:gap-8 md:pb-0",
+          "mt-4 grid gap-x-1 gap-y-2 pb-2 md:absolute md:bottom-[4.8vh] md:left-[4.8vw] md:right-[4.8vw] md:mt-0 md:flex md:flex-wrap md:justify-center md:pb-0",
+          compactDesktopGapClass,
           mobileGridClassName ?? "grid-cols-4 sm:grid-cols-4",
           className,
         )}
@@ -147,7 +157,7 @@ export function StavnetFooter({
         {itemPairs.map((pair, pairIndex) => (
           <div
             key={`pair-${pairIndex}`}
-            className="contents md:grid md:grid-cols-2 md:gap-0"
+            className="contents md:flex md:items-end md:gap-12"
           >
             {pair.map((item) => (
               <Link
@@ -183,11 +193,11 @@ export function StavnetFooter({
     <nav
       data-stavnet-animate="footer"
       className={cn(
-        "mt-7 grid gap-x-3 gap-y-4 pb-2 md:absolute md:left-[4.8vw] md:right-[4.8vw] md:mt-0 md:pb-0",
+        "mt-4 grid gap-x-1 gap-y-2 pb-2 md:absolute md:bottom-[4.8vh] md:left-[4.8vw] md:right-[4.8vw] md:mt-0 md:pb-0",
         mobileGridClassName ?? "grid-cols-4 sm:grid-cols-4",
         desktopMode === "equal"
-          ? "md:grid-flow-col md:auto-cols-fr md:gap-6"
-          : "md:flex md:items-end md:justify-between",
+          ? `md:flex md:flex-nowrap md:items-end md:justify-center ${compactDesktopGapClass}`
+          : `md:flex md:items-end md:justify-center ${compactDesktopGapClass}`,
         className,
       )}
     >

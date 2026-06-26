@@ -38,7 +38,7 @@ function FilledCell({
 }) {
   return (
     <div
-      className={`flex min-h-[38px] items-center border-b border-[#7aa8b7] bg-[#a7dcee] px-2 text-[13px] text-black ${className}`}
+      className={`flex min-h-[42px] items-center border-b border-[#7aa8b7] bg-[#a7dcee] px-2 text-[13px] text-black ${className}`}
     >
       {value || "—"}
     </div>
@@ -51,7 +51,7 @@ function EmptyRows({ rows }: { rows: number }) {
       {Array.from({ length: rows }).map((_, index) => (
         <div
           key={index}
-          className={`min-h-[38px] border-b border-[#7aa8b7] bg-[#a7dcee] ${index === rows - 1 ? "border-b-0" : ""}`}
+              className={`min-h-[42px] border-b border-[#7aa8b7] bg-[#a7dcee] ${index === rows - 1 ? "border-b-0" : ""}`}
         />
       ))}
     </>
@@ -69,7 +69,7 @@ function BlankTabPanel({ title, rows = 4 }: { title: string; rows?: number }) {
           {Array.from({ length: rows }).map((_, index) => (
             <div
               key={index}
-              className={`h-[82px] border-b border-[#7aa8b7] ${index === rows - 1 ? "border-b-0" : ""}`}
+              className={`h-[90px] border-b border-[#7aa8b7] ${index === rows - 1 ? "border-b-0" : ""}`}
             />
           ))}
         </div>
@@ -145,7 +145,7 @@ export default function OrganizationsDetailPage({
   ];
 
   return (
-    <main className="relative min-h-[100svh] overflow-x-hidden bg-[#e7f2f7] font-[Arial,Helvetica,sans-serif] text-black md:h-screen md:overflow-hidden">
+    <main dir="ltr" className="relative min-h-[100svh] overflow-x-hidden bg-[#e7f2f7] font-[Arial,Helvetica,sans-serif] text-black md:h-screen md:overflow-hidden">
       <Image
         src="/background/background.png"
         alt=""
@@ -161,12 +161,6 @@ export default function OrganizationsDetailPage({
           pageName={t("header.cardTitle")}
           title={t("header.title")}
           subtitle={t("header.subtitle")}
-          headerClassName="md:h-[146px]"
-          logoClassName="md:left-[2.4vw] md:top-[10px] md:w-[320px]"
-          badgeClassName="md:left-[calc(50%-92px)] md:h-[118px] md:w-[248px] md:-translate-x-1/2"
-          titleBlockClassName="md:left-[calc(50%+56px)] md:w-[1320px] md:-translate-x-1/2 md:text-right"
-          titleClassName="text-[34px] md:text-[32px]"
-          subtitleClassName="text-[17px]"
         />
 
         <section className="mt-6 flex flex-col gap-4 md:absolute md:left-1/2 md:top-[172px] md:bottom-[118px] md:w-[min(1580px,97vw)] md:-translate-x-1/2">
@@ -262,7 +256,7 @@ export default function OrganizationsDetailPage({
               ))}
             </nav>
 
-            <div className="relative mt-[2px] flex min-h-[600px] flex-col rounded-[8px] border border-[#7aa8b7] bg-[linear-gradient(180deg,#8ecfe8_0%,#a8dbed_100%)] shadow-[4px_4px_8px_rgba(0,0,0,0.18)] md:h-[690px] md:min-h-0 md:flex-row">
+            <div className="relative mt-[2px] flex min-h-[660px] flex-col rounded-[8px] border border-[#7aa8b7] bg-[linear-gradient(180deg,#8ecfe8_0%,#a8dbed_100%)] shadow-[4px_4px_8px_rgba(0,0,0,0.18)] md:h-[760px] md:min-h-0 md:flex-row">
               <aside className="border-b border-[#7aa8b7] px-3 py-4 md:w-[126px] md:border-b-0 md:border-r md:px-4 md:py-5">
                 <p className="text-center text-[18px] font-bold leading-tight text-black">
                   {t("side.editorCard")}
@@ -334,7 +328,7 @@ export default function OrganizationsDetailPage({
                           <div className="border-b border-[#7aa8b7] bg-[#fff8c8] px-2 py-[3px] text-[12px] uppercase leading-none text-black">
                             {t("fields.group")}
                           </div>
-                          <div className="flex min-h-[31px] items-center px-2 text-[13px] text-black">
+                          <div className="flex min-h-[34px] items-center px-2 text-[13px] text-black">
                             <RedMarker />
                             {organization.type || "—"}
                           </div>
@@ -368,13 +362,13 @@ export default function OrganizationsDetailPage({
                           </div>
                         </div>
                         <div className="grid w-full min-w-0 grid-cols-[minmax(0,1.8fr)_minmax(0,1fr)_72px]">
-                          <div className="flex h-[29px] items-center justify-end border-r border-t border-[#7aa8b7] px-2 text-[13px] text-black">
+                          <div className="flex h-[32px] items-center justify-end border-r border-t border-[#7aa8b7] px-2 text-[13px] text-black">
                             <span className="text-right">—</span>
                           </div>
-                          <div className="flex h-[29px] items-center border-r border-t border-[#7aa8b7] px-2 text-[13px] text-black">
+                          <div className="flex h-[32px] items-center border-r border-t border-[#7aa8b7] px-2 text-[13px] text-black">
                             —
                           </div>
-                          <div className="flex h-[29px] items-center border-t border-[#7aa8b7] px-2 text-[13px] text-black">
+                          <div className="flex h-[32px] items-center border-t border-[#7aa8b7] px-2 text-[13px] text-black">
                             —
                           </div>
                         </div>
@@ -435,9 +429,6 @@ export default function OrganizationsDetailPage({
 
         <StavnetFooter
           items={footerItems}
-          className="md:bottom-[1.6vh] md:left-[calc(50%+18px)] md:right-auto md:w-[min(1460px,95vw)] md:-translate-x-1/2"
-          itemClassName="md:min-h-[58px] md:text-[13px]"
-          mobileGridClassName="grid-cols-2 sm:grid-cols-4"
           desktopMode="compact"
         />
       </div>

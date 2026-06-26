@@ -166,11 +166,6 @@ export default function BooksListPage() {
           pageName={t("header.cardTitle")}
           title={t("header.title")}
           subtitle={t("header.subtitle")}
-          headerClassName="md:h-[146px]"
-          badgeClassName="md:h-[112px] md:w-[236px]"
-          titleBlockClassName="md:right-[4.7vw] md:left-auto md:w-[44vw]"
-          titleClassName="text-[28px] md:text-[32px]"
-          subtitleClassName="text-[17px]"
         />
 
         <section className="mt-6 min-w-0 flex flex-col gap-4 md:absolute md:left-1/2 md:top-[154px] md:bottom-[128px] md:w-[min(1240px,94vw)] md:-translate-x-1/2">
@@ -295,9 +290,6 @@ export default function BooksListPage() {
 
         <StavnetFooter
           items={footerItems}
-          className="md:bottom-[2.6vh] md:left-[6vw] md:right-[6vw]"
-          itemClassName="md:min-h-[70px] md:text-[14px]"
-          mobileGridClassName="grid-cols-2 sm:grid-cols-3"
           desktopMode="compact"
         />
       </div>
