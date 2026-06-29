@@ -199,6 +199,7 @@ export default function MenuPage() {
             pageName={t("header.cardTitle")}
             title={t("header.title")}
             subtitle={t("header.subtitle")}
+            titleBlockClassName="md:w-[78vw]"
           />
 
           <section
@@ -301,7 +302,7 @@ export default function MenuPage() {
                       height={74}
                       className={`h-auto shrink-0 object-contain ${
                         column.key === "persons"
-                          ? "w-[74px] md:w-[68px]"
+                          ? "relative top-[-18px] w-[74px] md:top-[-20px] md:w-[68px]"
                           : column.key === "organizations"
                             ? "w-[76px] md:w-[68px]"
                             : "w-[70px] md:w-[62px]"

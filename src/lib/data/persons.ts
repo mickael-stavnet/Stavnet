@@ -1,6 +1,7 @@
 import { cache } from "react";
 import { supabase } from "@/lib/supabase";
 import { fixEncoding } from "@/lib/encoding";
+import { resolvePersonImageSrc } from "@/lib/person-images";
 import { logError, logInfo, logWarn } from "@/lib/server-log";
 
 const PERSONS_TABLE = "data-person";
@@ -43,6 +44,7 @@ export interface PersonBibliographyRow {
 export interface PersonDetail {
   name: string;
   alternateName: string;
+  imageSrc: string;
   type: string;
   language: string;
   birthInfo: string;
@@ -139,6 +141,10 @@ function mapPersonDetail(row: DatabaseRow, filteredTotal: number, databaseTotal:
   return {
     name: readValue(row, [PERSON_NAME_COLUMN, PERSON_ALT_NAME_COLUMN]),
     alternateName: readValue(row, [PERSON_ALT_NAME_COLUMN, PERSON_NAME_COLUMN]),
+    imageSrc: resolvePersonImageSrc(
+      readValue(row, [PERSON_NAME_COLUMN, PERSON_ALT_NAME_COLUMN]),
+      readValue(row, [PERSON_ALT_NAME_COLUMN, PERSON_NAME_COLUMN]),
+    ),
     type: readValue(row, ["Type Personne"]),
     language: readValue(row, [PERSON_WRITING_LANGUAGE_COLUMN]),
     birthInfo: composeParts([

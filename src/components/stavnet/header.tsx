@@ -42,7 +42,7 @@ export function StavnetHeader({
     <header
       data-stavnet-animate="header"
       className={cn(
-        "relative -mt-4 flex justify-center px-0 pt-0 md:mt-0 md:absolute md:left-0 md:top-0 md:h-[146px] md:w-full md:block md:px-0",
+        "relative -mt-2 flex justify-center px-0 pt-2 md:mt-0 md:absolute md:left-0 md:top-0 md:h-[146px] md:w-full md:block md:px-0",
         headerClassName,
       )}
     >
@@ -64,7 +64,7 @@ export function StavnetHeader({
 
       <section
         className={cn(
-          "flex h-[88px] w-[212px] flex-col items-center justify-center overflow-hidden rounded-b-[14px] bg-[radial-gradient(circle_at_68%_24%,#fff46c_0%,#ffe32d_24%,#ffa51a_51%,#c93623_74%,#3f2f7f_100%)] px-3 text-center shadow-[9px_3px_11px_rgba(0,0,0,0.42)] md:absolute md:left-1/2 md:top-0 md:h-[110px] md:w-[208px] md:-translate-x-1/2 md:rounded-bl-[14px] md:rounded-br-[14px] md:px-0",
+          "flex h-[92px] w-[212px] flex-col items-center justify-center overflow-hidden rounded-b-[14px] bg-[radial-gradient(circle_at_68%_24%,#fff46c_0%,#ffe32d_24%,#ffa51a_51%,#c93623_74%,#3f2f7f_100%)] px-3 text-center shadow-[9px_3px_11px_rgba(0,0,0,0.42)] md:absolute md:left-1/2 md:top-0 md:h-[110px] md:w-[208px] md:-translate-x-1/2 md:rounded-bl-[14px] md:rounded-br-[14px] md:px-0",
           badgeClassName,
         )}
       >
@@ -87,7 +87,7 @@ export function StavnetHeader({
 
       <section
         className={cn(
-          "hidden md:absolute md:left-1/2 md:top-[2.7vh] md:block md:w-[min(1320px,96vw)] md:-translate-x-[47%] md:text-right",
+          "hidden md:absolute md:left-1/2 md:top-[2.7vh] md:block md:w-[min(1320px,96vw)] md:-translate-x-1/2 md:text-right",
           titleBlockClassName,
         )}
       >
@@ -118,7 +118,7 @@ export function StavnetHeader({
       {rightControl ? (
         <div
           className={cn(
-            "hidden md:absolute md:left-1/2 md:top-[118px] md:w-[min(1320px,96vw)] md:-translate-x-[47%] md:flex md:justify-end md:text-right",
+            "hidden md:absolute md:left-1/2 md:top-[118px] md:w-[min(1320px,96vw)] md:-translate-x-1/2 md:flex md:justify-end md:text-right",
             rightControlClassName,
           )}
         >

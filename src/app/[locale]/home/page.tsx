@@ -77,12 +77,12 @@ export default function HomeMenuPage() {
 
       <section
         data-stavnet-animate="star-viewer"
-        className="pointer-events-none absolute left-0 right-0 top-[136px] z-10 h-[calc(100svh-230px)] w-full md:top-[10vh] md:h-[73vh]"
+        className="pointer-events-none absolute left-[calc(50%-2px)] top-[48svh] z-10 h-[clamp(190px,26svh,250px)] w-[min(72vw,270px)] -translate-x-1/2 -translate-y-1/2 md:left-0 md:right-0 md:top-[10vh] md:h-[73vh] md:w-full md:translate-x-0 md:translate-y-0"
       >
         <StarModelViewer />
       </section>
 
-      <div className="relative z-20 mx-auto flex min-h-[100svh] w-full max-w-[620px] flex-col px-5 pb-8 md:block md:h-screen md:max-w-none">
+      <div className="relative z-20 mx-auto flex min-h-[100svh] w-full max-w-[620px] flex-col px-4 pb-6 md:block md:h-screen md:max-w-none md:px-5 md:pb-8">
         <StavnetHeader
           pageName="Welcome"
           badgeBody={
@@ -109,7 +109,14 @@ export default function HomeMenuPage() {
           rightControl={<LanguageSwitcher />}
         />
 
-        <StavnetFooter items={footerItems} />
+        <div className="flex-1 md:hidden" />
+
+        <StavnetFooter
+          items={footerItems}
+          className="mt-0 pb-1 md:mt-4 md:pb-2"
+          itemClassName="min-h-[68px] text-[13px]"
+          mobileGridClassName="grid-cols-4"
+        />
       </div>
     </main>
   );

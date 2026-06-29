@@ -150,8 +150,8 @@ export default function PersonDetailPage({ person }: PersonDetailPageProps) {
             <aside className="absolute left-[-208px] top-[104px] hidden w-[182px] flex-col gap-5 md:flex">
               <div className="relative h-[212px] w-[174px] overflow-hidden border border-[#6c99a7] bg-[#d7eef6] shadow-[3px_3px_6px_rgba(0,0,0,0.18)]">
                 <Image
-                  src="https://cdn.pixabay.com/photo/2016/12/28/22/15/moscow-1937274_1280.jpg"
-                  alt=""
+                  src={person.imageSrc}
+                  alt={person.name}
                   fill
                   sizes="174px"
                   className="object-cover object-center"
@@ -164,8 +164,8 @@ export default function PersonDetailPage({ person }: PersonDetailPageProps) {
                   key={tabKey}
                   type="button"
                   onClick={() => setActiveTab(tabKey)}
-                  className={cn(
-                    "min-h-[52px] min-w-0 rounded-t-[8px] border border-[#d1bb48] px-2 py-[8px] text-center text-[12px] leading-[1.08] shadow-[3px_3px_5px_rgba(0,0,0,0.28)] transition-colors md:min-h-[60px] md:px-4 md:text-[15px]",
+                    className={cn(
+                    "min-h-[52px] min-w-0 rounded-t-[8px] border border-[#d1bb48] px-2 py-[8px] text-center text-[12px] font-bold leading-[1.08] shadow-[3px_3px_5px_rgba(0,0,0,0.28)] transition-colors md:min-h-[60px] md:px-4 md:text-[15px]",
                     activeTab === tabKey ? "bg-[#91d3ea] font-semibold text-black md:min-h-[68px] md:text-[19px] md:font-bold" : "bg-[#ffea56] text-black hover:bg-[#fff16f]",
                   )}
                 >

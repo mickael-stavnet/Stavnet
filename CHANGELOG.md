@@ -78,3 +78,11 @@
 - 10:37 - Augmentation d’environ 10% de la hauteur utile des grands conteneurs de listes et de fiches sur les parcours `/[locale]/orgs*` et `/[locale]/persons*`, avec ajustement cohérent des skeletons et des tableaux détaillés pour offrir davantage d’espace vertical.
 - 10:54 - Ajout d’un dossier `script` à la racine avec un utilitaire Python `eps_to_jpg.py` permettant de convertir en lot les fichiers `.eps` d’un dossier en `.jpg` directement dans ce même dossier.
 - 15:04 - Stabilisation des parcours `/[locale]/persons*` et `/[locale]/orgs*` en hébreu et en arabe, avec verrouillage des shells et écrans de chargement en `ltr` pour préserver la composition FileMaker tout en conservant une saisie de recherche compatible RTL.
+- 15:20 - Raccordement des fiches `/[locale]/persons/details` aux vraies images auteurs locales de `public/images/persons`, avec résolution automatique par nom normalisé et fallback visuel si aucune photo ne correspond.
+
+# 29-06-2026
+
+- 11:56 - Recentrage géométrique du bloc titre desktop partagé `StavnetHeader`, avec suppression du décalage horizontal résiduel sur toutes les pages STAVNET et réalignement du contrôle droit associé pour que l’en-tête reste droit au-dessus des contenus.
+- 12:02 - Mise en place de l’infrastructure Vercel du projet avec création du projet `stavnet-app`, liaison locale du dépôt via `.vercel` et connexion du repository GitHub `michel-DC/Stavnet` au projet Vercel.
+- 12:12 - Finalisation du déploiement Vercel initial de `stavnet-app`, avec ajout des variables d’environnement Supabase sur les environnements `production`, `preview` et `development`, correction du typage `NextConfig` dans `next.config.ts` pour lever le blocage de build, puis publication de la première instance de production active.
+- 12:55 - Reprise ciblée du responsive mobile des pages de garde `/(locale)` et `/(locale)/home`, avec recentrage vertical des contenus, justification du texte de présentation, modèle 3D réduit et recentré sur `/home`, et footer mobile recollé en bas sans rupture du style FileMaker existant.
