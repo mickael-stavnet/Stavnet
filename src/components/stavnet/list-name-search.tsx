@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useTransition } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 import { useSearchParams } from "next/navigation";
 import { usePathname, useRouter } from "@/i18n/routing";
 import { Input } from "@/components/ui/input";
@@ -18,12 +18,23 @@ export function ListNameSearch({ label, placeholder, initialValue, resetLabel }:
   const searchParams = useSearchParams();
   const [value, setValue] = useState(initialValue);
   const [isPending, startTransition] = useTransition();
+  const hasMountedRef = useRef(false);
+  const searchParamsString = searchParams.toString();
   const currentQuery = (searchParams.get("q") ?? "").trim();
   const currentPage = searchParams.get("page") ?? "1";
 
   useEffect(() => {
+    setValue(initialValue);
+  }, [initialValue]);
+
+  useEffect(() => {
+    if (!hasMountedRef.current) {
+      hasMountedRef.current = true;
+      return;
+    }
+
     const timeoutId = window.setTimeout(() => {
-      const params = new URLSearchParams(searchParams.toString());
+      const params = new URLSearchParams(searchParamsString);
       const trimmedValue = value.trim();
       const hasSameQuery = trimmedValue === currentQuery;
       const isFirstPage = currentPage === "1";
@@ -41,6 +52,11 @@ export function ListNameSearch({ label, placeholder, initialValue, resetLabel }:
       params.set("page", "1");
       const nextQuery = params.toString();
       const nextHref = nextQuery ? `${pathname}?${nextQuery}` : pathname;
+      const currentHref = searchParamsString ? `${pathname}?${searchParamsString}` : pathname;
+
+      if (nextHref === currentHref) {
+        return;
+      }
 
       startTransition(() => {
         router.replace(nextHref);
@@ -50,7 +66,7 @@ export function ListNameSearch({ label, placeholder, initialValue, resetLabel }:
     return () => {
       window.clearTimeout(timeoutId);
     };
-  }, [currentPage, currentQuery, pathname, router, searchParams, value]);
+  }, [currentPage, currentQuery, pathname, router, searchParamsString, value]);
 
   return (
     <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
