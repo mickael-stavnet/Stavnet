@@ -10,7 +10,6 @@ interface BookPressCritiquesPageProps {
 
 interface PressRow {
   sourceTitle: string;
-  sourceDate: string;
   excerpt: string;
 }
 
@@ -89,7 +88,17 @@ function PressExtractsTable({
 export default function BookPressCritiquesPage({ book }: BookPressCritiquesPageProps) {
   const t = useTranslations("BookDetailsPage");
   const pageData = t.raw("pageData") as PressPageData;
-  const pressExtracts: string[][] = [];
+  const pressRows: PressRow[] = book.pressReviews.map((review) => {
+    const sourceLines = [review.authorName, [review.sourceName, review.sourceDate].filter((value) => value.length > 0).join(", ")]
+      .filter((value) => value.length > 0)
+      .join("\n");
+
+    return {
+      sourceTitle: sourceLines || "—",
+      excerpt: review.excerpt,
+    };
+  });
+  const pressExtracts = pressRows.map((row) => [row.sourceTitle, row.excerpt]);
 
   return (
     <BookDetailSecondaryLayout book={book} pageName={t("tabs.pressCritiques")} pagePath="/books/details/press-critiques">

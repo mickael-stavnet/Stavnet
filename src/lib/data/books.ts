@@ -202,6 +202,13 @@ export interface BookPublishingStat {
   label: "languages" | "original" | "translated";
 }
 
+export interface BookPressReviewRow {
+  authorName: string;
+  sourceName: string;
+  sourceDate: string;
+  excerpt: string;
+}
+
 export interface BookDetail {
   id: string;
   imageSrc: string;
@@ -224,6 +231,7 @@ export interface BookDetail {
   availability: BookAvailabilityRow[];
   publishing: BookPublishingRow[];
   publishingStats: BookPublishingStat[];
+  pressReviews: BookPressReviewRow[];
   category: string[];
   subject: string[];
   genre: string[];
@@ -504,6 +512,45 @@ function buildPublishingStats(rows: BookPublishingRow[]): BookPublishingStat[] {
   ];
 }
 
+async function getBookPressReviews(bookId: string): Promise<BookPressReviewRow[]> {
+  const { data, error } = await supabase
+    .from("book_press_reviews")
+    .select("id,author_name,source_name,source_date,excerpt,position")
+    .eq("book_id", bookId)
+    .order("position", { ascending: true })
+    .order("id", { ascending: true });
+
+  if (error) {
+    const message = error.message ?? "Unknown error";
+
+    if (
+      message.includes("book_press_reviews") &&
+      (
+        message.includes("does not exist") ||
+        message.includes("schema cache") ||
+        message.includes("Could not find the table")
+      )
+    ) {
+      logWarn("BOOK_PRESS_REVIEWS_UNAVAILABLE", {
+        bookId,
+        message,
+      });
+      return [];
+    }
+
+    throw new Error(message);
+  }
+
+  return ((data as BookRow[] | null) ?? [])
+    .map((row) => ({
+      authorName: readText(row.author_name),
+      sourceName: readText(row.source_name),
+      sourceDate: readText(row.source_date),
+      excerpt: readText(row.excerpt),
+    }))
+    .filter((row) => row.excerpt.length > 0);
+}
+
 function mapBookListItem(row: BookRow): BookListItem {
   const code = parsePublicationCode(readText(row["Année. Pages. Dimensions"]));
 
@@ -545,6 +592,7 @@ function mapBookDetail(
   totals: { cardsFound: number; databaseContains: number },
   availability: BookAvailabilityRow[],
   publishing: BookPublishingRow[],
+  pressReviews: BookPressReviewRow[],
 ): BookDetail | null {
   const id = readId(row.id);
   const title = readText(row["Titre"]);
@@ -579,6 +627,7 @@ function mapBookDetail(
     availability,
     publishing,
     publishingStats: buildPublishingStats(publishing),
+    pressReviews,
     category: readList([row["Catégorie. 1"], row["Catégorie. 2"]]),
     subject: readList([row["Thème. 1"], row["Thème. 2"]]),
     genre: readList([row["Genre"], row["Genre. 1"], row["Genre. 2"]]),
@@ -746,11 +795,13 @@ export const getBookDetailById = cache(async (id: string): Promise<BookDetail | 
   }
 
   const row = (data as BookRow | null) ?? {};
-  const [publishing, availability] = await Promise.all([
+  const rowId = readId(row.id);
+  const [publishing, availability, pressReviews] = await Promise.all([
     getPublishingRows(row),
     Promise.resolve(buildAvailabilityRows(row, organizationCountryMap)),
+    rowId ? getBookPressReviews(rowId) : Promise.resolve([]),
   ]);
-  const detail = mapBookDetail(row, totals, availability, publishing);
+  const detail = mapBookDetail(row, totals, availability, publishing, pressReviews);
 
   if (!detail) {
     logWarn("BOOK_DETAIL_NOT_FOUND", {
@@ -801,11 +852,13 @@ export const getDefaultBookDetail = cache(async (): Promise<BookDetail | null> =
   }
 
   const row = (data as BookRow | null) ?? {};
-  const [publishing, availability] = await Promise.all([
+  const rowId = readId(row.id);
+  const [publishing, availability, pressReviews] = await Promise.all([
     getPublishingRows(row),
     Promise.resolve(buildAvailabilityRows(row, organizationCountryMap)),
+    rowId ? getBookPressReviews(rowId) : Promise.resolve([]),
   ]);
-  const detail = mapBookDetail(row, totals, availability, publishing);
+  const detail = mapBookDetail(row, totals, availability, publishing, pressReviews);
 
   if (!detail) {
     logWarn("BOOK_DEFAULT_DETAIL_EMPTY", {

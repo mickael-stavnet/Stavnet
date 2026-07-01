@@ -71,19 +71,19 @@ $$;
 
 create index if not exists "data-books_title_trgm_idx"
   on public."data-books"
-  using gin (lower(coalesce("Titre", '')) gin_trgm_ops);
+  using gin (lower(coalesce("Titre", '')) extensions.gin_trgm_ops);
 
 create index if not exists "data-organism_name_trgm_idx"
   on public."data-organism"
-  using gin (lower(coalesce("Organisme", '')) gin_trgm_ops);
+  using gin (lower(coalesce("Organisme", '')) extensions.gin_trgm_ops);
 
 create index if not exists "data-person_name_trgm_idx"
   on public."data-person"
-  using gin (lower(coalesce("Pr�nom Nom", '')) gin_trgm_ops);
+  using gin (lower(coalesce("Pr�nom Nom", '')) extensions.gin_trgm_ops);
 
 create index if not exists "data-person_alt_name_trgm_idx"
   on public."data-person"
-  using gin (lower(coalesce("Nom Pr�nom", '')) gin_trgm_ops);
+  using gin (lower(coalesce("Nom Pr�nom", '')) extensions.gin_trgm_ops);
 
 create or replace function public.get_persons_page(
   p_page integer default 1,
