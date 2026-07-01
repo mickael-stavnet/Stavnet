@@ -1,5 +1,8 @@
 import { Skeleton } from "@/components/ui/skeleton";
 
+const PERSON_BIBLIOGRAPHY_GRID =
+  "md:grid-cols-[minmax(0,0.84fr)_minmax(0,1.14fr)_minmax(0,2.58fr)_72px_126px]";
+
 export function PersonDetailSkeleton() {
   return (
     <div className="grid gap-4">
@@ -12,7 +15,7 @@ export function PersonDetailSkeleton() {
         ))}
       </div>
 
-      <div className="relative flex min-h-[660px] flex-col rounded-[8px] border border-[#7aa8b7] bg-[linear-gradient(180deg,#8ecfe8_0%,#a8dbed_100%)] shadow-[4px_4px_8px_rgba(0,0,0,0.18)] md:h-[760px] md:min-h-0 md:flex-row">
+      <div className="relative flex min-h-[660px] flex-col rounded-[8px] border border-[#7aa8b7] bg-[linear-gradient(180deg,#8ecfe8_0%,#a8dbed_100%)] shadow-[4px_4px_8px_rgba(0,0,0,0.18)] md:min-h-0 md:flex-1 md:flex-row">
         <aside className="border-b border-[#7aa8b7] px-3 py-4 md:w-[126px] md:border-b-0 md:border-r md:px-4 md:py-5">
           <Skeleton className="mx-auto h-8 w-[82px] bg-[#dff3f8]/80 md:h-9 md:w-[90px]" />
         </aside>
@@ -117,7 +120,7 @@ export function PersonDetailSkeleton() {
               </div>
 
               <section className="hidden min-h-0 flex-1 overflow-hidden border border-[#7aa8b7] bg-[#a7dcee] md:flex md:flex-col">
-                <div className="grid w-full grid-cols-[0.88fr_1.22fr_2.66fr_0.42fr_0.5fr] border-b border-[#7aa8b7] bg-[#fff8c8] px-0 py-0">
+                <div className={`grid w-full border-b border-[#7aa8b7] bg-[#fff8c8] px-0 py-0 ${PERSON_BIBLIOGRAPHY_GRID}`}>
                   {["w-[88px]", "w-[132px]", "w-[214px]", "w-[44px]", "w-[52px]"].map((width, index) => (
                     <div key={index} className={index < 4 ? "border-r border-[#7aa8b7] px-3 py-[7px]" : "px-3 py-[7px]"}>
                       <Skeleton className={`h-3 ${width} bg-[#efe6ab]`} />
@@ -126,7 +129,7 @@ export function PersonDetailSkeleton() {
                 </div>
 
                 {Array.from({ length: 2 }).map((_, rowIndex) => (
-                  <div key={rowIndex} className="grid w-full grid-cols-[0.88fr_1.22fr_2.66fr_0.42fr_0.5fr]">
+                  <div key={rowIndex} className={`grid w-full ${PERSON_BIBLIOGRAPHY_GRID}`}>
                     {["w-[74px]", "w-[94px]", "w-[280px]", "w-[36px]", "w-[28px]"].map((width, index) => (
                       <div key={index} className={index < 4 ? "flex h-[46px] items-center border-r border-t border-[#7aa8b7] px-3" : "flex h-[46px] items-center border-t border-[#7aa8b7] px-3"}>
                         <Skeleton className={`h-4 ${width} bg-white/50`} />
@@ -135,7 +138,7 @@ export function PersonDetailSkeleton() {
                   </div>
                 ))}
 
-                <div className="grid min-h-0 flex-1 grid-cols-[0.88fr_1.22fr_2.66fr_0.42fr_0.5fr]">
+                <div className={`grid min-h-0 flex-1 ${PERSON_BIBLIOGRAPHY_GRID}`}>
                   <div className="border-r border-t border-[#7aa8b7]" />
                   <div className="border-r border-t border-[#7aa8b7]" />
                   <div className="border-r border-t border-[#7aa8b7]" />

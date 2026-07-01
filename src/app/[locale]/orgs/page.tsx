@@ -128,7 +128,7 @@ export default async function OrganizationsListPage({ searchParams }: OrgsPagePr
           subtitle={t("header.subtitle")}
         />
 
-        <section className="mt-6 min-w-0 flex flex-col gap-4 md:absolute md:left-1/2 md:top-[178px] md:bottom-[72px] md:w-[min(1320px,96vw)] md:-translate-x-1/2">
+        <section className="mt-6 min-w-0 flex flex-col gap-4 md:absolute md:left-1/2 md:top-[178px] md:bottom-[132px] md:w-[min(1320px,96vw)] md:-translate-x-1/2">
           <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between md:gap-6">
             <ListNameSearch
               key={searchTerm}
@@ -214,7 +214,7 @@ export default async function OrganizationsListPage({ searchParams }: OrgsPagePr
             </div>
           </section>
 
-          <div className="flex flex-col items-center gap-3">
+          <div className="flex flex-col items-center gap-3 md:pb-6">
             <p className="text-center text-[13px] font-bold leading-none text-black">
               {t("pagination.results", {
                 start: String((result.page - 1) * ORGS_PAGE_SIZE + 1),

@@ -22,6 +22,9 @@ interface PersonDetailPageProps {
   person: PersonDetail;
 }
 
+const PERSON_BIBLIOGRAPHY_GRID =
+  "md:grid-cols-[minmax(0,0.84fr)_minmax(0,1.14fr)_minmax(0,2.58fr)_72px_126px]";
+
 interface MobileBibliographyCardProps {
   labels: {
     type: string;
@@ -141,12 +144,12 @@ export default function PersonDetailPage({ person }: PersonDetailPageProps) {
           subtitle={t("header.subtitle")}
         />
 
-        <section className="mt-6 flex flex-col gap-4 md:absolute md:left-[3.8vw] md:right-[3.8vw] md:top-[172px] md:bottom-[118px] md:grid md:grid-cols-[96px_1fr] md:gap-[0px]">
+        <section className="mt-6 flex flex-col gap-4 md:absolute md:left-[3.8vw] md:right-[3.8vw] md:top-[172px] md:bottom-[132px] md:grid md:grid-cols-[96px_1fr] md:gap-[0px]">
           <aside aria-hidden="true" className="relative order-2 hidden flex-col gap-4 md:order-1 md:flex md:translate-x-[42px] md:overflow-visible md:pt-[24px]">
             <div className="hidden md:block md:h-[92px]" />
           </aside>
 
-          <section className="order-1 min-w-0 md:order-2 md:relative md:mx-auto md:w-full md:max-w-[1320px] md:pr-[38px]">
+          <section className="order-1 min-w-0 md:order-2 md:relative md:mx-auto md:flex md:min-h-0 md:w-full md:max-w-[1320px] md:flex-col md:pr-[38px]">
             <aside className="absolute left-[-208px] top-[104px] hidden w-[182px] flex-col gap-5 md:flex">
               <div className="relative h-[212px] w-[174px] overflow-hidden border border-[#6c99a7] bg-[#d7eef6] shadow-[3px_3px_6px_rgba(0,0,0,0.18)]">
                 <Image
@@ -158,7 +161,7 @@ export default function PersonDetailPage({ person }: PersonDetailPageProps) {
                 />
               </div>
             </aside>
-            <nav className="grid grid-cols-2 gap-2 pb-2 md:grid-cols-[108px_repeat(7,minmax(0,1fr))] md:items-end md:gap-[12px] md:pb-0">
+            <nav className="grid grid-cols-2 gap-2 pb-2 md:shrink-0 md:grid-cols-[108px_repeat(7,minmax(0,1fr))] md:items-end md:gap-[12px] md:pb-0">
               {tabs.map((tabKey) => (
                 <button
                   key={tabKey}
@@ -174,7 +177,7 @@ export default function PersonDetailPage({ person }: PersonDetailPageProps) {
               ))}
             </nav>
 
-            <div className="relative mt-[2px] flex min-h-[660px] flex-col rounded-[8px] border border-[#7aa8b7] bg-[linear-gradient(180deg,#8ecfe8_0%,#a8dbed_100%)] shadow-[4px_4px_8px_rgba(0,0,0,0.18)] md:h-[760px] md:min-h-0 md:flex-row">
+            <div className="relative mt-[2px] flex min-h-[660px] flex-col rounded-[8px] border border-[#7aa8b7] bg-[linear-gradient(180deg,#8ecfe8_0%,#a8dbed_100%)] shadow-[4px_4px_8px_rgba(0,0,0,0.18)] md:min-h-0 md:flex-1 md:flex-row">
               <aside className="border-b border-[#7aa8b7] px-3 py-4 md:w-[126px] md:border-b-0 md:border-r md:px-4 md:py-5">
                 <p className="text-center text-[18px] font-bold leading-tight text-black md:text-[22px]">{t("side.authorCard")}</p>
               </aside>
@@ -260,26 +263,26 @@ export default function PersonDetailPage({ person }: PersonDetailPageProps) {
                       </div>
 
                       <section className="hidden min-h-0 flex-1 overflow-hidden border border-[#7aa8b7] bg-[#a7dcee] md:flex md:flex-col">
-                        <div className="grid w-full grid-cols-[0.88fr_1.22fr_2.66fr_0.42fr_0.5fr] border-b border-[#7aa8b7] bg-[#fff8c8] text-[13px] uppercase leading-none text-black">
-                          <div className="border-r border-[#7aa8b7] px-3 py-[5px]">{t("bibliography.columns.type")}</div>
-                          <div className="border-r border-[#7aa8b7] px-3 py-[5px]">{t("bibliography.columns.language")}</div>
-                          <div className="border-r border-[#7aa8b7] px-3 py-[5px]">{t("bibliography.columns.title")}</div>
-                          <div className="border-r border-[#7aa8b7] px-3 py-[5px]">{t("bibliography.columns.year")}</div>
-                          <div className="px-3 py-[5px] whitespace-nowrap">{t("bibliography.columns.issue")}</div>
+                        <div className={cn("grid w-full border-b border-[#7aa8b7] bg-[#fff8c8] text-[13px] uppercase leading-none text-black", PERSON_BIBLIOGRAPHY_GRID)}>
+                          <div className="min-w-0 border-r border-[#7aa8b7] px-3 py-[5px]">{t("bibliography.columns.type")}</div>
+                          <div className="min-w-0 border-r border-[#7aa8b7] px-3 py-[5px]">{t("bibliography.columns.language")}</div>
+                          <div className="min-w-0 border-r border-[#7aa8b7] px-3 py-[5px]">{t("bibliography.columns.title")}</div>
+                          <div className="min-w-0 border-r border-[#7aa8b7] px-3 py-[5px]">{t("bibliography.columns.year")}</div>
+                          <div className="min-w-0 px-3 py-[5px]">{t("bibliography.columns.issue")}</div>
                         </div>
 
                         {(person.bibliographyRows.length > 0 ? person.bibliographyRows : [{ type: "", language: "", title: "", year: "", issue: "" }]).map(
                           (row, rowIndex) => (
-                            <div key={rowIndex} className="grid w-full grid-cols-[0.88fr_1.22fr_2.66fr_0.42fr_0.5fr]">
-                              <div className="flex h-[46px] items-center border-r border-t border-[#7aa8b7] px-3 text-[15px] text-black">{row.type}</div>
-                              <div className="flex h-[46px] items-center border-r border-t border-[#7aa8b7] px-3 text-[15px] text-black">{row.language}</div>
-                              <div className="flex h-[46px] items-center border-r border-t border-[#7aa8b7] px-3 text-[15px] text-black">{row.title}</div>
-                              <div className="flex h-[46px] items-center border-r border-t border-[#7aa8b7] px-3 text-[15px] text-black">{row.year}</div>
-                              <div className="flex h-[46px] items-center border-t border-[#7aa8b7] px-3 text-[15px] whitespace-nowrap text-black">{row.issue}</div>
+                            <div key={rowIndex} className={cn("grid w-full", PERSON_BIBLIOGRAPHY_GRID)}>
+                              <div className="flex min-w-0 h-[46px] items-center border-r border-t border-[#7aa8b7] px-3 text-[15px] text-black">{row.type}</div>
+                              <div className="flex min-w-0 h-[46px] items-center border-r border-t border-[#7aa8b7] px-3 text-[15px] text-black">{row.language}</div>
+                              <div className="flex min-w-0 h-[46px] items-center border-r border-t border-[#7aa8b7] px-3 text-[15px] text-black">{row.title}</div>
+                              <div className="flex min-w-0 h-[46px] items-center border-r border-t border-[#7aa8b7] px-3 text-[15px] text-black">{row.year}</div>
+                              <div className="flex min-w-0 h-[46px] items-center border-t border-[#7aa8b7] px-3 text-[15px] text-black">{row.issue}</div>
                             </div>
                           ),
                         )}
-                        <div className="grid min-h-0 flex-1 grid-cols-[0.88fr_1.22fr_2.66fr_0.42fr_0.5fr]">
+                        <div className={cn("grid min-h-0 flex-1", PERSON_BIBLIOGRAPHY_GRID)}>
                           <div className="border-r border-t border-[#7aa8b7]" />
                           <div className="border-r border-t border-[#7aa8b7]" />
                           <div className="border-r border-t border-[#7aa8b7]" />

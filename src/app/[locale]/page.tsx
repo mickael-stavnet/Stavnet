@@ -103,6 +103,7 @@ export default function HomePage() {
           <StavnetFooter
             items={footerItems}
             desktopMode="cover"
+            className="md:bottom-[2.2vh]"
             centerContent={
               <p className="mx-auto max-w-[980px] text-center text-[15px] leading-[1.35] text-black md:w-[70.7vw] md:text-[clamp(14px,1.55vw,20px)] md:leading-[1.42]">
                 {t("coverDescriptionLine1")}

@@ -91,3 +91,7 @@
 - 12:07 - Sécurisation du socle Supabase avec sauvegarde des tables `data-books`, `data-person` et `data-organism` dans `.codex-artifacts/supabase-backups/2026-06-30`, ajout d’identifiants techniques et d’index de recherche, création de la policy RLS manquante sur `data-books`, puis remplacement des lectures complètes locales par des RPC paginés et ciblés pour les parcours `persons` et `orgs`.
 - 12:38 - Stabilisation du champ de recherche partagé des listes STAVNET en bloquant les réécritures d’URL au montage initial et les remplacements identiques, afin d’éliminer le rechargement infini observé sur les pages de données comme `/[locale]/persons`.
 - 15:20 - Raccordement des fiches `/[locale]/persons/details` aux vraies images auteurs locales de `public/images/persons`, avec résolution automatique par nom normalisé et fallback visuel si aucune photo ne correspond.
+
+# 01-07-2026
+
+- 10:26 - Recalage visuel partagé des parcours `/[locale]/persons*` et `/[locale]/orgs*`, avec nouvel écart de sécurité entre pagination et footer desktop, harmonisation des écrans de chargement des organismes sur le standard des personnes et ajustement ciblé des grandes fiches détail pour mieux respecter la composition FileMaker.
