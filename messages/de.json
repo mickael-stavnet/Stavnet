@@ -228,6 +228,7 @@
     },
     "right": {
       "bookCardsFound": "Gefundene Buchkarten",
+      "databaseContains": "Die Datenbank enthält",
       "database": "Die Datenbank",
       "records": "4653"
     },
@@ -552,38 +553,44 @@
   },
   "Books": {
     "header": {
-      "cardTitle": "Books list",
-      "title": "Israeli literature",
-      "subtitle": "Bibliographic and biographical database"
+      "cardTitle": "Bücherliste",
+      "title": "Israelische Literatur",
+      "subtitle": "Bibliografische und biografische Datenbank"
     },
     "stats": {
-      "cardsFound": "Book cards found",
+      "cardsFound": "Gefundene Buchkarten",
       "cardsFoundCount": "4656",
-      "databaseContains": "The database contains",
+      "databaseContains": "Die Datenbank enthält",
       "databaseContainsCount": "4656"
     },
     "columns": {
-      "titles": "Titles: originals, translations",
-      "authors": "Authors: last name, first name",
-      "publishers": "Publishers",
-      "languages": "Publication languages",
-      "year": "Year",
-      "publication": "Publication",
-      "issue": "Issue",
+      "titles": "Titel: Originale, Übersetzungen",
+      "authors": "Autoren: Nachname, Vorname",
+      "publishers": "Verlage",
+      "languages": "Publikationssprachen",
+      "year": "Jahr",
+      "publication": "Publikation",
+      "issue": "Ausgabe",
       "edition": "Edition"
     },
     "pagination": {
-      "previous": "Previous",
-      "next": "Next",
-      "results": "Results {start} to {end} of {total}"
+      "previous": "Zurück",
+      "next": "Weiter",
+      "results": "Ergebnisse {start} bis {end} von {total}"
+    },
+    "search": {
+      "label": "Suche nach Titel",
+      "placeholder": "Buchtitel...",
+      "reset": "Zurücksetzen",
+      "noResults": "Kein Werk gefunden."
     },
     "footer": {
-      "back": "Back",
-      "menu": "Menu",
-      "close": "Close",
-      "search": "Search",
-      "help": "Help",
-      "move": "Navigate"
+      "back": "Zurück",
+      "menu": "Menü",
+      "close": "Schließen",
+      "search": "Suche",
+      "help": "Hilfe",
+      "move": "Navigieren"
     }
   },
   "DefinitionPage": {

@@ -228,6 +228,7 @@
     },
     "right": {
       "bookCardsFound": "Book Cards found",
+      "databaseContains": "The database contains",
       "database": "The database",
       "records": "4653"
     },
@@ -576,6 +577,12 @@
       "previous": "Previous",
       "next": "Next",
       "results": "Results {start} to {end} of {total}"
+    },
+    "search": {
+      "label": "Search by title",
+      "placeholder": "Book title...",
+      "reset": "Reset",
+      "noResults": "No book found."
     },
     "footer": {
       "back": "Back",

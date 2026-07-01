@@ -95,3 +95,5 @@
 # 01-07-2026
 
 - 10:26 - Recalage visuel partagé des parcours `/[locale]/persons*` et `/[locale]/orgs*`, avec nouvel écart de sécurité entre pagination et footer desktop, harmonisation des écrans de chargement des organismes sur le standard des personnes et ajustement ciblé des grandes fiches détail pour mieux respecter la composition FileMaker.
+- 10:49 - Conversion du lot de couvertures `public/images/books-cover` de `.eps` vers `.jpg` via les scripts Python du projet, puis nettoyage du dossier par suppression des sources `.eps` devenues inutiles.
+- 11:38 - Reprise majeure du parcours `/[locale]/books` sur le standard `persons/orgs`, avec vraie lecture Supabase côté serveur, pagination et recherche par titre, nouvelle fiche détail alimentée par la base, états `loading` dédiés et skeletons FileMaker cohérents sur la liste et la fiche.

@@ -23,6 +23,9 @@
 # misc
 .DS_Store
 *.pem
+.codex-artifacts/
+.pnpm-store/
+__pycache__/
 
 # debug
 npm-debug.log*

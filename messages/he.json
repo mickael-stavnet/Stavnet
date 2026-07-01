@@ -228,6 +228,7 @@
     },
     "right": {
       "bookCardsFound": "כרטיסי ספר שנמצאו",
+      "databaseContains": "המאגר מכיל",
       "database": "המאגר",
       "records": "4653"
     },
@@ -552,38 +553,44 @@
   },
   "Books": {
     "header": {
-      "cardTitle": "Books list",
-      "title": "Israeli literature",
-      "subtitle": "Bibliographic and biographical database"
+      "cardTitle": "רשימת ספרים",
+      "title": "ספרות ישראלית",
+      "subtitle": "מאגר ביבליוגרפי וביוגרפי"
     },
     "stats": {
-      "cardsFound": "Book cards found",
+      "cardsFound": "כרטיסי ספר שנמצאו",
       "cardsFoundCount": "4656",
-      "databaseContains": "The database contains",
+      "databaseContains": "המאגר מכיל",
       "databaseContainsCount": "4656"
     },
     "columns": {
-      "titles": "Titles: originals, translations",
-      "authors": "Authors: last name, first name",
-      "publishers": "Publishers",
-      "languages": "Publication languages",
-      "year": "Year",
-      "publication": "Publication",
-      "issue": "Issue",
-      "edition": "Edition"
+      "titles": "כותרים: מקוריים, תרגומים",
+      "authors": "מחברים: שם משפחה, שם פרטי",
+      "publishers": "מוציאים לאור",
+      "languages": "שפות פרסום",
+      "year": "שנה",
+      "publication": "פרסום",
+      "issue": "גליון",
+      "edition": "מהדורה"
     },
     "pagination": {
-      "previous": "Previous",
-      "next": "Next",
-      "results": "Results {start} to {end} of {total}"
+      "previous": "הקודם",
+      "next": "הבא",
+      "results": "תוצאות {start} עד {end} מתוך {total}"
+    },
+    "search": {
+      "label": "חיפוש לפי כותר",
+      "placeholder": "כותר הספר...",
+      "reset": "איפוס",
+      "noResults": "לא נמצא ספר."
     },
     "footer": {
-      "back": "Back",
-      "menu": "Menu",
-      "close": "Close",
-      "search": "Search",
-      "help": "Help",
-      "move": "Navigate"
+      "back": "חזרה",
+      "menu": "תפריט",
+      "close": "סגור",
+      "search": "חיפוש",
+      "help": "עזרה",
+      "move": "ניווט"
     }
   },
   "DefinitionPage": {

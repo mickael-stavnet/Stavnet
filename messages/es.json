@@ -228,6 +228,7 @@
     },
     "right": {
       "bookCardsFound": "Fichas de libros encontradas",
+      "databaseContains": "La base contiene",
       "database": "La base de datos",
       "records": "4653"
     },
@@ -552,38 +553,44 @@
   },
   "Books": {
     "header": {
-      "cardTitle": "Books list",
-      "title": "Israeli literature",
-      "subtitle": "Bibliographic and biographical database"
+      "cardTitle": "Lista de libros",
+      "title": "Literatura israelí",
+      "subtitle": "Base de datos bibliográfica y biográfica"
     },
     "stats": {
-      "cardsFound": "Book cards found",
+      "cardsFound": "Fichas de libros encontradas",
       "cardsFoundCount": "4656",
-      "databaseContains": "The database contains",
+      "databaseContains": "La base contiene",
       "databaseContainsCount": "4656"
     },
     "columns": {
-      "titles": "Titles: originals, translations",
-      "authors": "Authors: last name, first name",
-      "publishers": "Publishers",
-      "languages": "Publication languages",
-      "year": "Year",
-      "publication": "Publication",
-      "issue": "Issue",
-      "edition": "Edition"
+      "titles": "Títulos: originales, traducciones",
+      "authors": "Autores: apellido, nombre",
+      "publishers": "Editores",
+      "languages": "Lenguas de publicación",
+      "year": "Año",
+      "publication": "Publicación",
+      "issue": "Número",
+      "edition": "Edición"
     },
     "pagination": {
-      "previous": "Previous",
-      "next": "Next",
-      "results": "Results {start} to {end} of {total}"
+      "previous": "Anterior",
+      "next": "Siguiente",
+      "results": "Resultados {start} a {end} de {total}"
+    },
+    "search": {
+      "label": "Buscar por título",
+      "placeholder": "Título de la obra...",
+      "reset": "Restablecer",
+      "noResults": "No se ha encontrado ninguna obra."
     },
     "footer": {
-      "back": "Back",
-      "menu": "Menu",
-      "close": "Close",
-      "search": "Search",
-      "help": "Help",
-      "move": "Navigate"
+      "back": "Volver",
+      "menu": "Menú",
+      "close": "Cerrar",
+      "search": "Buscar",
+      "help": "Ayuda",
+      "move": "Navegar"
     }
   },
   "DefinitionPage": {

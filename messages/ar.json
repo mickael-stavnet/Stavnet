@@ -228,6 +228,7 @@
     },
     "right": {
       "bookCardsFound": "بطاقات الكتب المعثور عليها",
+      "databaseContains": "تحتوي القاعدة على",
       "database": "قاعدة البيانات",
       "records": "4653"
     },
@@ -552,38 +553,44 @@
   },
   "Books": {
     "header": {
-      "cardTitle": "Books list",
-      "title": "Israeli literature",
-      "subtitle": "Bibliographic and biographical database"
+      "cardTitle": "قائمة الكتب",
+      "title": "الأدب الإسرائيلي",
+      "subtitle": "قاعدة بيانات ببليوغرافية وبيوغرافية"
     },
     "stats": {
-      "cardsFound": "Book cards found",
+      "cardsFound": "بطاقات الكتب المعثور عليها",
       "cardsFoundCount": "4656",
-      "databaseContains": "The database contains",
+      "databaseContains": "تحتوي القاعدة على",
       "databaseContainsCount": "4656"
     },
     "columns": {
-      "titles": "Titles: originals, translations",
-      "authors": "Authors: last name, first name",
-      "publishers": "Publishers",
-      "languages": "Publication languages",
-      "year": "Year",
-      "publication": "Publication",
-      "issue": "Issue",
-      "edition": "Edition"
+      "titles": "العناوين: الأصلية، الترجمات",
+      "authors": "المؤلفون: الاسم العائلي، الاسم الشخصي",
+      "publishers": "الناشرون",
+      "languages": "لغات النشر",
+      "year": "السنة",
+      "publication": "النشر",
+      "issue": "العدد",
+      "edition": "الطبعة"
     },
     "pagination": {
-      "previous": "Previous",
-      "next": "Next",
-      "results": "Results {start} to {end} of {total}"
+      "previous": "السابق",
+      "next": "التالي",
+      "results": "النتائج {start} إلى {end} من {total}"
+    },
+    "search": {
+      "label": "البحث حسب العنوان",
+      "placeholder": "عنوان الكتاب...",
+      "reset": "إعادة التهيئة",
+      "noResults": "لم يتم العثور على أي كتاب."
     },
     "footer": {
-      "back": "Back",
-      "menu": "Menu",
-      "close": "Close",
-      "search": "Search",
-      "help": "Help",
-      "move": "Navigate"
+      "back": "رجوع",
+      "menu": "القائمة",
+      "close": "إغلاق",
+      "search": "بحث",
+      "help": "مساعدة",
+      "move": "تنقل"
     }
   },
   "DefinitionPage": {

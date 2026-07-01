@@ -228,6 +228,7 @@
     },
     "right": {
       "bookCardsFound": "Fiches livres trouvées",
+      "databaseContains": "La base contient",
       "database": "La base de données",
       "records": "4653"
     },
@@ -576,6 +577,12 @@
       "previous": "Précédent",
       "next": "Suivant",
       "results": "Résultats {start} à {end} sur {total}"
+    },
+    "search": {
+      "label": "Recherche par titre",
+      "placeholder": "Titre de l’ouvrage...",
+      "reset": "Réinitialiser",
+      "noResults": "Aucun ouvrage trouvé."
     },
     "footer": {
       "back": "Retour",
