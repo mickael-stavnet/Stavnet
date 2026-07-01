@@ -109,6 +109,39 @@ const BOOK_DETAIL_SELECT = [
   '"Contrib. 10. Langue Traduite"',
   '"Contrib. 10. Nom"',
   '"Contrib. 10. Prénom"',
+  '"Biblio. 1. Cote"',
+  '"Biblio. 1. Nom"',
+  '"Biblio. 1. Source"',
+  '"Biblio. 1. Type"',
+  '"Biblio. 1. Ville"',
+  '"Biblio. 2. Cote"',
+  '"Biblio. 2. Nom"',
+  '"Biblio. 2. Source"',
+  '"Biblio. 2. Type"',
+  '"Biblio. 2. Ville"',
+  '"Biblio. 3. Cote"',
+  '"Biblio. 3. Nom"',
+  '"Biblio. 3. Source"',
+  '"Biblio. 3. Type"',
+  '"Biblio. 3. Ville"',
+  '"Biblio. 4. Cote"',
+  '"Biblio. 4. Nom"',
+  '"Biblio. 4. Source"',
+  '"Biblio. 4. Type"',
+  '"Biblio. 4. Ville"',
+].join(",");
+
+const BOOK_PUBLISHING_SELECT = [
+  "id",
+  '"Titre"',
+  '"Titre. Anglais"',
+  '"Titre. Original"',
+  '"Titre. Transcription"',
+  '"Langue"',
+  '"Année"',
+  '"Catégorie. 1"',
+  '"Éditeur"',
+  '"Éditeur. 1. Nom"',
 ].join(",");
 
 type BookRow = Record<string, unknown> & {
@@ -145,6 +178,30 @@ export interface BookPublisherRow {
   isbn: string;
 }
 
+export interface BookAvailabilityRow {
+  org: string;
+  type: string;
+  shelfmark: string;
+  city: string;
+  country: string;
+  source: string;
+}
+
+export interface BookPublishingRow {
+  status: string;
+  language: string;
+  title: string;
+  publisher: string;
+  year: string;
+  edition: string;
+  publication: string;
+}
+
+export interface BookPublishingStat {
+  count: string;
+  label: "languages" | "original" | "translated";
+}
+
 export interface BookDetail {
   id: string;
   imageSrc: string;
@@ -164,6 +221,9 @@ export interface BookDetail {
   authors: BookAuthorRow[];
   contributors: BookContributorRow[];
   publishers: BookPublisherRow[];
+  availability: BookAvailabilityRow[];
+  publishing: BookPublishingRow[];
+  publishingStats: BookPublishingStat[];
   category: string[];
   subject: string[];
   genre: string[];
@@ -327,6 +387,123 @@ function buildPublishers(row: BookRow): BookPublisherRow[] {
   return publishers;
 }
 
+function parseBookReferenceCode(value: string): {
+  status: string;
+  edition: string;
+  publication: string;
+} {
+  const parts = value.split("-").map((part) => part.trim()).filter((part) => part.length > 0);
+
+  return {
+    status: parts[1] ?? "",
+    edition: parts[3] ?? "",
+    publication: parts[4] ?? "",
+  };
+}
+
+function buildWorkSignature(row: BookRow): string[] {
+  return [
+    readText(row["Titre. Original"]),
+    readText(row["Titre. Anglais"]),
+    readText(row["Titre. Transcription"]),
+    readText(row["Titre"]),
+  ].filter((value, index, array) => value.length > 0 && array.indexOf(value) === index);
+}
+
+const getOrganizationCountryMap = cache(async (): Promise<Map<string, string>> => {
+  const { data, error } = await supabase.from("data-organism").select('"Organisme","Pays"');
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  const countryMap = new Map<string, string>();
+
+  for (const row of (data as BookRow[] | null) ?? []) {
+    const name = readText(row["Organisme"]);
+    const country = readText(row["Pays"]);
+
+    if (name && country && !countryMap.has(name)) {
+      countryMap.set(name, country);
+    }
+  }
+
+  return countryMap;
+});
+
+function buildAvailabilityRows(row: BookRow, organizationCountryMap: Map<string, string>): BookAvailabilityRow[] {
+  const availability: BookAvailabilityRow[] = [];
+
+  for (const index of [1, 2, 3, 4]) {
+    const org = readText(row[`Biblio. ${index}. Nom`]);
+    const type = readText(row[`Biblio. ${index}. Type`]);
+    const shelfmark = readText(row[`Biblio. ${index}. Cote`]);
+    const city = readText(row[`Biblio. ${index}. Ville`]);
+    const source = readText(row[`Biblio. ${index}. Source`]);
+    const country = org ? organizationCountryMap.get(org) ?? "" : "";
+
+    if (!org && !type && !shelfmark && !city && !source && !country) {
+      continue;
+    }
+
+    availability.push({
+      org,
+      type,
+      shelfmark,
+      city,
+      country,
+      source,
+    });
+  }
+
+  return availability;
+}
+
+function buildPublishingRows(rows: BookRow[]): BookPublishingRow[] {
+  return rows
+    .map((row) => {
+      const code = parseBookReferenceCode(readText(row["Catégorie. 1"]));
+      const status = code.status || (readText(row["Titre. Original"]) ? "O" : "T");
+      const title =
+        status === "O"
+          ? readText(row["Titre. Original"]) || readText(row["Titre"])
+          : readText(row["Titre"]) || readText(row["Titre. Original"]);
+
+      return {
+        status,
+        language: readText(row["Langue"]),
+        title,
+        publisher: readText(row["Éditeur. 1. Nom"]) || readText(row["Éditeur"]),
+        year: readText(row["Année"]),
+        edition: code.edition,
+        publication: code.publication,
+      };
+    })
+    .filter((row) => Object.values(row).some((value) => value.length > 0))
+    .sort((left, right) => {
+      const leftYear = Number.parseInt(left.year, 10);
+      const rightYear = Number.parseInt(right.year, 10);
+
+      if (Number.isFinite(leftYear) && Number.isFinite(rightYear) && leftYear !== rightYear) {
+        return leftYear - rightYear;
+      }
+
+      return left.language.localeCompare(right.language, "fr");
+    });
+}
+
+function buildPublishingStats(rows: BookPublishingRow[]): BookPublishingStat[] {
+  const languageCount = new Set(rows.map((row) => row.language).filter((value) => value.length > 0)).size;
+  const originalCount = rows.filter((row) => row.status === "O").length;
+  const translatedCount = rows.filter((row) => row.status === "T").length;
+
+  return [
+    { count: String(languageCount), label: "languages" },
+    { count: String(originalCount), label: "original" },
+    { count: String(translatedCount), label: "translated" },
+  ];
+}
+
 function mapBookListItem(row: BookRow): BookListItem {
   const code = parsePublicationCode(readText(row["Année. Pages. Dimensions"]));
 
@@ -363,7 +540,12 @@ const getBooksDatabaseTotals = cache(async (): Promise<{ cardsFound: number; dat
   };
 });
 
-function mapBookDetail(row: BookRow, totals: { cardsFound: number; databaseContains: number }): BookDetail | null {
+function mapBookDetail(
+  row: BookRow,
+  totals: { cardsFound: number; databaseContains: number },
+  availability: BookAvailabilityRow[],
+  publishing: BookPublishingRow[],
+): BookDetail | null {
   const id = readId(row.id);
   const title = readText(row["Titre"]);
 
@@ -394,6 +576,9 @@ function mapBookDetail(row: BookRow, totals: { cardsFound: number; databaseConta
     authors: buildAuthors(row),
     contributors: buildContributors(row),
     publishers: buildPublishers(row),
+    availability,
+    publishing,
+    publishingStats: buildPublishingStats(publishing),
     category: readList([row["Catégorie. 1"], row["Catégorie. 2"]]),
     subject: readList([row["Thème. 1"], row["Thème. 2"]]),
     genre: readList([row["Genre"], row["Genre. 1"], row["Genre. 2"]]),
@@ -403,6 +588,39 @@ function mapBookDetail(row: BookRow, totals: { cardsFound: number; databaseConta
       databaseContains: String(totals.databaseContains),
     },
   };
+}
+
+async function getPublishingRows(row: BookRow): Promise<BookPublishingRow[]> {
+  const signatures = buildWorkSignature(row);
+  const originalTitle = readText(row["Titre. Original"]);
+  const englishTitle = readText(row["Titre. Anglais"]);
+  const transcriptionTitle = readText(row["Titre. Transcription"]);
+  const title = readText(row["Titre"]);
+
+  let query = supabase.from("data-books").select(BOOK_PUBLISHING_SELECT);
+
+  if (originalTitle) {
+    query = query.filter('"Titre. Original"', "eq", originalTitle);
+  } else if (englishTitle) {
+    query = query.filter('"Titre. Anglais"', "eq", englishTitle);
+  } else if (transcriptionTitle) {
+    query = query.filter('"Titre. Transcription"', "eq", transcriptionTitle);
+  } else {
+    query = query.filter('"Titre"', "eq", title);
+  }
+
+  const { data, error } = await query.order('"Année"', { ascending: true }).order("id", { ascending: true });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  const relatedRows = ((data as unknown as BookRow[] | null) ?? []).filter((relatedRow) => {
+    const relatedSignatures = buildWorkSignature(relatedRow);
+    return signatures.some((signature) => relatedSignatures.includes(signature));
+  });
+
+  return buildPublishingRows(relatedRows.length > 0 ? relatedRows : [row]);
 }
 
 async function fetchBooksPagePayload(page: number, pageSize: number, searchTerm?: string): Promise<{
@@ -505,13 +723,14 @@ export const getBookDetailById = cache(async (id: string): Promise<BookDetail | 
     id: trimmedId,
   });
 
-  const [rowResult, totals] = await Promise.all([
+  const [rowResult, totals, organizationCountryMap] = await Promise.all([
     supabase
       .from("data-books")
       .select(BOOK_DETAIL_SELECT)
       .eq("id", trimmedId)
       .maybeSingle(),
     getBooksDatabaseTotals(),
+    getOrganizationCountryMap(),
   ]);
 
   const { data, error, status, statusText } = rowResult;
@@ -526,7 +745,12 @@ export const getBookDetailById = cache(async (id: string): Promise<BookDetail | 
     throw new Error(error.message);
   }
 
-  const detail = mapBookDetail((data as BookRow | null) ?? {}, totals);
+  const row = (data as BookRow | null) ?? {};
+  const [publishing, availability] = await Promise.all([
+    getPublishingRows(row),
+    Promise.resolve(buildAvailabilityRows(row, organizationCountryMap)),
+  ]);
+  const detail = mapBookDetail(row, totals, availability, publishing);
 
   if (!detail) {
     logWarn("BOOK_DETAIL_NOT_FOUND", {
@@ -550,7 +774,7 @@ export const getBookDetailById = cache(async (id: string): Promise<BookDetail | 
 export const getDefaultBookDetail = cache(async (): Promise<BookDetail | null> => {
   logInfo("BOOK_DEFAULT_DETAIL_START", {});
 
-  const [rowResult, totals] = await Promise.all([
+  const [rowResult, totals, organizationCountryMap] = await Promise.all([
     supabase
       .from("data-books")
       .select(BOOK_DETAIL_SELECT)
@@ -562,6 +786,7 @@ export const getDefaultBookDetail = cache(async (): Promise<BookDetail | null> =
       .limit(1)
       .maybeSingle(),
     getBooksDatabaseTotals(),
+    getOrganizationCountryMap(),
   ]);
 
   const { data, error, status, statusText } = rowResult;
@@ -575,7 +800,12 @@ export const getDefaultBookDetail = cache(async (): Promise<BookDetail | null> =
     throw new Error(error.message);
   }
 
-  const detail = mapBookDetail((data as BookRow | null) ?? {}, totals);
+  const row = (data as BookRow | null) ?? {};
+  const [publishing, availability] = await Promise.all([
+    getPublishingRows(row),
+    Promise.resolve(buildAvailabilityRows(row, organizationCountryMap)),
+  ]);
+  const detail = mapBookDetail(row, totals, availability, publishing);
 
   if (!detail) {
     logWarn("BOOK_DEFAULT_DETAIL_EMPTY", {

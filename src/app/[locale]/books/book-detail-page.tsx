@@ -247,30 +247,30 @@ export default function BookDetailPage({ book }: BookDetailPageProps) {
           subtitle={t("header.subtitle")}
         />
 
-        <section className="mt-6 flex min-w-0 flex-col gap-5 md:absolute md:left-1/2 md:top-[172px] md:bottom-[118px] md:w-[1436px] md:max-w-[calc(100vw-24px)] md:-translate-x-1/2 md:grid md:grid-cols-[1fr] md:gap-x-0 md:gap-y-[4px]">
-          <aside className="order-1 flex min-w-0 flex-col gap-[12px] md:absolute md:left-0 md:top-0 md:self-start md:overflow-visible md:pt-0">
-            <div className="w-full max-w-[270px] border border-[#b7ab92] bg-[#f3ead4] p-[6px] shadow-[2px_2px_4px_rgba(0,0,0,0.12)] md:w-[270px]">
+        <section className="mt-6 flex min-w-0 flex-col gap-5 md:absolute md:left-1/2 md:top-[172px] md:bottom-[118px] md:w-[1436px] md:max-w-[calc(100vw-24px)] md:-translate-x-1/2 md:grid md:grid-cols-[270px_1120px] md:gap-x-[12px] md:gap-y-0">
+          <aside className="order-1 flex min-w-0 flex-col gap-[12px] md:mt-[66px] md:h-[660px] md:w-[270px] md:gap-[14px] md:self-start md:overflow-hidden">
+            <div className="w-full max-w-[270px] border border-[#b7ab92] bg-[#f3ead4] p-[6px] shadow-[2px_2px_4px_rgba(0,0,0,0.12)] md:h-[422px] md:w-[270px] md:max-w-none">
               <Image
                 src={book.imageSrc}
                 alt={book.title}
                 width={258}
                 height={387}
                 priority
-                className="h-auto w-full object-cover"
+                className="h-auto w-full object-cover md:h-full"
               />
             </div>
 
-            <div className="min-w-0 max-w-[270px] border border-[#7aa8b7] bg-[#d8dde2] md:w-[270px]">
+            <div className="min-w-0 max-w-[270px] border border-[#7aa8b7] bg-[#d8dde2] md:flex-1 md:w-[270px] md:max-w-none">
               <div className="border-b border-[#7aa8b7] bg-[#fff8c8] px-2 py-[3px] text-[12px] uppercase leading-none text-black">
                 {t("summary")}
               </div>
-              <div className="max-h-[220px] overflow-auto px-3 py-3 text-[12px] leading-[1.45] text-black md:h-[284px] md:max-h-none md:px-2 md:py-2 md:text-[13px]">
+              <div className="max-h-[220px] overflow-auto px-3 py-3 text-[12px] leading-[1.45] text-black md:h-[calc(100%-23px)] md:max-h-none md:px-2 md:py-2 md:text-[13px]">
                 {book.summary || "—"}
               </div>
             </div>
           </aside>
 
-          <section className="order-2 min-w-0 md:col-start-1 md:col-end-2 md:ml-[282px] md:w-[1120px] md:max-w-none">
+          <section className="order-2 min-w-0 md:col-start-2 md:col-end-3 md:w-[1120px] md:max-w-none">
             <nav className="grid grid-cols-2 gap-2 pb-2 md:grid-cols-[92px_repeat(7,minmax(0,1fr))] md:items-end md:gap-[10px] md:pb-0">
               {tabs.map((tabKey) => {
                 const tabClassName = cn(
