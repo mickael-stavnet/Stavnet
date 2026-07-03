@@ -10,9 +10,9 @@ interface CoverPageProps {
 
 export async function generateMetadata({ params }: CoverPageProps): Promise<Metadata> {
   const { locale } = await params;
-  return buildStaticPageMetadata(locale, "cover", "");
+  return buildStaticPageMetadata(locale, "welcome", "");
 }
 
-export default function CoverPage() {
+export default function HomePage() {
   return <HomePageClient />;
 }

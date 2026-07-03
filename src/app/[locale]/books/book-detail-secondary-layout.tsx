@@ -266,7 +266,6 @@ export default function BookDetailSecondaryLayout({
           pageName={pageName}
           title={t("header.title")}
           subtitle={t("header.subtitle")}
-          titleBlockClassName="md:top-[34px]"
         />
 
         <section className="mt-6 flex min-w-0 flex-col gap-3 md:absolute md:left-1/2 md:top-[172px] md:bottom-[118px] md:w-[1436px] md:max-w-[calc(100vw-24px)] md:-translate-x-1/2">

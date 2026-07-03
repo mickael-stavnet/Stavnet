@@ -88,7 +88,7 @@ export function StavnetHeader({
 
       <section
         className={cn(
-          "hidden md:absolute md:left-1/2 md:top-[2.7vh] md:flex md:min-h-[78px] md:w-[min(1320px,96vw)] md:-translate-x-1/2 md:flex-col md:items-end md:justify-end md:text-right",
+          "hidden md:absolute md:left-1/2 md:top-[4.5vh] md:flex md:min-h-[78px] md:w-[min(1320px,96vw)] md:-translate-x-1/2 md:flex-col md:items-end md:justify-end md:text-right",
           titleBlockClassName,
         )}
       >

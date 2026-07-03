@@ -17,7 +17,7 @@ import { Link } from "@/i18n/routing";
 import { BOOKS_PAGE_SIZE, getBooksPage, getBooksPageByTitle } from "@/lib/data/books";
 import { buildStaticPageMetadata } from "@/lib/site-metadata";
 
-const BOOKS_GRID_TEMPLATE = "3.1fr 1.55fr 1.18fr 0.96fr 0.96fr 0.6fr 0.62fr 0.6fr 0.6fr";
+const BOOKS_COLUMN_WIDTHS = ["30.48%", "15.24%", "11.60%", "9.44%", "9.44%", "5.90%", "6.10%", "5.90%", "5.90%"] as const;
 
 interface BooksPageProps {
   params: Promise<{
@@ -187,50 +187,52 @@ export default async function BooksListPage({ searchParams }: BooksPageProps) {
               )}
             </div>
 
-            <div className="hidden flex-col md:flex">
-              <div
-                className="grid min-w-[1280px] border-b border-[#9aa8b0] bg-[#fff68f] text-[11px] uppercase leading-none text-black"
-                style={{ gridTemplateColumns: BOOKS_GRID_TEMPLATE }}
-              >
-                <div className="rounded-tl-[10px] border-r border-[#9aa8b0] px-3 py-[9px] text-center">{t("columns.titles")}</div>
-                <div className="rounded-t-[10px] border-r border-[#9aa8b0] px-3 py-[9px] text-center">{t("columns.authors")}</div>
-                <div className="rounded-t-[10px] border-r border-[#9aa8b0] px-3 py-[9px] text-center">{t("columns.publishers")}</div>
-                <div className="rounded-t-[10px] border-r border-[#9aa8b0] px-3 py-[9px] text-center">{t("columns.languages")}</div>
-                <div className="rounded-t-[10px] border-r border-[#9aa8b0] px-3 py-[9px] text-center">{t("columns.writingLanguage")}</div>
-                <div className="rounded-t-[10px] border-r border-[#9aa8b0] px-3 py-[9px] text-center">{t("columns.year")}</div>
-                <div className="rounded-t-[10px] border-r border-[#9aa8b0] px-3 py-[9px] text-center">{t("columns.publication")}</div>
-                <div className="rounded-t-[10px] border-r border-[#9aa8b0] px-3 py-[9px] text-center">{t("columns.issue")}</div>
-                <div className="rounded-tr-[10px] px-3 py-[9px] text-center">{t("columns.edition")}</div>
-              </div>
-
-              
+            <div className="hidden md:block">
               {result.items.length > 0 ? (
                 <div className="overflow-auto">
-                  {result.items.map((book, rowIndex) => (
-                    <div
-                      key={`${book.id}-${result.page}-${rowIndex}`}
-                      className="grid min-w-[1280px] border-b border-[#b1bac0] text-[14px] leading-none text-black last:border-b-0"
-                      style={{ gridTemplateColumns: BOOKS_GRID_TEMPLATE }}
-                    >
-                      <div className="border-r border-[#b1bac0] px-3 py-[15px]">
-                        <Link
-                          href={{ pathname: "/books/details", query: { id: book.id } }}
-                          className="flex items-center text-black hover:underline"
-                        >
-                          <RedMarker />
-                          <span className="w-full break-words">{book.title}</span>
-                        </Link>
-                      </div>
-                      <div className="border-r border-[#b1bac0] px-3 py-[15px]">{book.author || "—"}</div>
-                      <div className="border-r border-[#b1bac0] px-3 py-[15px]">{book.publisher || "—"}</div>
-                      <div className="border-r border-[#b1bac0] px-3 py-[15px]">{book.language || "—"}</div>
-                      <div className="border-r border-[#b1bac0] px-3 py-[15px]">{book.writingLanguage || "—"}</div>
-                      <div className="border-r border-[#b1bac0] px-3 py-[15px] text-center">{book.year || "—"}</div>
-                      <div className="border-r border-[#b1bac0] px-3 py-[15px] text-center">{book.publication || "—"}</div>
-                      <div className="border-r border-[#b1bac0] px-3 py-[15px] text-center">{book.issue || "—"}</div>
-                      <div className="px-3 py-[15px] text-center">{book.edition || "—"}</div>
-                    </div>
-                  ))}
+                  <table className="min-w-[1280px] table-fixed border-collapse text-black">
+                    <colgroup>
+                      {BOOKS_COLUMN_WIDTHS.map((width, index) => (
+                        <col key={`${width}-${index}`} style={{ width }} />
+                      ))}
+                    </colgroup>
+                    <thead>
+                      <tr className="border-b border-[#9aa8b0] bg-[#fff68f] text-[11px] uppercase leading-none">
+                        <th className="rounded-tl-[10px] border-r border-[#9aa8b0] px-3 py-[9px] text-center font-normal">{t("columns.titles")}</th>
+                        <th className="border-r border-[#9aa8b0] px-3 py-[9px] text-center font-normal">{t("columns.authors")}</th>
+                        <th className="border-r border-[#9aa8b0] px-3 py-[9px] text-center font-normal">{t("columns.publishers")}</th>
+                        <th className="border-r border-[#9aa8b0] px-3 py-[9px] text-center font-normal">{t("columns.languages")}</th>
+                        <th className="border-r border-[#9aa8b0] px-3 py-[9px] text-center font-normal">{t("columns.writingLanguage")}</th>
+                        <th className="border-r border-[#9aa8b0] px-3 py-[9px] text-center font-normal">{t("columns.year")}</th>
+                        <th className="border-r border-[#9aa8b0] px-3 py-[9px] text-center font-normal">{t("columns.publication")}</th>
+                        <th className="border-r border-[#9aa8b0] px-3 py-[9px] text-center font-normal">{t("columns.issue")}</th>
+                        <th className="rounded-tr-[10px] px-3 py-[9px] text-center font-normal">{t("columns.edition")}</th>
+                      </tr>
+                    </thead>
+                    <tbody className="text-[14px] leading-none">
+                      {result.items.map((book, rowIndex) => (
+                        <tr key={`${book.id}-${result.page}-${rowIndex}`} className="border-b border-[#b1bac0] last:border-b-0">
+                          <td className="border-r border-[#b1bac0] px-3 py-[15px] align-middle">
+                            <Link
+                              href={{ pathname: "/books/details", query: { id: book.id } }}
+                              className="flex items-center text-black hover:underline"
+                            >
+                              <RedMarker />
+                              <span className="w-full break-words">{book.title}</span>
+                            </Link>
+                          </td>
+                          <td className="border-r border-[#b1bac0] px-3 py-[15px] align-middle">{book.author || "—"}</td>
+                          <td className="border-r border-[#b1bac0] px-3 py-[15px] align-middle">{book.publisher || "—"}</td>
+                          <td className="border-r border-[#b1bac0] px-3 py-[15px] align-middle">{book.language || "—"}</td>
+                          <td className="border-r border-[#b1bac0] px-3 py-[15px] align-middle">{book.writingLanguage || "—"}</td>
+                          <td className="border-r border-[#b1bac0] px-3 py-[15px] text-center align-middle">{book.year || "—"}</td>
+                          <td className="border-r border-[#b1bac0] px-3 py-[15px] text-center align-middle">{book.publication || "—"}</td>
+                          <td className="border-r border-[#b1bac0] px-3 py-[15px] text-center align-middle">{book.issue || "—"}</td>
+                          <td className="px-3 py-[15px] text-center align-middle">{book.edition || "—"}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
               ) : (
                 <div className="px-6 py-10 text-center text-[14px] font-bold text-black">{t("search.noResults")}</div>

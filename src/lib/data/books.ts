@@ -386,6 +386,18 @@ function normalizeBookFacetValue(value: string): string {
   return readText(value).toLocaleLowerCase();
 }
 
+function readBookYearSortValue(value: unknown): number {
+  const text = readText(value);
+  const match = text.match(/\d{4}/);
+
+  if (!match) {
+    return Number.NEGATIVE_INFINITY;
+  }
+
+  const parsed = Number.parseInt(match[0], 10);
+  return Number.isFinite(parsed) ? parsed : Number.NEGATIVE_INFINITY;
+}
+
 function joinName(firstName: string, lastName: string): string {
   return [firstName, lastName].filter((value) => value.length > 0).join(" ");
 }
@@ -837,6 +849,10 @@ async function fetchBooksPagePayload(page: number, pageSize: number, searchTerm?
 }> {
   const currentPage = Math.max(1, page);
   const trimmedSearchTerm = searchTerm?.trim() ?? "";
+  const batchSize = 1000;
+  const rows: BookRow[] = [];
+  let from = 0;
+  let total = 0;
 
   logInfo("BOOKS_PAGE_START", {
     page: currentPage,
@@ -855,36 +871,68 @@ async function fetchBooksPagePayload(page: number, pageSize: number, searchTerm?
     query = query.ilike("Titre", `%${trimmedSearchTerm}%`);
   }
 
-  const { data, error, count, status, statusText } = await query
-    .order("Titre", { ascending: true })
-    .order("id", { ascending: true })
-    .range((currentPage - 1) * pageSize, currentPage * pageSize - 1);
+  while (true) {
+    const { data, error, count, status, statusText } = await query.range(from, from + batchSize - 1);
 
-  if (error) {
-    logError("BOOKS_PAGE_ERROR", {
-      page: currentPage,
-      pageSize,
-      searchTerm: trimmedSearchTerm || null,
-      status,
-      statusText,
-      error,
-    });
-    throw new Error(error.message);
+    if (error) {
+      logError("BOOKS_PAGE_ERROR", {
+        page: currentPage,
+        pageSize,
+        searchTerm: trimmedSearchTerm || null,
+        status,
+        statusText,
+        error,
+      });
+      throw new Error(error.message);
+    }
+
+    if (from === 0) {
+      total = count ?? 0;
+    }
+
+    const batch = Array.isArray(data) ? (data as unknown as BookRow[]) : [];
+    rows.push(...batch);
+
+    if (batch.length < batchSize) {
+      break;
+    }
+
+    from += batchSize;
   }
+
+  rows.sort((left, right) => {
+    const yearDiff = readBookYearSortValue(right["Année"]) - readBookYearSortValue(left["Année"]);
+
+    if (yearDiff !== 0) {
+      return yearDiff;
+    }
+
+    const leftTitle = readText(left["Titre"]);
+    const rightTitle = readText(right["Titre"]);
+    const titleDiff = leftTitle.localeCompare(rightTitle, "fr", { sensitivity: "base" });
+
+    if (titleDiff !== 0) {
+      return titleDiff;
+    }
+
+    const leftId = readId(left.id);
+    const rightId = readId(right.id);
+    return leftId.localeCompare(rightId, "en", { numeric: true, sensitivity: "base" });
+  });
+
+  const pagedRows = rows.slice((currentPage - 1) * pageSize, currentPage * pageSize);
 
   logInfo("BOOKS_PAGE_RESULT", {
     page: currentPage,
     pageSize,
     searchTerm: trimmedSearchTerm || null,
-    status,
-    statusText,
-    itemCount: Array.isArray(data) ? data.length : 0,
-    totalCount: count ?? 0,
+    itemCount: pagedRows.length,
+    totalCount: total,
   });
 
   return {
-    rows: Array.isArray(data) ? (data as unknown as BookRow[]) : [],
-    total: count ?? 0,
+    rows: pagedRows,
+    total,
   };
 }
 

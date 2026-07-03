@@ -199,7 +199,7 @@ export default function MenuPageClient() {
             pageName={t("header.cardTitle")}
             title={t("header.title")}
             subtitle={t("header.subtitle")}
-            titleBlockClassName="md:top-[24px] md:w-[78vw]"
+            titleBlockClassName="md:w-[78vw]"
             titleClassName="md:text-[35px]"
             subtitleClassName="md:text-[18px]"
           />
@@ -231,9 +231,9 @@ export default function MenuPageClient() {
                 setActiveMenu(DEFAULT_MENU_KEY);
               }
             }}
-            className="mt-5 flex flex-col gap-5 md:absolute md:left-[11vw] md:right-[11vw] md:top-[220px] md:mt-0 md:h-[600px] md:gap-0"
+            className="mt-5 flex flex-col gap-5 md:absolute md:left-[11vw] md:right-[11vw] md:top-[258px] md:mt-0 md:h-[600px] md:gap-0"
           >
-            <div className="flex flex-col gap-4 md:absolute md:left-0 md:right-0 md:top-0 md:flex-row md:items-center md:justify-between">
+            <div className="flex flex-col gap-4 md:absolute md:left-0 md:right-0 md:top-[-22px] md:flex-row md:items-center md:justify-between">
               <div className="max-w-[560px] text-left">
                 <p className="text-[18px] font-bold italic leading-[1.12] text-black sm:text-[19px]">
                   <span>{t("intro.leftLine1")}</span>
@@ -339,7 +339,7 @@ export default function MenuPageClient() {
               ))}
             </div>
 
-            <section className="relative hidden overflow-hidden rounded-b-[28px] rounded-tr-[6px] px-6 py-4 shadow-[9px_9px_11px_rgba(0,0,0,0.36)] md:absolute md:left-0 md:right-0 md:top-[152px] md:block md:min-h-[460px] md:px-4 md:py-5">
+            <section className="relative hidden overflow-hidden rounded-b-[28px] rounded-tr-[6px] px-6 py-4 shadow-[9px_9px_11px_rgba(0,0,0,0.36)] md:absolute md:left-0 md:right-0 md:top-[152px] md:block md:min-h-[420px] md:px-4 md:py-5">
               <Image
                 src="/images/home/home-image-banner.png"
                 alt=""
@@ -383,7 +383,7 @@ export default function MenuPageClient() {
               </div>
             </section>
 
-            <div className="grid gap-3 pt-1 sm:grid-cols-2 md:absolute md:left-0 md:right-0 md:top-[640px] md:grid-cols-4 md:gap-8 md:px-[0.1vw]">
+            <div className="grid gap-3 pt-1 sm:grid-cols-2 md:absolute md:left-0 md:right-0 md:top-[588px] md:grid-cols-4 md:gap-8 md:px-[0.1vw]">
               {quickActions.map(([key, href]) => (
                 <Link
                   key={key}

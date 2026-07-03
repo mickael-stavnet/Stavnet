@@ -2,19 +2,72 @@
 
 import Image from "next/image";
 import { useTranslations } from "next-intl";
-import { Link } from "@/i18n/routing";
+import { StarModelViewer } from "@/components/home/star-model-viewer";
 import { StavnetHeader } from "@/components/stavnet/header";
 import { StavnetFooter } from "@/components/stavnet/footer";
 
 export default function HomePageClient() {
-  const t = useTranslations("Home");
+  const tHome = useTranslations("Home");
+  const tHomeMenu = useTranslations("HomeMenu");
   const footerItems = [
-    { key: "back", icon: "/icons/icons-nav/back.png", href: "/home" as const, label: t("back") },
-    { key: "next", icon: "/icons/icons-nav/next.png", href: "/home" as const, label: t("next") },
+    {
+      key: "search",
+      icon: "/icons/icons-nav/rechercher.png",
+      href: "/search" as const,
+      label: tHomeMenu("actions.search"),
+    },
+    {
+      key: "menu",
+      icon: "/icons/icons-nav/menu.png",
+      href: "/menu" as const,
+      label: tHomeMenu("actions.menu"),
+    },
+    {
+      key: "video",
+      icon: "/icons/icons-nav/video.png",
+      href: "/home" as const,
+      label: tHomeMenu("actions.video"),
+    },
+    {
+      key: "diaporama",
+      icon: "/icons/icons-nav/diapo.png",
+      href: "/home" as const,
+      label: tHomeMenu("actions.diaporama"),
+    },
+    {
+      key: "sound",
+      icon: "/icons/icons-nav/sound.png",
+      href: "/home" as const,
+      label: tHomeMenu("actions.sound"),
+    },
+    {
+      key: "introduction",
+      icon: "/icons/icons-nav/introduction.png",
+      href: "/home" as const,
+      label: tHomeMenu("actions.introduction"),
+    },
+    {
+      key: "help",
+      icon: "/icons/icons-nav/help.png",
+      href: "/home" as const,
+      label: tHomeMenu("actions.help"),
+    },
+    {
+      key: "close",
+      icon: "/icons/icons-nav/close.png",
+      href: "/home" as const,
+      label: tHomeMenu("actions.close"),
+    },
+    {
+      key: "next",
+      icon: "/icons/icons-nav/next.png",
+      href: "/menu" as const,
+      label: tHomeMenu("actions.next"),
+    },
   ];
 
   return (
-    <main className="relative min-h-[100svh] w-full overflow-x-hidden bg-[#e6f2f8] font-[Arial,Helvetica,sans-serif] text-black md:h-screen md:overflow-hidden">
+    <main className="relative min-h-[100svh] w-full overflow-x-hidden bg-[#e7f2f7] font-[Arial,Helvetica,sans-serif] text-black md:h-screen md:overflow-hidden">
       <Image
         src="/background/background.png"
         alt=""
@@ -24,97 +77,52 @@ export default function HomePageClient() {
         className="object-cover"
       />
 
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.18),transparent_32%),linear-gradient(180deg,rgba(210,229,242,0.08),rgba(210,229,242,0.02))]" />
+      <section
+        data-stavnet-animate="star-viewer"
+        className="pointer-events-none absolute left-[calc(50%-2px)] top-[48svh] z-10 h-[clamp(190px,26svh,250px)] w-[min(72vw,270px)] -translate-x-1/2 -translate-y-1/2 md:left-0 md:right-0 md:top-[15vh] md:h-[73vh] md:w-full md:translate-x-0 md:translate-y-0"
+      >
+        <StarModelViewer />
+      </section>
 
-      <div className="relative z-10 flex min-h-[100svh] w-full flex-col px-4 pb-6 pt-0 md:block md:min-h-screen md:p-0">
+      <div className="relative z-20 mx-auto flex min-h-[100svh] w-full max-w-[620px] flex-col px-4 pb-6 md:block md:h-screen md:max-w-none md:px-5 md:pb-8">
         <StavnetHeader
           pageName={
             <>
-              {t("coverTitleLine1")}
+              {tHome("coverTitleLine1")}
               <br />
-              {t("coverTitleLine2")}
+              {tHome("coverTitleLine2")}
             </>
           }
-          title={t("coverMainTitle")}
-          subtitle={t("coverSubtitle")}
-          titleBlockClassName="md:w-[80vw]"
+          title={tHome("coverMainTitle")}
+          subtitle={tHome("coverSubtitle")}
         />
 
         <section data-stavnet-animate="cover-content" className="mt-5 flex flex-1 flex-col md:hidden">
-          <div className="flex flex-1 flex-col justify-center">
-            <Image
-              src="/images/home/home-image-banner.png"
-              alt="Paysage architectural en Israël"
-              width={896}
-              height={424}
-              priority
-              sizes="92vw"
-              className="mx-auto h-auto w-[92vw] max-w-[390px] object-contain"
-            />
-
-            <div className="mx-auto mt-5 w-full max-w-[390px] px-2 text-justify">
-              <p className="text-[18px] leading-[1.34] text-black">
-                {t("coverDescriptionLine1")}
-              </p>
-              <p className="mt-3 text-[18px] leading-[1.34] text-black">
-                {t("coverDescriptionLine2")}
-              </p>
-              <p className="mt-3 text-[18px] leading-[1.34] text-black">
-                {t("coverDescriptionLine3")}
+          <div className="flex flex-1 flex-col justify-end pb-[188px]">
+            <div className="mx-auto w-full max-w-[520px] px-2 text-center">
+              <p className="text-[18px] leading-[1.36] text-black">
+                {`${tHome("coverDescriptionLine1")} ${tHome("coverDescriptionLine2")} ${tHome("coverDescriptionLine3")}`}
               </p>
             </div>
           </div>
-
-          <nav className="mt-auto flex w-full max-w-[390px] items-end justify-between pb-1 pt-6">
-            {footerItems.map((item) => (
-              <Link
-                key={item.key}
-                href={item.href}
-                className="flex min-h-[88px] w-[92px] flex-col items-center justify-end text-center text-black"
-              >
-                <div className="relative h-[54px] w-[76px] shrink-0">
-                  <Image
-                    src={item.icon}
-                    alt=""
-                    fill
-                    sizes="76px"
-                    className="object-contain"
-                  />
-                </div>
-                <span className="mt-[10px] text-[18px] font-bold leading-none text-black">
-                  {item.label}
-                </span>
-              </Link>
-            ))}
-          </nav>
         </section>
 
-        <section data-stavnet-animate="cover-content" className="hidden w-full md:relative md:mt-0 md:block md:min-h-screen">
-          <Image
-            src="/images/home/home-image-banner.png"
-            alt="Paysage architectural en Israël"
-            width={896}
-            height={424}
-            priority
-            sizes="(max-width: 767px) 82vw, 80vw"
-            className="relative z-10 h-auto w-[82vw] max-w-[520px] object-contain md:absolute md:left-[10vw] md:top-[22.05vh] md:mt-0 md:h-[60.15vh] md:w-[80vw] md:max-w-none md:object-fill"
-          />
-
-          <StavnetFooter
-            items={footerItems}
-            desktopMode="cover"
-            className="md:bottom-[2.2vh]"
-            centerContent={
-              <p className="mx-auto max-w-[980px] text-center text-[15px] leading-[1.35] text-black md:w-[70.7vw] md:text-[clamp(14px,1.55vw,20px)] md:leading-[1.42]">
-                {t("coverDescriptionLine1")}
-                <br />
-                {t("coverDescriptionLine2")}
-                <br />
-                {t("coverDescriptionLine3")}
-              </p>
-            }
-          />
+        <section data-stavnet-animate="cover-content" className="hidden md:block">
+          <div className="absolute left-1/2 top-[82.5vh] w-[96vw] max-w-none -translate-x-1/2 text-center">
+            <p className="w-full text-[clamp(18px,1.22vw,22px)] leading-[1.42] text-black">
+              {`${tHome("coverDescriptionLine1")} ${tHome("coverDescriptionLine2")} ${tHome("coverDescriptionLine3")}`}
+            </p>
+          </div>
         </section>
+
+        <div className="flex-1 md:hidden" />
+
+        <StavnetFooter
+          items={footerItems}
+          className="mt-0 pb-1 md:mt-4 md:pb-2 md:!bottom-[22px]"
+          itemClassName="min-h-[68px] text-[13px]"
+          mobileGridClassName="grid-cols-4"
+        />
       </div>
     </main>
   );
