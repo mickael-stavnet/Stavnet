@@ -10,16 +10,48 @@ export const BOOKS_PAGE_SIZE = 13;
 const BOOK_LIST_SELECT = [
   "id",
   '"Titre"',
+  '"Titre. Anglais"',
+  '"Titre. Original"',
+  '"Titre. Transcription"',
+  '"Sous-titre"',
   '"Auteur. 1. Nom"',
   '"Auteur. 1. Prénom"',
   '"Auteur. 1. Langue"',
+  '"Auteur. 2. Nom"',
+  '"Auteur. 2. Prénom"',
   '"Auteur. 2. Langue"',
+  '"Auteur. 3. Nom"',
+  '"Auteur. 3. Prénom"',
   '"Auteur. 3. Langue"',
+  '"Contrib. 1. Nom"',
+  '"Contrib. 1. Prénom"',
+  '"Contrib. 2. Nom"',
+  '"Contrib. 2. Prénom"',
+  '"Contrib. 3. Nom"',
+  '"Contrib. 3. Prénom"',
+  '"Contrib. 4. Nom"',
+  '"Contrib. 4. Prénom"',
+  '"Contrib. 5. Nom"',
+  '"Contrib. 5. Prénom"',
+  '"Contrib. 6. Nom"',
+  '"Contrib. 6. Prénom"',
+  '"Contrib. 7. Nom"',
+  '"Contrib. 7. Prénom"',
+  '"Contrib. 8. Nom"',
+  '"Contrib. 8. Prénom"',
+  '"Contrib. 9. Nom"',
+  '"Contrib. 9. Prénom"',
+  '"Contrib. 10. Nom"',
+  '"Contrib. 10. Prénom"',
   '"Éditeur"',
   '"Éditeur. 1. Nom"',
+  '"Éditeur. 2. Nom"',
   '"Langue"',
   '"Année"',
   '"Année. Pages. Dimensions"',
+  '"Thème. 1"',
+  '"Thème. 2"',
+  '"Résumé"',
 ].join(",");
 
 const BOOK_DETAIL_SELECT = [
@@ -345,6 +377,17 @@ export interface BookListResult {
   databaseTotal: number;
 }
 
+export interface BookSearchFilters {
+  title: string;
+  personLastName: string;
+  personFirstName: string;
+  organization: string;
+  theme: string;
+  publicationLanguage: string;
+  year: string;
+  generalSearch: string;
+}
+
 function readText(value: unknown): string {
   if (value === null || value === undefined) {
     return "";
@@ -384,6 +427,23 @@ function isBookReferenceCode(value: string): boolean {
 
 function normalizeBookFacetValue(value: string): string {
   return readText(value).toLocaleLowerCase();
+}
+
+function normalizeBookSearchFilters(filters?: Partial<BookSearchFilters>): BookSearchFilters {
+  return {
+    title: filters?.title?.trim() ?? "",
+    personLastName: filters?.personLastName?.trim() ?? "",
+    personFirstName: filters?.personFirstName?.trim() ?? "",
+    organization: filters?.organization?.trim() ?? "",
+    theme: filters?.theme?.trim() ?? "",
+    publicationLanguage: filters?.publicationLanguage?.trim() ?? "",
+    year: filters?.year?.trim() ?? "",
+    generalSearch: filters?.generalSearch?.trim() ?? "",
+  };
+}
+
+function hasBookSearchFilters(filters: BookSearchFilters): boolean {
+  return Object.values(filters).some((value) => value.length > 0);
 }
 
 function readBookYearSortValue(value: unknown): number {
@@ -530,6 +590,138 @@ function buildWorkSignature(row: BookRow): string[] {
     readText(row["Titre. Transcription"]),
     readText(row["Titre"]),
   ].filter((value, index, array) => value.length > 0 && array.indexOf(value) === index);
+}
+
+function matchesBookSearchValue(values: string[], query: string): boolean {
+  const normalizedQuery = normalizeBookFacetValue(query);
+
+  if (!normalizedQuery) {
+    return true;
+  }
+
+  return values.some((value) => normalizeBookFacetValue(value).includes(normalizedQuery));
+}
+
+function buildBookSearchPeople(row: BookRow): Array<{ firstName: string; lastName: string; fullName: string }> {
+  const people: Array<{ firstName: string; lastName: string; fullName: string }> = [];
+
+  for (const index of [1, 2, 3]) {
+    const firstName = readText(row[`Auteur. ${index}. Prénom`]);
+    const lastName = readText(row[`Auteur. ${index}. Nom`]);
+    const fullName = joinName(firstName, lastName);
+
+    if (firstName || lastName) {
+      people.push({ firstName, lastName, fullName });
+    }
+  }
+
+  for (const index of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]) {
+    const firstName = readText(row[`Contrib. ${index}. Prénom`]);
+    const lastName = readText(row[`Contrib. ${index}. Nom`]);
+    const fullName = joinName(firstName, lastName);
+
+    if (firstName || lastName) {
+      people.push({ firstName, lastName, fullName });
+    }
+  }
+
+  return people;
+}
+
+function matchesBookSearch(row: BookRow, searchTerm: string, filters: BookSearchFilters): boolean {
+  if (
+    searchTerm &&
+    !matchesBookSearchValue(
+      [
+        readText(row["Titre"]),
+        readText(row["Sous-titre"]),
+        readText(row["Titre. Anglais"]),
+        readText(row["Titre. Original"]),
+        readText(row["Titre. Transcription"]),
+      ],
+      searchTerm,
+    )
+  ) {
+    return false;
+  }
+
+  if (
+    filters.title &&
+    !matchesBookSearchValue(
+      [
+        readText(row["Titre"]),
+        readText(row["Sous-titre"]),
+        readText(row["Titre. Anglais"]),
+        readText(row["Titre. Original"]),
+        readText(row["Titre. Transcription"]),
+      ],
+      filters.title,
+    )
+  ) {
+    return false;
+  }
+
+  if (filters.organization && !matchesBookSearchValue([readText(row["Éditeur"]), readText(row["Éditeur. 1. Nom"]), readText(row["Éditeur. 2. Nom"])], filters.organization)) {
+    return false;
+  }
+
+  if (filters.theme && !matchesBookSearchValue([readText(row["Thème. 1"]), readText(row["Thème. 2"])], filters.theme)) {
+    return false;
+  }
+
+  if (filters.publicationLanguage && !matchesBookSearchValue([readText(row["Langue"])], filters.publicationLanguage)) {
+    return false;
+  }
+
+  if (filters.year) {
+    const normalizedYear = normalizeBookFacetValue(filters.year);
+    const rowYear = normalizeBookFacetValue(readText(row["Année"]));
+
+    if (!rowYear || rowYear !== normalizedYear) {
+      return false;
+    }
+  }
+
+  if (filters.personLastName || filters.personFirstName) {
+    const normalizedLastName = normalizeBookFacetValue(filters.personLastName);
+    const normalizedFirstName = normalizeBookFacetValue(filters.personFirstName);
+    const people = buildBookSearchPeople(row);
+    const hasMatchingPerson = people.some((person) => {
+      const firstNameMatches = !normalizedFirstName || normalizeBookFacetValue(person.firstName).includes(normalizedFirstName);
+      const lastNameMatches = !normalizedLastName || normalizeBookFacetValue(person.lastName).includes(normalizedLastName);
+      return firstNameMatches && lastNameMatches;
+    });
+
+    if (!hasMatchingPerson) {
+      return false;
+    }
+  }
+
+  if (
+    filters.generalSearch &&
+    !matchesBookSearchValue(
+      [
+        readText(row["Titre"]),
+        readText(row["Sous-titre"]),
+        readText(row["Titre. Anglais"]),
+        readText(row["Titre. Original"]),
+        readText(row["Titre. Transcription"]),
+        readText(row["Résumé"]),
+        readText(row["Thème. 1"]),
+        readText(row["Thème. 2"]),
+        readText(row["Langue"]),
+        readText(row["Éditeur"]),
+        readText(row["Éditeur. 1. Nom"]),
+        readText(row["Éditeur. 2. Nom"]),
+        ...buildBookSearchPeople(row).map((person) => person.fullName),
+      ],
+      filters.generalSearch,
+    )
+  ) {
+    return false;
+  }
+
+  return true;
 }
 
 function matchesBookRelatedFacet(row: BookRow, facet: BookRelatedFacet, normalizedValue: string): boolean {
@@ -843,12 +1035,13 @@ async function getPublishingRows(row: BookRow): Promise<BookPublishingRow[]> {
   return buildPublishingRows(relatedRows.length > 0 ? relatedRows : [row]);
 }
 
-async function fetchBooksPagePayload(page: number, pageSize: number, searchTerm?: string): Promise<{
+async function fetchBooksPagePayload(page: number, pageSize: number, searchTerm?: string, rawFilters?: Partial<BookSearchFilters>): Promise<{
   rows: BookRow[];
   total: number;
 }> {
   const currentPage = Math.max(1, page);
   const trimmedSearchTerm = searchTerm?.trim() ?? "";
+  const filters = normalizeBookSearchFilters(rawFilters);
   const batchSize = 1000;
   const rows: BookRow[] = [];
   let from = 0;
@@ -858,18 +1051,15 @@ async function fetchBooksPagePayload(page: number, pageSize: number, searchTerm?
     page: currentPage,
     pageSize,
     searchTerm: trimmedSearchTerm || null,
+    filters: hasBookSearchFilters(filters) ? filters : null,
   });
 
-  let query = supabase
+  const query = supabase
     .from("data-books")
     .select(BOOK_LIST_SELECT, { count: "exact" })
     .not("Titre", "is", null)
     .neq("Titre", "")
     .neq("Titre", "NULL");
-
-  if (trimmedSearchTerm) {
-    query = query.ilike("Titre", `%${trimmedSearchTerm}%`);
-  }
 
   while (true) {
     const { data, error, count, status, statusText } = await query.range(from, from + batchSize - 1);
@@ -920,19 +1110,23 @@ async function fetchBooksPagePayload(page: number, pageSize: number, searchTerm?
     return leftId.localeCompare(rightId, "en", { numeric: true, sensitivity: "base" });
   });
 
-  const pagedRows = rows.slice((currentPage - 1) * pageSize, currentPage * pageSize);
+  const filteredRows = rows.filter((row) => matchesBookSearch(row, trimmedSearchTerm, filters));
+  const pagedRows = filteredRows.slice((currentPage - 1) * pageSize, currentPage * pageSize);
 
   logInfo("BOOKS_PAGE_RESULT", {
     page: currentPage,
     pageSize,
     searchTerm: trimmedSearchTerm || null,
+    filters: hasBookSearchFilters(filters) ? filters : null,
+    rowCount: rows.length,
+    filteredCount: filteredRows.length,
     itemCount: pagedRows.length,
-    totalCount: total,
+    totalCount: filteredRows.length,
   });
 
   return {
     rows: pagedRows,
-    total,
+    total: filteredRows.length,
   };
 }
 
@@ -1031,6 +1225,20 @@ export async function getBooksPageByTitle(page: number, searchTerm: string, page
   const currentPage = Math.max(1, page);
   const [{ rows, total }, totals] = await Promise.all([
     fetchBooksPagePayload(currentPage, pageSize, searchTerm),
+    getBooksDatabaseTotals(),
+  ]);
+
+  return buildBookListResult(rows, total, currentPage, pageSize, totals.databaseContains);
+}
+
+export async function getBooksPageByAdvancedSearch(
+  page: number,
+  filters: Partial<BookSearchFilters>,
+  pageSize = BOOKS_PAGE_SIZE,
+): Promise<BookListResult> {
+  const currentPage = Math.max(1, page);
+  const [{ rows, total }, totals] = await Promise.all([
+    fetchBooksPagePayload(currentPage, pageSize, "", filters),
     getBooksDatabaseTotals(),
   ]);
 

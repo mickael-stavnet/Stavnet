@@ -14,7 +14,7 @@ import { StavnetFooter } from "@/components/stavnet/footer";
 import { StavnetHeader } from "@/components/stavnet/header";
 import { ListNameSearch } from "@/components/stavnet/list-name-search";
 import { Link } from "@/i18n/routing";
-import { BOOKS_PAGE_SIZE, getBooksPage, getBooksPageByTitle } from "@/lib/data/books";
+import { BOOKS_PAGE_SIZE, getBooksPage, getBooksPageByAdvancedSearch, getBooksPageByTitle, type BookSearchFilters } from "@/lib/data/books";
 import { buildStaticPageMetadata } from "@/lib/site-metadata";
 
 const BOOKS_COLUMN_WIDTHS = ["30.48%", "15.24%", "11.60%", "9.44%", "9.44%", "5.90%", "6.10%", "5.90%", "5.90%"] as const;
@@ -26,6 +26,14 @@ interface BooksPageProps {
   searchParams: Promise<{
     page?: string;
     q?: string;
+    title?: string;
+    personLastName?: string;
+    personFirstName?: string;
+    organization?: string;
+    theme?: string;
+    publicationLanguage?: string;
+    year?: string;
+    generalSearch?: string;
   }>;
 }
 
@@ -38,12 +46,18 @@ function RedMarker() {
   return <span className="mr-2 inline-block h-[11px] w-[11px] rounded-full border-[2px] border-[#ff1d1d]" />;
 }
 
-function buildPageHref(page: number, searchTerm: string): string {
+function buildPageHref(page: number, searchTerm: string, filters: Partial<BookSearchFilters>): string {
   const params = new URLSearchParams();
   params.set("page", String(page <= 1 ? 1 : page));
 
   if (searchTerm.trim()) {
     params.set("q", searchTerm);
+  }
+
+  for (const [key, value] of Object.entries(filters)) {
+    if (value?.trim()) {
+      params.set(key, value.trim());
+    }
   }
 
   return `?${params.toString()}`;
@@ -110,11 +124,26 @@ function MobileBookCard({
 }
 
 export default async function BooksListPage({ searchParams }: BooksPageProps) {
-  const [{ page, q }, t] = await Promise.all([searchParams, getTranslations("Books")]);
+  const [{ page, q, title, personLastName, personFirstName, organization, theme, publicationLanguage, year, generalSearch }, t] = await Promise.all([searchParams, getTranslations("Books")]);
   const currentPage = Number.parseInt(page ?? "1", 10);
   const searchTerm = (q ?? "").trim();
+  const advancedFilters: Partial<BookSearchFilters> = {
+    title: title?.trim() ?? "",
+    personLastName: personLastName?.trim() ?? "",
+    personFirstName: personFirstName?.trim() ?? "",
+    organization: organization?.trim() ?? "",
+    theme: theme?.trim() ?? "",
+    publicationLanguage: publicationLanguage?.trim() ?? "",
+    year: year?.trim() ?? "",
+    generalSearch: generalSearch?.trim() ?? "",
+  };
+  const hasAdvancedFilters = Object.values(advancedFilters).some((value) => value.length > 0);
   const pageNumber = Number.isFinite(currentPage) && currentPage > 0 ? currentPage : 1;
-  const result = searchTerm ? await getBooksPageByTitle(pageNumber, searchTerm) : await getBooksPage(pageNumber);
+  const result = hasAdvancedFilters
+    ? await getBooksPageByAdvancedSearch(pageNumber, advancedFilters)
+    : searchTerm
+      ? await getBooksPageByTitle(pageNumber, searchTerm)
+      : await getBooksPage(pageNumber);
   const paginationItems = getPaginationItems(result.page, result.totalPages);
   const footerItems = [
     { key: "back", icon: "/icons/icons-nav/back.png", href: "/home" as const, label: t("footer.back") },
@@ -252,7 +281,7 @@ export default async function BooksListPage({ searchParams }: BooksPageProps) {
               <PaginationContent className="flex-wrap justify-center">
                 <PaginationItem>
                   <PaginationPrevious
-                    href={buildPageHref(result.page - 1, searchTerm)}
+                    href={buildPageHref(result.page - 1, searchTerm, advancedFilters)}
                     text={t("pagination.previous")}
                     className={result.page === 1 ? "pointer-events-none opacity-50" : ""}
                   />
@@ -260,7 +289,7 @@ export default async function BooksListPage({ searchParams }: BooksPageProps) {
                 {paginationItems.map((item) =>
                   typeof item === "number" ? (
                     <PaginationItem key={item}>
-                      <PaginationLink href={buildPageHref(item, searchTerm)} isActive={item === result.page}>
+                      <PaginationLink href={buildPageHref(item, searchTerm, advancedFilters)} isActive={item === result.page}>
                         {item}
                       </PaginationLink>
                     </PaginationItem>
@@ -272,7 +301,7 @@ export default async function BooksListPage({ searchParams }: BooksPageProps) {
                 )}
                 <PaginationItem>
                   <PaginationNext
-                    href={buildPageHref(result.page + 1, searchTerm)}
+                    href={buildPageHref(result.page + 1, searchTerm, advancedFilters)}
                     text={t("pagination.next")}
                     className={result.page === result.totalPages ? "pointer-events-none opacity-50" : ""}
                   />

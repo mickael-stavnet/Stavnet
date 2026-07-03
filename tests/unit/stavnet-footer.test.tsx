@@ -16,7 +16,7 @@ vi.mock("next/navigation", () => ({
 vi.mock("next/image", () => ({
   default: (props: Record<string, unknown>) => {
     const { alt, src, ...rest } = props as { alt?: string; src?: string };
-    return <img alt={alt ?? ""} src={src ?? ""} {...rest} />;
+    return <span data-alt={alt ?? ""} data-src={src ?? ""} {...rest} />;
   },
 }));
 

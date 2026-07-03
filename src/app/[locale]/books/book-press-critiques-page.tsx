@@ -113,7 +113,7 @@ export default function BookPressCritiquesPage({ book }: BookPressCritiquesPageP
             {pageData.pressSectionTitle}
           </div>
           <div className="px-3 py-4 text-[14px] leading-[1.45] text-black md:px-4 md:py-5 md:text-[15px]">
-            Aucune critique de presse structurée n'est disponible dans la base pour cet ouvrage.
+            Aucune critique de presse structurée n&apos;est disponible dans la base pour cet ouvrage.
           </div>
         </section>
       )}

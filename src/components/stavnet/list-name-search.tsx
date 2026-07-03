@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, useTransition, type FormEvent, type KeyboardEvent } from "react";
+import { useCallback, useEffect, useRef, useState, useTransition, type FormEvent, type KeyboardEvent } from "react";
 import { useSearchParams } from "next/navigation";
 import { usePathname, useRouter } from "@/i18n/routing";
 import { Input } from "@/components/ui/input";
@@ -23,7 +23,7 @@ export function ListNameSearch({ label, placeholder, initialValue, resetLabel }:
   const currentQuery = (searchParams.get("q") ?? "").trim();
   const currentPage = searchParams.get("page") ?? "1";
 
-  const applySearch = () => {
+  const applySearch = useCallback(() => {
     const params = new URLSearchParams(searchParamsString);
     const trimmedValue = value.trim();
     const hasSameQuery = trimmedValue === currentQuery;
@@ -51,11 +51,7 @@ export function ListNameSearch({ label, placeholder, initialValue, resetLabel }:
     startTransition(() => {
       router.replace(nextHref);
     });
-  };
-
-  useEffect(() => {
-    setValue(initialValue);
-  }, [initialValue]);
+  }, [currentPage, currentQuery, pathname, router, searchParamsString, startTransition, value]);
 
   useEffect(() => {
     if (isComposingRef.current) {
@@ -77,7 +73,7 @@ export function ListNameSearch({ label, placeholder, initialValue, resetLabel }:
     return () => {
       window.clearTimeout(timeoutId);
     };
-  }, [currentPage, currentQuery, value]);
+  }, [applySearch, currentPage, currentQuery, value]);
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
