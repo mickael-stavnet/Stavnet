@@ -568,6 +568,7 @@
       "authors": "المؤلفون: الاسم العائلي، الاسم الشخصي",
       "publishers": "الناشرون",
       "languages": "لغات النشر",
+      "writingLanguage": "لغة الكتابة",
       "year": "السنة",
       "publication": "النشر",
       "issue": "العدد",
@@ -591,6 +592,33 @@
       "search": "بحث",
       "help": "مساعدة",
       "move": "تنقل"
+    }
+  },
+  "BooksRelated": {
+    "header": {
+      "cardTitle": "كتب مرتبطة",
+      "title": "الأدب الإسرائيلي",
+      "subtitle": "قاعدة بيانات ببليوغرافية وبيوغرافية"
+    },
+    "activeCriterion": "المعيار النشط",
+    "stats": {
+      "relatedBooksFound": "الكتب المرتبطة المعثور عليها"
+    },
+    "empty": "لم يتم العثور على أي كتاب لـ {facet}: {value}.",
+    "facets": {
+      "author": "المؤلف",
+      "translationLanguage": "لغة الترجمة",
+      "authorType": "نوع المؤلف",
+      "authorWritingLanguage": "لغة الكتابة",
+      "contributor": "المساهم",
+      "contributorType": "نوع المساهمة",
+      "contributorLanguage": "لغة المساهم",
+      "publisher": "الناشر",
+      "publisherCountry": "بلد الناشر",
+      "category": "الفئة",
+      "subject": "الموضوع",
+      "genre": "النوع",
+      "targetAudience": "الجمهور المستهدف"
     }
   },
   "DefinitionPage": {

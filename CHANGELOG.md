@@ -100,3 +100,16 @@
 - 14:52 - Reprise des sous-pages `/[locale]/books/details/{back-cover,press-critiques,availability,publishing}` pour les brancher sur le livre sélectionné, harmoniser leur shell avec la fiche livre et supprimer les contenus statiques `sampleBook` au profit des vraies métadonnées et statistiques du détail.
 - 14:59 - Branchement réel des onglets livres `Disponibilité` et `Parution` sur `data-books` avec calcul des localisations bibliographiques, enrichissement pays via `data-organism`, regroupement des éditions/traductions d’un même ouvrage et suppression du faux contenu statique pour `Critiques de presse` quand la base ne contient pas de source structurée.
 - 15:20 - Mise en place d’une vraie couche de critiques de presse pour les livres, avec migration Supabase créant `book_press_reviews`, extraction idempotente des blocs `Presse :` depuis `data-books`, branchement du détail livre sur cette nouvelle table et ajustement du versionnement pour conserver les migrations `supabase/migrations`.
+
+# 02-07-2026
+
+- 10:09 - Recalage visuel transversal des écrans d’accueil et du parcours `books/details`, avec agrandissement et recentrage des blocs titres sur `/home` et `/menu`, abaissement du modèle 3D, réordonnancement du footer d’accueil, logo de header légèrement agrandi et décalé à gauche, onglets livres renforcés, footer recentré sous les fiches et repositionnement des repères verticaux droits.
+
+# 03-07-2026
+
+- 09:07 - Modification du champ de recherche partagé des listes `/[locale]/books`, `/[locale]/orgs` et `/[locale]/persons` pour déclencher le filtrage uniquement à la validation réelle de la saisie, via `blur`, touche `Entrée` ou réinitialisation explicite, sans délai automatique en millisecondes.
+- 09:34 - Reprise structurelle des grands tableaux desktop de `/[locale]/books`, `/[locale]/orgs` et `/[locale]/persons`, avec remplacement des grilles séparées par de vraies tables à colonnes partagées afin d’aligner exactement les séparateurs verticaux entre en-têtes et lignes de valeurs.
+- 09:56 - Ajout du domaine personnalisé `israeli-literature.com` au projet Vercel `stavnet-app`, avec rattachement du site à ce nouveau domaine apex et préparation de la configuration DNS externe requise pour la vérification.
+- 10:00 - Ajout du sous-domaine public `www.israeli-literature.com` au projet Vercel `stavnet-app`, avec rattachement automatique au dernier déploiement de production et préparation de la cible DNS recommandée pour le provider externe.
+- 10:22 - Mise en place d’un système partagé de métadonnées SEO multilingues pour tout le segment `src/app/[locale]`, avec titres et descriptions dédiés pour les pages d’accueil, de navigation, de recherche, de définition, de listes et de détails `books`, `persons` et `orgs`, y compris les sous-pages livres et les variantes dynamiques basées sur le contenu affiché.
+- 09:57 - Mise en place de la navigation par données liées sur les parcours livres, avec nouvelle page générique `/[locale]/books/related`, RPC Supabase paginé par facette métier, valeurs soulignées et cliquables dans les fiches livres, puis fallback automatique vers les livres liés si une fiche personne ou organisme n’existe pas.

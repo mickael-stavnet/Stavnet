@@ -1,4 +1,5 @@
 import Image from "next/image";
+import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import {
   Pagination,
@@ -14,14 +15,23 @@ import { StavnetHeader } from "@/components/stavnet/header";
 import { ListNameSearch } from "@/components/stavnet/list-name-search";
 import { Link } from "@/i18n/routing";
 import { BOOKS_PAGE_SIZE, getBooksPage, getBooksPageByTitle } from "@/lib/data/books";
+import { buildStaticPageMetadata } from "@/lib/site-metadata";
 
-const BOOKS_GRID_TEMPLATE = "3.2fr 1.65fr 1.25fr 1.02fr 0.62fr 0.64fr 0.62fr 0.62fr";
+const BOOKS_GRID_TEMPLATE = "3.1fr 1.55fr 1.18fr 0.96fr 0.96fr 0.6fr 0.62fr 0.6fr 0.6fr";
 
 interface BooksPageProps {
+  params: Promise<{
+    locale: string;
+  }>;
   searchParams: Promise<{
     page?: string;
     q?: string;
   }>;
+}
+
+export async function generateMetadata({ params }: BooksPageProps): Promise<Metadata> {
+  const { locale } = await params;
+  return buildStaticPageMetadata(locale, "books", "/books");
 }
 
 function RedMarker() {
@@ -62,6 +72,7 @@ function MobileBookCard({
   book: Awaited<ReturnType<typeof getBooksPage>>["items"][number];
   labels: {
     publisher: string;
+    writingLanguage: string;
     year: string;
     viewMore: string;
   };
@@ -77,6 +88,10 @@ function MobileBookCard({
         <div>
           <p className="font-bold uppercase text-[#4a5a63]">{labels.publisher}</p>
           <p className="mt-1 break-words">{book.publisher || "—"}</p>
+        </div>
+        <div>
+          <p className="font-bold uppercase text-[#4a5a63]">{labels.writingLanguage}</p>
+          <p className="mt-1 break-words">{book.writingLanguage || "—"}</p>
         </div>
         <div>
           <p className="font-bold uppercase text-[#4a5a63]">{labels.year}</p>
@@ -161,6 +176,7 @@ export default async function BooksListPage({ searchParams }: BooksPageProps) {
                     book={book}
                     labels={{
                       publisher: t("columns.publishers"),
+                      writingLanguage: t("columns.writingLanguage"),
                       year: t("columns.year"),
                       viewMore: t("footer.move"),
                     }}
@@ -173,25 +189,27 @@ export default async function BooksListPage({ searchParams }: BooksPageProps) {
 
             <div className="hidden flex-col md:flex">
               <div
-                className="grid min-w-[1160px] border-b border-[#9aa8b0] bg-[#fff68f] text-[11px] uppercase leading-none text-black"
+                className="grid min-w-[1280px] border-b border-[#9aa8b0] bg-[#fff68f] text-[11px] uppercase leading-none text-black"
                 style={{ gridTemplateColumns: BOOKS_GRID_TEMPLATE }}
               >
                 <div className="rounded-tl-[10px] border-r border-[#9aa8b0] px-3 py-[9px] text-center">{t("columns.titles")}</div>
                 <div className="rounded-t-[10px] border-r border-[#9aa8b0] px-3 py-[9px] text-center">{t("columns.authors")}</div>
                 <div className="rounded-t-[10px] border-r border-[#9aa8b0] px-3 py-[9px] text-center">{t("columns.publishers")}</div>
                 <div className="rounded-t-[10px] border-r border-[#9aa8b0] px-3 py-[9px] text-center">{t("columns.languages")}</div>
+                <div className="rounded-t-[10px] border-r border-[#9aa8b0] px-3 py-[9px] text-center">{t("columns.writingLanguage")}</div>
                 <div className="rounded-t-[10px] border-r border-[#9aa8b0] px-3 py-[9px] text-center">{t("columns.year")}</div>
                 <div className="rounded-t-[10px] border-r border-[#9aa8b0] px-3 py-[9px] text-center">{t("columns.publication")}</div>
                 <div className="rounded-t-[10px] border-r border-[#9aa8b0] px-3 py-[9px] text-center">{t("columns.issue")}</div>
                 <div className="rounded-tr-[10px] px-3 py-[9px] text-center">{t("columns.edition")}</div>
               </div>
 
+              
               {result.items.length > 0 ? (
                 <div className="overflow-auto">
                   {result.items.map((book, rowIndex) => (
                     <div
                       key={`${book.id}-${result.page}-${rowIndex}`}
-                      className="grid min-w-[1160px] border-b border-[#b1bac0] text-[14px] leading-none text-black last:border-b-0"
+                      className="grid min-w-[1280px] border-b border-[#b1bac0] text-[14px] leading-none text-black last:border-b-0"
                       style={{ gridTemplateColumns: BOOKS_GRID_TEMPLATE }}
                     >
                       <div className="border-r border-[#b1bac0] px-3 py-[15px]">
@@ -206,6 +224,7 @@ export default async function BooksListPage({ searchParams }: BooksPageProps) {
                       <div className="border-r border-[#b1bac0] px-3 py-[15px]">{book.author || "—"}</div>
                       <div className="border-r border-[#b1bac0] px-3 py-[15px]">{book.publisher || "—"}</div>
                       <div className="border-r border-[#b1bac0] px-3 py-[15px]">{book.language || "—"}</div>
+                      <div className="border-r border-[#b1bac0] px-3 py-[15px]">{book.writingLanguage || "—"}</div>
                       <div className="border-r border-[#b1bac0] px-3 py-[15px] text-center">{book.year || "—"}</div>
                       <div className="border-r border-[#b1bac0] px-3 py-[15px] text-center">{book.publication || "—"}</div>
                       <div className="border-r border-[#b1bac0] px-3 py-[15px] text-center">{book.issue || "—"}</div>

@@ -568,6 +568,7 @@
       "authors": "מחברים: שם משפחה, שם פרטי",
       "publishers": "מוציאים לאור",
       "languages": "שפות פרסום",
+      "writingLanguage": "שפת כתיבה",
       "year": "שנה",
       "publication": "פרסום",
       "issue": "גליון",
@@ -591,6 +592,33 @@
       "search": "חיפוש",
       "help": "עזרה",
       "move": "ניווט"
+    }
+  },
+  "BooksRelated": {
+    "header": {
+      "cardTitle": "ספרים קשורים",
+      "title": "ספרות ישראלית",
+      "subtitle": "מאגר ביבליוגרפי וביוגרפי"
+    },
+    "activeCriterion": "קריטריון פעיל",
+    "stats": {
+      "relatedBooksFound": "ספרים קשורים שנמצאו"
+    },
+    "empty": "לא נמצא ספר עבור {facet}: {value}.",
+    "facets": {
+      "author": "מחבר",
+      "translationLanguage": "שפת תרגום",
+      "authorType": "סוג מחבר",
+      "authorWritingLanguage": "שפת כתיבה",
+      "contributor": "תורם",
+      "contributorType": "סוג תרומה",
+      "contributorLanguage": "שפת התורם",
+      "publisher": "מוציא לאור",
+      "publisherCountry": "מדינת המוציא לאור",
+      "category": "קטגוריה",
+      "subject": "נושא",
+      "genre": "ז'אנר",
+      "targetAudience": "קהל יעד"
     }
   },
   "DefinitionPage": {

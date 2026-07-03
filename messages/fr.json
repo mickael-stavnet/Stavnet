@@ -568,6 +568,7 @@
       "authors": "Auteurs : nom, prénom",
       "publishers": "Editeurs",
       "languages": "Langues de parution",
+      "writingLanguage": "Langue d'écriture",
       "year": "Année",
       "publication": "Publication",
       "issue": "Parution",
@@ -591,6 +592,33 @@
       "search": "Rechercher",
       "help": "Aide",
       "move": "Naviguer"
+    }
+  },
+  "BooksRelated": {
+    "header": {
+      "cardTitle": "Ouvrages liés",
+      "title": "Littérature israélienne",
+      "subtitle": "Base de données bibliographiques et biographiques"
+    },
+    "activeCriterion": "Critère actif",
+    "stats": {
+      "relatedBooksFound": "Ouvrages liés trouvés"
+    },
+    "empty": "Aucun ouvrage trouvé pour {facet} : {value}.",
+    "facets": {
+      "author": "Auteur",
+      "translationLanguage": "Langue de traduction",
+      "authorType": "Type d'auteur",
+      "authorWritingLanguage": "Langue d'écriture",
+      "contributor": "Contributeur",
+      "contributorType": "Type de contribution",
+      "contributorLanguage": "Langue du contributeur",
+      "publisher": "Editeur",
+      "publisherCountry": "Pays éditeur",
+      "category": "Catégorie",
+      "subject": "Sujet",
+      "genre": "Genre",
+      "targetAudience": "Public visé"
     }
   },
   "DefinitionPage": {

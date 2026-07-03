@@ -1,4 +1,5 @@
 import Image from "next/image";
+import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { StavnetFooter } from "@/components/stavnet/footer";
 import { StavnetHeader } from "@/components/stavnet/header";
@@ -14,14 +15,23 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import { buildStaticPageMetadata } from "@/lib/site-metadata";
 
-const ORGS_GRID_TEMPLATE = "2.4fr 1.05fr 1.08fr 0.98fr 0.62fr 0.64fr";
+const ORGS_COLUMN_WIDTHS = ["35.45%", "15.51%", "15.95%", "14.48%", "9.16%", "9.45%"] as const;
 
 interface OrgsPageProps {
+  params: Promise<{
+    locale: string;
+  }>;
   searchParams: Promise<{
     page?: string;
     q?: string;
   }>;
+}
+
+export async function generateMetadata({ params }: OrgsPageProps): Promise<Metadata> {
+  const { locale } = await params;
+  return buildStaticPageMetadata(locale, "organizations", "/orgs");
 }
 
 function RedMarker() {
@@ -170,43 +180,46 @@ export default async function OrganizationsListPage({ searchParams }: OrgsPagePr
               )}
             </div>
 
-            <div className="hidden flex-col md:flex">
-              <div
-                className="grid min-w-[1100px] border-b border-[#9aa8b0] bg-[#fff68f] text-[11px] uppercase leading-none text-black"
-                style={{ gridTemplateColumns: ORGS_GRID_TEMPLATE }}
-              >
-                <div className="rounded-tl-[10px] border-r border-[#9aa8b0] px-3 py-[9px] text-center">{columnLabels.organizations}</div>
-                <div className="rounded-t-[10px] border-r border-[#9aa8b0] px-3 py-[9px] text-center">{columnLabels.type}</div>
-                <div className="rounded-t-[10px] border-r border-[#9aa8b0] px-3 py-[9px] text-center">{columnLabels.creationDate}</div>
-                <div className="rounded-t-[10px] border-r border-[#9aa8b0] px-3 py-[9px] text-center">{columnLabels.country}</div>
-                <div className="rounded-t-[10px] border-r border-[#9aa8b0] px-3 py-[9px] text-center">{columnLabels.titlesPublished}</div>
-                <div className="rounded-tr-[10px] px-3 py-[9px] text-center">{columnLabels.authorsPublished}</div>
-              </div>
-
+            <div className="hidden md:block">
               {result.items.length > 0 ? (
                 <div className="overflow-auto">
-                  {result.items.map((organization, rowIndex) => (
-                    <div
-                      key={`${organization.name}-${result.page}-${rowIndex}`}
-                      className="grid min-w-[1100px] border-b border-[#b1bac0] text-[14px] leading-none text-black last:border-b-0"
-                      style={{ gridTemplateColumns: ORGS_GRID_TEMPLATE }}
-                    >
-                      <div className="border-r border-[#b1bac0] px-3 py-[15px]">
-                        <Link
-                          href={{ pathname: "/orgs/details", query: { name: organization.name } }}
-                          className="flex items-center text-black hover:underline"
-                        >
-                          <RedMarker />
-                          <span>{organization.name}</span>
-                        </Link>
-                      </div>
-                      <div className="border-r border-[#b1bac0] px-3 py-[15px]">{organization.type || "—"}</div>
-                      <div className="border-r border-[#b1bac0] px-3 py-[15px]">{organization.creationDate || "—"}</div>
-                      <div className="border-r border-[#b1bac0] px-3 py-[15px]">{organization.country || "—"}</div>
-                      <div className="border-r border-[#b1bac0] px-3 py-[15px] text-center">{organization.publishedTitles}</div>
-                      <div className="px-3 py-[15px] text-center">{organization.publishedAuthors}</div>
-                    </div>
-                  ))}
+                  <table className="min-w-[1100px] table-fixed border-collapse text-black">
+                    <colgroup>
+                      {ORGS_COLUMN_WIDTHS.map((width, index) => (
+                        <col key={`${width}-${index}`} style={{ width }} />
+                      ))}
+                    </colgroup>
+                    <thead>
+                      <tr className="border-b border-[#9aa8b0] bg-[#fff68f] text-[11px] uppercase leading-none">
+                        <th className="rounded-tl-[10px] border-r border-[#9aa8b0] px-3 py-[9px] text-center font-normal">{columnLabels.organizations}</th>
+                        <th className="border-r border-[#9aa8b0] px-3 py-[9px] text-center font-normal">{columnLabels.type}</th>
+                        <th className="border-r border-[#9aa8b0] px-3 py-[9px] text-center font-normal">{columnLabels.creationDate}</th>
+                        <th className="border-r border-[#9aa8b0] px-3 py-[9px] text-center font-normal">{columnLabels.country}</th>
+                        <th className="border-r border-[#9aa8b0] px-3 py-[9px] text-center font-normal">{columnLabels.titlesPublished}</th>
+                        <th className="rounded-tr-[10px] px-3 py-[9px] text-center font-normal">{columnLabels.authorsPublished}</th>
+                      </tr>
+                    </thead>
+                    <tbody className="text-[14px] leading-none">
+                      {result.items.map((organization, rowIndex) => (
+                        <tr key={`${organization.name}-${result.page}-${rowIndex}`} className="border-b border-[#b1bac0] last:border-b-0">
+                          <td className="border-r border-[#b1bac0] px-3 py-[15px] align-middle">
+                            <Link
+                              href={{ pathname: "/orgs/details", query: { name: organization.name } }}
+                              className="flex items-center text-black hover:underline"
+                            >
+                              <RedMarker />
+                              <span className="w-full break-words">{organization.name}</span>
+                            </Link>
+                          </td>
+                          <td className="border-r border-[#b1bac0] px-3 py-[15px] align-middle">{organization.type || "—"}</td>
+                          <td className="border-r border-[#b1bac0] px-3 py-[15px] align-middle">{organization.creationDate || "—"}</td>
+                          <td className="border-r border-[#b1bac0] px-3 py-[15px] align-middle">{organization.country || "—"}</td>
+                          <td className="border-r border-[#b1bac0] px-3 py-[15px] text-center align-middle">{organization.publishedTitles}</td>
+                          <td className="px-3 py-[15px] text-center align-middle">{organization.publishedAuthors}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
               ) : (
                 <div className="px-6 py-10 text-center text-[14px] font-bold text-black">{t("search.noResults")}</div>

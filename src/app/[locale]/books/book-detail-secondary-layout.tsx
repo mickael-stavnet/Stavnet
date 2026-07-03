@@ -3,7 +3,7 @@
 import Image from "next/image";
 import type { MouseEvent, ReactNode } from "react";
 import { useTranslations } from "next-intl";
-import { useRouter } from "@/i18n/routing";
+import { Link, useRouter } from "@/i18n/routing";
 import { StavnetFooter } from "@/components/stavnet/footer";
 import { StavnetHeader } from "@/components/stavnet/header";
 import type { BookDetail } from "@/lib/data/books";
@@ -14,6 +14,31 @@ interface BookDetailSecondaryLayoutProps {
   pagePath: "/books/details/back-cover" | "/books/details/press-critiques" | "/books/details/availability" | "/books/details/publishing";
   children: ReactNode;
 }
+
+type BookDetailLinkHref =
+  | {
+      pathname: "/books/related";
+      query: {
+        facet: string;
+        value: string;
+      };
+    }
+  | {
+      pathname: "/persons/details";
+      query: {
+        name: string;
+        fallbackFacet: string;
+        fallbackValue: string;
+      };
+    }
+  | {
+      pathname: "/orgs/details";
+      query: {
+        name: string;
+        fallbackFacet: string;
+        fallbackValue: string;
+      };
+    };
 
 function RedMarker() {
   return <span className="inline-block h-[10px] w-[10px] rounded-full border-2 border-[#ff1d1d]" />;
@@ -37,7 +62,7 @@ function InfoField({
       </div>
       <div
         dir={dir}
-        className={`flex min-h-[34px] items-center bg-[#a6d9eb] px-2 py-[4px] text-[17px] leading-none text-black md:min-h-[38px] md:text-[16px] ${valueClassName}`}
+        className={`flex min-h-[34px] items-center bg-[#a6d9eb] px-2 py-[4px] text-[17px] leading-none text-black font-bold md:min-h-[38px] md:text-[16px] ${valueClassName}`}
       >
         {value || "—"}
       </div>
@@ -51,24 +76,24 @@ function InfoTable({
   gridTemplateColumns,
 }: {
   columns: string[];
-  rows: string[][];
+  rows: ReactNode[][];
   gridTemplateColumns: string;
 }) {
   return (
     <section className="border border-[#7ea8b8] bg-[#a6d9eb]">
       <div className="grid border-b border-[#7ea8b8] bg-[#fff6bf] text-[10px] uppercase leading-[1.05] text-black md:text-[11px]" style={{ gridTemplateColumns }}>
         {columns.map((column, columnIndex) => (
-          <div key={column} className={`px-2 py-[2px] ${columnIndex < columns.length - 1 ? "border-r border-[#7ea8b8]" : ""}`}>
+          <div key={column} className={`px-2 py-[2px] md:whitespace-nowrap ${columnIndex < columns.length - 1 ? "border-r border-[#7ea8b8]" : ""}`}>
             {column}
           </div>
         ))}
       </div>
       {rows.map((row, rowIndex) => (
-        <div key={`${row[0]}-${rowIndex}`} className="grid text-[14px] leading-none text-black md:text-[15px]" style={{ gridTemplateColumns }}>
+        <div key={`${row[0]}-${rowIndex}`} className="grid text-[14px] leading-none text-black font-bold md:text-[15px]" style={{ gridTemplateColumns }}>
           {row.map((cell, cellIndex) => (
             <div
               key={`${cell}-${cellIndex}`}
-              className={`flex min-h-[32px] items-center px-2 py-[6px] ${cellIndex < row.length - 1 ? "border-r border-[#7ea8b8]" : ""} border-t border-[#7ea8b8]`}
+              className={`flex min-h-[32px] items-center px-2 py-[6px] ${cellIndex < row.length - 1 ? "border-r border-[#7ea8b8]" : ""} border-t border-[#7ea8b8] md:whitespace-nowrap`}
             >
               {cellIndex === 0 ? (
                 <span className="flex min-w-0 items-center gap-2">
@@ -91,7 +116,7 @@ function MobileInfoTable({
   rows,
 }: {
   columns: string[];
-  rows: string[][];
+  rows: ReactNode[][];
 }) {
   return (
     <section className="space-y-3 md:hidden">
@@ -100,7 +125,7 @@ function MobileInfoTable({
           {columns.map((column, columnIndex) => (
             <div key={`${column}-${columnIndex}`} className={columnIndex === 0 ? "space-y-1" : "mt-3 space-y-1"}>
               <p className="text-[11px] font-bold uppercase tracking-[0.04em] text-[#07384a]">{column}</p>
-              <div className="text-[14px] leading-[1.35] text-black">
+              <div className="text-[14px] leading-[1.35] text-black font-bold">
                 {columnIndex === 0 ? (
                   <span className="flex min-w-0 items-start gap-2">
                     <RedMarker />
@@ -116,6 +141,61 @@ function MobileInfoTable({
       ))}
     </section>
   );
+}
+
+function ClickableValue({ href, value }: { href: BookDetailLinkHref; value: string }) {
+  return (
+    <Link
+      href={href}
+      className="cursor-pointer text-black underline decoration-current underline-offset-2 transition-colors hover:text-[#0f4c81]"
+    >
+      {value}
+    </Link>
+  );
+}
+
+function buildRelatedHref(facet: string, value: string) {
+  return {
+    pathname: "/books/related" as const,
+    query: {
+      facet,
+      value,
+    },
+  };
+}
+
+function buildPersonHref(name: string, fallbackFacet: string) {
+  return {
+    pathname: "/persons/details" as const,
+    query: {
+      name,
+      fallbackFacet,
+      fallbackValue: name,
+    },
+  };
+}
+
+function buildOrganizationHref(name: string, fallbackFacet: string) {
+  return {
+    pathname: "/orgs/details" as const,
+    query: {
+      name,
+      fallbackFacet,
+      fallbackValue: name,
+    },
+  };
+}
+
+function renderFacetValue(value: string, facet: string): ReactNode {
+  return value ? <ClickableValue href={buildRelatedHref(facet, value)} value={value} /> : "—";
+}
+
+function renderPersonValue(value: string, fallbackFacet: string): ReactNode {
+  return value ? <ClickableValue href={buildPersonHref(value, fallbackFacet)} value={value} /> : "—";
+}
+
+function renderOrganizationValue(value: string, fallbackFacet: string): ReactNode {
+  return value ? <ClickableValue href={buildOrganizationHref(value, fallbackFacet)} value={value} /> : "—";
 }
 
 export default function BookDetailSecondaryLayout({
@@ -153,9 +233,27 @@ export default function BookDetailSecondaryLayout({
       },
     },
   ];
-  const authorsRows = book.authors.length > 0 ? book.authors.map((row) => [row.name, row.type, row.language]) : [["", "", ""]];
-  const contributorsRows = book.contributors.length > 0 ? book.contributors.map((row) => [row.name, row.type, row.language]) : [["", "", ""]];
-  const publishersRows = book.publishers.length > 0 ? book.publishers.map((row) => [row.name, row.country, row.isbn]) : [["", "", ""]];
+  const authorsRows = book.authors.length > 0
+    ? book.authors.map((row) => [
+        renderPersonValue(row.name, "authorName"),
+        renderFacetValue(row.type, "authorType"),
+        renderFacetValue(row.language, "authorWritingLanguage"),
+      ])
+    : [["", "", ""]];
+  const contributorsRows = book.contributors.length > 0
+    ? book.contributors.map((row) => [
+        renderPersonValue(row.name, "contributorName"),
+        renderFacetValue(row.type, "contributorType"),
+        renderFacetValue(row.language, "contributorLanguage"),
+      ])
+    : [["", "", ""]];
+  const publishersRows = book.publishers.length > 0
+    ? book.publishers.map((row) => [
+        renderOrganizationValue(row.name, "publisherName"),
+        renderFacetValue(row.country, "publisherCountry"),
+        row.isbn || "—",
+      ])
+    : [["", "", ""]];
   const bookTitle = [book.title, book.subtitle].filter((value) => value.length > 0).join(" — ");
 
   return (
@@ -164,7 +262,12 @@ export default function BookDetailSecondaryLayout({
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.18),transparent_32%),linear-gradient(180deg,rgba(210,229,242,0.18),rgba(210,229,242,0.08))]" />
 
       <div className="relative z-10 mx-auto flex min-h-[100svh] w-full max-w-[1120px] flex-col px-4 pb-5 pt-4 md:h-screen md:max-w-none md:px-0 md:pb-0 md:pt-0">
-        <StavnetHeader pageName={pageName} title={t("header.title")} subtitle={t("header.subtitle")} />
+        <StavnetHeader
+          pageName={pageName}
+          title={t("header.title")}
+          subtitle={t("header.subtitle")}
+          titleBlockClassName="md:top-[34px]"
+        />
 
         <section className="mt-6 flex min-w-0 flex-col gap-3 md:absolute md:left-1/2 md:top-[172px] md:bottom-[118px] md:w-[1436px] md:max-w-[calc(100vw-24px)] md:-translate-x-1/2">
           <div className="flex min-w-0 flex-col gap-3 md:grid md:grid-cols-[270px_1120px] md:gap-x-[12px]">
@@ -185,11 +288,11 @@ export default function BookDetailSecondaryLayout({
                   </div>
                   <MobileInfoTable columns={[t("tables.authors"), t("tables.authorType"), t("tables.writingLanguage")]} rows={authorsRows} />
                   <div className="hidden md:block">
-                    <InfoTable columns={[t("tables.authors"), t("tables.authorType"), t("tables.writingLanguage")]} rows={authorsRows} gridTemplateColumns="2.3fr 0.95fr 1.05fr" />
+                    <InfoTable columns={[t("tables.authors"), t("tables.authorType"), t("tables.writingLanguage")]} rows={authorsRows} gridTemplateColumns="3fr 0.9fr 1fr" />
                   </div>
                   <MobileInfoTable columns={[t("tables.contributors"), t("tables.contributionType"), t("tables.writingLanguage")]} rows={contributorsRows} />
                   <div className="hidden md:block">
-                    <InfoTable columns={[t("tables.contributors"), t("tables.contributionType"), t("tables.writingLanguage")]} rows={contributorsRows} gridTemplateColumns="2.3fr 0.95fr 1.05fr" />
+                    <InfoTable columns={[t("tables.contributors"), t("tables.contributionType"), t("tables.writingLanguage")]} rows={contributorsRows} gridTemplateColumns="3fr 0.9fr 1fr" />
                   </div>
                   <MobileInfoTable columns={[t("tables.publishers"), t("tables.country"), t("tables.isbn")]} rows={publishersRows} />
                   <div className="hidden md:block">
@@ -202,17 +305,22 @@ export default function BookDetailSecondaryLayout({
 
           <section className="min-w-0 md:w-[1402px] md:max-w-none">{children}</section>
 
-          <aside className="hidden items-start justify-start md:absolute md:right-0 md:top-[34px] md:flex">
-            <div className="flex flex-col items-center gap-[58px] text-[14px] leading-none text-black">
+          <aside className="hidden items-start justify-start md:absolute md:right-0 md:top-[76px] md:flex">
+            <div className="flex flex-col items-center justify-start gap-[14px] text-[14px] leading-none text-black">
               <span className="[writing-mode:vertical-rl]">{t("right.bookCardsFound")}</span>
               <span className="[writing-mode:vertical-rl] text-[#ff1d1d]">{book.stats.cardsFound}</span>
+              <div className="h-[18px]" />
               <span className="[writing-mode:vertical-rl]">{t("right.databaseContains")}</span>
               <span className="[writing-mode:vertical-rl] text-[#ff1d1d]">{book.stats.databaseContains}</span>
             </div>
           </aside>
         </section>
 
-        <StavnetFooter items={footerItems} desktopMode="compact" />
+        <StavnetFooter
+          items={footerItems}
+          desktopMode="compact"
+          className="md:left-1/2 md:right-auto md:w-[1436px] md:max-w-[calc(100vw-24px)] md:-translate-x-1/2"
+        />
       </div>
     </main>
   );

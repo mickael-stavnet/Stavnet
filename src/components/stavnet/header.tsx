@@ -41,6 +41,7 @@ export function StavnetHeader({
   return (
     <header
       data-stavnet-animate="header"
+      suppressHydrationWarning
       className={cn(
         "relative -mt-2 flex justify-center px-0 pt-2 md:mt-0 md:absolute md:left-0 md:top-0 md:h-[146px] md:w-full md:block md:px-0",
         headerClassName,
@@ -48,7 +49,7 @@ export function StavnetHeader({
     >
       <div
         className={cn(
-          "hidden md:absolute md:left-[6.1vw] md:top-[24px] md:block md:w-[255px]",
+          "hidden md:absolute md:left-[4.9vw] md:top-[24px] md:block md:w-[270px]",
           logoClassName,
         )}
       >
@@ -58,7 +59,7 @@ export function StavnetHeader({
           width={295}
           height={75}
           priority
-          className="h-auto w-[128px] drop-shadow-[0_4px_12px_rgba(0,0,0,0.18)] md:w-[168px]"
+          className="h-auto w-[128px] drop-shadow-[0_4px_12px_rgba(0,0,0,0.18)] md:w-[176px]"
         />
       </div>
 
@@ -87,7 +88,7 @@ export function StavnetHeader({
 
       <section
         className={cn(
-          "hidden md:absolute md:left-1/2 md:top-[2.7vh] md:block md:w-[min(1320px,96vw)] md:-translate-x-1/2 md:text-right",
+          "hidden md:absolute md:left-1/2 md:top-[2.7vh] md:flex md:min-h-[78px] md:w-[min(1320px,96vw)] md:-translate-x-1/2 md:flex-col md:items-end md:justify-end md:text-right",
           titleBlockClassName,
         )}
       >

@@ -6,14 +6,7 @@ import { getMessages } from "next-intl/server";
 import { routing } from "@/i18n/routing";
 import { notFound } from "next/navigation";
 import { PageMotion } from "@/components/stavnet/page-motion";
-
-export const metadata: Metadata = {
-  title: "STAVNET",
-  description: "Application de gestion STAVNET",
-  icons: {
-    icon: "/icons/logo/icon-stavnet.jpg",
-  },
-};
+import { buildSiteMetadata } from "@/lib/site-metadata";
 
 interface RootLayoutProps {
   children: React.ReactNode;
@@ -21,6 +14,11 @@ interface RootLayoutProps {
 }
 
 type AppLocale = (typeof routing.locales)[number];
+
+export async function generateMetadata({ params }: RootLayoutProps): Promise<Metadata> {
+  const { locale } = await params;
+  return buildSiteMetadata(locale);
+}
 
 export default async function RootLayout({
   children,

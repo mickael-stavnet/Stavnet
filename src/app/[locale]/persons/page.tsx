@@ -1,4 +1,5 @@
 import Image from "next/image";
+import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { StavnetFooter } from "@/components/stavnet/footer";
 import { StavnetHeader } from "@/components/stavnet/header";
@@ -14,15 +15,24 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import { buildStaticPageMetadata } from "@/lib/site-metadata";
 
-const PERSONS_GRID_TEMPLATE =
-  "2.45fr 1.4fr 1.35fr 0.72fr 0.78fr 0.82fr 0.8fr 0.82fr 0.8fr 0.92fr";
+const PERSONS_COLUMN_WIDTHS =
+  ["24.35%", "13.92%", "13.42%", "7.16%", "7.75%", "8.15%", "7.95%", "8.15%", "7.95%", "9.15%"] as const;
 
 interface PersonsPageProps {
+  params: Promise<{
+    locale: string;
+  }>;
   searchParams: Promise<{
     page?: string;
     q?: string;
   }>;
+}
+
+export async function generateMetadata({ params }: PersonsPageProps): Promise<Metadata> {
+  const { locale } = await params;
+  return buildStaticPageMetadata(locale, "persons", "/persons");
 }
 
 function RedMarker() {
@@ -170,51 +180,54 @@ export default async function PersonsListPage({ searchParams }: PersonsPageProps
               )}
             </div>
 
-            <div className="hidden flex-col md:flex">
-              <div
-                className="grid min-w-[1260px] border-b border-[#9aa8b0] bg-[#fff68f] text-[11px] uppercase leading-none text-black"
-                style={{ gridTemplateColumns: PERSONS_GRID_TEMPLATE }}
-              >
-                <div className="rounded-tl-[10px] border-r border-[#9aa8b0] px-3 py-[9px] text-center">{t("columns.persons")}</div>
-                <div className="rounded-t-[10px] border-r border-[#9aa8b0] px-3 py-[9px] text-center">{t("columns.type")}</div>
-                <div className="rounded-t-[10px] border-r border-[#9aa8b0] px-3 py-[9px] text-center">{t("columns.language")}</div>
-                <div className="rounded-t-[10px] border-r border-[#9aa8b0] px-3 py-[9px] text-center">{t("columns.originalTitles")}</div>
-                <div className="rounded-t-[10px] border-r border-[#9aa8b0] px-3 py-[9px] text-center">{t("columns.translatedTitles")}</div>
-                <div className="rounded-t-[10px] border-r border-[#9aa8b0] px-3 py-[9px] text-center">{t("columns.translationLanguages")}</div>
-                <div className="rounded-t-[10px] border-r border-[#9aa8b0] px-3 py-[9px] text-center">{t("columns.awards")}</div>
-                <div className="rounded-t-[10px] border-r border-[#9aa8b0] px-3 py-[9px] text-center">{t("columns.regularReissues")}</div>
-                <div className="rounded-t-[10px] border-r border-[#9aa8b0] px-3 py-[9px] text-center">{t("columns.pocketReissues")}</div>
-                <div className="rounded-tr-[10px] px-3 py-[9px] text-center">{t("columns.publicationCountries")}</div>
-              </div>
-
+            <div className="hidden md:block">
               {result.items.length > 0 ? (
                 <div className="overflow-auto">
-                  {result.items.map((person, rowIndex) => (
-                    <div
-                      key={`${person.name}-${result.page}-${rowIndex}`}
-                      className="grid min-w-[1260px] border-b border-[#b1bac0] text-[14px] leading-none text-black last:border-b-0"
-                      style={{ gridTemplateColumns: PERSONS_GRID_TEMPLATE }}
-                    >
-                      <div className="border-r border-[#b1bac0] px-3 py-[15px]">
-                        <Link
-                          href={{ pathname: "/persons/details", query: { name: person.name } }}
-                          className="flex items-center text-black hover:underline"
-                        >
-                          <RedMarker />
-                          <span>{person.name}</span>
-                        </Link>
-                      </div>
-                      <div className="border-r border-[#b1bac0] px-3 py-[15px]">{person.type || "—"}</div>
-                      <div className="border-r border-[#b1bac0] px-3 py-[15px]">{person.language || "—"}</div>
-                      <div className="border-r border-[#b1bac0] px-3 py-[15px] text-center">{person.originalTitles}</div>
-                      <div className="border-r border-[#b1bac0] px-3 py-[15px] text-center">{person.translatedTitles}</div>
-                      <div className="border-r border-[#b1bac0] px-3 py-[15px] text-center">{person.translationLanguages}</div>
-                      <div className="border-r border-[#b1bac0] px-3 py-[15px] text-center">{person.awards}</div>
-                      <div className="border-r border-[#b1bac0] px-3 py-[15px] text-center">{person.regularReissues}</div>
-                      <div className="border-r border-[#b1bac0] px-3 py-[15px] text-center">{person.pocketReissues}</div>
-                      <div className="px-3 py-[15px] text-center">{person.publicationCountries}</div>
-                    </div>
-                  ))}
+                  <table className="min-w-[1260px] table-fixed border-collapse text-black">
+                    <colgroup>
+                      {PERSONS_COLUMN_WIDTHS.map((width, index) => (
+                        <col key={`${width}-${index}`} style={{ width }} />
+                      ))}
+                    </colgroup>
+                    <thead>
+                      <tr className="border-b border-[#9aa8b0] bg-[#fff68f] text-[11px] uppercase leading-none">
+                        <th className="rounded-tl-[10px] border-r border-[#9aa8b0] px-3 py-[9px] text-center font-normal">{t("columns.persons")}</th>
+                        <th className="border-r border-[#9aa8b0] px-3 py-[9px] text-center font-normal">{t("columns.type")}</th>
+                        <th className="border-r border-[#9aa8b0] px-3 py-[9px] text-center font-normal">{t("columns.language")}</th>
+                        <th className="border-r border-[#9aa8b0] px-3 py-[9px] text-center font-normal">{t("columns.originalTitles")}</th>
+                        <th className="border-r border-[#9aa8b0] px-3 py-[9px] text-center font-normal">{t("columns.translatedTitles")}</th>
+                        <th className="border-r border-[#9aa8b0] px-3 py-[9px] text-center font-normal">{t("columns.translationLanguages")}</th>
+                        <th className="border-r border-[#9aa8b0] px-3 py-[9px] text-center font-normal">{t("columns.awards")}</th>
+                        <th className="border-r border-[#9aa8b0] px-3 py-[9px] text-center font-normal">{t("columns.regularReissues")}</th>
+                        <th className="border-r border-[#9aa8b0] px-3 py-[9px] text-center font-normal">{t("columns.pocketReissues")}</th>
+                        <th className="rounded-tr-[10px] px-3 py-[9px] text-center font-normal">{t("columns.publicationCountries")}</th>
+                      </tr>
+                    </thead>
+                    <tbody className="text-[14px] leading-none">
+                      {result.items.map((person, rowIndex) => (
+                        <tr key={`${person.name}-${result.page}-${rowIndex}`} className="border-b border-[#b1bac0] last:border-b-0">
+                          <td className="border-r border-[#b1bac0] px-3 py-[15px] align-middle">
+                            <Link
+                              href={{ pathname: "/persons/details", query: { name: person.name } }}
+                              className="flex items-center text-black hover:underline"
+                            >
+                              <RedMarker />
+                              <span className="w-full break-words">{person.name}</span>
+                            </Link>
+                          </td>
+                          <td className="border-r border-[#b1bac0] px-3 py-[15px] align-middle">{person.type || "—"}</td>
+                          <td className="border-r border-[#b1bac0] px-3 py-[15px] align-middle">{person.language || "—"}</td>
+                          <td className="border-r border-[#b1bac0] px-3 py-[15px] text-center align-middle">{person.originalTitles}</td>
+                          <td className="border-r border-[#b1bac0] px-3 py-[15px] text-center align-middle">{person.translatedTitles}</td>
+                          <td className="border-r border-[#b1bac0] px-3 py-[15px] text-center align-middle">{person.translationLanguages}</td>
+                          <td className="border-r border-[#b1bac0] px-3 py-[15px] text-center align-middle">{person.awards}</td>
+                          <td className="border-r border-[#b1bac0] px-3 py-[15px] text-center align-middle">{person.regularReissues}</td>
+                          <td className="border-r border-[#b1bac0] px-3 py-[15px] text-center align-middle">{person.pocketReissues}</td>
+                          <td className="px-3 py-[15px] text-center align-middle">{person.publicationCountries}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
               ) : (
                 <div className="px-6 py-10 text-center text-[14px] font-bold text-black">{t("search.noResults")}</div>

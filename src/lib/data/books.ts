@@ -1,5 +1,6 @@
 import { cache } from "react";
 import { resolveBookCoverSrc } from "@/lib/book-images";
+import type { BookRelatedFacet } from "@/lib/book-related";
 import { fixEncoding } from "@/lib/encoding";
 import { logError, logInfo, logWarn } from "@/lib/server-log";
 import { supabase } from "@/lib/supabase";
@@ -11,6 +12,9 @@ const BOOK_LIST_SELECT = [
   '"Titre"',
   '"Auteur. 1. Nom"',
   '"Auteur. 1. Prénom"',
+  '"Auteur. 1. Langue"',
+  '"Auteur. 2. Langue"',
+  '"Auteur. 3. Langue"',
   '"Éditeur"',
   '"Éditeur. 1. Nom"',
   '"Langue"',
@@ -144,9 +148,98 @@ const BOOK_PUBLISHING_SELECT = [
   '"Éditeur. 1. Nom"',
 ].join(",");
 
+const BOOK_RELATED_FALLBACK_SELECT = [
+  "id",
+  '"Titre"',
+  '"Auteur. 1. Nom"',
+  '"Auteur. 1. Prénom"',
+  '"Auteur. 1. Type"',
+  '"Auteur. 1. Langue"',
+  '"Auteur. 2. Nom"',
+  '"Auteur. 2. Prénom"',
+  '"Auteur. 2. Type"',
+  '"Auteur. 2. Langue"',
+  '"Auteur. 3. Nom"',
+  '"Auteur. 3. Prénom"',
+  '"Auteur. 3. Type"',
+  '"Auteur. 3. Langue"',
+  '"Contrib. 1. Nom"',
+  '"Contrib. 1. Prénom"',
+  '"Contrib. 1. Genre/Langue"',
+  '"Contrib. 1. Langue Traduite"',
+  '"Contrib. 2. Nom"',
+  '"Contrib. 2. Prénom"',
+  '"Contrib. 2. Genre/Langue"',
+  '"Contrib. 2. Langue Traduite"',
+  '"Contrib. 3. Nom"',
+  '"Contrib. 3. Prénom"',
+  '"Contrib. 3. Genre/Langue"',
+  '"Contrib. 3. Langue Traduite"',
+  '"Contrib. 4. Nom"',
+  '"Contrib. 4. Prénom"',
+  '"Contrib. 4. Genre/Langue"',
+  '"Contrib. 4. Langue Traduite"',
+  '"Contrib. 5. Nom"',
+  '"Contrib. 5. Prénom"',
+  '"Contrib. 5. Genre/Langue"',
+  '"Contrib. 5. Langue Traduite"',
+  '"Contrib. 6. Nom"',
+  '"Contrib. 6. Prénom"',
+  '"Contrib. 6. Genre/Langue"',
+  '"Contrib. 6. Langue Traduite"',
+  '"Contrib. 7. Nom"',
+  '"Contrib. 7. Prénom"',
+  '"Contrib. 7. Genre/Langue"',
+  '"Contrib. 8. Nom"',
+  '"Contrib. 8. Prénom"',
+  '"Contrib. 8. Genre/Langue"',
+  '"Contrib. 8. Langue Traduite"',
+  '"Contrib. 9. Nom"',
+  '"Contrib. 9. Prénom"',
+  '"Contrib. 9. Genre/Langue"',
+  '"Contrib. 9. Langue Traduite"',
+  '"Contrib. 10. Nom"',
+  '"Contrib. 10. Prénom"',
+  '"Contrib. 10. Genre/Langue"',
+  '"Contrib. 10. Langue Traduite"',
+  '"Éditeur"',
+  '"Éditeur. 1. Nom"',
+  '"Éditeur. 1. Pays"',
+  '"Éditeur. 2. Nom"',
+  '"Éditeur. 2. Pays"',
+  '"Pays. Éditeur"',
+  '"Langue"',
+  '"Année"',
+  '"Année. Pages. Dimensions"',
+  '"Catégorie. 1"',
+  '"Catégorie. 2"',
+  '"Thème. 1"',
+  '"Thème. 2"',
+  '"Genre"',
+  '"Genre. 1"',
+  '"Genre. 2"',
+  '"Rubrique"',
+].join(",");
+
 type BookRow = Record<string, unknown> & {
   id?: unknown;
 };
+
+type BookRelatedPageItemRpc = {
+  id?: unknown;
+  title?: unknown;
+  author?: unknown;
+  publisher?: unknown;
+  language?: unknown;
+  year?: unknown;
+  publicationCode?: unknown;
+};
+
+type BookRelatedPageRpc = {
+  items?: BookRelatedPageItemRpc[] | null;
+  totalCount?: unknown;
+  databaseTotal?: unknown;
+} | null;
 
 export interface BookListItem {
   id: string;
@@ -154,6 +247,7 @@ export interface BookListItem {
   author: string;
   publisher: string;
   language: string;
+  writingLanguage: string;
   year: string;
   publication: string;
   issue: string;
@@ -282,6 +376,14 @@ function readList(values: unknown[]): string[] {
   return values
     .map(readText)
     .filter((value, index, array) => value.length > 0 && array.indexOf(value) === index);
+}
+
+function isBookReferenceCode(value: string): boolean {
+  return /^\d{5}-[A-Z]-L\d{2}-[A-Z]-E\d{2}$/i.test(value.trim());
+}
+
+function normalizeBookFacetValue(value: string): string {
+  return readText(value).toLocaleLowerCase();
 }
 
 function joinName(firstName: string, lastName: string): string {
@@ -416,6 +518,45 @@ function buildWorkSignature(row: BookRow): string[] {
     readText(row["Titre. Transcription"]),
     readText(row["Titre"]),
   ].filter((value, index, array) => value.length > 0 && array.indexOf(value) === index);
+}
+
+function matchesBookRelatedFacet(row: BookRow, facet: BookRelatedFacet, normalizedValue: string): boolean {
+  if (!normalizedValue) {
+    return false;
+  }
+
+  switch (facet) {
+    case "authorName":
+      return buildAuthors(row).some((author) => normalizeBookFacetValue(author.name) === normalizedValue);
+    case "translationLanguage":
+      return normalizeBookFacetValue(readText(row["Langue"])) === normalizedValue;
+    case "authorType":
+      return buildAuthors(row).some((author) => normalizeBookFacetValue(author.type) === normalizedValue);
+    case "authorWritingLanguage":
+      return buildAuthors(row).some((author) => normalizeBookFacetValue(author.language) === normalizedValue);
+    case "contributorName":
+      return buildContributors(row).some((contributor) => normalizeBookFacetValue(contributor.name) === normalizedValue);
+    case "contributorType":
+      return buildContributors(row).some((contributor) => normalizeBookFacetValue(contributor.type) === normalizedValue);
+    case "contributorLanguage":
+      return buildContributors(row).some((contributor) => normalizeBookFacetValue(contributor.language) === normalizedValue);
+    case "publisherName":
+      return buildPublishers(row).some((publisher) => normalizeBookFacetValue(publisher.name) === normalizedValue);
+    case "publisherCountry":
+      return buildPublishers(row).some((publisher) => normalizeBookFacetValue(publisher.country) === normalizedValue);
+    case "category":
+      return readList([row["Catégorie. 1"], row["Catégorie. 2"]])
+        .filter((value) => !isBookReferenceCode(value))
+        .some((value) => normalizeBookFacetValue(value) === normalizedValue);
+    case "subject":
+      return readList([row["Thème. 1"], row["Thème. 2"]]).some((value) => normalizeBookFacetValue(value) === normalizedValue);
+    case "genre":
+      return readList([row["Genre"], row["Genre. 1"], row["Genre. 2"]]).some((value) => normalizeBookFacetValue(value) === normalizedValue);
+    case "targetAudience":
+      return normalizeBookFacetValue(readText(row["Rubrique"])) === normalizedValue;
+    default:
+      return false;
+  }
 }
 
 const getOrganizationCountryMap = cache(async (): Promise<Map<string, string>> => {
@@ -560,7 +701,25 @@ function mapBookListItem(row: BookRow): BookListItem {
     author: joinName(readText(row["Auteur. 1. Nom"]), readText(row["Auteur. 1. Prénom"])),
     publisher: readText(row["Éditeur. 1. Nom"]) || readText(row["Éditeur"]),
     language: readText(row["Langue"]),
+    writingLanguage: readText(row["Auteur. 1. Langue"]) || readText(row["Auteur. 2. Langue"]) || readText(row["Auteur. 3. Langue"]),
     year: readText(row["Année"]),
+    publication: code.publication,
+    issue: code.issue,
+    edition: code.edition,
+  };
+}
+
+function mapBookRelatedPageItem(item: BookRelatedPageItemRpc): BookListItem {
+  const code = parsePublicationCode(readText(item.publicationCode));
+
+  return {
+    id: readId(item.id),
+    title: readText(item.title),
+    author: readText(item.author),
+    publisher: readText(item.publisher),
+    language: readText(item.language),
+    writingLanguage: "",
+    year: readText(item.year),
     publication: code.publication,
     issue: code.issue,
     edition: code.edition,
@@ -628,7 +787,7 @@ function mapBookDetail(
     publishing,
     publishingStats: buildPublishingStats(publishing),
     pressReviews,
-    category: readList([row["Catégorie. 1"], row["Catégorie. 2"]]),
+    category: readList([row["Catégorie. 1"], row["Catégorie. 2"]]).filter((value) => !isBookReferenceCode(value)),
     subject: readList([row["Thème. 1"], row["Thème. 2"]]),
     genre: readList([row["Genre"], row["Genre. 1"], row["Genre. 2"]]),
     targetAudience: readList([row["Rubrique"]]),
@@ -729,6 +888,76 @@ async function fetchBooksPagePayload(page: number, pageSize: number, searchTerm?
   };
 }
 
+async function fetchBooksPageByFacetFallback(
+  page: number,
+  facet: BookRelatedFacet,
+  value: string,
+  pageSize: number,
+): Promise<BookListResult> {
+  const currentPage = Math.max(1, page);
+  const normalizedValue = normalizeBookFacetValue(value);
+  const batchSize = 1000;
+  const rows: BookRow[] = [];
+  let from = 0;
+
+  logWarn("BOOKS_RELATED_PAGE_RPC_FALLBACK_START", {
+    page: currentPage,
+    pageSize,
+    facet,
+    value: value || null,
+  });
+
+  while (true) {
+    const { data, error, status, statusText } = await supabase
+      .from("data-books")
+      .select(BOOK_RELATED_FALLBACK_SELECT)
+      .not("Titre", "is", null)
+      .neq("Titre", "")
+      .neq("Titre", "NULL")
+      .order("Titre", { ascending: true })
+      .order("id", { ascending: true })
+      .range(from, from + batchSize - 1);
+
+    if (error) {
+      logError("BOOKS_RELATED_PAGE_RPC_FALLBACK_ERROR", {
+        page: currentPage,
+        pageSize,
+        facet,
+        value: value || null,
+        status,
+        statusText,
+        error,
+      });
+      throw new Error(error.message);
+    }
+
+    const batch = Array.isArray(data) ? (data as unknown as BookRow[]) : [];
+    rows.push(...batch);
+
+    if (batch.length < batchSize) {
+      break;
+    }
+
+    from += batchSize;
+  }
+
+  const filteredRows = rows.filter((row) => matchesBookRelatedFacet(row, facet, normalizedValue));
+  const pagedRows = filteredRows.slice((currentPage - 1) * pageSize, currentPage * pageSize);
+  const totals = await getBooksDatabaseTotals();
+
+  logWarn("BOOKS_RELATED_PAGE_RPC_FALLBACK_RESULT", {
+    page: currentPage,
+    pageSize,
+    facet,
+    value: value || null,
+    totalRows: rows.length,
+    filteredRows: filteredRows.length,
+    pageRows: pagedRows.length,
+  });
+
+  return buildBookListResult(pagedRows, filteredRows.length, currentPage, pageSize, totals.databaseContains);
+}
+
 function buildBookListResult(rows: BookRow[], total: number, currentPage: number, pageSize: number, databaseTotal: number): BookListResult {
   return {
     items: rows.map(mapBookListItem).filter((item) => item.id.length > 0 && item.title.length > 0),
@@ -758,6 +987,73 @@ export async function getBooksPageByTitle(page: number, searchTerm: string, page
   ]);
 
   return buildBookListResult(rows, total, currentPage, pageSize, totals.databaseContains);
+}
+
+export async function getBooksPageByFacet(
+  page: number,
+  facet: BookRelatedFacet,
+  value: string,
+  pageSize = BOOKS_PAGE_SIZE,
+): Promise<BookListResult> {
+  const currentPage = Math.max(1, page);
+  const trimmedValue = value.trim();
+
+  logInfo("BOOKS_RPC_RELATED_PAGE_START", {
+    page: currentPage,
+    pageSize,
+    facet,
+    value: trimmedValue || null,
+  });
+
+  const { data, error, status, statusText } = await supabase.rpc("get_books_page_by_facet", {
+    p_page: currentPage,
+    p_page_size: pageSize,
+    p_facet: facet,
+    p_value: trimmedValue,
+  });
+
+  if (error) {
+    if (error.message.includes("Could not find the function public.get_books_page_by_facet")) {
+      return fetchBooksPageByFacetFallback(currentPage, facet, trimmedValue, pageSize);
+    }
+
+    logError("BOOKS_RPC_RELATED_PAGE_ERROR", {
+      page: currentPage,
+      pageSize,
+      facet,
+      value: trimmedValue || null,
+      status,
+      statusText,
+      error,
+    });
+    throw new Error(error.message);
+  }
+
+  const payload = (data as BookRelatedPageRpc) ?? null;
+  const items = Array.isArray(payload?.items) ? payload.items.map(mapBookRelatedPageItem) : [];
+  const total = readNumber(payload?.totalCount);
+  const databaseTotal = readNumber(payload?.databaseTotal);
+
+  logInfo("BOOKS_RPC_RELATED_PAGE_RESULT", {
+    page: currentPage,
+    pageSize,
+    facet,
+    value: trimmedValue || null,
+    status,
+    statusText,
+    itemCount: items.length,
+    totalCount: total,
+    databaseTotal,
+  });
+
+  return {
+    items: items.filter((item) => item.id.length > 0 && item.title.length > 0),
+    page: currentPage,
+    pageSize,
+    total,
+    totalPages: Math.max(1, Math.ceil(total / pageSize)),
+    databaseTotal,
+  };
 }
 
 export const getBookDetailById = cache(async (id: string): Promise<BookDetail | null> => {

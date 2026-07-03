@@ -1,9 +1,22 @@
 import Image from "next/image";
+import type { Metadata } from "next";
 import { useTranslations } from "next-intl";
 import { StarModelViewer } from "@/components/home/star-model-viewer";
 import { LanguageSwitcher } from "@/components/home/language-switcher";
 import { StavnetHeader } from "@/components/stavnet/header";
 import { StavnetFooter } from "@/components/stavnet/footer";
+import { buildStaticPageMetadata } from "@/lib/site-metadata";
+
+interface HomeMenuPageProps {
+  params: Promise<{
+    locale: string;
+  }>;
+}
+
+export async function generateMetadata({ params }: HomeMenuPageProps): Promise<Metadata> {
+  const { locale } = await params;
+  return buildStaticPageMetadata(locale, "welcome", "/home");
+}
 
 export default function HomeMenuPage() {
   const t = useTranslations("HomeMenu");
@@ -51,16 +64,16 @@ export default function HomeMenuPage() {
       label: t("actions.help"),
     },
     {
-      key: "next",
-      icon: "/icons/icons-nav/next.png",
-      href: "/" as const,
-      label: t("actions.next"),
-    },
-    {
       key: "close",
       icon: "/icons/icons-nav/close.png",
       href: "/home" as const,
       label: t("actions.close"),
+    },
+    {
+      key: "next",
+      icon: "/icons/icons-nav/next.png",
+      href: "/" as const,
+      label: t("actions.next"),
     },
   ];
 
@@ -77,7 +90,7 @@ export default function HomeMenuPage() {
 
       <section
         data-stavnet-animate="star-viewer"
-        className="pointer-events-none absolute left-[calc(50%-2px)] top-[48svh] z-10 h-[clamp(190px,26svh,250px)] w-[min(72vw,270px)] -translate-x-1/2 -translate-y-1/2 md:left-0 md:right-0 md:top-[10vh] md:h-[73vh] md:w-full md:translate-x-0 md:translate-y-0"
+        className="pointer-events-none absolute left-[calc(50%-2px)] top-[48svh] z-10 h-[clamp(190px,26svh,250px)] w-[min(72vw,270px)] -translate-x-1/2 -translate-y-1/2 md:left-0 md:right-0 md:top-[15vh] md:h-[73vh] md:w-full md:translate-x-0 md:translate-y-0"
       >
         <StarModelViewer />
       </section>
@@ -96,8 +109,10 @@ export default function HomeMenuPage() {
             </>
           }
           title="Literature Database"
+          titleBlockClassName="md:top-[24px] md:w-[84vw]"
+          titleClassName="md:text-[38px]"
           titleExtra={
-            <div className="mt-[8px] flex flex-wrap items-center justify-center gap-x-5 gap-y-1 text-[19px] font-bold md:justify-end">
+            <div className="mt-[10px] flex flex-wrap items-center justify-center gap-x-5 gap-y-1 text-[19px] font-bold md:justify-end md:text-[22px]">
               <span className="flex h-[22px] items-center leading-none text-[#269338]">
                 قاعدة المعطيات للاداب
               </span>
