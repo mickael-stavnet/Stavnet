@@ -233,7 +233,7 @@ export default function MenuPageClient() {
             }}
             className="mt-5 flex flex-col gap-5 md:absolute md:left-[11vw] md:right-[11vw] md:top-[258px] md:mt-0 md:h-[600px] md:gap-0"
           >
-            <div className="flex flex-col gap-4 md:absolute md:left-0 md:right-0 md:top-[-22px] md:flex-row md:items-center md:justify-between">
+            <div className="flex flex-col gap-4 md:absolute md:left-0 md:right-0 md:top-[-56px] md:flex-row md:items-center md:justify-between">
               <div className="max-w-[560px] text-left">
                 <p className="text-[18px] font-bold italic leading-[1.12] text-black sm:text-[19px]">
                   <span>{t("intro.leftLine1")}</span>
