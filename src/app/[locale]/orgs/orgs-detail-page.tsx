@@ -3,9 +3,12 @@
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
+import type { ReactNode } from "react";
 import { StavnetFooter } from "@/components/stavnet/footer";
 import { StavnetHeader } from "@/components/stavnet/header";
+import { Link } from "@/i18n/routing";
 import type { OrganizationDetail } from "@/lib/data/orgs";
+import { ClickableDetailValue, buildRelatedBooksHref } from "@/lib/detail-links";
 
 type OrganizationTab =
   | "editorCard"
@@ -33,12 +36,12 @@ function FilledCell({
   value,
   className = "",
 }: {
-  value: string;
+  value: ReactNode;
   className?: string;
 }) {
   return (
     <div
-      className={`flex min-h-[42px] items-center border-b border-[#7aa8b7] bg-[#a7dcee] px-2 text-[13px] text-black ${className}`}
+      className={`flex min-h-[42px] items-center border-b border-[#7aa8b7] bg-[#a7dcee] px-2 text-[13px] font-semibold text-black md:min-h-[46px] md:px-3 md:text-[16px] ${className}`}
     >
       {value || "—"}
     </div>
@@ -164,7 +167,7 @@ export default function OrganizationsDetailPage({
           titleBlockClassName="md:w-[84vw]"
         />
 
-        <section className="mt-6 flex flex-col gap-4 md:absolute md:left-1/2 md:top-[172px] md:bottom-[118px] md:w-[min(1580px,97vw)] md:-translate-x-1/2">
+        <section className="mt-6 flex min-w-0 flex-col gap-5 md:absolute md:left-1/2 md:top-[172px] md:bottom-[118px] md:w-[1120px] md:max-w-[calc(100vw-240px)] md:-translate-x-1/2">
           <section className="grid gap-2 md:hidden">
             <div className="grid grid-cols-2 gap-2">
               <div className="rounded-[8px] border border-[#7aa8b7] bg-[#d8dde2] px-3 py-2">
@@ -210,8 +213,7 @@ export default function OrganizationsDetailPage({
             </button>
           </section>
 
-          <section className="order-1 min-w-0 md:relative md:ml-[214px] md:w-[calc(100%-214px)] md:pr-[30px]">
-            <aside className="absolute left-[-208px] top-[104px] hidden w-[182px] flex-col gap-5 md:flex">
+          <aside className="hidden md:absolute md:right-[calc(100%+12px)] md:top-[66px] md:flex md:h-[660px] md:w-[174px] md:flex-col md:items-center md:gap-5">
               <div className="relative overflow-hidden border border-[#6c99a7] bg-[#d7eef6] shadow-[3px_3px_6px_rgba(0,0,0,0.18)] h-[176px] w-[174px]">
                 <Image
                   src="https://cdn.pixabay.com/photo/2016/12/28/22/15/moscow-1937274_1280.jpg"
@@ -229,7 +231,7 @@ export default function OrganizationsDetailPage({
               </div>
               <button
                 type="button"
-                className="ml-[34px] h-[42px] w-[106px] border border-[#d1bb48] bg-[#ffea56] text-[14px] font-bold leading-[1.05] shadow-[3px_3px_5px_rgba(0,0,0,0.2)]"
+                className="h-[42px] w-[106px] self-center border border-[#d1bb48] bg-[#ffea56] text-[14px] font-bold leading-[1.05] shadow-[3px_3px_5px_rgba(0,0,0,0.2)]"
               >
                 {t("side.collections")}
               </button>
@@ -239,7 +241,9 @@ export default function OrganizationsDetailPage({
                   {organization.publishedStats.titles}
                 </p>
               </div>
-            </aside>
+          </aside>
+
+          <section className="min-w-0 md:w-[1120px] md:max-w-none">
             <nav className="grid grid-cols-2 gap-2 pb-2 md:grid-cols-[108px_repeat(7,minmax(0,1fr))] md:items-end md:gap-[12px] md:pb-0">
               {tabs.map((tabKey) => (
                 <button
@@ -257,9 +261,9 @@ export default function OrganizationsDetailPage({
               ))}
             </nav>
 
-            <div className="relative mt-[2px] flex min-h-[660px] flex-col rounded-[8px] border border-[#7aa8b7] bg-[linear-gradient(180deg,#8ecfe8_0%,#a8dbed_100%)] shadow-[4px_4px_8px_rgba(0,0,0,0.18)] md:h-[638px] md:min-h-0 md:flex-row">
+            <div className="relative mt-[2px] flex min-h-[660px] flex-col rounded-[8px] border border-[#7aa8b7] bg-[linear-gradient(180deg,#8ecfe8_0%,#a8dbed_100%)] shadow-[4px_4px_8px_rgba(0,0,0,0.18)] md:h-[660px] md:flex-row">
               <aside className="border-b border-[#7aa8b7] px-3 py-4 md:w-[126px] md:border-b-0 md:border-r md:px-4 md:py-5">
-                <p className="text-center text-[18px] font-bold leading-tight text-black">
+                <p className="text-center text-[18px] font-bold leading-tight text-black md:text-[22px]">
                   {t("side.editorCard")}
                 </p>
               </aside>
@@ -288,7 +292,11 @@ export default function OrganizationsDetailPage({
                           <div className="bg-[#a7dcee]">
                             <LabelCell label={t("fields.country")} />
                             <FilledCell
-                              value={organization.country}
+                              value={
+                                organization.country
+                                  ? <ClickableDetailValue href={buildRelatedBooksHref("publisherCountry", organization.country)} value={organization.country} />
+                                  : "—"
+                              }
                               className="border-b-0"
                             />
                           </div>
@@ -320,7 +328,7 @@ export default function OrganizationsDetailPage({
                           <LabelCell label={t("fields.synonyms")} />
                           <FilledCell
                             value={organization.synonym}
-                            className="text-[14px]"
+                            className="text-[14px] font-normal md:text-[15px]"
                           />
                           <EmptyRows rows={4} />
                         </section>
@@ -329,9 +337,18 @@ export default function OrganizationsDetailPage({
                           <div className="border-b border-[#7aa8b7] bg-[#fff8c8] px-2 py-[3px] text-[12px] uppercase leading-none text-black">
                             {t("fields.group")}
                           </div>
-                          <div className="flex min-h-[34px] items-center px-2 text-[13px] text-black">
+                          <div className="flex min-h-[34px] items-center px-2 text-[13px] text-black md:px-3 md:text-[15px]">
                             <RedMarker />
-                            {organization.type || "—"}
+                            {organization.type ? (
+                              <Link
+                                href={{ pathname: "/orgs", query: { type: organization.type, page: "1" } }}
+                                className="cursor-pointer underline decoration-current underline-offset-2 transition-colors hover:text-[#0f4c81]"
+                              >
+                                {organization.type}
+                              </Link>
+                            ) : (
+                              "—"
+                            )}
                           </div>
                         </section>
                       </div>
@@ -351,7 +368,7 @@ export default function OrganizationsDetailPage({
                       </div>
 
                       <section className="hidden min-h-0 flex-1 overflow-hidden border border-[#7aa8b7] bg-[#a7dcee] md:flex md:flex-col">
-                        <div className="grid w-full min-w-0 grid-cols-[minmax(0,1.8fr)_minmax(0,1fr)_72px] border-b border-[#7aa8b7] bg-[#fff8c8] text-[12px] uppercase leading-none text-black">
+                        <div className="grid w-full min-w-0 grid-cols-[minmax(0,1.8fr)_minmax(0,1fr)_72px] border-b border-[#7aa8b7] bg-[#fff8c8] text-[12px] uppercase leading-none text-black md:text-[13px]">
                           <div className="border-r border-[#7aa8b7] px-2 py-[3px]">
                             {t("published.columns.titles")}
                           </div>
@@ -362,17 +379,21 @@ export default function OrganizationsDetailPage({
                             {t("published.columns.year")}
                           </div>
                         </div>
-                        <div className="grid w-full min-w-0 grid-cols-[minmax(0,1.8fr)_minmax(0,1fr)_72px]">
-                          <div className="flex h-[32px] items-center justify-end border-r border-t border-[#7aa8b7] px-2 text-[13px] text-black">
-                            <span className="text-right">—</span>
+                        {(organization.publishedRows.length > 0
+                          ? organization.publishedRows
+                          : [{ title: "", author: "", year: "" }]).map((row, rowIndex) => (
+                          <div key={`${row.title}-${row.author}-${row.year}-${rowIndex}`} className="grid w-full min-w-0 grid-cols-[minmax(0,1.8fr)_minmax(0,1fr)_72px]">
+                            <div className="flex min-h-[32px] items-center justify-end border-r border-t border-[#7aa8b7] px-2 py-1 text-[13px] text-black md:text-[15px]">
+                              <span className="w-full break-words text-right">{row.title || "—"}</span>
+                            </div>
+                            <div className="flex min-h-[32px] items-center border-r border-t border-[#7aa8b7] px-2 py-1 text-[13px] text-black md:text-[15px]">
+                              <span className="break-words">{row.author || "—"}</span>
+                            </div>
+                            <div className="flex min-h-[32px] items-center border-t border-[#7aa8b7] px-2 py-1 text-[13px] text-black md:text-[15px]">
+                              {row.year || "—"}
+                            </div>
                           </div>
-                          <div className="flex h-[32px] items-center border-r border-t border-[#7aa8b7] px-2 text-[13px] text-black">
-                            —
-                          </div>
-                          <div className="flex h-[32px] items-center border-t border-[#7aa8b7] px-2 text-[13px] text-black">
-                            —
-                          </div>
-                        </div>
+                        ))}
                         <div className="grid min-h-0 flex-1 grid-cols-[minmax(0,1.8fr)_minmax(0,1fr)_72px]">
                           <div className="border-r border-t border-[#7aa8b7]" />
                           <div className="border-r border-t border-[#7aa8b7]" />
@@ -408,29 +429,32 @@ export default function OrganizationsDetailPage({
                   <BlankTabPanel title={t("content.statistics")} rows={4} />
                 ) : null}
               </div>
-              <aside className="absolute bottom-0 left-[calc(100%+4px)] top-0 hidden w-[34px] items-center justify-start md:flex">
-                <div className="flex h-full flex-col items-center justify-between py-[96px] text-[15px] leading-none text-black">
-                  <span className="[writing-mode:vertical-rl]">
-                    {t("right.organizationCardsFound")}
-                  </span>
-                  <span className="[writing-mode:vertical-rl] text-[17px] font-bold text-[#ff1d1d]">
-                    {organization.stats.cardsFound}
-                  </span>
-                  <span className="[writing-mode:vertical-rl]">
-                    {t("right.databaseContains")}
-                  </span>
-                  <span className="[writing-mode:vertical-rl] text-[17px] font-bold text-[#ff1d1d]">
-                    {organization.stats.databaseContains}
-                  </span>
-                </div>
-              </aside>
             </div>
           </section>
+
+          <aside className="hidden md:absolute md:left-[calc(100%+1px)] md:top-[66px] md:flex md:h-[660px] md:w-[34px] md:items-center md:justify-center">
+            <div className="flex flex-col items-center justify-center gap-[14px] text-[15px] leading-none text-black">
+              <span className="[writing-mode:vertical-rl]">
+                {t("right.organizationCardsFound")}
+              </span>
+              <span className="[writing-mode:vertical-rl] text-[17px] font-bold text-[#ff1d1d]">
+                {organization.stats.cardsFound}
+              </span>
+              <div className="h-[18px]" />
+              <span className="[writing-mode:vertical-rl]">
+                {t("right.databaseContains")}
+              </span>
+              <span className="[writing-mode:vertical-rl] text-[17px] font-bold text-[#ff1d1d]">
+                {organization.stats.databaseContains}
+              </span>
+            </div>
+          </aside>
         </section>
 
         <StavnetFooter
           items={footerItems}
           desktopMode="compact"
+          className="md:left-1/2 md:right-auto md:w-[1436px] md:max-w-[calc(100vw-24px)] md:-translate-x-1/2"
         />
       </div>
     </main>

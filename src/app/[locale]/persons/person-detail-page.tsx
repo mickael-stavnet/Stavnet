@@ -3,8 +3,14 @@
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
+import type { ReactNode } from "react";
 import { StavnetFooter } from "@/components/stavnet/footer";
 import { StavnetHeader } from "@/components/stavnet/header";
+import {
+  ClickableDetailValue,
+  buildBookTitleResolverHref,
+  buildRelatedBooksHref,
+} from "@/lib/detail-links";
 import { cn } from "@/lib/utils";
 import type { PersonBibliographyRow, PersonDetail } from "@/lib/data/persons";
 
@@ -36,6 +42,10 @@ interface MobileBibliographyCardProps {
   row: PersonBibliographyRow;
 }
 
+function renderBookTitleValue(value: string) {
+  return value ? <ClickableDetailValue href={buildBookTitleResolverHref(value)} value={value} /> : "—";
+}
+
 function MobileBibliographyCard({ labels, row }: MobileBibliographyCardProps) {
   return (
     <article className="rounded-[6px] border border-[#7aa8b7] bg-[#b2e0ef] p-3">
@@ -49,7 +59,7 @@ function MobileBibliographyCard({ labels, row }: MobileBibliographyCardProps) {
       </div>
       <div className="mt-3 space-y-1">
         <p className="text-[11px] font-bold uppercase tracking-[0.04em] text-[#07384a]">{labels.title}</p>
-        <p className="text-[13px] text-black">{row.title || "—"}</p>
+        <p className="text-[13px] text-black">{renderBookTitleValue(row.title)}</p>
       </div>
       <div className="mt-3 grid grid-cols-2 gap-3">
         <div className="space-y-1">
@@ -66,7 +76,7 @@ function MobileBibliographyCard({ labels, row }: MobileBibliographyCardProps) {
 }
 
 interface FilledBoxProps {
-  value: string;
+  value: ReactNode;
   className?: string;
 }
 
@@ -144,23 +154,20 @@ export default function PersonDetailPage({ person }: PersonDetailPageProps) {
           subtitle={t("header.subtitle")}
         />
 
-        <section className="mt-6 flex flex-col gap-4 md:absolute md:left-[3.8vw] md:right-[3.8vw] md:top-[172px] md:bottom-[132px] md:grid md:grid-cols-[96px_1fr] md:gap-[0px]">
-          <aside aria-hidden="true" className="relative order-2 hidden flex-col gap-4 md:order-1 md:flex md:translate-x-[42px] md:overflow-visible md:pt-[24px]">
-            <div className="hidden md:block md:h-[92px]" />
+        <section className="mt-6 flex min-w-0 flex-col gap-5 md:absolute md:left-1/2 md:top-[172px] md:bottom-[118px] md:w-[1120px] md:max-w-[calc(100vw-240px)] md:-translate-x-1/2">
+          <aside className="hidden md:absolute md:right-[calc(100%+12px)] md:top-[66px] md:flex md:h-[660px] md:w-[174px] md:flex-col md:items-end md:gap-5">
+            <div className="relative h-[212px] w-[174px] overflow-hidden border border-[#6c99a7] bg-[#d7eef6] shadow-[3px_3px_6px_rgba(0,0,0,0.18)]">
+              <Image
+                src={person.imageSrc}
+                alt={person.name}
+                fill
+                sizes="174px"
+                className="object-cover object-center"
+              />
+            </div>
           </aside>
 
-          <section className="order-1 min-w-0 md:order-2 md:relative md:mx-auto md:flex md:min-h-0 md:w-full md:max-w-[1320px] md:flex-col md:pr-[38px]">
-            <aside className="absolute left-[-208px] top-[104px] hidden w-[182px] flex-col gap-5 md:flex">
-              <div className="relative h-[212px] w-[174px] overflow-hidden border border-[#6c99a7] bg-[#d7eef6] shadow-[3px_3px_6px_rgba(0,0,0,0.18)]">
-                <Image
-                  src={person.imageSrc}
-                  alt={person.name}
-                  fill
-                  sizes="174px"
-                  className="object-cover object-center"
-                />
-              </div>
-            </aside>
+          <section className="min-w-0 md:w-[1120px] md:max-w-none">
             <nav className="grid grid-cols-2 gap-2 pb-2 md:shrink-0 md:grid-cols-[108px_repeat(7,minmax(0,1fr))] md:items-end md:gap-[12px] md:pb-0">
               {tabs.map((tabKey) => (
                 <button
@@ -177,7 +184,7 @@ export default function PersonDetailPage({ person }: PersonDetailPageProps) {
               ))}
             </nav>
 
-            <div className="relative mt-[2px] flex min-h-[660px] flex-col rounded-[8px] border border-[#7aa8b7] bg-[linear-gradient(180deg,#8ecfe8_0%,#a8dbed_100%)] shadow-[4px_4px_8px_rgba(0,0,0,0.18)] md:min-h-0 md:flex-1 md:flex-row">
+            <div className="relative mt-[2px] flex min-h-[660px] flex-col rounded-[8px] border border-[#7aa8b7] bg-[linear-gradient(180deg,#8ecfe8_0%,#a8dbed_100%)] shadow-[4px_4px_8px_rgba(0,0,0,0.18)] md:h-[660px] md:flex-row">
               <aside className="border-b border-[#7aa8b7] px-3 py-4 md:w-[126px] md:border-b-0 md:border-r md:px-4 md:py-5">
                 <p className="text-center text-[18px] font-bold leading-tight text-black md:text-[22px]">{t("side.authorCard")}</p>
               </aside>
@@ -206,7 +213,14 @@ export default function PersonDetailPage({ person }: PersonDetailPageProps) {
                           </div>
                           <div>
                             <LabelCell label={t("fields.language")} />
-                            <FilledBox value={person.residence || person.language || person.type} className="border-x-0 border-b-0 md:text-[15px]" />
+                            <FilledBox
+                              value={
+                                person.language
+                                  ? <ClickableDetailValue href={buildRelatedBooksHref("authorWritingLanguage", person.language)} value={person.language} />
+                                  : person.residence || person.type || "—"
+                              }
+                              className="border-x-0 border-b-0 md:text-[15px]"
+                            />
                           </div>
                         </div>
                       </section>
@@ -246,13 +260,19 @@ export default function PersonDetailPage({ person }: PersonDetailPageProps) {
                         </div>
                       </div>
 
-                      <div className="hidden flex-wrap items-center gap-x-7 gap-y-2 px-1 pt-1 text-[18px] font-bold leading-none text-black md:flex">
-                        <span>{t("bibliography.title")} :</span>
-                        <span className="text-[#ff1d1d]">{person.bibliographyStats.originalTitles}</span>
-                        <span>{t("bibliography.originalTitles")}</span>
-                        <span className="text-[#ff1d1d]">{person.bibliographyStats.translations}</span>
-                        <span>{t("bibliography.translations")}</span>
-                        <span className="text-[#ff1d1d]">{person.bibliographyStats.publicationLanguages}</span>
+                      <div className="hidden flex-wrap items-center gap-x-6 gap-y-2 px-1 pt-1 text-[18px] font-bold leading-none text-black md:flex">
+                        <span className="inline-flex items-center gap-x-2">
+                          <span>{t("bibliography.title")} :</span>
+                          <span className="text-[#ff1d1d]">{person.bibliographyStats.originalTitles}</span>
+                        </span>
+                        <span className="inline-flex items-center gap-x-2">
+                          <span>{t("bibliography.originalTitles")}</span>
+                          <span className="text-[#ff1d1d]">{person.bibliographyStats.translations}</span>
+                        </span>
+                        <span className="inline-flex items-center gap-x-2">
+                          <span>{t("bibliography.translations")}</span>
+                          <span className="text-[#ff1d1d]">{person.bibliographyStats.publicationLanguages}</span>
+                        </span>
                         <span>{t("bibliography.publicationLanguages")}</span>
                       </div>
 
@@ -270,24 +290,25 @@ export default function PersonDetailPage({ person }: PersonDetailPageProps) {
                           <div className="min-w-0 border-r border-[#7aa8b7] px-3 py-[5px]">{t("bibliography.columns.year")}</div>
                           <div className="min-w-0 px-3 py-[5px]">{t("bibliography.columns.issue")}</div>
                         </div>
-
-                        {(person.bibliographyRows.length > 0 ? person.bibliographyRows : [{ type: "", language: "", title: "", year: "", issue: "" }]).map(
-                          (row, rowIndex) => (
-                            <div key={rowIndex} className={cn("grid w-full", PERSON_BIBLIOGRAPHY_GRID)}>
-                              <div className="flex min-w-0 h-[46px] items-center border-r border-t border-[#7aa8b7] px-3 text-[15px] text-black">{row.type}</div>
-                              <div className="flex min-w-0 h-[46px] items-center border-r border-t border-[#7aa8b7] px-3 text-[15px] text-black">{row.language}</div>
-                              <div className="flex min-w-0 h-[46px] items-center border-r border-t border-[#7aa8b7] px-3 text-[15px] text-black">{row.title}</div>
-                              <div className="flex min-w-0 h-[46px] items-center border-r border-t border-[#7aa8b7] px-3 text-[15px] text-black">{row.year}</div>
-                              <div className="flex min-w-0 h-[46px] items-center border-t border-[#7aa8b7] px-3 text-[15px] text-black">{row.issue}</div>
-                            </div>
-                          ),
-                        )}
-                        <div className={cn("grid min-h-0 flex-1", PERSON_BIBLIOGRAPHY_GRID)}>
-                          <div className="border-r border-t border-[#7aa8b7]" />
-                          <div className="border-r border-t border-[#7aa8b7]" />
-                          <div className="border-r border-t border-[#7aa8b7]" />
-                          <div className="border-r border-t border-[#7aa8b7]" />
-                          <div className="border-t border-[#7aa8b7]" />
+                        <div className="min-h-0 flex-1 overflow-y-auto">
+                          {(person.bibliographyRows.length > 0 ? person.bibliographyRows : [{ type: "", language: "", title: "", year: "", issue: "" }]).map(
+                            (row, rowIndex) => (
+                              <div key={rowIndex} className={cn("grid w-full", PERSON_BIBLIOGRAPHY_GRID)}>
+                                <div className="flex min-w-0 h-[46px] items-center border-r border-t border-[#7aa8b7] px-3 text-[15px] text-black">{row.type}</div>
+                                <div className="flex min-w-0 h-[46px] items-center border-r border-t border-[#7aa8b7] px-3 text-[15px] text-black">{row.language}</div>
+                                <div className="flex min-w-0 h-[46px] items-center border-r border-t border-[#7aa8b7] px-3 text-[15px] text-black">{renderBookTitleValue(row.title)}</div>
+                                <div className="flex min-w-0 h-[46px] items-center border-r border-t border-[#7aa8b7] px-3 text-[15px] text-black">{row.year}</div>
+                                <div className="flex min-w-0 h-[46px] items-center border-t border-[#7aa8b7] px-3 text-[15px] text-black">{row.issue}</div>
+                              </div>
+                            ),
+                          )}
+                          <div className={cn("grid min-h-[138px]", PERSON_BIBLIOGRAPHY_GRID)}>
+                            <div className="border-r border-t border-[#7aa8b7]" />
+                            <div className="border-r border-t border-[#7aa8b7]" />
+                            <div className="border-r border-t border-[#7aa8b7]" />
+                            <div className="border-r border-t border-[#7aa8b7]" />
+                            <div className="border-t border-[#7aa8b7]" />
+                          </div>
                         </div>
                       </section>
                     </section>
@@ -302,21 +323,24 @@ export default function PersonDetailPage({ person }: PersonDetailPageProps) {
                 {activeTab === "awards" ? <BlankTabPanel title={t("content.awards")} rows={3} /> : null}
                 {activeTab === "statistics" ? <BlankTabPanel title={t("content.statistics")} rows={3} /> : null}
               </div>
-              <aside className="absolute bottom-0 left-[calc(100%+4px)] top-0 hidden w-[34px] items-center justify-start md:flex">
-                <div className="flex h-full flex-col items-center justify-between py-[96px] text-[15px] leading-none text-black">
-                  <span className="[writing-mode:vertical-rl]">{t("right.personCardsFound")}</span>
-                  <span className="[writing-mode:vertical-rl] text-[17px] font-bold text-[#ff1d1d]">{person.stats.cardsFound}</span>
-                  <span className="[writing-mode:vertical-rl]">{t("right.databaseContains")}</span>
-                  <span className="[writing-mode:vertical-rl] text-[17px] font-bold text-[#ff1d1d]">{person.stats.databaseContains}</span>
-                </div>
-              </aside>
             </div>
           </section>
+
+          <aside className="hidden md:absolute md:left-[calc(100%+1px)] md:top-[66px] md:flex md:h-[660px] md:w-[34px] md:items-center md:justify-center">
+            <div className="flex flex-col items-center justify-center gap-[14px] text-[15px] leading-none text-black">
+              <span className="[writing-mode:vertical-rl]">{t("right.personCardsFound")}</span>
+              <span className="[writing-mode:vertical-rl] text-[17px] font-bold text-[#ff1d1d]">{person.stats.cardsFound}</span>
+              <div className="h-[18px]" />
+              <span className="[writing-mode:vertical-rl]">{t("right.databaseContains")}</span>
+              <span className="[writing-mode:vertical-rl] text-[17px] font-bold text-[#ff1d1d]">{person.stats.databaseContains}</span>
+            </div>
+          </aside>
         </section>
 
         <StavnetFooter
           items={footerItems}
           desktopMode="compact"
+          className="md:left-1/2 md:right-auto md:w-[1120px] md:max-w-[calc(100vw-240px)] md:-translate-x-1/2"
         />
       </div>
     </main>

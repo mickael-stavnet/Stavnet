@@ -49,7 +49,7 @@ export function StavnetHeader({
     >
       <div
         className={cn(
-          "hidden md:absolute md:left-[4.9vw] md:top-[24px] md:block md:w-[270px]",
+          "hidden md:absolute md:bottom-[8px] md:left-[5.2vw] md:block md:w-[270px]",
           logoClassName,
         )}
       >
@@ -65,7 +65,7 @@ export function StavnetHeader({
 
       <section
         className={cn(
-          "flex h-[92px] w-[212px] flex-col items-center justify-center overflow-hidden rounded-b-[14px] bg-[radial-gradient(circle_at_68%_24%,#fff46c_0%,#ffe32d_24%,#ffa51a_51%,#c93623_74%,#3f2f7f_100%)] px-3 text-center shadow-[9px_3px_11px_rgba(0,0,0,0.42)] md:absolute md:left-1/2 md:top-0 md:h-[110px] md:w-[208px] md:-translate-x-1/2 md:rounded-bl-[14px] md:rounded-br-[14px] md:px-0",
+          "flex h-[92px] w-[212px] flex-col items-center justify-center overflow-hidden rounded-b-[14px] bg-[radial-gradient(circle_at_68%_24%,#fff46c_0%,#ffe32d_24%,#ffa51a_51%,#c93623_74%,#3f2f7f_100%)] px-3 text-center shadow-[9px_3px_11px_rgba(0,0,0,0.42)] md:absolute md:bottom-[8px] md:left-1/2 md:h-[138px] md:w-[208px] md:-translate-x-1/2 md:rounded-bl-[14px] md:rounded-br-[14px] md:px-0",
           badgeClassName,
         )}
       >
@@ -88,7 +88,7 @@ export function StavnetHeader({
 
       <section
         className={cn(
-          "hidden md:absolute md:left-1/2 md:top-[4.5vh] md:flex md:min-h-[78px] md:w-[min(1320px,96vw)] md:-translate-x-1/2 md:flex-col md:items-end md:justify-end md:text-right",
+          "hidden md:absolute md:bottom-[8px] md:left-1/2 md:flex md:min-h-[84px] md:w-[min(1280px,94vw)] md:-translate-x-1/2 md:flex-col md:items-end md:justify-end md:text-right",
           titleBlockClassName,
         )}
       >
@@ -104,8 +104,8 @@ export function StavnetHeader({
           <>
             <div className="mx-auto mt-[8px] h-[3px] w-full max-w-[300px] bg-[#ffcf19] md:ml-auto md:mr-0 md:max-w-[402px]" />
             <p
-              className={cn(
-                "mt-[6px] text-[15px] font-bold leading-[1.15] text-[#0018c9] md:text-[17px] md:leading-none",
+            className={cn(
+                "mt-[6px] text-[15px] font-bold leading-[1.15] text-[#0018c9] md:text-[17px] md:leading-[1.02]",
                 subtitleClassName,
               )}
             >
@@ -119,7 +119,7 @@ export function StavnetHeader({
       {rightControl ? (
         <div
           className={cn(
-            "hidden md:absolute md:left-1/2 md:top-[118px] md:w-[min(1320px,96vw)] md:-translate-x-1/2 md:flex md:justify-end md:text-right",
+            "hidden md:absolute md:left-1/2 md:top-[124px] md:w-[min(1280px,94vw)] md:-translate-x-1/2 md:flex md:justify-end md:text-right",
             rightControlClassName,
           )}
         >

@@ -7,8 +7,17 @@ import { useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/routing";
 import { StavnetFooter } from "@/components/stavnet/footer";
 import { StavnetHeader } from "@/components/stavnet/header";
+import type { BookRelatedFacet } from "@/lib/book-related";
 import type { BookAuthorRow, BookContributorRow, BookDetail, BookPublisherRow } from "@/lib/data/books";
+import {
+  ClickableDetailValue,
+  buildOrganizationDetailHref,
+  buildPersonDetailHref,
+  buildRelatedBooksHref,
+} from "@/lib/detail-links";
 import { cn } from "@/lib/utils";
+
+type BookDetailFacet = Exclude<BookRelatedFacet, "authorName" | "contributorName" | "publisherName">;
 
 type BookTab =
   | "bookCard"
@@ -53,31 +62,6 @@ interface BlankContentProps {
   rows?: number;
 }
 
-type BookDetailLinkHref =
-  | {
-      pathname: "/books/related";
-      query: {
-        facet: string;
-        value: string;
-      };
-    }
-  | {
-      pathname: "/persons/details";
-      query: {
-        name: string;
-        fallbackFacet: string;
-        fallbackValue: string;
-      };
-    }
-  | {
-      pathname: "/orgs/details";
-      query: {
-        name: string;
-        fallbackFacet: string;
-        fallbackValue: string;
-      };
-    };
-
 function MobileDataSection({ title, columns, rows }: MobileDataSectionProps) {
   return (
     <section className="rounded-[6px] border border-[#7aa8b7] bg-[#a7dcee] md:hidden">
@@ -104,7 +88,7 @@ function FilledInput({ value, className }: FilledInputProps) {
   return (
     <div
       className={cn(
-        "flex min-h-12 items-center border border-[#7aa8b7] bg-[#a7dcee] px-2 py-2 text-[15px] font-bold leading-tight text-[#07384a] md:min-h-[40px] md:text-[15px]",
+        "flex min-h-12 items-center border border-[#7aa8b7] bg-[#a7dcee] px-2 py-2 text-[13px] font-semibold leading-tight text-black md:min-h-[40px] md:text-[16px]",
         className,
       )}
     >
@@ -148,7 +132,7 @@ function FilledTable({
           {columns.map((column, columnIndex) => (
             <div
               key={`${column}-${columnIndex}`}
-              className="flex min-h-[38px] items-center border-r border-t border-[#7aa8b7] px-2 py-2 text-[13px] text-black font-bold last:border-r-0 md:whitespace-nowrap"
+              className="flex min-h-[38px] items-center border-r border-t border-[#7aa8b7] px-2 py-2 text-[13px] font-semibold text-black last:border-r-0 md:text-[15px] md:whitespace-nowrap"
             >
               {data[rowIndex]?.[columnIndex] || "—"}
             </div>
@@ -165,10 +149,10 @@ function MiniCard({ title, values = [] }: MiniCardProps) {
       <div className="border-b border-[#7aa8b7] bg-[#fff8c8] px-2 py-[3px] text-[12px] uppercase leading-none text-black">
         {title}
       </div>
-      <div className="flex min-h-[54px] items-center border-b border-[#7aa8b7] px-2 py-2 text-[13px] text-black font-bold">
+      <div className="flex min-h-[54px] items-center border-b border-[#7aa8b7] px-2 py-2 text-[13px] font-semibold text-black md:text-[15px]">
         <div className="break-words">{values[0] || "—"}</div>
       </div>
-      <div className="flex min-h-[42px] items-center px-2 py-2 text-[13px] text-black font-bold">
+      <div className="flex min-h-[42px] items-center px-2 py-2 text-[13px] font-semibold text-black md:text-[15px]">
         <div className="break-words">{values[1] || "—"}</div>
       </div>
     </section>
@@ -205,59 +189,16 @@ function TextPanel({ title, value }: { title: string; value: string }) {
   );
 }
 
-function ClickableValue({ href, value }: { href: BookDetailLinkHref; value: string }) {
-  return (
-    <Link
-      href={href}
-      className="cursor-pointer text-black underline decoration-current underline-offset-2 transition-colors hover:text-[#0f4c81]"
-    >
-      {value}
-    </Link>
-  );
+function renderFacetValue(value: string, facet: BookDetailFacet): ReactNode {
+  return value ? <ClickableDetailValue href={buildRelatedBooksHref(facet, value)} value={value} /> : "—";
 }
 
-function buildRelatedHref(facet: string, value: string) {
-  return {
-    pathname: "/books/related" as const,
-    query: {
-      facet,
-      value,
-    },
-  };
+function renderPersonValue(value: string, fallbackFacet: "authorName" | "contributorName"): ReactNode {
+  return value ? <ClickableDetailValue href={buildPersonDetailHref(value, fallbackFacet)} value={value} /> : "—";
 }
 
-function buildPersonHref(name: string, fallbackFacet: string) {
-  return {
-    pathname: "/persons/details" as const,
-    query: {
-      name,
-      fallbackFacet,
-      fallbackValue: name,
-    },
-  };
-}
-
-function buildOrganizationHref(name: string, fallbackFacet: string) {
-  return {
-    pathname: "/orgs/details" as const,
-    query: {
-      name,
-      fallbackFacet,
-      fallbackValue: name,
-    },
-  };
-}
-
-function renderFacetValue(value: string, facet: string): ReactNode {
-  return value ? <ClickableValue href={buildRelatedHref(facet, value)} value={value} /> : "—";
-}
-
-function renderPersonValue(value: string, fallbackFacet: string): ReactNode {
-  return value ? <ClickableValue href={buildPersonHref(value, fallbackFacet)} value={value} /> : "—";
-}
-
-function renderOrganizationValue(value: string, fallbackFacet: string): ReactNode {
-  return value ? <ClickableValue href={buildOrganizationHref(value, fallbackFacet)} value={value} /> : "—";
+function renderOrganizationValue(value: string, fallbackFacet: "publisherName"): ReactNode {
+  return value ? <ClickableDetailValue href={buildOrganizationDetailHref(value, fallbackFacet)} value={value} /> : "—";
 }
 
 function buildAuthorRows(rows: BookAuthorRow[]): ReactNode[][] {
@@ -284,7 +225,7 @@ function buildPublisherRows(rows: BookPublisherRow[]): ReactNode[][] {
   ]);
 }
 
-function buildFacetCardValues(values: string[], facet: string): ReactNode[] {
+function buildFacetCardValues(values: string[], facet: BookDetailFacet): ReactNode[] {
   return values.map((value) => renderFacetValue(value, facet));
 }
 
@@ -352,8 +293,8 @@ export default function BookDetailPage({ book }: BookDetailPageProps) {
           subtitle={t("header.subtitle")}
         />
 
-        <section className="mt-6 flex min-w-0 flex-col gap-5 md:absolute md:left-1/2 md:top-[172px] md:bottom-[118px] md:w-[1436px] md:max-w-[calc(100vw-24px)] md:-translate-x-1/2 md:grid md:grid-cols-[270px_1120px] md:gap-x-[12px] md:gap-y-0">
-          <aside className="order-1 flex min-w-0 flex-col gap-[12px] md:mt-[66px] md:h-[660px] md:w-[270px] md:gap-[14px] md:self-start md:overflow-hidden">
+        <section className="mt-6 flex min-w-0 flex-col gap-5 md:absolute md:left-1/2 md:top-[172px] md:bottom-[118px] md:w-[1120px] md:max-w-[calc(100vw-240px)] md:-translate-x-1/2">
+          <aside className="order-1 flex min-w-0 flex-col gap-[12px] md:absolute md:right-[calc(100%+12px)] md:top-[66px] md:h-[660px] md:w-[270px] md:gap-[14px] md:overflow-hidden">
             <div className="w-full max-w-[270px] border border-[#b7ab92] bg-[#f3ead4] p-[6px] shadow-[2px_2px_4px_rgba(0,0,0,0.12)] md:h-[422px] md:w-[270px] md:max-w-none">
               <Image
                 src={book.imageSrc}
@@ -369,19 +310,19 @@ export default function BookDetailPage({ book }: BookDetailPageProps) {
               <div className="border-b border-[#7aa8b7] bg-[#fff8c8] px-2 py-[3px] text-[12px] uppercase leading-none text-black">
                 {t("summary")}
               </div>
-              <div className="max-h-[220px] overflow-auto px-3 py-3 text-[12px] leading-[1.45] text-black md:h-[calc(100%-23px)] md:max-h-none md:px-2 md:py-2 md:text-[13px]">
+              <div className="max-h-[220px] overflow-auto px-3 py-3 text-[12px] leading-[1.45] text-black md:h-[calc(100%-23px)] md:max-h-none md:px-2 md:py-2 md:text-[16px] md:leading-[1.5]">
                 {book.summary || "—"}
               </div>
             </div>
           </aside>
 
-          <section className="order-2 min-w-0 md:col-start-2 md:col-end-3 md:w-[1120px] md:max-w-none">
+          <section className="order-2 min-w-0 md:w-[1120px] md:max-w-none">
             <nav className="grid grid-cols-2 gap-2 pb-2 md:grid md:w-full md:grid-cols-[1.05fr_1.28fr_1.26fr_0.92fr_1.28fr_1.08fr_0.96fr_1.02fr] md:items-end md:gap-[8px] md:pb-0">
               {tabs.map((tabKey) => {
                 const tabClassName = cn(
-                  "min-h-[44px] min-w-0 rounded-t-[8px] border border-[#d1bb48] px-3 py-[10px] text-center text-[13px] font-bold leading-[1.1] shadow-[3px_3px_5px_rgba(0,0,0,0.28)] transition-colors md:flex md:min-h-[70px] md:w-full md:items-center md:justify-center md:px-3 md:text-[13px] md:leading-[1.05] md:whitespace-normal",
+                  "min-h-[44px] min-w-0 rounded-t-[8px] border border-[#d1bb48] px-3 py-[10px] text-center text-[13px] font-bold leading-[1.1] shadow-[3px_3px_5px_rgba(0,0,0,0.28)] transition-colors md:flex md:min-h-[60px] md:w-full md:items-center md:justify-center md:px-4 md:text-[15px] md:leading-[1.08] md:whitespace-normal",
                   activeTab === tabKey
-                    ? "bg-[#91d3ea] text-black md:min-h-[78px] md:text-[14px]"
+                    ? "bg-[#91d3ea] font-semibold text-black md:min-h-[68px] md:text-[19px] md:font-bold"
                     : "bg-[#ffea56] text-black hover:bg-[#fff16f]",
                 );
 
@@ -427,8 +368,8 @@ export default function BookDetailPage({ book }: BookDetailPageProps) {
 
             <div className="mt-[2px] flex min-h-[420px] min-w-0 flex-col rounded-[8px] border border-[#7aa8b7] bg-[linear-gradient(180deg,#8ecfe8_0%,#a8dbed_100%)] shadow-[4px_4px_8px_rgba(0,0,0,0.18)] md:h-[660px] md:flex-row">
               <aside className="border-b border-[#7aa8b7] px-3 py-4 md:w-[128px] md:border-b-0 md:border-r">
-                <p className="text-[18px] font-bold leading-tight text-[#ff1313]">{t("side.translation")}</p>
-                <div className="mt-[2px] text-[16px] font-bold leading-tight text-black">
+                <p className="text-center text-[18px] font-bold leading-tight text-[#ff1313] md:text-[22px]">{t("side.translation")}</p>
+                <div className="mt-[2px] text-[16px] font-semibold leading-tight text-black md:text-[17px]">
                   {book.language ? renderFacetValue(book.language, "translationLanguage") : t("side.language")}
                 </div>
               </aside>
@@ -544,13 +485,13 @@ export default function BookDetailPage({ book }: BookDetailPageProps) {
             </div>
           </section>
 
-          <aside className="order-3 hidden items-start justify-start md:absolute md:right-0 md:top-[112px] md:flex">
-            <div className="flex flex-col items-center justify-start gap-[14px] text-[14px] leading-none text-black">
+          <aside className="order-3 hidden md:absolute md:left-[calc(100%+1px)] md:top-[66px] md:flex md:h-[660px] md:w-[34px] md:items-center md:justify-center">
+            <div className="flex flex-col items-center justify-center gap-[14px] text-[15px] leading-none text-black">
               <span className="[writing-mode:vertical-rl]">{t("right.bookCardsFound")}</span>
-              <span className="[writing-mode:vertical-rl] text-[#ff1d1d]">{book.stats.cardsFound}</span>
+              <span className="[writing-mode:vertical-rl] text-[17px] font-bold text-[#ff1d1d]">{book.stats.cardsFound}</span>
               <div className="h-[18px]" />
               <span className="[writing-mode:vertical-rl]">{t("right.databaseContains")}</span>
-              <span className="[writing-mode:vertical-rl] text-[#ff1d1d]">{book.stats.databaseContains}</span>
+              <span className="[writing-mode:vertical-rl] text-[17px] font-bold text-[#ff1d1d]">{book.stats.databaseContains}</span>
             </div>
           </aside>
         </section>
@@ -558,7 +499,7 @@ export default function BookDetailPage({ book }: BookDetailPageProps) {
         <StavnetFooter
           items={footerItems}
           desktopMode="compact"
-          className="md:left-1/2 md:right-auto md:w-[1436px] md:max-w-[calc(100vw-24px)] md:-translate-x-1/2"
+          className="md:left-1/2 md:right-auto md:w-[1120px] md:max-w-[calc(100vw-240px)] md:-translate-x-1/2"
         />
       </div>
     </main>

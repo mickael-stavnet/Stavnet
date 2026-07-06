@@ -20,6 +20,9 @@ type OrganizationPageRpc = {
   databaseTotal?: unknown;
 } | null;
 
+type OrganizationSourceRow = Record<string, unknown>;
+type OrganizationBookSourceRow = Record<string, unknown>;
+
 type OrganizationDetailRpc = {
   name?: unknown;
   synonym?: unknown;
@@ -51,6 +54,11 @@ export interface OrganizationDetail {
   type: string;
   creationDate: string;
   country: string;
+  publishedRows: {
+    title: string;
+    author: string;
+    year: string;
+  }[];
   publishedStats: {
     titles: string;
     authors: string;
@@ -104,6 +112,68 @@ function mapOrganizationListItem(item: OrganizationPageItemRpc): OrganizationLis
   };
 }
 
+function normalizeOrganizationValue(value: string): string {
+  return readText(value).toLocaleLowerCase();
+}
+
+function joinName(firstName: string, lastName: string): string {
+  return [firstName, lastName].filter((value) => value.length > 0).join(" ");
+}
+
+function readSourceField(row: Record<string, unknown>, candidates: string[]): string {
+  for (const candidate of candidates) {
+    if (candidate in row) {
+      return readText(row[candidate]);
+    }
+  }
+
+  return "";
+}
+
+async function fetchAllOrganizationTableRows(
+  table: "data-organism" | "data-books",
+  select: string,
+  batchSize = 1000,
+): Promise<Record<string, unknown>[]> {
+  const rows: Record<string, unknown>[] = [];
+  let from = 0;
+
+  while (true) {
+    const to = from + batchSize - 1;
+    const { data, error } = await supabase
+      .from(table)
+      .select(select)
+      .range(from, to);
+
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    const batch = Array.isArray(data) ? (data as unknown as Record<string, unknown>[]) : [];
+    rows.push(...batch);
+
+    if (batch.length < batchSize) {
+      break;
+    }
+
+    from += batchSize;
+  }
+
+  return rows;
+}
+
+async function getOrganizationsDatabaseTotal(): Promise<number> {
+  const { count, error } = await supabase
+    .from("data-organism")
+    .select("*", { count: "exact", head: true });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return count ?? 0;
+}
+
 function mapOrganizationDetail(detail: OrganizationDetailRpc): OrganizationDetail | null {
   if (!detail) {
     return null;
@@ -115,6 +185,7 @@ function mapOrganizationDetail(detail: OrganizationDetailRpc): OrganizationDetai
     type: readText(detail.type),
     creationDate: readText(detail.creationDate),
     country: readText(detail.country),
+    publishedRows: [],
     publishedStats: {
       titles: readCount(detail.publishedStats?.titles),
       authors: readCount(detail.publishedStats?.authors),
@@ -123,6 +194,68 @@ function mapOrganizationDetail(detail: OrganizationDetailRpc): OrganizationDetai
       cardsFound: readCount(detail.stats?.cardsFound),
       databaseContains: readCount(detail.stats?.databaseContains),
     },
+  };
+}
+
+async function fetchOrganizationPublishedRows(name: string, synonym: string): Promise<OrganizationDetail["publishedRows"]> {
+  const normalizedNames = [name, synonym]
+    .map((value) => normalizeOrganizationValue(value))
+    .filter((value, index, array) => value.length > 0 && array.indexOf(value) === index);
+
+  if (normalizedNames.length === 0) {
+    return [];
+  }
+
+  const data = await fetchAllOrganizationTableRows(
+    "data-books",
+    'id,"Titre","Année","Auteur. 1. Prénom","Auteur. 1. Nom","Éditeur","Éditeur. 1. Nom","Éditeur. 2. Nom"',
+  );
+
+  const rows = data
+    .filter((row) => {
+      const sourceRow = row as OrganizationBookSourceRow;
+      const publisherNames = [
+        readSourceField(sourceRow, ["Éditeur"]),
+        readSourceField(sourceRow, ["Éditeur. 1. Nom"]),
+        readSourceField(sourceRow, ["Éditeur. 2. Nom"]),
+      ];
+
+      return publisherNames.some((publisherName) => normalizedNames.includes(normalizeOrganizationValue(publisherName)));
+    })
+    .map((row) => {
+      const sourceRow = row as OrganizationBookSourceRow;
+
+      return {
+        title: readSourceField(sourceRow, ["Titre"]),
+        author: joinName(
+          readSourceField(sourceRow, ["Auteur. 1. Prénom"]),
+          readSourceField(sourceRow, ["Auteur. 1. Nom"]),
+        ),
+        year: readSourceField(sourceRow, ["Année"]),
+      };
+    })
+    .filter((row) => row.title.length > 0);
+
+  const seen = new Set<string>();
+
+  return rows.filter((row) => {
+    const key = [row.title, row.author, row.year].map((value) => normalizeOrganizationValue(value)).join("|");
+
+    if (seen.has(key)) {
+      return false;
+    }
+
+    seen.add(key);
+    return true;
+  });
+}
+
+async function enrichOrganizationPublishedRows(detail: OrganizationDetail): Promise<OrganizationDetail> {
+  const publishedRows = await fetchOrganizationPublishedRows(detail.name, detail.synonym);
+
+  return {
+    ...detail,
+    publishedRows,
   };
 }
 
@@ -212,6 +345,57 @@ export async function getOrganizationsPageByName(
   return buildOrganizationsListResult(payload, currentPage, pageSize);
 }
 
+export async function getOrganizationsPageByType(
+  page: number,
+  type: string,
+  searchTerm = "",
+  pageSize = ORGS_PAGE_SIZE,
+): Promise<OrganizationListResult> {
+  const currentPage = Math.max(1, page);
+  const trimmedType = type.trim();
+  const trimmedSearchTerm = searchTerm.trim();
+
+  if (!trimmedType) {
+    return getOrganizationsPage(currentPage, pageSize);
+  }
+
+  const normalizedType = normalizeOrganizationValue(trimmedType);
+  const normalizedSearchTerm = normalizeOrganizationValue(trimmedSearchTerm);
+
+  const [data, databaseTotal] = await Promise.all([
+    fetchAllOrganizationTableRows("data-organism", 'id,"Organisme","Type","Date_Creation","Pays","Nb_Titres","Nb_Auteurs"'),
+    getOrganizationsDatabaseTotal(),
+  ]);
+
+  const filteredItems = data
+    .map((row) =>
+      mapOrganizationListItem({
+        name: row["Organisme"],
+        type: row["Type"],
+        creationDate: row["Date_Creation"],
+        country: row["Pays"],
+        publishedTitles: row["Nb_Titres"],
+        publishedAuthors: row["Nb_Auteurs"],
+      }),
+    )
+    .filter((item) => item.name.length > 0)
+    .filter((item) => normalizeOrganizationValue(item.type) === normalizedType)
+    .filter((item) => !normalizedSearchTerm || normalizeOrganizationValue(item.name).includes(normalizedSearchTerm))
+    .sort((left, right) => left.name.localeCompare(right.name, undefined, { sensitivity: "base" }));
+
+  const start = (currentPage - 1) * pageSize;
+  const items = filteredItems.slice(start, start + pageSize);
+
+  return {
+    items,
+    page: currentPage,
+    pageSize,
+    total: filteredItems.length,
+    totalPages: Math.max(1, Math.ceil(filteredItems.length / pageSize)),
+    databaseTotal,
+  };
+}
+
 export const getOrganizationDetailByName = cache(async (name: string): Promise<OrganizationDetail | null> => {
   const trimmedName = name.trim();
 
@@ -256,7 +440,7 @@ export const getOrganizationDetailByName = cache(async (name: string): Promise<O
     resolvedName: detail.name,
   });
 
-  return detail;
+  return enrichOrganizationPublishedRows(detail);
 });
 
 export const getDefaultOrganizationDetail = cache(async (): Promise<OrganizationDetail | null> => {
@@ -289,5 +473,5 @@ export const getDefaultOrganizationDetail = cache(async (): Promise<Organization
     resolvedName: detail.name,
   });
 
-  return detail;
+  return enrichOrganizationPublishedRows(detail);
 });

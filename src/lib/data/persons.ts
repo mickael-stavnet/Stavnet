@@ -55,6 +55,9 @@ type PersonPageRpc = {
   databaseTotal?: unknown;
 } | null;
 
+type PersonSourceRow = Record<string, unknown>;
+type PersonBookSourceRow = Record<string, unknown>;
+
 export interface PersonListItem {
   name: string;
   type: string;
@@ -120,6 +123,10 @@ function readCount(value: unknown): string {
   return text || "0";
 }
 
+function normalizePersonValue(value: string): string {
+  return readText(value).toLocaleLowerCase();
+}
+
 function readNumber(value: unknown): number {
   if (typeof value === "number") {
     return Number.isFinite(value) ? value : 0;
@@ -156,6 +163,90 @@ function mapBibliographyRow(row: PersonBibliographyRowRpc): PersonBibliographyRo
   };
 }
 
+function readSourceField(row: PersonSourceRow, candidates: string[]): string {
+  for (const candidate of candidates) {
+    if (candidate in row) {
+      return readText(row[candidate]);
+    }
+  }
+
+  return "";
+}
+
+function mapSourceBibliographyRow(row: PersonSourceRow): PersonBibliographyRow {
+  return {
+    type: readSourceField(row, ["Type Contribution", "Type Contribution. 1", "Type Contribution 1"]),
+    language: readSourceField(row, ["Langue Traduction", "Langue Traduite", "Langue de Traduction"]),
+    title: readSourceField(row, ["Titre"]),
+    year: readSourceField(row, ["Année Publication", "Annee Publication"]),
+    issue: readSourceField(row, ["Cote Livre", "Côte Livre"]),
+  };
+}
+
+function joinName(firstName: string, lastName: string): string {
+  return [firstName, lastName].filter((value) => value.length > 0).join(" ");
+}
+
+async function fetchAllTableRows(table: "data-person" | "data-books", select: string, batchSize = 1000): Promise<Record<string, unknown>[]> {
+  const rows: Record<string, unknown>[] = [];
+  let from = 0;
+
+  while (true) {
+    const to = from + batchSize - 1;
+    const { data, error } = await supabase
+      .from(table)
+      .select(select)
+      .range(from, to);
+
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    const batch = Array.isArray(data) ? (data as unknown as Record<string, unknown>[]) : [];
+    rows.push(...batch);
+
+    if (batch.length < batchSize) {
+      break;
+    }
+
+    from += batchSize;
+  }
+
+  return rows;
+}
+
+function mergeBibliographyRows(rows: PersonBibliographyRow[]): PersonBibliographyRow[] {
+  const byKey = new Map<string, PersonBibliographyRow>();
+
+  for (const row of rows) {
+    if (!Object.values(row).some((value) => value.length > 0)) {
+      continue;
+    }
+
+    const key = [row.type, row.language, row.title, row.year]
+      .map((value) => normalizePersonValue(value))
+      .join("|");
+    const current = byKey.get(key);
+
+    if (!current) {
+      byKey.set(key, row);
+      continue;
+    }
+
+    const nextRow = {
+      type: current.type || row.type,
+      language: current.language || row.language,
+      title: current.title || row.title,
+      year: current.year || row.year,
+      issue: current.issue || row.issue,
+    };
+
+    byKey.set(key, nextRow);
+  }
+
+  return Array.from(byKey.values());
+}
+
 function mapPersonDetail(detail: PersonDetailRpc): PersonDetail | null {
   if (!detail) {
     return null;
@@ -190,6 +281,73 @@ function mapPersonDetail(detail: PersonDetailRpc): PersonDetail | null {
       cardsFound: readCount(detail.stats?.cardsFound),
       databaseContains: readCount(detail.stats?.databaseContains),
     },
+  };
+}
+
+async function fetchPersonBibliographyRows(name: string, alternateName: string, writingLanguage: string): Promise<PersonBibliographyRow[]> {
+  const normalizedNames = [name, alternateName]
+    .map((value) => normalizePersonValue(value))
+    .filter((value, index, array) => value.length > 0 && array.indexOf(value) === index);
+
+  if (normalizedNames.length === 0) {
+    return [];
+  }
+
+  const [personData, bookData] = await Promise.all([
+    fetchAllTableRows("data-person", "*"),
+    fetchAllTableRows(
+      "data-books",
+      'id,"Titre","Langue","Année","Auteur. 1. Prénom","Auteur. 1. Nom","Auteur. 2. Prénom","Auteur. 2. Nom","Auteur. 3. Prénom","Auteur. 3. Nom"',
+    ),
+  ]);
+
+  const personRows = personData
+    .filter((row) => {
+      const sourceRow = row as PersonSourceRow;
+      const primaryName = readSourceField(sourceRow, ["Prénom Nom", "Prenom Nom"]);
+      const alternatePersonName = readSourceField(sourceRow, ["Nom Prénom", "Nom Prenom"]);
+      const originalAuthor = readSourceField(sourceRow, ["Auteur Original"]);
+
+      return [primaryName, alternatePersonName, originalAuthor].some((value) => normalizedNames.includes(normalizePersonValue(value)));
+    })
+    .map((row) => mapSourceBibliographyRow(row as PersonSourceRow));
+
+  const bookRows = bookData
+    .filter((row) => {
+      const sourceRow = row as PersonBookSourceRow;
+      const authorNames = [
+        joinName(readSourceField(sourceRow, ["Auteur. 1. Prénom"]), readSourceField(sourceRow, ["Auteur. 1. Nom"])),
+        joinName(readSourceField(sourceRow, ["Auteur. 2. Prénom"]), readSourceField(sourceRow, ["Auteur. 2. Nom"])),
+        joinName(readSourceField(sourceRow, ["Auteur. 3. Prénom"]), readSourceField(sourceRow, ["Auteur. 3. Nom"])),
+      ];
+
+      return authorNames.some((value) => normalizedNames.includes(normalizePersonValue(value)));
+    })
+    .map((row) => {
+      const sourceRow = row as PersonBookSourceRow;
+
+      return {
+        type: normalizePersonValue(readSourceField(sourceRow, ["Langue"])) === normalizePersonValue(writingLanguage) ? "Original" : "Traduction",
+        language: readSourceField(sourceRow, ["Langue"]),
+        title: readSourceField(sourceRow, ["Titre"]),
+        year: readSourceField(sourceRow, ["Année"]),
+        issue: "",
+      };
+    });
+
+  return mergeBibliographyRows([...personRows, ...bookRows]);
+}
+
+async function enrichPersonDetailBibliography(detail: PersonDetail): Promise<PersonDetail> {
+  const bibliographyRows = await fetchPersonBibliographyRows(detail.name, detail.alternateName, detail.language);
+
+  if (bibliographyRows.length <= detail.bibliographyRows.length) {
+    return detail;
+  }
+
+  return {
+    ...detail,
+    bibliographyRows,
   };
 }
 
@@ -318,7 +476,7 @@ export const getPersonDetailByName = cache(async (name: string): Promise<PersonD
     resolvedName: detail.name,
   });
 
-  return detail;
+  return enrichPersonDetailBibliography(detail);
 });
 
 export const getDefaultPersonDetail = cache(async (): Promise<PersonDetail | null> => {
@@ -351,5 +509,5 @@ export const getDefaultPersonDetail = cache(async (): Promise<PersonDetail | nul
     resolvedName: detail.name,
   });
 
-  return detail;
+  return enrichPersonDetailBibliography(detail);
 });

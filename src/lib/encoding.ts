@@ -1,4 +1,4 @@
-export function fixEncoding(text: string | null | number): string {
+export function fixEncoding(text: string | null | number | undefined): string {
   if (text === null || text === undefined) return "";
   const str = String(text);
   try {

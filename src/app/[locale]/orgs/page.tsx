@@ -5,7 +5,7 @@ import { StavnetFooter } from "@/components/stavnet/footer";
 import { StavnetHeader } from "@/components/stavnet/header";
 import { ListNameSearch } from "@/components/stavnet/list-name-search";
 import { Link } from "@/i18n/routing";
-import { getOrganizationsPage, getOrganizationsPageByName, ORGS_PAGE_SIZE } from "@/lib/data/orgs";
+import { getOrganizationsPage, getOrganizationsPageByName, getOrganizationsPageByType, ORGS_PAGE_SIZE } from "@/lib/data/orgs";
 import {
   Pagination,
   PaginationContent,
@@ -26,6 +26,7 @@ interface OrgsPageProps {
   searchParams: Promise<{
     page?: string;
     q?: string;
+    type?: string;
   }>;
 }
 
@@ -38,11 +39,14 @@ function RedMarker() {
   return <span className="mr-2 inline-block h-[11px] w-[11px] rounded-full border-[2px] border-[#ff1d1d]" />;
 }
 
-function buildPageHref(page: number, searchTerm: string): string {
+function buildPageHref(page: number, searchTerm: string, typeFilter: string): string {
   const params = new URLSearchParams();
   params.set("page", String(page <= 1 ? 1 : page));
   if (searchTerm.trim()) {
     params.set("q", searchTerm);
+  }
+  if (typeFilter.trim()) {
+    params.set("type", typeFilter);
   }
   return `?${params.toString()}`;
 }
@@ -103,11 +107,16 @@ function MobileOrganizationCard({
 }
 
 export default async function OrganizationsListPage({ searchParams }: OrgsPageProps) {
-  const [{ page, q }, t] = await Promise.all([searchParams, getTranslations("Orgs")]);
+  const [{ page, q, type }, t] = await Promise.all([searchParams, getTranslations("Orgs")]);
   const currentPage = Number.parseInt(page ?? "1", 10);
   const searchTerm = (q ?? "").trim();
+  const typeFilter = (type ?? "").trim();
   const pageNumber = Number.isFinite(currentPage) && currentPage > 0 ? currentPage : 1;
-  const result = searchTerm ? await getOrganizationsPageByName(pageNumber, searchTerm) : await getOrganizationsPage(pageNumber);
+  const result = typeFilter
+    ? await getOrganizationsPageByType(pageNumber, typeFilter, searchTerm)
+    : searchTerm
+      ? await getOrganizationsPageByName(pageNumber, searchTerm)
+      : await getOrganizationsPage(pageNumber);
   const paginationItems = getPaginationItems(result.page, result.totalPages);
   const footerItems = [
     { key: "back", icon: "/icons/icons-nav/back.png", href: "/home" as const, label: t("footer.back") },
@@ -147,6 +156,12 @@ export default async function OrganizationsListPage({ searchParams }: OrgsPagePr
               initialValue={searchTerm}
               resetLabel={t("search.reset")}
             />
+            {typeFilter ? (
+              <div className="rounded-[8px] border border-[#7aa8b7] bg-[#a7dcee] px-4 py-3 shadow-[3px_3px_6px_rgba(0,0,0,0.12)]">
+                <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#07384a]">{columnLabels.type}</p>
+                <p className="mt-2 text-[18px] font-bold leading-tight text-black">{typeFilter}</p>
+              </div>
+            ) : null}
             <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end sm:justify-end sm:gap-6">
               <div className="flex items-center gap-3 text-[18px] leading-none text-black">
                 <span>{t("stats.cardsFound")}</span>
@@ -239,7 +254,7 @@ export default async function OrganizationsListPage({ searchParams }: OrgsPagePr
               <PaginationContent className="flex-wrap justify-center">
                 <PaginationItem>
                   <PaginationPrevious
-                    href={buildPageHref(result.page - 1, searchTerm)}
+                    href={buildPageHref(result.page - 1, searchTerm, typeFilter)}
                     text={t("pagination.previous")}
                     className={result.page === 1 ? "pointer-events-none opacity-50" : ""}
                   />
@@ -247,7 +262,7 @@ export default async function OrganizationsListPage({ searchParams }: OrgsPagePr
                 {paginationItems.map((item) =>
                   typeof item === "number" ? (
                     <PaginationItem key={item}>
-                      <PaginationLink href={buildPageHref(item, searchTerm)} isActive={item === result.page}>
+                      <PaginationLink href={buildPageHref(item, searchTerm, typeFilter)} isActive={item === result.page}>
                         {item}
                       </PaginationLink>
                     </PaginationItem>
@@ -259,7 +274,7 @@ export default async function OrganizationsListPage({ searchParams }: OrgsPagePr
                 )}
                 <PaginationItem>
                   <PaginationNext
-                    href={buildPageHref(result.page + 1, searchTerm)}
+                    href={buildPageHref(result.page + 1, searchTerm, typeFilter)}
                     text={t("pagination.next")}
                     className={result.page === result.totalPages ? "pointer-events-none opacity-50" : ""}
                   />

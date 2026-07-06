@@ -377,6 +377,11 @@ export interface BookListResult {
   databaseTotal: number;
 }
 
+export type BookTitleResolutionResult =
+  | { kind: "unique"; id: string }
+  | { kind: "none" }
+  | { kind: "multiple" };
+
 export interface BookSearchFilters {
   title: string;
   personLastName: string;
@@ -1045,7 +1050,6 @@ async function fetchBooksPagePayload(page: number, pageSize: number, searchTerm?
   const batchSize = 1000;
   const rows: BookRow[] = [];
   let from = 0;
-  let total = 0;
 
   logInfo("BOOKS_PAGE_START", {
     page: currentPage,
@@ -1062,7 +1066,7 @@ async function fetchBooksPagePayload(page: number, pageSize: number, searchTerm?
     .neq("Titre", "NULL");
 
   while (true) {
-    const { data, error, count, status, statusText } = await query.range(from, from + batchSize - 1);
+    const { data, error, status, statusText } = await query.range(from, from + batchSize - 1);
 
     if (error) {
       logError("BOOKS_PAGE_ERROR", {
@@ -1074,10 +1078,6 @@ async function fetchBooksPagePayload(page: number, pageSize: number, searchTerm?
         error,
       });
       throw new Error(error.message);
-    }
-
-    if (from === 0) {
-      total = count ?? 0;
     }
 
     const batch = Array.isArray(data) ? (data as unknown as BookRow[]) : [];
@@ -1311,6 +1311,49 @@ export async function getBooksPageByFacet(
     databaseTotal,
   };
 }
+
+export const resolveBookByExactTitle = cache(async (title: string): Promise<BookTitleResolutionResult> => {
+  const trimmedTitle = title.trim();
+
+  if (!trimmedTitle) {
+    return { kind: "none" };
+  }
+
+  const normalizedTitle = normalizeBookFacetValue(trimmedTitle);
+  const { data, error, status, statusText } = await supabase
+    .from("data-books")
+    .select('id,"Titre"');
+
+  if (error) {
+    logError("BOOK_TITLE_RESOLUTION_ERROR", {
+      title: trimmedTitle,
+      status,
+      statusText,
+      error,
+    });
+    throw new Error(error.message);
+  }
+
+  const matchingIds = (Array.isArray(data) ? data : [])
+    .map((row) => ({
+      id: readId((row as BookRow).id),
+      title: readText((row as BookRow)["Titre"]),
+    }))
+    .filter((row) => row.id.length > 0 && normalizeBookFacetValue(row.title) === normalizedTitle)
+    .map((row) => row.id);
+
+  const uniqueIds = [...new Set(matchingIds)];
+
+  if (uniqueIds.length === 1) {
+    return { kind: "unique", id: uniqueIds[0] };
+  }
+
+  if (uniqueIds.length > 1) {
+    return { kind: "multiple" };
+  }
+
+  return { kind: "none" };
+});
 
 export const getBookDetailById = cache(async (id: string): Promise<BookDetail | null> => {
   const trimmedId = id.trim();

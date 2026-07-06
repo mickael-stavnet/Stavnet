@@ -15,6 +15,7 @@ import { StavnetHeader } from "@/components/stavnet/header";
 import { ListNameSearch } from "@/components/stavnet/list-name-search";
 import { Link } from "@/i18n/routing";
 import { BOOKS_PAGE_SIZE, getBooksPage, getBooksPageByAdvancedSearch, getBooksPageByTitle, type BookSearchFilters } from "@/lib/data/books";
+import { resolveBooksListSelection } from "@/lib/books-search";
 import { buildStaticPageMetadata } from "@/lib/site-metadata";
 
 const BOOKS_COLUMN_WIDTHS = ["30.48%", "15.24%", "11.60%", "9.44%", "9.44%", "5.90%", "6.10%", "5.90%", "5.90%"] as const;
@@ -33,7 +34,7 @@ interface BooksPageProps {
     theme?: string;
     publicationLanguage?: string;
     year?: string;
-    generalSearch?: string;
+  generalSearch?: string;
   }>;
 }
 
@@ -125,25 +126,14 @@ function MobileBookCard({
 
 export default async function BooksListPage({ searchParams }: BooksPageProps) {
   const [{ page, q, title, personLastName, personFirstName, organization, theme, publicationLanguage, year, generalSearch }, t] = await Promise.all([searchParams, getTranslations("Books")]);
-  const currentPage = Number.parseInt(page ?? "1", 10);
-  const searchTerm = (q ?? "").trim();
-  const advancedFilters: Partial<BookSearchFilters> = {
-    title: title?.trim() ?? "",
-    personLastName: personLastName?.trim() ?? "",
-    personFirstName: personFirstName?.trim() ?? "",
-    organization: organization?.trim() ?? "",
-    theme: theme?.trim() ?? "",
-    publicationLanguage: publicationLanguage?.trim() ?? "",
-    year: year?.trim() ?? "",
-    generalSearch: generalSearch?.trim() ?? "",
-  };
-  const hasAdvancedFilters = Object.values(advancedFilters).some((value) => value.length > 0);
-  const pageNumber = Number.isFinite(currentPage) && currentPage > 0 ? currentPage : 1;
-  const result = hasAdvancedFilters
-    ? await getBooksPageByAdvancedSearch(pageNumber, advancedFilters)
-    : searchTerm
-      ? await getBooksPageByTitle(pageNumber, searchTerm)
-      : await getBooksPage(pageNumber);
+  const selection = resolveBooksListSelection({ page, q, title, personLastName, personFirstName, organization, theme, publicationLanguage, year, generalSearch });
+  const { searchTerm, advancedFilters } = selection;
+  const result =
+    selection.mode === "advanced"
+      ? await getBooksPageByAdvancedSearch(selection.pageNumber, selection.advancedFilters)
+      : selection.mode === "title"
+        ? await getBooksPageByTitle(selection.pageNumber, selection.searchTerm)
+        : await getBooksPage(selection.pageNumber);
   const paginationItems = getPaginationItems(result.page, result.totalPages);
   const footerItems = [
     { key: "back", icon: "/icons/icons-nav/back.png", href: "/home" as const, label: t("footer.back") },
@@ -176,10 +166,10 @@ export default async function BooksListPage({ searchParams }: BooksPageProps) {
         <section className="mt-6 min-w-0 flex flex-col gap-4 md:absolute md:left-1/2 md:top-[178px] md:bottom-[132px] md:w-[min(1320px,96vw)] md:-translate-x-1/2">
           <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between md:gap-6">
             <ListNameSearch
-              key={searchTerm}
+              key={selection.searchTerm}
               label={t("search.label")}
               placeholder={t("search.placeholder")}
-              initialValue={searchTerm}
+              initialValue={selection.searchTerm}
               resetLabel={t("search.reset")}
             />
             <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end sm:justify-end sm:gap-6">
