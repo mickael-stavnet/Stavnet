@@ -3,26 +3,25 @@ import { beforeAll, describe, expect, it, vi } from "vitest";
 const testUrl = process.env.SUPABASE_TEST_URL;
 const testAnonKey = process.env.SUPABASE_TEST_ANON_KEY;
 
-if (!testUrl || !testAnonKey) {
-  throw new Error("Missing Supabase test environment variables");
-}
+const hasSupabaseEnv = typeof testUrl === "string" && testUrl.length > 0 && typeof testAnonKey === "string" && testAnonKey.length > 0;
+const describeIfSupabase = hasSupabaseEnv ? describe : describe.skip;
 
 let getOrganizationsPage: typeof import("@/lib/data/orgs").getOrganizationsPage;
 let getOrganizationDetailByName: typeof import("@/lib/data/orgs").getOrganizationDetailByName;
 let getDefaultOrganizationDetail: typeof import("@/lib/data/orgs").getDefaultOrganizationDetail;
 
-beforeAll(async () => {
-  vi.stubEnv("NEXT_PUBLIC_SUPABASE_URL", testUrl);
-  vi.stubEnv("NEXT_PUBLIC_SUPABASE_ANON_KEY", testAnonKey);
-  vi.resetModules();
+describeIfSupabase("organizations data access against the test database", () => {
+  beforeAll(async () => {
+    vi.stubEnv("NEXT_PUBLIC_SUPABASE_URL", testUrl as string);
+    vi.stubEnv("NEXT_PUBLIC_SUPABASE_ANON_KEY", testAnonKey as string);
+    vi.resetModules();
 
-  const orgs = await import("@/lib/data/orgs");
-  getOrganizationsPage = orgs.getOrganizationsPage;
-  getOrganizationDetailByName = orgs.getOrganizationDetailByName;
-  getDefaultOrganizationDetail = orgs.getDefaultOrganizationDetail;
-});
+    const orgs = await import("@/lib/data/orgs");
+    getOrganizationsPage = orgs.getOrganizationsPage;
+    getOrganizationDetailByName = orgs.getOrganizationDetailByName;
+    getDefaultOrganizationDetail = orgs.getDefaultOrganizationDetail;
+  });
 
-describe("organizations data access against the test database", () => {
   it("loads the organizations page from Supabase", async () => {
     const page = await getOrganizationsPage(1, 5);
 
