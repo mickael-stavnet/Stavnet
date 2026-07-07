@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import {
   getDefaultOrganizationDetail,
   getOrganizationDetailByName,
+  getOrganizationsPageByCategory,
+  getOrganizationsPageByName,
+  getOrganizationsPageByType,
   getOrganizationsPage,
   ORGS_PAGE_SIZE,
 } from "@/lib/data/orgs";
@@ -50,7 +53,15 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 
     const page = parsePage(searchParams.get("page"));
     const pageSize = parsePageSize(searchParams.get("pageSize"), ORGS_PAGE_SIZE);
-    const result = await getOrganizationsPage(page, pageSize);
+    const type = searchParams.get("type")?.trim() ?? "";
+    const q = searchParams.get("q")?.trim() ?? "";
+    const result = type === "Editeur" || type === "Bibliothèque" || type === "AutreOrganisme"
+      ? await getOrganizationsPageByCategory(page, type, q, pageSize)
+      : type
+        ? await getOrganizationsPageByType(page, type, q, pageSize)
+        : q
+          ? await getOrganizationsPageByName(page, q, pageSize)
+          : await getOrganizationsPage(page, pageSize);
 
     const responseBody = {
       data: result.items,

@@ -390,6 +390,7 @@
       "title": "ספרות ישראלית",
       "subtitle": "מאגר ביבליוגרפי וביוגרפי"
     },
+    "noLogoAvailable": "אין לוגו ארגון זמין",
     "tabs": {
       "editorCard": "כרטיס מו\"ל",
       "diffuser": "מפיץ",
@@ -497,6 +498,15 @@
       "submit": "חיפוש",
       "reset": "איפוס",
       "noResults": "לא נמצא ארגון."
+    },
+    "filters": {
+      "title": "סינון לפי סוג",
+      "all": "הכול",
+      "options": {
+        "Editeur": "מוציאים לאור",
+        "Bibliothèque": "ספריות",
+        "AutreOrganisme": "ארגונים אחרים"
+      }
     },
     "footer": {
       "back": "חזרה",

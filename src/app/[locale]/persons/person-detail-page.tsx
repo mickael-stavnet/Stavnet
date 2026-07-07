@@ -28,8 +28,7 @@ interface PersonDetailPageProps {
   person: PersonDetail;
 }
 
-const PERSON_BIBLIOGRAPHY_GRID =
-  "md:grid-cols-[minmax(0,0.84fr)_minmax(0,1.14fr)_minmax(0,2.58fr)_72px_126px]";
+const PERSON_BIBLIOGRAPHY_COLUMN_WIDTHS = ["14.75%", "20%", "44%", "7.2%", "14.05%"] as const;
 
 interface MobileBibliographyCardProps {
   labels: {
@@ -47,6 +46,12 @@ interface PersonBibliographySectionProps {
   rows: PersonBibliographyRow[];
   statLabel: string;
   labels: MobileBibliographyCardProps["labels"];
+}
+
+interface DesktopBibliographyTableProps {
+  rows: PersonBibliographyRow[];
+  labels: MobileBibliographyCardProps["labels"];
+  className?: string;
 }
 
 function renderBookTitleValue(value: string) {
@@ -82,6 +87,51 @@ function MobileBibliographyCard({ labels, row }: MobileBibliographyCardProps) {
   );
 }
 
+function DesktopBibliographyTable({ rows, labels, className }: DesktopBibliographyTableProps) {
+  const filledRows = rows.length > 0 ? rows : [{ type: "", language: "", title: "", year: "", issue: "" }];
+
+  return (
+    <div className={cn("hidden min-h-0 flex-1 md:flex md:flex-col", className)}>
+      <div className="min-h-0 flex-1 overflow-y-auto">
+        <table className="w-full table-fixed border-collapse bg-transparent text-black">
+          <colgroup>
+            {PERSON_BIBLIOGRAPHY_COLUMN_WIDTHS.map((width, index) => (
+              <col key={`${width}-${index}`} style={{ width }} />
+            ))}
+          </colgroup>
+          <thead>
+            <tr className="bg-[#fff8c8] text-[13px] uppercase leading-none">
+              <th className="border border-[#7aa8b7] px-3 py-[5px] text-left font-normal">{labels.type}</th>
+              <th className="border border-[#7aa8b7] px-3 py-[5px] text-left font-normal">{labels.language}</th>
+              <th className="border border-[#7aa8b7] px-3 py-[5px] text-left font-normal">{labels.title}</th>
+              <th className="border border-[#7aa8b7] px-3 py-[5px] text-left font-normal">{labels.year}</th>
+              <th className="border border-[#7aa8b7] px-3 py-[5px] text-left font-normal">{labels.issue}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filledRows.map((row, rowIndex) => (
+              <tr key={rowIndex}>
+                <td className="h-[46px] border border-[#7aa8b7] px-3 align-middle text-[15px]">{row.type || "—"}</td>
+                <td className="h-[46px] border border-[#7aa8b7] px-3 align-middle text-[15px]">{row.language || "—"}</td>
+                <td className="h-[46px] border border-[#7aa8b7] px-3 align-middle text-[15px]">{renderBookTitleValue(row.title)}</td>
+                <td className="h-[46px] border border-[#7aa8b7] px-3 align-middle text-[15px]">{row.year || "—"}</td>
+                <td className="h-[46px] border border-[#7aa8b7] px-3 align-middle text-[15px]">{row.issue || "—"}</td>
+              </tr>
+            ))}
+            <tr>
+              <td className="h-[92px] border border-[#7aa8b7]" />
+              <td className="h-[92px] border border-[#7aa8b7]" />
+              <td className="h-[92px] border border-[#7aa8b7]" />
+              <td className="h-[92px] border border-[#7aa8b7]" />
+              <td className="h-[92px] border border-[#7aa8b7]" />
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
 function PersonBibliographySection({ count, rows, statLabel, labels }: PersonBibliographySectionProps) {
   const filledRows = rows.length > 0 ? rows : [{ type: "", language: "", title: "", year: "", issue: "" }];
 
@@ -103,33 +153,7 @@ function PersonBibliographySection({ count, rows, statLabel, labels }: PersonBib
         ))}
       </div>
 
-      <section className="hidden min-h-0 flex-1 overflow-hidden border border-[#7aa8b7] bg-[#a7dcee] md:flex md:flex-col">
-        <div className={cn("grid w-full border-b border-[#7aa8b7] bg-[#fff8c8] text-[13px] uppercase leading-none text-black", PERSON_BIBLIOGRAPHY_GRID)}>
-          <div className="min-w-0 border-r border-[#7aa8b7] px-3 py-[5px]">{labels.type}</div>
-          <div className="min-w-0 border-r border-[#7aa8b7] px-3 py-[5px]">{labels.language}</div>
-          <div className="min-w-0 border-r border-[#7aa8b7] px-3 py-[5px]">{labels.title}</div>
-          <div className="min-w-0 border-r border-[#7aa8b7] px-3 py-[5px]">{labels.year}</div>
-          <div className="min-w-0 px-3 py-[5px]">{labels.issue}</div>
-        </div>
-        <div className="min-h-0 flex-1 overflow-y-auto">
-          {filledRows.map((row, rowIndex) => (
-            <div key={rowIndex} className={cn("grid w-full", PERSON_BIBLIOGRAPHY_GRID)}>
-              <div className="flex min-w-0 h-[46px] items-center border-r border-t border-[#7aa8b7] px-3 text-[15px] text-black">{row.type}</div>
-              <div className="flex min-w-0 h-[46px] items-center border-r border-t border-[#7aa8b7] px-3 text-[15px] text-black">{row.language}</div>
-              <div className="flex min-w-0 h-[46px] items-center border-r border-t border-[#7aa8b7] px-3 text-[15px] text-black">{renderBookTitleValue(row.title)}</div>
-              <div className="flex min-w-0 h-[46px] items-center border-r border-t border-[#7aa8b7] px-3 text-[15px] text-black">{row.year}</div>
-              <div className="flex min-w-0 h-[46px] items-center border-t border-[#7aa8b7] px-3 text-[15px] text-black">{row.issue}</div>
-            </div>
-          ))}
-          <div className={cn("grid min-h-[138px]", PERSON_BIBLIOGRAPHY_GRID)}>
-            <div className="border-r border-t border-[#7aa8b7]" />
-            <div className="border-r border-t border-[#7aa8b7]" />
-            <div className="border-r border-t border-[#7aa8b7]" />
-            <div className="border-r border-t border-[#7aa8b7]" />
-            <div className="border-t border-[#7aa8b7]" />
-          </div>
-        </div>
-      </section>
+      <DesktopBibliographyTable rows={filledRows} labels={labels} />
     </section>
   );
 }
@@ -343,35 +367,10 @@ export default function PersonDetailPage({ person }: PersonDetailPageProps) {
                         ))}
                       </div>
 
-                      <section className="hidden min-h-0 flex-1 overflow-hidden border border-[#7aa8b7] bg-[#a7dcee] md:flex md:flex-col">
-                        <div className={cn("grid w-full border-b border-[#7aa8b7] bg-[#fff8c8] text-[13px] uppercase leading-none text-black", PERSON_BIBLIOGRAPHY_GRID)}>
-                          <div className="min-w-0 border-r border-[#7aa8b7] px-3 py-[5px]">{t("bibliography.columns.type")}</div>
-                          <div className="min-w-0 border-r border-[#7aa8b7] px-3 py-[5px]">{t("bibliography.columns.language")}</div>
-                          <div className="min-w-0 border-r border-[#7aa8b7] px-3 py-[5px]">{t("bibliography.columns.title")}</div>
-                          <div className="min-w-0 border-r border-[#7aa8b7] px-3 py-[5px]">{t("bibliography.columns.year")}</div>
-                          <div className="min-w-0 px-3 py-[5px]">{t("bibliography.columns.issue")}</div>
-                        </div>
-                        <div className="min-h-0 flex-1 overflow-y-auto">
-                          {(person.bibliographyRows.length > 0 ? person.bibliographyRows : [{ type: "", language: "", title: "", year: "", issue: "" }]).map(
-                            (row, rowIndex) => (
-                              <div key={rowIndex} className={cn("grid w-full", PERSON_BIBLIOGRAPHY_GRID)}>
-                                <div className="flex min-w-0 h-[46px] items-center border-r border-t border-[#7aa8b7] px-3 text-[15px] text-black">{row.type}</div>
-                                <div className="flex min-w-0 h-[46px] items-center border-r border-t border-[#7aa8b7] px-3 text-[15px] text-black">{row.language}</div>
-                                <div className="flex min-w-0 h-[46px] items-center border-r border-t border-[#7aa8b7] px-3 text-[15px] text-black">{renderBookTitleValue(row.title)}</div>
-                                <div className="flex min-w-0 h-[46px] items-center border-r border-t border-[#7aa8b7] px-3 text-[15px] text-black">{row.year}</div>
-                                <div className="flex min-w-0 h-[46px] items-center border-t border-[#7aa8b7] px-3 text-[15px] text-black">{row.issue}</div>
-                              </div>
-                            ),
-                          )}
-                          <div className={cn("grid min-h-[138px]", PERSON_BIBLIOGRAPHY_GRID)}>
-                            <div className="border-r border-t border-[#7aa8b7]" />
-                            <div className="border-r border-t border-[#7aa8b7]" />
-                            <div className="border-r border-t border-[#7aa8b7]" />
-                            <div className="border-r border-t border-[#7aa8b7]" />
-                            <div className="border-t border-[#7aa8b7]" />
-                          </div>
-                        </div>
-                      </section>
+                      <DesktopBibliographyTable
+                        rows={person.bibliographyRows.length > 0 ? person.bibliographyRows : [{ type: "", language: "", title: "", year: "", issue: "" }]}
+                        labels={mobileBibliographyLabels}
+                      />
                     </section>
                   </div>
                 ) : null}

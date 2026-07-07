@@ -63,29 +63,45 @@ function AvailabilityTable({ pageData, rows }: { pageData: AvailabilityPageData;
           </article>
         ))}
       </div>
-      <div className="hidden border-b border-[#7ea8b8] bg-[#fff6bf] text-[10px] uppercase leading-[1.05] text-black md:grid md:grid-cols-[240px_95px_140px_105px_100px_1fr] md:text-[11px]">
-        <div className="border-r border-[#7ea8b8] px-2 py-[2px]">{pageData.availabilityColumns.org}</div>
-        <div className="border-r border-[#7ea8b8] px-2 py-[2px]">{pageData.availabilityColumns.type}</div>
-        <div className="border-r border-[#7ea8b8] px-2 py-[2px]">{pageData.availabilityColumns.shelfmark}</div>
-        <div className="border-r border-[#7ea8b8] px-2 py-[2px]">{pageData.availabilityColumns.city}</div>
-        <div className="border-r border-[#7ea8b8] px-2 py-[2px]">{pageData.availabilityColumns.country}</div>
-        <div className="px-2 py-[2px]">{pageData.availabilityColumns.website}</div>
+      <div className="hidden md:block">
+        <table className="w-full table-fixed border-collapse bg-[#a6d9eb] text-black">
+          <colgroup>
+            <col style={{ width: "240px" }} />
+            <col style={{ width: "95px" }} />
+            <col style={{ width: "140px" }} />
+            <col style={{ width: "105px" }} />
+            <col style={{ width: "100px" }} />
+            <col />
+          </colgroup>
+          <thead>
+            <tr className="bg-[#fff6bf] text-[10px] uppercase leading-[1.05] text-black md:text-[11px]">
+              <th className="border border-[#7ea8b8] px-2 py-[2px] text-left font-normal">{pageData.availabilityColumns.org}</th>
+              <th className="border border-[#7ea8b8] px-2 py-[2px] text-left font-normal">{pageData.availabilityColumns.type}</th>
+              <th className="border border-[#7ea8b8] px-2 py-[2px] text-left font-normal">{pageData.availabilityColumns.shelfmark}</th>
+              <th className="border border-[#7ea8b8] px-2 py-[2px] text-left font-normal">{pageData.availabilityColumns.city}</th>
+              <th className="border border-[#7ea8b8] px-2 py-[2px] text-left font-normal">{pageData.availabilityColumns.country}</th>
+              <th className="border border-[#7ea8b8] px-2 py-[2px] text-left font-normal">{pageData.availabilityColumns.website}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((row, rowIndex) => (
+              <tr key={`${row.org}-${rowIndex}`}>
+                <td className="border border-[#7ea8b8] px-2 py-[5px] align-middle text-[15px] leading-[1.25]">
+                  <span className="flex min-w-0 items-center gap-2">
+                    <RedMarker />
+                    <span className="break-words">{row.org || "—"}</span>
+                  </span>
+                </td>
+                <td className="border border-[#7ea8b8] px-2 py-[5px] align-middle text-[15px] leading-[1.25]">{row.type || "—"}</td>
+                <td className="border border-[#7ea8b8] px-2 py-[5px] align-middle text-[15px] leading-[1.25]">{row.shelfmark || "—"}</td>
+                <td className="border border-[#7ea8b8] px-2 py-[5px] align-middle text-[15px] leading-[1.25]">{row.city || "—"}</td>
+                <td className="border border-[#7ea8b8] px-2 py-[5px] align-middle text-[15px] leading-[1.25]">{row.country || "—"}</td>
+                <td className="border border-[#7ea8b8] px-2 py-[5px] align-middle text-[15px] leading-[1.25]">{row.source || "—"}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
-      {rows.map((row, rowIndex) => (
-        <div key={`${row.org}-${rowIndex}`} className="hidden md:grid md:grid-cols-[240px_95px_140px_105px_100px_1fr]">
-          <div className={`border-r border-[#7ea8b8] px-2 py-[5px] text-[15px] leading-[1.25] text-black ${rowIndex > 0 ? "border-t border-[#7ea8b8]" : ""}`}>
-            <span className="flex min-w-0 items-center gap-2">
-              <RedMarker />
-              <span className="break-words">{row.org || "—"}</span>
-            </span>
-          </div>
-          <div className={`border-r border-[#7ea8b8] px-2 py-[5px] text-[15px] leading-[1.25] text-black ${rowIndex > 0 ? "border-t border-[#7ea8b8]" : ""}`}>{row.type || "—"}</div>
-          <div className={`border-r border-[#7ea8b8] px-2 py-[5px] text-[15px] leading-[1.25] text-black ${rowIndex > 0 ? "border-t border-[#7ea8b8]" : ""}`}>{row.shelfmark || "—"}</div>
-          <div className={`border-r border-[#7ea8b8] px-2 py-[5px] text-[15px] leading-[1.25] text-black ${rowIndex > 0 ? "border-t border-[#7ea8b8]" : ""}`}>{row.city || "—"}</div>
-          <div className={`border-r border-[#7ea8b8] px-2 py-[5px] text-[15px] leading-[1.25] text-black ${rowIndex > 0 ? "border-t border-[#7ea8b8]" : ""}`}>{row.country || "—"}</div>
-          <div className={`px-2 py-[5px] text-[15px] leading-[1.25] text-black ${rowIndex > 0 ? "border-t border-[#7ea8b8]" : ""}`}>{row.source || "—"}</div>
-        </div>
-      ))}
     </section>
   );
 }

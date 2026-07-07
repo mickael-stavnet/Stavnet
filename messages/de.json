@@ -390,6 +390,7 @@
       "title": "Israelische Literatur",
       "subtitle": "Bibliografische und biografische Datenbank"
     },
+    "noLogoAvailable": "Kein Organisationslogo verfügbar",
     "tabs": {
       "editorCard": "Verlagskarte",
       "diffuser": "Vertrieb",
@@ -497,6 +498,15 @@
       "submit": "Suchen",
       "reset": "Zurücksetzen",
       "noResults": "Keine Organisation gefunden."
+    },
+    "filters": {
+      "title": "Nach Typ filtern",
+      "all": "Alle",
+      "options": {
+        "Editeur": "Verlage",
+        "Bibliothèque": "Bibliotheken",
+        "AutreOrganisme": "Andere Organisationen"
+      }
     },
     "footer": {
       "back": "Zurück",

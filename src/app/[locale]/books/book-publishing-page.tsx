@@ -87,30 +87,47 @@ function PublishingTable({ pageData, rows }: { pageData: PublishingPageData; row
           </article>
         ))}
       </div>
-      <div className="hidden border-b border-[#7ea8b8] bg-[#fff6bf] text-[10px] uppercase leading-[1.05] text-black md:grid md:grid-cols-[42px_156px_minmax(0,1fr)_130px_62px_54px_74px] md:text-[11px]">
-        <div className="border-r border-[#7ea8b8] px-2 py-[2px]">{pageData.publishingColumns.status}</div>
-        <div className="border-r border-[#7ea8b8] px-2 py-[2px]">{pageData.publishingColumns.language}</div>
-        <div className="border-r border-[#7ea8b8] px-2 py-[2px]">{pageData.publishingColumns.title}</div>
-        <div className="border-r border-[#7ea8b8] px-2 py-[2px]">{pageData.publishingColumns.publisher}</div>
-        <div className="border-r border-[#7ea8b8] px-2 py-[2px]">{pageData.publishingColumns.year}</div>
-        <div className="border-r border-[#7ea8b8] px-2 py-[2px]">{pageData.publishingColumns.edition}</div>
-        <div className="px-2 py-[2px]">{pageData.publishingColumns.publication}</div>
+      <div className="hidden md:block">
+        <table className="w-full table-fixed border-collapse bg-[#a6d9eb] text-black">
+          <colgroup>
+            <col style={{ width: "42px" }} />
+            <col style={{ width: "156px" }} />
+            <col />
+            <col style={{ width: "130px" }} />
+            <col style={{ width: "62px" }} />
+            <col style={{ width: "54px" }} />
+            <col style={{ width: "74px" }} />
+          </colgroup>
+          <thead>
+            <tr className="bg-[#fff6bf] text-[10px] uppercase leading-[1.05] text-black md:text-[11px]">
+              <th className="border border-[#7ea8b8] px-2 py-[2px] text-left font-normal">{pageData.publishingColumns.status}</th>
+              <th className="border border-[#7ea8b8] px-2 py-[2px] text-left font-normal">{pageData.publishingColumns.language}</th>
+              <th className="border border-[#7ea8b8] px-2 py-[2px] text-left font-normal">{pageData.publishingColumns.title}</th>
+              <th className="border border-[#7ea8b8] px-2 py-[2px] text-left font-normal">{pageData.publishingColumns.publisher}</th>
+              <th className="border border-[#7ea8b8] px-2 py-[2px] text-left font-normal">{pageData.publishingColumns.year}</th>
+              <th className="border border-[#7ea8b8] px-2 py-[2px] text-left font-normal">{pageData.publishingColumns.edition}</th>
+              <th className="border border-[#7ea8b8] px-2 py-[2px] text-left font-normal">{pageData.publishingColumns.publication}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((row, rowIndex) => (
+              <tr key={`${row.language}-${row.publisher}-${rowIndex}`}>
+                <td className="border border-[#7ea8b8] px-2 py-[5px] align-middle text-[15px] leading-[1.2]">
+                  <span className="flex items-center justify-center">
+                    <RedMarker />
+                  </span>
+                </td>
+                <td className="border border-[#7ea8b8] px-2 py-[5px] align-middle text-[15px] leading-[1.2]">{row.language || "—"}</td>
+                <td className="border border-[#7ea8b8] px-2 py-[5px] align-middle text-[15px] leading-[1.2]">{row.title || "—"}</td>
+                <td className="border border-[#7ea8b8] px-2 py-[5px] align-middle text-[15px] leading-[1.2]">{row.publisher || "—"}</td>
+                <td className="border border-[#7ea8b8] px-2 py-[5px] align-middle text-[15px] leading-[1.2]">{row.year || "—"}</td>
+                <td className="border border-[#7ea8b8] px-2 py-[5px] align-middle text-[15px] leading-[1.2]">{row.edition || "—"}</td>
+                <td className="border border-[#7ea8b8] px-2 py-[5px] align-middle text-[15px] leading-[1.2]">{row.publication || "—"}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
-        {rows.map((row, rowIndex) => (
-        <div key={`${row.language}-${row.publisher}-${rowIndex}`} className="hidden md:grid md:grid-cols-[42px_156px_minmax(0,1fr)_130px_62px_54px_74px]">
-          <div className={`border-r border-[#7ea8b8] px-2 py-[5px] text-[15px] leading-[1.2] text-black ${rowIndex > 0 ? "border-t border-[#7ea8b8]" : ""}`}>
-            <span className="flex items-center justify-center">
-              <RedMarker />
-            </span>
-          </div>
-          <div className={`border-r border-[#7ea8b8] px-2 py-[5px] text-[15px] leading-[1.2] text-black ${rowIndex > 0 ? "border-t border-[#7ea8b8]" : ""}`}>{row.language || "—"}</div>
-          <div className={`border-r border-[#7ea8b8] px-2 py-[5px] text-[15px] leading-[1.2] text-black ${rowIndex > 0 ? "border-t border-[#7ea8b8]" : ""}`}>{row.title || "—"}</div>
-          <div className={`border-r border-[#7ea8b8] px-2 py-[5px] text-[15px] leading-[1.2] text-black ${rowIndex > 0 ? "border-t border-[#7ea8b8]" : ""}`}>{row.publisher || "—"}</div>
-          <div className={`border-r border-[#7ea8b8] px-2 py-[5px] text-[15px] leading-[1.2] text-black ${rowIndex > 0 ? "border-t border-[#7ea8b8]" : ""}`}>{row.year || "—"}</div>
-          <div className={`border-r border-[#7ea8b8] px-2 py-[5px] text-[15px] leading-[1.2] text-black ${rowIndex > 0 ? "border-t border-[#7ea8b8]" : ""}`}>{row.edition || "—"}</div>
-          <div className={`px-2 py-[5px] text-[15px] leading-[1.2] text-black ${rowIndex > 0 ? "border-t border-[#7ea8b8]" : ""}`}>{row.publication || "—"}</div>
-        </div>
-      ))}
     </section>
   );
 }

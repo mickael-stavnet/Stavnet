@@ -16,7 +16,7 @@ interface DefinitionRecord {
   issue: string;
 }
 
-const DEFINITION_GRID_TEMPLATE = "3.2fr 1.5fr 1.4fr 1.08fr 0.66fr 0.62fr 0.62fr";
+const DEFINITION_COLUMN_WIDTHS = ["35.45%", "16.62%", "15.51%", "11.96%", "7.31%", "6.56%", "6.59%"] as const;
 
 const sampleRecords: DefinitionRecord[] = [
   { title: "אין אפשר לאהוב", author: "Naïm Araidi", publisher: "Eked", language: "", year: "1972", publication: "O", issue: "E01" },
@@ -143,39 +143,42 @@ export default function DefinitionPageClient() {
 
             <div className="hidden md:block">
               <div className="overflow-auto">
-                <div
-                  className="grid min-w-[1120px] border-b border-[#9aa8b0] bg-[#fff68f] text-[11px] uppercase leading-none text-black"
-                  style={{ gridTemplateColumns: DEFINITION_GRID_TEMPLATE }}
-                >
-                  <div className="rounded-tl-[10px] border-r border-[#9aa8b0] px-3 py-[9px] text-center">{t("columns.titles")}</div>
-                  <div className="border-r border-[#9aa8b0] px-3 py-[9px] text-center">{t("columns.authors")}</div>
-                  <div className="border-r border-[#9aa8b0] px-3 py-[9px] text-center">{t("columns.publishers")}</div>
-                  <div className="border-r border-[#9aa8b0] px-3 py-[9px] text-center">{t("columns.languages")}</div>
-                  <div className="border-r border-[#9aa8b0] px-3 py-[9px] text-center">{t("columns.year")}</div>
-                  <div className="border-r border-[#9aa8b0] px-3 py-[9px] text-center">{t("columns.publication")}</div>
-                  <div className="rounded-tr-[10px] px-3 py-[9px] text-center">{t("columns.issue")}</div>
-                </div>
-
-                {sampleRecords.map((record, index) => (
-                  <div
-                    key={`${record.title}-${index}`}
-                    className="grid min-w-[1120px] border-b border-[#b1bac0] text-[14px] leading-none text-black last:border-b-0"
-                    style={{ gridTemplateColumns: DEFINITION_GRID_TEMPLATE }}
-                  >
-                    <div className="border-r border-[#b1bac0] px-3 py-[15px]">
-                      <Link href="/books/details" className="flex items-center text-black hover:underline">
-                        <RedMarker />
-                        <span className="w-full break-words">{record.title}</span>
-                      </Link>
-                    </div>
-                    <div className="border-r border-[#b1bac0] px-3 py-[15px]">{record.author || "—"}</div>
-                    <div className="border-r border-[#b1bac0] px-3 py-[15px]">{record.publisher || "—"}</div>
-                    <div className="border-r border-[#b1bac0] px-3 py-[15px] text-center">{record.language || "—"}</div>
-                    <div className="border-r border-[#b1bac0] px-3 py-[15px] text-center">{record.year || "—"}</div>
-                    <div className="border-r border-[#b1bac0] px-3 py-[15px] text-center">{record.publication || "—"}</div>
-                    <div className="px-3 py-[15px] text-center">{record.issue || "—"}</div>
-                  </div>
-                ))}
+                <table className="min-w-[1120px] w-full table-fixed border-collapse text-black">
+                  <colgroup>
+                    {DEFINITION_COLUMN_WIDTHS.map((width, index) => (
+                      <col key={`${width}-${index}`} style={{ width }} />
+                    ))}
+                  </colgroup>
+                  <thead>
+                    <tr className="bg-[#fff68f] text-[11px] uppercase leading-none text-black">
+                      <th className="rounded-tl-[10px] border border-[#9aa8b0] px-3 py-[9px] text-center font-normal">{t("columns.titles")}</th>
+                      <th className="border border-[#9aa8b0] px-3 py-[9px] text-center font-normal">{t("columns.authors")}</th>
+                      <th className="border border-[#9aa8b0] px-3 py-[9px] text-center font-normal">{t("columns.publishers")}</th>
+                      <th className="border border-[#9aa8b0] px-3 py-[9px] text-center font-normal">{t("columns.languages")}</th>
+                      <th className="border border-[#9aa8b0] px-3 py-[9px] text-center font-normal">{t("columns.year")}</th>
+                      <th className="border border-[#9aa8b0] px-3 py-[9px] text-center font-normal">{t("columns.publication")}</th>
+                      <th className="rounded-tr-[10px] border border-[#9aa8b0] px-3 py-[9px] text-center font-normal">{t("columns.issue")}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {sampleRecords.map((record, index) => (
+                      <tr key={`${record.title}-${index}`} className="text-[14px] leading-none text-black">
+                        <td className="border border-[#b1bac0] px-3 py-[15px] align-middle">
+                          <Link href="/books/details" className="flex items-center text-black hover:underline">
+                            <RedMarker />
+                            <span className="w-full break-words">{record.title}</span>
+                          </Link>
+                        </td>
+                        <td className="border border-[#b1bac0] px-3 py-[15px] align-middle">{record.author || "—"}</td>
+                        <td className="border border-[#b1bac0] px-3 py-[15px] align-middle">{record.publisher || "—"}</td>
+                        <td className="border border-[#b1bac0] px-3 py-[15px] text-center align-middle">{record.language || "—"}</td>
+                        <td className="border border-[#b1bac0] px-3 py-[15px] text-center align-middle">{record.year || "—"}</td>
+                        <td className="border border-[#b1bac0] px-3 py-[15px] text-center align-middle">{record.publication || "—"}</td>
+                        <td className="border border-[#b1bac0] px-3 py-[15px] text-center align-middle">{record.issue || "—"}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             </div>
           </section>

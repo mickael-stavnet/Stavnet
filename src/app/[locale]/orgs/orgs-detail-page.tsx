@@ -87,6 +87,8 @@ function RedMarker() {
   );
 }
 
+const ORGANIZATION_PUBLISHED_COLUMN_WIDTHS = ["62%", "30%", "8%"] as const;
+
 export default function OrganizationsDetailPage({
   organization,
 }: OrganizationDetailPageProps) {
@@ -214,14 +216,10 @@ export default function OrganizationsDetailPage({
           </section>
 
           <aside className="hidden md:absolute md:left-0 md:top-[66px] md:flex md:h-[660px] md:w-[174px] md:flex-col md:items-center md:gap-5">
-              <div className="relative overflow-hidden border border-[#6c99a7] bg-[#d7eef6] shadow-[3px_3px_6px_rgba(0,0,0,0.18)] h-[176px] w-[174px]">
-                <Image
-                  src="https://cdn.pixabay.com/photo/2016/12/28/22/15/moscow-1937274_1280.jpg"
-                  alt=""
-                  fill
-                  sizes="174px"
-                  className="object-cover object-center"
-                />
+              <div className="flex h-[176px] w-[174px] items-center justify-center border border-[#c9b87f] bg-[#efe7d4] px-4 text-center shadow-[3px_3px_6px_rgba(0,0,0,0.18)]">
+                <span className="text-[18px] leading-[1.2] text-[#6e5f38]">
+                  {t("noLogoAvailable")}
+                </span>
               </div>
               <div className="w-[174px] space-y-[9px] text-center text-[18px] leading-[1.05] text-black">
                 <p>{t("side.creationDate")}</p>
@@ -371,42 +369,45 @@ export default function OrganizationsDetailPage({
                         <span>{t("published.authorsCount")}</span>
                       </div>
 
-                      <section className="hidden min-h-0 flex-1 overflow-hidden border border-[#7aa8b7] bg-[#a7dcee] md:flex md:flex-col">
-                        <div className="grid w-full min-w-0 grid-cols-[minmax(0,1.8fr)_minmax(0,1fr)_72px] border-b border-[#7aa8b7] bg-[#fff8c8] text-[12px] uppercase leading-none text-black md:text-[13px]">
-                          <div className="border-r border-[#7aa8b7] px-2 py-[3px]">
-                            {t("published.columns.titles")}
-                          </div>
-                          <div className="border-r border-[#7aa8b7] px-2 py-[3px]">
-                            {t("published.columns.authors")}
-                          </div>
-                          <div className="px-2 py-[3px]">
-                            {t("published.columns.year")}
-                          </div>
-                        </div>
-                        <div className="min-h-0 flex-1 overflow-y-auto">
-                          {(organization.publishedRows.length > 0
-                            ? organization.publishedRows
-                            : [{ title: "", author: "", year: "" }]).map((row, rowIndex) => (
-                            <div key={`${row.title}-${row.author}-${row.year}-${rowIndex}`} className="grid w-full min-w-0 grid-cols-[minmax(0,1.8fr)_minmax(0,1fr)_72px]">
-                              <div className="flex min-h-[32px] items-center border-r border-t border-[#7aa8b7] px-2 py-1 text-[13px] text-black md:text-[15px]">
-                                <span className="w-full break-words text-left">
-                                  {row.title ? <ClickableDetailValue href={buildBookTitleResolverHref(row.title)} value={row.title} /> : "—"}
-                                </span>
-                              </div>
-                              <div className="flex min-h-[32px] items-center border-r border-t border-[#7aa8b7] px-2 py-1 text-[13px] text-black md:text-[15px]">
-                                <span className="break-words">{row.author || "—"}</span>
-                              </div>
-                              <div className="flex min-h-[32px] items-center border-t border-[#7aa8b7] px-2 py-1 text-[13px] text-black md:text-[15px]">
-                                {row.year || "—"}
-                              </div>
-                            </div>
-                          ))}
-                          <div className="grid min-h-[120px] grid-cols-[minmax(0,1.8fr)_minmax(0,1fr)_72px]">
-                            <div className="border-r border-t border-[#7aa8b7]" />
-                            <div className="border-r border-t border-[#7aa8b7]" />
-                            <div className="border-t border-[#7aa8b7]" />
-                          </div>
-                        </div>
+                      <section className="hidden min-h-0 flex-1 overflow-y-auto md:block">
+                        <table className="w-full table-fixed border-collapse bg-[#a7dcee] text-black">
+                          <colgroup>
+                            {ORGANIZATION_PUBLISHED_COLUMN_WIDTHS.map((width, index) => (
+                              <col key={`${width}-${index}`} style={{ width }} />
+                            ))}
+                          </colgroup>
+                          <thead>
+                            <tr className="bg-[#fff8c8] text-[12px] uppercase leading-none text-black md:text-[13px]">
+                              <th className="border border-[#7aa8b7] px-2 py-[3px] text-left font-normal">{t("published.columns.titles")}</th>
+                              <th className="border border-[#7aa8b7] px-2 py-[3px] text-left font-normal">{t("published.columns.authors")}</th>
+                              <th className="border border-[#7aa8b7] px-2 py-[3px] text-left font-normal">{t("published.columns.year")}</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {(organization.publishedRows.length > 0
+                              ? organization.publishedRows
+                              : [{ title: "", author: "", year: "" }]).map((row, rowIndex) => (
+                              <tr key={`${row.title}-${row.author}-${row.year}-${rowIndex}`}>
+                                <td className="min-h-[32px] border border-[#7aa8b7] px-2 py-1 align-middle text-[13px] md:text-[15px]">
+                                  <span className="block w-full break-words text-left">
+                                    {row.title ? <ClickableDetailValue href={buildBookTitleResolverHref(row.title)} value={row.title} /> : "—"}
+                                  </span>
+                                </td>
+                                <td className="min-h-[32px] border border-[#7aa8b7] px-2 py-1 align-middle text-[13px] md:text-[15px]">
+                                  <span className="break-words">{row.author || "—"}</span>
+                                </td>
+                                <td className="min-h-[32px] border border-[#7aa8b7] px-2 py-1 align-middle text-[13px] md:text-[15px]">
+                                  {row.year || "—"}
+                                </td>
+                              </tr>
+                            ))}
+                            <tr>
+                              <td className="h-[120px] border border-[#7aa8b7]" />
+                              <td className="h-[120px] border border-[#7aa8b7]" />
+                              <td className="h-[120px] border border-[#7aa8b7]" />
+                            </tr>
+                          </tbody>
+                        </table>
                       </section>
                     </section>
                   </div>

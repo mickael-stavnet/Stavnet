@@ -390,6 +390,7 @@
       "title": "Littérature israélienne",
       "subtitle": "Base de données bibliographiques et biographiques"
     },
+    "noLogoAvailable": "Pas de logo d'organisme disponible",
     "tabs": {
       "editorCard": "Fiche éditeur",
       "diffuser": "Diffuseur",
@@ -497,6 +498,15 @@
       "submit": "Chercher",
       "reset": "Réinitialiser",
       "noResults": "Aucun organisme trouvé."
+    },
+    "filters": {
+      "title": "Filtrer par type",
+      "all": "Tous",
+      "options": {
+        "Editeur": "Editeurs",
+        "Bibliothèque": "Bibliothèques",
+        "AutreOrganisme": "Autres organismes"
+      }
     },
     "footer": {
       "back": "Retour",

@@ -4,6 +4,9 @@ import { fixEncoding } from "@/lib/encoding";
 import { logError, logInfo, logWarn } from "@/lib/server-log";
 
 export const ORGS_PAGE_SIZE = 13;
+export const ORGANIZATION_CATEGORY_VALUES = ["Editeur", "Bibliothèque", "AutreOrganisme"] as const;
+
+export type OrganizationCategoryValue = (typeof ORGANIZATION_CATEGORY_VALUES)[number];
 
 type OrganizationPageItemRpc = {
   name?: unknown;
@@ -113,6 +116,10 @@ function mapOrganizationListItem(item: OrganizationPageItemRpc): OrganizationLis
 
 function normalizeOrganizationValue(value: string): string {
   return readText(value).toLocaleLowerCase();
+}
+
+function isLibraryOrganization(name: string): boolean {
+  return normalizeOrganizationValue(name).includes("bibli");
 }
 
 function joinName(firstName: string, lastName: string): string {
@@ -379,6 +386,63 @@ export async function getOrganizationsPageByType(
     )
     .filter((item) => item.name.length > 0)
     .filter((item) => normalizeOrganizationValue(item.type) === normalizedType)
+    .filter((item) => !normalizedSearchTerm || normalizeOrganizationValue(item.name).includes(normalizedSearchTerm))
+    .sort((left, right) => left.name.localeCompare(right.name, undefined, { sensitivity: "base" }));
+
+  const start = (currentPage - 1) * pageSize;
+  const items = filteredItems.slice(start, start + pageSize);
+
+  return {
+    items,
+    page: currentPage,
+    pageSize,
+    total: filteredItems.length,
+    totalPages: Math.max(1, Math.ceil(filteredItems.length / pageSize)),
+    databaseTotal,
+  };
+}
+
+export async function getOrganizationsPageByCategory(
+  page: number,
+  category: OrganizationCategoryValue,
+  searchTerm = "",
+  pageSize = ORGS_PAGE_SIZE,
+): Promise<OrganizationListResult> {
+  const currentPage = Math.max(1, page);
+  const normalizedCategory = normalizeOrganizationValue(category);
+  const normalizedSearchTerm = normalizeOrganizationValue(searchTerm);
+
+  const [data, databaseTotal] = await Promise.all([
+    fetchAllOrganizationTableRows("data-organism", 'id,"Organisme","Type","Date_Creation","Pays","Nb_Titres","Nb_Auteurs"'),
+    getOrganizationsDatabaseTotal(),
+  ]);
+
+  const filteredItems = data
+    .map((row) =>
+      mapOrganizationListItem({
+        name: row["Organisme"],
+        type: row["Type"],
+        creationDate: row["Date_Creation"],
+        country: row["Pays"],
+        publishedTitles: row["Nb_Titres"],
+        publishedAuthors: row["Nb_Auteurs"],
+      }),
+    )
+    .filter((item) => item.name.length > 0)
+    .filter((item) => {
+      const normalizedType = normalizeOrganizationValue(item.type);
+      const isLibrary = isLibraryOrganization(item.name);
+
+      if (normalizedCategory === normalizeOrganizationValue("Editeur")) {
+        return normalizedType === normalizeOrganizationValue("Editeur");
+      }
+
+      if (normalizedCategory === normalizeOrganizationValue("Bibliothèque")) {
+        return normalizedType === normalizeOrganizationValue("AutreOrganisme") && isLibrary;
+      }
+
+      return normalizedType === normalizeOrganizationValue("AutreOrganisme") && !isLibrary;
+    })
     .filter((item) => !normalizedSearchTerm || normalizeOrganizationValue(item.name).includes(normalizedSearchTerm))
     .sort((left, right) => left.name.localeCompare(right.name, undefined, { sensitivity: "base" }));
 

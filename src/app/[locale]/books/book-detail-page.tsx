@@ -49,7 +49,7 @@ interface FilledTableProps {
   data: ReactNode[][];
   rows?: number;
   className?: string;
-  gridTemplateColumns?: string;
+  columnWidths?: string[];
 }
 
 interface MiniCardProps {
@@ -102,43 +102,41 @@ function FilledTable({
   data,
   rows = 1,
   className,
-  gridTemplateColumns,
+  columnWidths,
 }: FilledTableProps) {
-  const templateColumns =
-    gridTemplateColumns ?? `repeat(${columns.length}, minmax(0, 1fr))`;
+  const filledRows = Array.from({ length: rows }).map((_, rowIndex) => data[rowIndex] ?? []);
 
   return (
-    <section className={cn("overflow-x-auto border border-[#7aa8b7] bg-[#a7dcee]", className)}>
-      <div
-        className="grid min-w-[520px] border-b border-[#7aa8b7] bg-[#fff8c8] text-[12px] uppercase leading-none text-black"
-        style={{
-          gridTemplateColumns: templateColumns,
-        }}
-      >
-        {columns.map((column) => (
-          <div key={column} className="border-r border-[#7aa8b7] px-2 py-[3px] last:border-r-0 md:whitespace-nowrap">
-            {column}
-          </div>
-        ))}
-      </div>
-      {Array.from({ length: rows }).map((_, rowIndex) => (
-        <div
-          key={rowIndex}
-          className="grid min-w-[520px]"
-          style={{
-            gridTemplateColumns: templateColumns,
-          }}
-        >
-          {columns.map((column, columnIndex) => (
-            <div
-              key={`${column}-${columnIndex}`}
-              className="flex min-h-[38px] items-center border-r border-t border-[#7aa8b7] px-2 py-2 text-[13px] font-semibold text-black last:border-r-0 md:text-[15px] md:whitespace-nowrap"
-            >
-              {data[rowIndex]?.[columnIndex] || "—"}
-            </div>
+    <section className={cn("overflow-x-auto", className)}>
+      <table className="min-w-[520px] w-full table-fixed border-collapse bg-[#a7dcee] text-black">
+        {columnWidths ? (
+          <colgroup>
+            {columnWidths.map((width, index) => (
+              <col key={`${width}-${index}`} style={{ width }} />
+            ))}
+          </colgroup>
+        ) : null}
+        <thead>
+          <tr className="bg-[#fff8c8] text-[12px] uppercase leading-none text-black">
+            {columns.map((column) => (
+              <th key={column} className="border border-[#7aa8b7] px-2 py-[3px] text-left font-normal md:whitespace-nowrap">
+                {column}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {filledRows.map((row, rowIndex) => (
+            <tr key={rowIndex}>
+              {columns.map((column, columnIndex) => (
+                <td key={`${column}-${columnIndex}`} className="min-h-[38px] border border-[#7aa8b7] px-2 py-2 align-middle text-[13px] font-semibold text-black md:text-[15px] md:whitespace-nowrap">
+                  {row[columnIndex] || "—"}
+                </td>
+              ))}
+            </tr>
           ))}
-        </div>
-      ))}
+        </tbody>
+      </table>
     </section>
   );
 }
@@ -422,7 +420,7 @@ export default function BookDetailPage({ book }: BookDetailPageProps) {
                           columns={[t("tables.authors"), t("tables.authorType"), t("tables.writingLanguage")]}
                           data={authorsData.length > 0 ? authorsData : [["", "", ""]]}
                           rows={Math.max(1, authorsData.length)}
-                          gridTemplateColumns="2.85fr 0.95fr 1.05fr"
+                          columnWidths={["58%","19%","23%"]}
                         />
                       </div>
 
@@ -436,7 +434,7 @@ export default function BookDetailPage({ book }: BookDetailPageProps) {
                           columns={[t("tables.contributors"), t("tables.contributionType"), t("tables.writingLanguage")]}
                           data={contributorsData.length > 0 ? contributorsData : [["", "", ""]]}
                           rows={Math.max(1, contributorsData.length)}
-                          gridTemplateColumns="2.85fr 0.95fr 1.05fr"
+                          columnWidths={["58%","19%","23%"]}
                         />
                       </div>
 
@@ -450,7 +448,7 @@ export default function BookDetailPage({ book }: BookDetailPageProps) {
                           columns={[t("tables.publishers"), t("tables.country"), t("tables.isbn")]}
                           data={publishersData.length > 0 ? publishersData : [["", "", ""]]}
                           rows={Math.max(1, publishersData.length)}
-                          gridTemplateColumns="2.1fr 0.9fr 1fr"
+                          columnWidths={["52%","20%","28%"]}
                         />
                       </div>
                     </div>

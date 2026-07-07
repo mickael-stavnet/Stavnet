@@ -5,7 +5,14 @@ import { StavnetFooter } from "@/components/stavnet/footer";
 import { StavnetHeader } from "@/components/stavnet/header";
 import { ListNameSearch } from "@/components/stavnet/list-name-search";
 import { Link } from "@/i18n/routing";
-import { getOrganizationsPage, getOrganizationsPageByName, getOrganizationsPageByType, ORGS_PAGE_SIZE } from "@/lib/data/orgs";
+import {
+  getOrganizationsPage,
+  getOrganizationsPageByCategory,
+  getOrganizationsPageByName,
+  getOrganizationsPageByType,
+  ORGS_PAGE_SIZE,
+  type OrganizationCategoryValue,
+} from "@/lib/data/orgs";
 import {
   Pagination,
   PaginationContent,
@@ -18,6 +25,7 @@ import {
 import { buildStaticPageMetadata } from "@/lib/site-metadata";
 
 const ORGS_COLUMN_WIDTHS = ["35.45%", "15.51%", "15.95%", "14.48%", "9.16%", "9.45%"] as const;
+const ORGANIZATION_FILTER_OPTIONS = ["Editeur", "Bibliothèque", "AutreOrganisme"] as const satisfies readonly OrganizationCategoryValue[];
 
 interface OrgsPageProps {
   params: Promise<{
@@ -111,10 +119,13 @@ export default async function OrganizationsListPage({ searchParams }: OrgsPagePr
   const currentPage = Number.parseInt(page ?? "1", 10);
   const searchTerm = (q ?? "").trim();
   const typeFilter = (type ?? "").trim();
+  const categoryFilter = ORGANIZATION_FILTER_OPTIONS.find((value) => value === typeFilter) ?? "";
   const pageNumber = Number.isFinite(currentPage) && currentPage > 0 ? currentPage : 1;
-  const result = typeFilter
-    ? await getOrganizationsPageByType(pageNumber, typeFilter, searchTerm)
-    : searchTerm
+  const result = categoryFilter
+    ? await getOrganizationsPageByCategory(pageNumber, categoryFilter, searchTerm)
+    : typeFilter
+      ? await getOrganizationsPageByType(pageNumber, typeFilter, searchTerm)
+      : searchTerm
       ? await getOrganizationsPageByName(pageNumber, searchTerm)
       : await getOrganizationsPage(pageNumber);
   const paginationItems = getPaginationItems(result.page, result.totalPages);
@@ -134,6 +145,13 @@ export default async function OrganizationsListPage({ searchParams }: OrgsPagePr
     titlesPublished: t("columns.titlesPublished"),
     authorsPublished: t("columns.authorsPublished"),
   };
+  const filterLabels = {
+    title: t("filters.title"),
+    all: t("filters.all"),
+    Editeur: t("filters.options.Editeur"),
+    Bibliothèque: t("filters.options.Bibliothèque"),
+    AutreOrganisme: t("filters.options.AutreOrganisme"),
+  } as const;
 
   return (
     <main dir="ltr" className="relative min-h-[100svh] overflow-x-hidden bg-[#e7f2f7] font-[Arial,Helvetica,sans-serif] text-black md:h-screen md:overflow-hidden">
@@ -149,17 +167,47 @@ export default async function OrganizationsListPage({ searchParams }: OrgsPagePr
 
         <section className="mt-6 min-w-0 flex flex-col gap-4 md:absolute md:left-1/2 md:top-[178px] md:bottom-[132px] md:w-[min(1320px,96vw)] md:-translate-x-1/2">
           <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between md:gap-6">
-            <ListNameSearch
-              key={searchTerm}
-              label={t("search.label")}
-              placeholder={t("search.placeholder")}
-              initialValue={searchTerm}
-              resetLabel={t("search.reset")}
-            />
+            <div className="flex flex-col gap-3">
+              <ListNameSearch
+                key={searchTerm}
+                label={t("search.label")}
+                placeholder={t("search.placeholder")}
+                initialValue={searchTerm}
+                resetLabel={t("search.reset")}
+              />
+              <div className="flex flex-col gap-2">
+                <p className="text-[13px] font-bold leading-none text-black">{filterLabels.title}</p>
+                <div className="flex flex-wrap gap-2">
+                  <Link
+                    href={buildPageHref(1, searchTerm, "")}
+                    className={`rounded-[8px] border px-3 py-2 text-[13px] font-bold leading-none shadow-[2px_2px_4px_rgba(0,0,0,0.12)] ${
+                      !typeFilter
+                        ? "border-[#7aa8b7] bg-[#91d3ea] text-black"
+                        : "border-[#d1bb48] bg-[#ffea56] text-black hover:bg-[#fff16f]"
+                    }`}
+                  >
+                    {filterLabels.all}
+                  </Link>
+                  {ORGANIZATION_FILTER_OPTIONS.map((option) => (
+                    <Link
+                      key={option}
+                      href={buildPageHref(1, searchTerm, option)}
+                      className={`rounded-[8px] border px-3 py-2 text-[13px] font-bold leading-none shadow-[2px_2px_4px_rgba(0,0,0,0.12)] ${
+                        typeFilter === option
+                          ? "border-[#7aa8b7] bg-[#91d3ea] text-black"
+                          : "border-[#d1bb48] bg-[#ffea56] text-black hover:bg-[#fff16f]"
+                      }`}
+                    >
+                      {filterLabels[option]}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            </div>
             {typeFilter ? (
               <div className="rounded-[8px] border border-[#7aa8b7] bg-[#a7dcee] px-4 py-3 shadow-[3px_3px_6px_rgba(0,0,0,0.12)]">
                 <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#07384a]">{columnLabels.type}</p>
-                <p className="mt-2 text-[18px] font-bold leading-tight text-black">{typeFilter}</p>
+                <p className="mt-2 text-[18px] font-bold leading-tight text-black">{categoryFilter ? filterLabels[categoryFilter] : typeFilter}</p>
               </div>
             ) : null}
             <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end sm:justify-end sm:gap-6">

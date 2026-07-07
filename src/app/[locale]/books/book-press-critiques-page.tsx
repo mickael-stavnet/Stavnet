@@ -37,10 +37,6 @@ function PressExtractsTable({
 }) {
   return (
     <section className="border border-[#7ea8b8] bg-[#a6d9eb]">
-      <div className="hidden border-b border-[#7ea8b8] bg-[#fff6bf] text-[10px] uppercase leading-[1.05] text-black md:grid md:grid-cols-[280px_minmax(0,1fr)] md:text-[11px]">
-        <div className="border-r border-[#7ea8b8] px-2 py-[2px]">{sourceLabel}</div>
-        <div className="px-2 py-[2px]">{extractsLabel}</div>
-      </div>
       <div className="space-y-3 p-3 md:hidden">
         {rows.map((row, rowIndex) => {
           const sourceLines = row[0]?.split("\n") ?? [];
@@ -69,18 +65,34 @@ function PressExtractsTable({
           );
         })}
       </div>
-      {rows.map((row, rowIndex) => (
-        <div key={`${rowIndex}-${row[0]}`} className="hidden md:grid md:grid-cols-[280px_minmax(0,1fr)]">
-          <div className={`border-r border-[#7ea8b8] px-2 py-[6px] text-[15px] leading-[1.35] text-black ${rowIndex > 0 ? "border-t" : ""}`}>
-            {row[0].split("\n").map((line, lineIndex) => (
-              <div key={`${line}-${lineIndex}`} className={lineIndex === 0 ? "font-bold" : ""}>
-                {line}
-              </div>
+      <div className="hidden md:block">
+        <table className="w-full table-fixed border-collapse bg-[#a6d9eb] text-black">
+          <colgroup>
+            <col style={{ width: "280px" }} />
+            <col />
+          </colgroup>
+          <thead>
+            <tr className="bg-[#fff6bf] text-[10px] uppercase leading-[1.05] text-black md:text-[11px]">
+              <th className="border border-[#7ea8b8] px-2 py-[2px] text-left font-normal">{sourceLabel}</th>
+              <th className="border border-[#7ea8b8] px-2 py-[2px] text-left font-normal">{extractsLabel}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((row, rowIndex) => (
+              <tr key={`${rowIndex}-${row[0]}`}>
+                <td className="border border-[#7ea8b8] px-2 py-[6px] align-top text-[15px] leading-[1.35]">
+                  {row[0].split("\n").map((line, lineIndex) => (
+                    <div key={`${line}-${lineIndex}`} className={lineIndex === 0 ? "font-bold" : ""}>
+                      {line}
+                    </div>
+                  ))}
+                </td>
+                <td className="border border-[#7ea8b8] px-2 py-[6px] align-top text-[15px] leading-[1.35]">{row[1] || "—"}</td>
+              </tr>
             ))}
-          </div>
-          <div className={`px-2 py-[6px] text-[15px] leading-[1.35] text-black ${rowIndex > 0 ? "border-t border-[#7ea8b8]" : ""}`}>{row[1] || "—"}</div>
-        </div>
-      ))}
+          </tbody>
+        </table>
+      </div>
     </section>
   );
 }

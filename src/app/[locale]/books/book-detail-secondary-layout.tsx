@@ -73,40 +73,48 @@ function InfoField({
 function InfoTable({
   columns,
   rows,
-  gridTemplateColumns,
+  columnWidths,
 }: {
   columns: string[];
   rows: ReactNode[][];
-  gridTemplateColumns: string;
+  columnWidths: string[];
 }) {
   return (
-    <section className="border border-[#7ea8b8] bg-[#a6d9eb]">
-      <div className="grid border-b border-[#7ea8b8] bg-[#fff6bf] text-[10px] uppercase leading-[1.05] text-black md:text-[11px]" style={{ gridTemplateColumns }}>
-        {columns.map((column, columnIndex) => (
-          <div key={column} className={`px-2 py-[2px] md:whitespace-nowrap ${columnIndex < columns.length - 1 ? "border-r border-[#7ea8b8]" : ""}`}>
-            {column}
-          </div>
-        ))}
-      </div>
-      {rows.map((row, rowIndex) => (
-        <div key={`${row[0]}-${rowIndex}`} className="grid text-[14px] leading-none text-black font-bold md:text-[15px]" style={{ gridTemplateColumns }}>
-          {row.map((cell, cellIndex) => (
-            <div
-              key={`${cell}-${cellIndex}`}
-              className={`flex min-h-[32px] items-center px-2 py-[6px] ${cellIndex < row.length - 1 ? "border-r border-[#7ea8b8]" : ""} border-t border-[#7ea8b8] md:whitespace-nowrap`}
-            >
-              {cellIndex === 0 ? (
-                <span className="flex min-w-0 items-center gap-2">
-                  <RedMarker />
-                  <span className="break-words">{cell || "—"}</span>
-                </span>
-              ) : (
-                <span className="break-words">{cell || "—"}</span>
-              )}
-            </div>
+    <section className="overflow-x-auto">
+      <table className="w-full table-fixed border-collapse bg-[#a6d9eb] text-black">
+        <colgroup>
+          {columnWidths.map((width, index) => (
+            <col key={`${width}-${index}`} style={{ width }} />
           ))}
-        </div>
-      ))}
+        </colgroup>
+        <thead>
+          <tr className="bg-[#fff6bf] text-[10px] uppercase leading-[1.05] text-black md:text-[11px]">
+            {columns.map((column) => (
+              <th key={column} className="border border-[#7ea8b8] px-2 py-[2px] text-left font-normal md:whitespace-nowrap">
+                {column}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((row, rowIndex) => (
+            <tr key={`${row[0]}-${rowIndex}`} className="text-[14px] leading-none text-black font-bold md:text-[15px]">
+              {row.map((cell, cellIndex) => (
+                <td key={`${cell}-${cellIndex}`} className="min-h-[32px] border border-[#7ea8b8] px-2 py-[6px] align-middle md:whitespace-nowrap">
+                  {cellIndex === 0 ? (
+                    <span className="flex min-w-0 items-center gap-2">
+                      <RedMarker />
+                      <span className="break-words">{cell || "—"}</span>
+                    </span>
+                  ) : (
+                    <span className="break-words">{cell || "—"}</span>
+                  )}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </section>
   );
 }
@@ -294,15 +302,15 @@ export default function BookDetailSecondaryLayout({
                   </div>
                   <MobileInfoTable columns={[t("tables.authors"), t("tables.authorType"), t("tables.writingLanguage")]} rows={authorsRows} />
                   <div className="hidden md:block">
-                    <InfoTable columns={[t("tables.authors"), t("tables.authorType"), t("tables.writingLanguage")]} rows={authorsRows} gridTemplateColumns="3fr 0.9fr 1fr" />
+                    <InfoTable columns={[t("tables.authors"), t("tables.authorType"), t("tables.writingLanguage")]} rows={authorsRows} columnWidths={["61%","18%","21%"]} />
                   </div>
                   <MobileInfoTable columns={[t("tables.contributors"), t("tables.contributionType"), t("tables.writingLanguage")]} rows={contributorsRows} />
                   <div className="hidden md:block">
-                    <InfoTable columns={[t("tables.contributors"), t("tables.contributionType"), t("tables.writingLanguage")]} rows={contributorsRows} gridTemplateColumns="3fr 0.9fr 1fr" />
+                    <InfoTable columns={[t("tables.contributors"), t("tables.contributionType"), t("tables.writingLanguage")]} rows={contributorsRows} columnWidths={["61%","18%","21%"]} />
                   </div>
                   <MobileInfoTable columns={[t("tables.publishers"), t("tables.country"), t("tables.isbn")]} rows={publishersRows} />
                   <div className="hidden md:block">
-                    <InfoTable columns={[t("tables.publishers"), t("tables.country"), t("tables.isbn")]} rows={publishersRows} gridTemplateColumns="1.7fr 0.9fr 1.1fr" />
+                    <InfoTable columns={[t("tables.publishers"), t("tables.country"), t("tables.isbn")]} rows={publishersRows} columnWidths={["46%","24%","30%"]} />
                   </div>
                 </div>
               </div>
