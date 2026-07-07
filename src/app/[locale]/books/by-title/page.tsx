@@ -1,6 +1,8 @@
 import { redirect } from "@/i18n/routing";
 import { resolveBookByExactTitle } from "@/lib/data/books";
 
+export const dynamic = "force-dynamic";
+
 interface BooksByTitlePageProps {
   params: Promise<{
     locale: string;

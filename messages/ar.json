@@ -180,6 +180,7 @@
     "logoName": "Mickael Pariente",
     "bookVertical": "BOOK",
     "missingFile": "<ملف مفقود>",
+    "noCoverAvailable": "لا يوجد غلاف متاح",
     "summary": "الملخص",
     "tabs": {
       "bookCard": "بطاقة كتاب",

@@ -18,6 +18,8 @@ import { BOOK_RELATED_FACET_LABEL_KEYS, isBookRelatedFacet, type BookRelatedFace
 import { BOOKS_PAGE_SIZE, getBooksPageByFacet } from "@/lib/data/books";
 import { buildRelatedBooksPageMetadata } from "@/lib/site-metadata";
 
+export const dynamic = "force-dynamic";
+
 const BOOKS_COLUMN_WIDTHS = ["34.71%", "17.90%", "13.56%", "11.06%", "6.72%", "6.94%", "6.72%", "6.72%"] as const;
 
 interface RelatedBooksPageProps {

@@ -6,6 +6,8 @@ import { redirect } from "@/i18n/routing";
 import { getDefaultPersonDetail, getPersonDetailByName } from "@/lib/data/persons";
 import { buildPersonPageMetadata } from "@/lib/site-metadata";
 
+export const dynamic = "force-dynamic";
+
 interface PersonDetailsPageProps {
   params: Promise<{
     locale: string;

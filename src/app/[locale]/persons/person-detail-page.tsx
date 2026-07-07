@@ -42,6 +42,13 @@ interface MobileBibliographyCardProps {
   row: PersonBibliographyRow;
 }
 
+interface PersonBibliographySectionProps {
+  count: string;
+  rows: PersonBibliographyRow[];
+  statLabel: string;
+  labels: MobileBibliographyCardProps["labels"];
+}
+
 function renderBookTitleValue(value: string) {
   return value ? <ClickableDetailValue href={buildBookTitleResolverHref(value)} value={value} /> : "—";
 }
@@ -72,6 +79,58 @@ function MobileBibliographyCard({ labels, row }: MobileBibliographyCardProps) {
         </div>
       </div>
     </article>
+  );
+}
+
+function PersonBibliographySection({ count, rows, statLabel, labels }: PersonBibliographySectionProps) {
+  const filledRows = rows.length > 0 ? rows : [{ type: "", language: "", title: "", year: "", issue: "" }];
+
+  return (
+    <section className="flex h-full min-h-0 flex-col space-y-[8px]">
+      <div className="rounded-[8px] border border-[#7aa8b7] bg-[#b2e0ef] px-3 py-2 md:hidden">
+        <p className="text-[11px] font-bold uppercase leading-none text-[#07384a]">{statLabel}</p>
+        <p className="mt-2 text-[22px] font-bold leading-none text-[#ff1d1d]">{count}</p>
+      </div>
+
+      <div className="hidden flex-wrap items-center gap-x-2 px-1 pt-1 text-[18px] font-bold leading-none text-black md:flex">
+        <span>{statLabel}</span>
+        <span className="text-[#ff1d1d]">{count}</span>
+      </div>
+
+      <div className="space-y-3 md:hidden">
+        {filledRows.map((row, rowIndex) => (
+          <MobileBibliographyCard key={rowIndex} labels={labels} row={row} />
+        ))}
+      </div>
+
+      <section className="hidden min-h-0 flex-1 overflow-hidden border border-[#7aa8b7] bg-[#a7dcee] md:flex md:flex-col">
+        <div className={cn("grid w-full border-b border-[#7aa8b7] bg-[#fff8c8] text-[13px] uppercase leading-none text-black", PERSON_BIBLIOGRAPHY_GRID)}>
+          <div className="min-w-0 border-r border-[#7aa8b7] px-3 py-[5px]">{labels.type}</div>
+          <div className="min-w-0 border-r border-[#7aa8b7] px-3 py-[5px]">{labels.language}</div>
+          <div className="min-w-0 border-r border-[#7aa8b7] px-3 py-[5px]">{labels.title}</div>
+          <div className="min-w-0 border-r border-[#7aa8b7] px-3 py-[5px]">{labels.year}</div>
+          <div className="min-w-0 px-3 py-[5px]">{labels.issue}</div>
+        </div>
+        <div className="min-h-0 flex-1 overflow-y-auto">
+          {filledRows.map((row, rowIndex) => (
+            <div key={rowIndex} className={cn("grid w-full", PERSON_BIBLIOGRAPHY_GRID)}>
+              <div className="flex min-w-0 h-[46px] items-center border-r border-t border-[#7aa8b7] px-3 text-[15px] text-black">{row.type}</div>
+              <div className="flex min-w-0 h-[46px] items-center border-r border-t border-[#7aa8b7] px-3 text-[15px] text-black">{row.language}</div>
+              <div className="flex min-w-0 h-[46px] items-center border-r border-t border-[#7aa8b7] px-3 text-[15px] text-black">{renderBookTitleValue(row.title)}</div>
+              <div className="flex min-w-0 h-[46px] items-center border-r border-t border-[#7aa8b7] px-3 text-[15px] text-black">{row.year}</div>
+              <div className="flex min-w-0 h-[46px] items-center border-t border-[#7aa8b7] px-3 text-[15px] text-black">{row.issue}</div>
+            </div>
+          ))}
+          <div className={cn("grid min-h-[138px]", PERSON_BIBLIOGRAPHY_GRID)}>
+            <div className="border-r border-t border-[#7aa8b7]" />
+            <div className="border-r border-t border-[#7aa8b7]" />
+            <div className="border-r border-t border-[#7aa8b7]" />
+            <div className="border-r border-t border-[#7aa8b7]" />
+            <div className="border-t border-[#7aa8b7]" />
+          </div>
+        </div>
+      </section>
+    </section>
   );
 }
 
@@ -141,6 +200,8 @@ export default function PersonDetailPage({ person }: PersonDetailPageProps) {
     year: t("bibliography.columns.year"),
     issue: t("bibliography.columns.issue"),
   };
+  const originalBibliographyRows = person.bibliographyRows.filter((row) => row.type.trim().toLocaleLowerCase() === "original");
+  const translatedBibliographyRows = person.bibliographyRows.filter((row) => row.type.trim().toLocaleLowerCase() === "traduction");
 
   return (
     <main dir="ltr" className="relative min-h-[100svh] overflow-x-hidden bg-[#e7f2f7] font-[Arial,Helvetica,sans-serif] text-black md:h-screen md:overflow-hidden">
@@ -154,8 +215,8 @@ export default function PersonDetailPage({ person }: PersonDetailPageProps) {
           subtitle={t("header.subtitle")}
         />
 
-        <section className="mt-6 flex min-w-0 flex-col gap-5 md:absolute md:left-1/2 md:top-[172px] md:bottom-[118px] md:w-[1120px] md:max-w-[calc(100vw-240px)] md:-translate-x-1/2">
-          <aside className="hidden md:absolute md:right-[calc(100%+12px)] md:top-[66px] md:flex md:h-[660px] md:w-[174px] md:flex-col md:items-end md:gap-5">
+        <section className="mt-6 flex min-w-0 flex-col gap-5 md:absolute md:left-1/2 md:top-[172px] md:bottom-[118px] md:w-[1341px] md:max-w-[calc(100vw-24px)] md:-translate-x-1/2 md:box-border md:pl-[186px] md:pr-[35px]">
+          <aside className="hidden md:absolute md:left-0 md:top-[66px] md:flex md:h-[660px] md:w-[174px] md:flex-col md:items-end md:gap-5">
             <div className="relative h-[212px] w-[174px] overflow-hidden border border-[#6c99a7] bg-[#d7eef6] shadow-[3px_3px_6px_rgba(0,0,0,0.18)]">
               <Image
                 src={person.imageSrc}
@@ -167,7 +228,7 @@ export default function PersonDetailPage({ person }: PersonDetailPageProps) {
             </div>
           </aside>
 
-          <section className="min-w-0 md:w-[1120px] md:max-w-none">
+          <section className="min-w-0 md:w-full md:max-w-none">
             <nav className="grid grid-cols-2 gap-2 pb-2 md:shrink-0 md:grid-cols-[108px_repeat(7,minmax(0,1fr))] md:items-end md:gap-[12px] md:pb-0">
               {tabs.map((tabKey) => (
                 <button
@@ -315,8 +376,22 @@ export default function PersonDetailPage({ person }: PersonDetailPageProps) {
                   </div>
                 ) : null}
 
-                {activeTab === "originalTitles" ? <BlankTabPanel title={t("content.originalTitles")} rows={3} /> : null}
-                {activeTab === "translatedTitles" ? <BlankTabPanel title={t("content.translatedTitles")} rows={3} /> : null}
+                {activeTab === "originalTitles" ? (
+                  <PersonBibliographySection
+                    count={person.bibliographyStats.originalTitles}
+                    rows={originalBibliographyRows}
+                    statLabel={t("bibliography.originalTitles")}
+                    labels={mobileBibliographyLabels}
+                  />
+                ) : null}
+                {activeTab === "translatedTitles" ? (
+                  <PersonBibliographySection
+                    count={person.bibliographyStats.translations}
+                    rows={translatedBibliographyRows}
+                    statLabel={t("bibliography.translations")}
+                    labels={mobileBibliographyLabels}
+                  />
+                ) : null}
                 {activeTab === "authorArticles" ? <BlankTabPanel title={t("content.authorArticles")} rows={3} /> : null}
                 {activeTab === "authorPublications" ? <BlankTabPanel title={t("content.authorPublications")} rows={3} /> : null}
                 {activeTab === "pressCritiques" ? <BlankTabPanel title={t("content.pressCritiques")} rows={3} /> : null}
@@ -326,7 +401,7 @@ export default function PersonDetailPage({ person }: PersonDetailPageProps) {
             </div>
           </section>
 
-          <aside className="hidden md:absolute md:left-[calc(100%+1px)] md:top-[66px] md:flex md:h-[660px] md:w-[34px] md:items-center md:justify-center">
+          <aside className="hidden md:absolute md:right-0 md:top-[66px] md:flex md:h-[660px] md:w-[34px] md:items-center md:justify-center">
             <div className="flex flex-col items-center justify-center gap-[14px] text-[15px] leading-none text-black">
               <span className="[writing-mode:vertical-rl]">{t("right.personCardsFound")}</span>
               <span className="[writing-mode:vertical-rl] text-[17px] font-bold text-[#ff1d1d]">{person.stats.cardsFound}</span>
@@ -340,7 +415,7 @@ export default function PersonDetailPage({ person }: PersonDetailPageProps) {
         <StavnetFooter
           items={footerItems}
           desktopMode="compact"
-          className="md:left-1/2 md:right-auto md:w-[1120px] md:max-w-[calc(100vw-240px)] md:-translate-x-1/2"
+          className="md:left-[calc(50%+75.5px)] md:right-auto md:w-[1120px] md:max-w-[calc(100vw-210px)] md:-translate-x-1/2"
         />
       </div>
     </main>

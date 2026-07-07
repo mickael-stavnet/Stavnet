@@ -8,7 +8,7 @@ import { StavnetFooter } from "@/components/stavnet/footer";
 import { StavnetHeader } from "@/components/stavnet/header";
 import { Link } from "@/i18n/routing";
 import type { OrganizationDetail } from "@/lib/data/orgs";
-import { ClickableDetailValue, buildRelatedBooksHref } from "@/lib/detail-links";
+import { ClickableDetailValue, buildBookTitleResolverHref, buildRelatedBooksHref } from "@/lib/detail-links";
 
 type OrganizationTab =
   | "editorCard"
@@ -167,7 +167,7 @@ export default function OrganizationsDetailPage({
           titleBlockClassName="md:w-[84vw]"
         />
 
-        <section className="mt-6 flex min-w-0 flex-col gap-5 md:absolute md:left-1/2 md:top-[172px] md:bottom-[118px] md:w-[1120px] md:max-w-[calc(100vw-240px)] md:-translate-x-1/2">
+        <section className="mt-6 flex min-w-0 flex-col gap-5 md:absolute md:left-1/2 md:top-[172px] md:bottom-[118px] md:w-[1341px] md:max-w-[calc(100vw-24px)] md:-translate-x-1/2 md:box-border md:pl-[186px] md:pr-[35px]">
           <section className="grid gap-2 md:hidden">
             <div className="grid grid-cols-2 gap-2">
               <div className="rounded-[8px] border border-[#7aa8b7] bg-[#d8dde2] px-3 py-2">
@@ -213,7 +213,7 @@ export default function OrganizationsDetailPage({
             </button>
           </section>
 
-          <aside className="hidden md:absolute md:right-[calc(100%+12px)] md:top-[66px] md:flex md:h-[660px] md:w-[174px] md:flex-col md:items-center md:gap-5">
+          <aside className="hidden md:absolute md:left-0 md:top-[66px] md:flex md:h-[660px] md:w-[174px] md:flex-col md:items-center md:gap-5">
               <div className="relative overflow-hidden border border-[#6c99a7] bg-[#d7eef6] shadow-[3px_3px_6px_rgba(0,0,0,0.18)] h-[176px] w-[174px]">
                 <Image
                   src="https://cdn.pixabay.com/photo/2016/12/28/22/15/moscow-1937274_1280.jpg"
@@ -243,7 +243,7 @@ export default function OrganizationsDetailPage({
               </div>
           </aside>
 
-          <section className="min-w-0 md:w-[1120px] md:max-w-none">
+          <section className="min-w-0 md:w-full md:max-w-none">
             <nav className="grid grid-cols-2 gap-2 pb-2 md:grid-cols-[108px_repeat(7,minmax(0,1fr))] md:items-end md:gap-[12px] md:pb-0">
               {tabs.map((tabKey) => (
                 <button
@@ -355,14 +355,18 @@ export default function OrganizationsDetailPage({
                     </div>
 
                     <section className="flex h-full min-h-0 flex-col space-y-[8px]">
-                      <div className="flex flex-wrap items-center gap-x-4 gap-y-2 px-1 pt-1 text-[18px] font-bold leading-none text-black">
-                        <span>{t("published.title")} :</span>
-                        <span className="text-[#ff1d1d]">
-                          {organization.publishedStats.titles}
+                      <div className="flex flex-wrap items-center gap-x-[14px] gap-y-2 px-1 pt-1 text-[18px] font-bold leading-none text-black">
+                        <span className="inline-flex items-center gap-x-[6px]">
+                          <span>{t("published.title")} :</span>
+                          <span className="text-[#ff1d1d]">
+                            {organization.publishedStats.titles}
+                          </span>
                         </span>
-                        <span>{t("published.titlesCount")}</span>
-                        <span className="text-[#ff1d1d]">
-                          {organization.publishedStats.authors}
+                        <span className="inline-flex items-center gap-x-[6px]">
+                          <span>{t("published.titlesCount")}</span>
+                          <span className="text-[#ff1d1d]">
+                            {organization.publishedStats.authors}
+                          </span>
                         </span>
                         <span>{t("published.authorsCount")}</span>
                       </div>
@@ -379,25 +383,29 @@ export default function OrganizationsDetailPage({
                             {t("published.columns.year")}
                           </div>
                         </div>
-                        {(organization.publishedRows.length > 0
-                          ? organization.publishedRows
-                          : [{ title: "", author: "", year: "" }]).map((row, rowIndex) => (
-                          <div key={`${row.title}-${row.author}-${row.year}-${rowIndex}`} className="grid w-full min-w-0 grid-cols-[minmax(0,1.8fr)_minmax(0,1fr)_72px]">
-                            <div className="flex min-h-[32px] items-center justify-end border-r border-t border-[#7aa8b7] px-2 py-1 text-[13px] text-black md:text-[15px]">
-                              <span className="w-full break-words text-right">{row.title || "—"}</span>
+                        <div className="min-h-0 flex-1 overflow-y-auto">
+                          {(organization.publishedRows.length > 0
+                            ? organization.publishedRows
+                            : [{ title: "", author: "", year: "" }]).map((row, rowIndex) => (
+                            <div key={`${row.title}-${row.author}-${row.year}-${rowIndex}`} className="grid w-full min-w-0 grid-cols-[minmax(0,1.8fr)_minmax(0,1fr)_72px]">
+                              <div className="flex min-h-[32px] items-center border-r border-t border-[#7aa8b7] px-2 py-1 text-[13px] text-black md:text-[15px]">
+                                <span className="w-full break-words text-left">
+                                  {row.title ? <ClickableDetailValue href={buildBookTitleResolverHref(row.title)} value={row.title} /> : "—"}
+                                </span>
+                              </div>
+                              <div className="flex min-h-[32px] items-center border-r border-t border-[#7aa8b7] px-2 py-1 text-[13px] text-black md:text-[15px]">
+                                <span className="break-words">{row.author || "—"}</span>
+                              </div>
+                              <div className="flex min-h-[32px] items-center border-t border-[#7aa8b7] px-2 py-1 text-[13px] text-black md:text-[15px]">
+                                {row.year || "—"}
+                              </div>
                             </div>
-                            <div className="flex min-h-[32px] items-center border-r border-t border-[#7aa8b7] px-2 py-1 text-[13px] text-black md:text-[15px]">
-                              <span className="break-words">{row.author || "—"}</span>
-                            </div>
-                            <div className="flex min-h-[32px] items-center border-t border-[#7aa8b7] px-2 py-1 text-[13px] text-black md:text-[15px]">
-                              {row.year || "—"}
-                            </div>
+                          ))}
+                          <div className="grid min-h-[120px] grid-cols-[minmax(0,1.8fr)_minmax(0,1fr)_72px]">
+                            <div className="border-r border-t border-[#7aa8b7]" />
+                            <div className="border-r border-t border-[#7aa8b7]" />
+                            <div className="border-t border-[#7aa8b7]" />
                           </div>
-                        ))}
-                        <div className="grid min-h-0 flex-1 grid-cols-[minmax(0,1.8fr)_minmax(0,1fr)_72px]">
-                          <div className="border-r border-t border-[#7aa8b7]" />
-                          <div className="border-r border-t border-[#7aa8b7]" />
-                          <div className="border-t border-[#7aa8b7]" />
                         </div>
                       </section>
                     </section>
@@ -432,7 +440,7 @@ export default function OrganizationsDetailPage({
             </div>
           </section>
 
-          <aside className="hidden md:absolute md:left-[calc(100%+1px)] md:top-[66px] md:flex md:h-[660px] md:w-[34px] md:items-center md:justify-center">
+          <aside className="hidden md:absolute md:right-0 md:top-[66px] md:flex md:h-[660px] md:w-[34px] md:items-center md:justify-center">
             <div className="flex flex-col items-center justify-center gap-[14px] text-[15px] leading-none text-black">
               <span className="[writing-mode:vertical-rl]">
                 {t("right.organizationCardsFound")}
@@ -454,7 +462,7 @@ export default function OrganizationsDetailPage({
         <StavnetFooter
           items={footerItems}
           desktopMode="compact"
-          className="md:left-1/2 md:right-auto md:w-[1436px] md:max-w-[calc(100vw-24px)] md:-translate-x-1/2"
+          className="md:left-[calc(50%+75.5px)] md:right-auto md:w-[1120px] md:max-w-[calc(100vw-210px)] md:-translate-x-1/2"
         />
       </div>
     </main>

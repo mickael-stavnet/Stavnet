@@ -132,3 +132,11 @@
 - 16:47 - Correction de la reconstruction bibliographique des fiches personnes pour parcourir `data-books` et `data-person` par lots complets au lieu de dépendre de la limite implicite Supabase, ce qui rétablit l’affichage des ouvrages situés au-delà des premiers 1000 enregistrements, comme les titres originaux d’Ada Aharoni.
 - 16:55 - Ajustement métier de la bibliographie des fiches personnes pour classer les ouvrages issus de `data-books` en `Original` ou `Traduction` selon la langue d’écriture de l’auteur, puis fusionner les doublons par œuvre afin de conserver les traductions distinctes attendues sans répéter les mêmes titres français déjà codés dans `data-person`.
 - 17:02 - Durcissement équivalent du fallback des fiches organismes avec lecture complète de `data-books` et `data-organism` par lots Supabase, afin que les ouvrages publiés liés à des éditeurs comme `18-oct` ne disparaissent plus lorsqu’ils se trouvent au-delà de la limite implicite des premières pages de résultats.
+- 17:53 - Recentrage exact de la composition desktop complète des fiches `/[locale]/books/details`, `/[locale]/persons/details` et `/[locale]/orgs/details`, avec nouveau cadre global incluant colonne gauche, bloc principal, repère vertical droit et footer pour que l’ensemble visible soit aligné au centre géométrique de la page.
+
+# 07-07-2026
+
+- 10:41 - Passage en rendu dynamique forcé des routes locales pilotées par query string (`/[locale]/persons/details`, `/[locale]/orgs/details`, `/[locale]/books/details*`, `/[locale]/books/related` et `/[locale]/books/by-title`) pour supprimer les 404 au chargement direct sur localhost malgré des segments et données valides.
+- 10:48 - Activation des onglets `Titres originaux` et `Titres traduits` de `/[locale]/persons/details` avec affichage réel des ouvrages de l’auteur filtrés par type bibliographique, en desktop comme en mobile, au lieu des panneaux vides précédents.
+- 10:50 - Mise en place et durcissement du socle CI et tests avec `Vitest`, `Playwright` et une base Supabase de test dédiée, correction du bootstrap Supabase pour éviter l’échec au build, puis validation complète du pipeline par lint, tests et build.
+- 10:50 - Verrouillage de la branche `master` côté GitHub avec une protection exigeant le check CI `verify` avant acceptation des changements.

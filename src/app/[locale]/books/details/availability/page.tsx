@@ -4,6 +4,8 @@ import BookAvailabilityPage from "../../book-availability-page";
 import { getBookDetailById, getDefaultBookDetail } from "@/lib/data/books";
 import { buildBookPageMetadata } from "@/lib/site-metadata";
 
+export const dynamic = "force-dynamic";
+
 interface BookAvailabilityRouteProps {
   params: Promise<{
     locale: string;

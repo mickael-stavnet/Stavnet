@@ -206,6 +206,7 @@ export default function BookDetailSecondaryLayout({
 }: BookDetailSecondaryLayoutProps) {
   const t = useTranslations("BookDetailsPage");
   const router = useRouter();
+  const hasMissingCover = book.imageSrc === "/images/books-cover/book-cover-placeholder.png";
   const footerItems = [
     { key: "back", icon: "/icons/icons-nav/back.png", href: "/home" as const, label: t("footer.back") },
     { key: "menu", icon: "/icons/icons-nav/menu.png", href: "/menu" as const, label: t("footer.menu") },
@@ -272,7 +273,13 @@ export default function BookDetailSecondaryLayout({
           <div className="flex min-w-0 flex-col gap-3 md:grid md:grid-cols-[270px_1120px] md:gap-x-[12px]">
             <aside className="min-w-0 md:h-[404px] md:w-[270px]">
               <div className="w-full max-w-[270px] border border-[#b7ab92] bg-[#f3ead4] p-[6px] shadow-[2px_2px_4px_rgba(0,0,0,0.12)] md:h-[404px] md:w-[270px] md:max-w-none">
-                <Image src={book.imageSrc} alt={book.title} width={258} height={387} priority className="h-auto w-full object-cover md:h-full md:w-full" />
+                {hasMissingCover ? (
+                  <div className="flex h-[240px] w-full items-center justify-center bg-[#efe5d2] px-6 text-center text-[16px] leading-[1.3] text-[#6d614d] md:h-full md:text-[17px]">
+                    {t("noCoverAvailable")}
+                  </div>
+                ) : (
+                  <Image src={book.imageSrc} alt={book.title} width={258} height={387} priority className="h-auto w-full object-cover md:h-full md:w-full" />
+                )}
               </div>
             </aside>
 

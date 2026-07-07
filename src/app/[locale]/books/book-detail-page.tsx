@@ -233,6 +233,7 @@ export default function BookDetailPage({ book }: BookDetailPageProps) {
   const t = useTranslations("BookDetailsPage");
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<BookTab>("bookCard");
+  const hasMissingCover = book.imageSrc === "/images/books-cover/book-cover-placeholder.png";
   const tabs: BookTab[] = [
     "bookCard",
     "backCover",
@@ -293,17 +294,23 @@ export default function BookDetailPage({ book }: BookDetailPageProps) {
           subtitle={t("header.subtitle")}
         />
 
-        <section className="mt-6 flex min-w-0 flex-col gap-5 md:absolute md:left-1/2 md:top-[172px] md:bottom-[118px] md:w-[1120px] md:max-w-[calc(100vw-240px)] md:-translate-x-1/2">
-          <aside className="order-1 flex min-w-0 flex-col gap-[12px] md:absolute md:right-[calc(100%+12px)] md:top-[66px] md:h-[660px] md:w-[270px] md:gap-[14px] md:overflow-hidden">
+        <section className="mt-6 flex min-w-0 flex-col gap-5 md:absolute md:left-1/2 md:top-[172px] md:bottom-[118px] md:w-[1437px] md:max-w-[calc(100vw-24px)] md:-translate-x-1/2 md:box-border md:pl-[282px] md:pr-[35px]">
+          <aside className="order-1 flex min-w-0 flex-col gap-[12px] md:absolute md:left-0 md:top-[66px] md:h-[660px] md:w-[270px] md:gap-[14px] md:overflow-hidden">
             <div className="w-full max-w-[270px] border border-[#b7ab92] bg-[#f3ead4] p-[6px] shadow-[2px_2px_4px_rgba(0,0,0,0.12)] md:h-[422px] md:w-[270px] md:max-w-none">
-              <Image
-                src={book.imageSrc}
-                alt={book.title}
-                width={258}
-                height={387}
-                priority
-                className="h-auto w-full object-cover md:h-full"
-              />
+              {hasMissingCover ? (
+                <div className="flex h-[240px] w-full items-center justify-center bg-[#efe5d2] px-6 text-center text-[16px] leading-[1.3] text-[#6d614d] md:h-full md:text-[17px]">
+                  {t("noCoverAvailable")}
+                </div>
+              ) : (
+                <Image
+                  src={book.imageSrc}
+                  alt={book.title}
+                  width={258}
+                  height={387}
+                  priority
+                  className="h-auto w-full object-cover md:h-full"
+                />
+              )}
             </div>
 
             <div className="min-w-0 max-w-[270px] border border-[#7aa8b7] bg-[#d8dde2] md:flex-1 md:w-[270px] md:max-w-none">
@@ -316,7 +323,7 @@ export default function BookDetailPage({ book }: BookDetailPageProps) {
             </div>
           </aside>
 
-          <section className="order-2 min-w-0 md:w-[1120px] md:max-w-none">
+          <section className="order-2 min-w-0 md:w-full md:max-w-none">
             <nav className="grid grid-cols-2 gap-2 pb-2 md:grid md:w-full md:grid-cols-[1.05fr_1.28fr_1.26fr_0.92fr_1.28fr_1.08fr_0.96fr_1.02fr] md:items-end md:gap-[8px] md:pb-0">
               {tabs.map((tabKey) => {
                 const tabClassName = cn(
@@ -485,7 +492,7 @@ export default function BookDetailPage({ book }: BookDetailPageProps) {
             </div>
           </section>
 
-          <aside className="order-3 hidden md:absolute md:left-[calc(100%+1px)] md:top-[66px] md:flex md:h-[660px] md:w-[34px] md:items-center md:justify-center">
+          <aside className="order-3 hidden md:absolute md:right-0 md:top-[66px] md:flex md:h-[660px] md:w-[34px] md:items-center md:justify-center">
             <div className="flex flex-col items-center justify-center gap-[14px] text-[15px] leading-none text-black">
               <span className="[writing-mode:vertical-rl]">{t("right.bookCardsFound")}</span>
               <span className="[writing-mode:vertical-rl] text-[17px] font-bold text-[#ff1d1d]">{book.stats.cardsFound}</span>
@@ -499,7 +506,7 @@ export default function BookDetailPage({ book }: BookDetailPageProps) {
         <StavnetFooter
           items={footerItems}
           desktopMode="compact"
-          className="md:left-1/2 md:right-auto md:w-[1120px] md:max-w-[calc(100vw-240px)] md:-translate-x-1/2"
+          className="md:left-[calc(50%+123.5px)] md:right-auto md:w-[1120px] md:max-w-[calc(100vw-306px)] md:-translate-x-1/2"
         />
       </div>
     </main>

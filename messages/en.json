@@ -180,6 +180,7 @@
     "logoName": "Mickael Pariente",
     "bookVertical": "BOOK",
     "missingFile": "<Missing file>",
+    "noCoverAvailable": "No cover available",
     "summary": "Summary",
     "tabs": {
       "bookCard": "Book Card",

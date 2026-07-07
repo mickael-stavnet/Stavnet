@@ -4,6 +4,8 @@ import BookPublishingPage from "../../book-publishing-page";
 import { getBookDetailById, getDefaultBookDetail } from "@/lib/data/books";
 import { buildBookPageMetadata } from "@/lib/site-metadata";
 
+export const dynamic = "force-dynamic";
+
 interface BookPublishingRouteProps {
   params: Promise<{
     locale: string;
