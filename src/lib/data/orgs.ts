@@ -20,7 +20,6 @@ type OrganizationPageRpc = {
   databaseTotal?: unknown;
 } | null;
 
-type OrganizationSourceRow = Record<string, unknown>;
 type OrganizationBookSourceRow = Record<string, unknown>;
 
 type OrganizationDetailRpc = {

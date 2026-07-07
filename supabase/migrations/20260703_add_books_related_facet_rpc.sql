@@ -90,7 +90,7 @@ as $$
             lower(btrim(coalesce(b."Contrib. 4. Langue Traduite", ''))),
             lower(btrim(coalesce(b."Contrib. 5. Langue Traduite", ''))),
             lower(btrim(coalesce(b."Contrib. 6. Langue Traduite", ''))),
-            lower(btrim(coalesce(b."Contrib. 7. Langue Traduite", ''))),
+            lower(btrim(coalesce(to_jsonb(b)->>'Contrib. 7. Langue Traduite', ''))),
             lower(btrim(coalesce(b."Contrib. 8. Langue Traduite", ''))),
             lower(btrim(coalesce(b."Contrib. 9. Langue Traduite", ''))),
             lower(btrim(coalesce(b."Contrib. 10. Langue Traduite", '')))
@@ -136,8 +136,8 @@ as $$
     from filtered
     cross join params p
     order by lower(title), id
-    offset (p.page - 1) * p.page_size
-    limit p.page_size
+    offset (select (page - 1) * page_size from params)
+    limit (select page_size from params)
   )
   select jsonb_build_object(
     'items',

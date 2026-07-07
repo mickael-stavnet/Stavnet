@@ -23,6 +23,7 @@ describe("supabase bootstrap", () => {
   });
 
   it("throws a clear error when a required env variable is missing", async () => {
+    vi.stubEnv("NEXT_PUBLIC_SUPABASE_URL", "");
     vi.stubEnv("NEXT_PUBLIC_SUPABASE_ANON_KEY", "anon-key");
 
     await expect(import("@/lib/supabase")).rejects.toThrow("Missing required environment variable: NEXT_PUBLIC_SUPABASE_URL");
