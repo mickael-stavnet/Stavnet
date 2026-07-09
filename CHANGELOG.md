@@ -142,3 +142,12 @@
 - 10:50 - Verrouillage de la branche `master` côté GitHub avec une protection exigeant le check CI `verify` avant acceptation des changements.
 - 11:04 - Ajout d’un filtre de type sur la liste `/[locale]/orgs` avec trois entrées utilisateur `Editeurs`, `Bibliothèques` et `Autres organismes`, en tenant compte du fait que la base ne stocke en `Type` que `Editeur` et `AutreOrganisme`, les bibliothèques étant isolées comme sous-ensemble métier des autres organismes.
 - 11:29 - Normalisation visuelle des principaux tableaux desktop encore montés en grilles CSS sur `books/details`, `books/details/*`, `orgs/details` et `definition`, avec conversion en vraies tables HTML à colonnes fixes pour rétablir des bordures continues et un alignement FileMaker cohérent.
+
+# 09-07-2026
+
+- 09:27 - Ajout d’une redirection automatique depuis `/[locale]/books/related` vers `/books/details` quand une facette liée ne retourne qu’un seul ouvrage, afin d’éviter l’étape intermédiaire de filtrage quand le résultat est déjà unique.
+- 10:57 - Généralisation de la redirection directe vers la fiche unique sur les listes `/[locale]/books`, `/[locale]/persons` et `/[locale]/orgs`, avec bascule automatique vers `/books/details`, `/persons/details` ou `/orgs/details` dès qu’une recherche ou un filtre ne renvoie qu’un seul résultat.
+- 09:54 - Mise à jour de la fiche personne avec extraction des codes de parution pour afficher séparément `Parution` et `Façonnage`, tri des bibliographies par type puis par année décroissante, et ajout d’un hook dédié pour normaliser les lignes avant affichage.
+- 09:57 - Refactor de la couche Supabase en services cachés par domaine pour `books`, `persons` et `orgs`, avec cache Next explicite sur les lectures coûteuses, retrait des `force-dynamic` inutiles sur les routes de détail et correction du rechargement infini via un garde-fou sur la synchronisation de recherche.
+- 10:33 - Ajout de traces `DEBUG_LOG_INFINITE_FETCH` sur les pages détail et dans le cache serveur pour compter les appels, détecter les doublons concurrents et réduire les hits Supabase répétés sur les parcours `persons` et `books`.
+- 10:45 - Ajout de `error.tsx` sur les segments async `books`, `persons` et `orgs` concernés, avec écran d’erreur local et bouton de retry pour éviter les relances de chargement sans retour visuel quand le rendu plante.

@@ -12,7 +12,11 @@ import {
   buildRelatedBooksHref,
 } from "@/lib/detail-links";
 import { cn } from "@/lib/utils";
-import type { PersonBibliographyRow, PersonDetail } from "@/lib/data/persons";
+import type { PersonDetail } from "@/lib/data/persons";
+import {
+  type PersonBibliographyDisplayRow,
+  usePersonBibliography,
+} from "@/hooks/use-person-bibliography";
 
 type TabKey =
   | "authorCard"
@@ -28,7 +32,16 @@ interface PersonDetailPageProps {
   person: PersonDetail;
 }
 
-const PERSON_BIBLIOGRAPHY_COLUMN_WIDTHS = ["14.75%", "20%", "44%", "7.2%", "14.05%"] as const;
+const PERSON_BIBLIOGRAPHY_COLUMN_WIDTHS = ["15%", "20%", "37%", "8%", "10%", "10%"] as const;
+const EMPTY_BIBLIOGRAPHY_ROW: PersonBibliographyDisplayRow = {
+  type: "",
+  language: "",
+  title: "",
+  year: "",
+  issue: "",
+  parution: "",
+  faconnage: "",
+};
 
 interface MobileBibliographyCardProps {
   labels: {
@@ -36,20 +49,21 @@ interface MobileBibliographyCardProps {
     language: string;
     title: string;
     year: string;
-    issue: string;
+    parution: string;
+    faconnage: string;
   };
-  row: PersonBibliographyRow;
+  row: PersonBibliographyDisplayRow;
 }
 
 interface PersonBibliographySectionProps {
   count: string;
-  rows: PersonBibliographyRow[];
+  rows: PersonBibliographyDisplayRow[];
   statLabel: string;
   labels: MobileBibliographyCardProps["labels"];
 }
 
 interface DesktopBibliographyTableProps {
-  rows: PersonBibliographyRow[];
+  rows: PersonBibliographyDisplayRow[];
   labels: MobileBibliographyCardProps["labels"];
   className?: string;
 }
@@ -79,16 +93,20 @@ function MobileBibliographyCard({ labels, row }: MobileBibliographyCardProps) {
           <p className="text-[13px] text-black">{row.year || "—"}</p>
         </div>
         <div className="space-y-1">
-          <p className="text-[11px] font-bold uppercase tracking-[0.04em] text-[#07384a]">{labels.issue}</p>
-          <p className="text-[13px] text-black">{row.issue || "—"}</p>
+          <p className="text-[11px] font-bold uppercase tracking-[0.04em] text-[#07384a]">{labels.parution}</p>
+          <p className="text-[13px] text-black">{row.parution || "—"}</p>
         </div>
+      </div>
+      <div className="mt-3 space-y-1">
+        <p className="text-[11px] font-bold uppercase tracking-[0.04em] text-[#07384a]">{labels.faconnage}</p>
+        <p className="text-[13px] text-black">{row.faconnage || "—"}</p>
       </div>
     </article>
   );
 }
 
 function DesktopBibliographyTable({ rows, labels, className }: DesktopBibliographyTableProps) {
-  const filledRows = rows.length > 0 ? rows : [{ type: "", language: "", title: "", year: "", issue: "" }];
+  const filledRows = rows.length > 0 ? rows : [EMPTY_BIBLIOGRAPHY_ROW];
 
   return (
     <div className={cn("hidden min-h-0 flex-1 md:flex md:flex-col", className)}>
@@ -105,7 +123,8 @@ function DesktopBibliographyTable({ rows, labels, className }: DesktopBibliograp
               <th className="border border-[#7aa8b7] px-3 py-[5px] text-left font-normal">{labels.language}</th>
               <th className="border border-[#7aa8b7] px-3 py-[5px] text-left font-normal">{labels.title}</th>
               <th className="border border-[#7aa8b7] px-3 py-[5px] text-left font-normal">{labels.year}</th>
-              <th className="border border-[#7aa8b7] px-3 py-[5px] text-left font-normal">{labels.issue}</th>
+              <th className="border border-[#7aa8b7] px-3 py-[5px] text-left font-normal">{labels.parution}</th>
+              <th className="border border-[#7aa8b7] px-3 py-[5px] text-left font-normal">{labels.faconnage}</th>
             </tr>
           </thead>
           <tbody>
@@ -115,10 +134,12 @@ function DesktopBibliographyTable({ rows, labels, className }: DesktopBibliograp
                 <td className="h-[46px] border border-[#7aa8b7] px-3 align-middle text-[15px]">{row.language || "—"}</td>
                 <td className="h-[46px] border border-[#7aa8b7] px-3 align-middle text-[15px]">{renderBookTitleValue(row.title)}</td>
                 <td className="h-[46px] border border-[#7aa8b7] px-3 align-middle text-[15px]">{row.year || "—"}</td>
-                <td className="h-[46px] border border-[#7aa8b7] px-3 align-middle text-[15px]">{row.issue || "—"}</td>
+                <td className="h-[46px] border border-[#7aa8b7] px-3 align-middle text-[15px]">{row.parution || "—"}</td>
+                <td className="h-[46px] border border-[#7aa8b7] px-3 align-middle text-[15px]">{row.faconnage || "—"}</td>
               </tr>
             ))}
             <tr>
+              <td className="h-[92px] border border-[#7aa8b7]" />
               <td className="h-[92px] border border-[#7aa8b7]" />
               <td className="h-[92px] border border-[#7aa8b7]" />
               <td className="h-[92px] border border-[#7aa8b7]" />
@@ -133,7 +154,7 @@ function DesktopBibliographyTable({ rows, labels, className }: DesktopBibliograp
 }
 
 function PersonBibliographySection({ count, rows, statLabel, labels }: PersonBibliographySectionProps) {
-  const filledRows = rows.length > 0 ? rows : [{ type: "", language: "", title: "", year: "", issue: "" }];
+  const filledRows = rows.length > 0 ? rows : [EMPTY_BIBLIOGRAPHY_ROW];
 
   return (
     <section className="flex h-full min-h-0 flex-col space-y-[8px]">
@@ -222,10 +243,10 @@ export default function PersonDetailPage({ person }: PersonDetailPageProps) {
     language: t("bibliography.columns.language"),
     title: t("bibliography.columns.title"),
     year: t("bibliography.columns.year"),
-    issue: t("bibliography.columns.issue"),
+    parution: t("bibliography.columns.parution"),
+    faconnage: t("bibliography.columns.faconnage"),
   };
-  const originalBibliographyRows = person.bibliographyRows.filter((row) => row.type.trim().toLocaleLowerCase() === "original");
-  const translatedBibliographyRows = person.bibliographyRows.filter((row) => row.type.trim().toLocaleLowerCase() === "traduction");
+  const { bibliographyRows, originalRows, translatedRows } = usePersonBibliography(person.bibliographyRows);
 
   return (
     <main dir="ltr" className="relative min-h-[100svh] overflow-x-hidden bg-[#e7f2f7] font-[Arial,Helvetica,sans-serif] text-black md:h-screen md:overflow-hidden">
@@ -260,8 +281,8 @@ export default function PersonDetailPage({ person }: PersonDetailPageProps) {
                   type="button"
                   onClick={() => setActiveTab(tabKey)}
                     className={cn(
-                    "min-h-[52px] min-w-0 rounded-t-[8px] border border-[#d1bb48] px-2 py-[8px] text-center text-[12px] font-bold leading-[1.08] shadow-[3px_3px_5px_rgba(0,0,0,0.28)] transition-colors md:min-h-[60px] md:px-4 md:text-[15px]",
-                    activeTab === tabKey ? "bg-[#91d3ea] font-semibold text-black md:min-h-[68px] md:text-[19px] md:font-bold" : "bg-[#ffea56] text-black hover:bg-[#fff16f]",
+                    "min-h-[42px] min-w-0 rounded-t-[8px] border border-[#d1bb48] px-2 py-[6px] text-center text-[12px] font-bold leading-[1.08] shadow-[3px_3px_5px_rgba(0,0,0,0.28)] transition-colors md:min-h-[48px] md:px-4 md:text-[15px]",
+                    activeTab === tabKey ? "bg-[#91d3ea] font-semibold text-black md:min-h-[54px] md:text-[19px] md:font-bold" : "bg-[#ffea56] text-black hover:bg-[#fff16f]",
                   )}
                 >
                   {t(`tabs.${tabKey}`)}
@@ -362,13 +383,13 @@ export default function PersonDetailPage({ person }: PersonDetailPageProps) {
                       </div>
 
                       <div className="space-y-3 md:hidden">
-                        {person.bibliographyRows.map((row, rowIndex) => (
+                        {bibliographyRows.map((row, rowIndex) => (
                           <MobileBibliographyCard key={rowIndex} labels={mobileBibliographyLabels} row={row} />
                         ))}
                       </div>
 
                       <DesktopBibliographyTable
-                        rows={person.bibliographyRows.length > 0 ? person.bibliographyRows : [{ type: "", language: "", title: "", year: "", issue: "" }]}
+                        rows={bibliographyRows}
                         labels={mobileBibliographyLabels}
                       />
                     </section>
@@ -378,7 +399,7 @@ export default function PersonDetailPage({ person }: PersonDetailPageProps) {
                 {activeTab === "originalTitles" ? (
                   <PersonBibliographySection
                     count={person.bibliographyStats.originalTitles}
-                    rows={originalBibliographyRows}
+                    rows={originalRows}
                     statLabel={t("bibliography.originalTitles")}
                     labels={mobileBibliographyLabels}
                   />
@@ -386,7 +407,7 @@ export default function PersonDetailPage({ person }: PersonDetailPageProps) {
                 {activeTab === "translatedTitles" ? (
                   <PersonBibliographySection
                     count={person.bibliographyStats.translations}
-                    rows={translatedBibliographyRows}
+                    rows={translatedRows}
                     statLabel={t("bibliography.translations")}
                     labels={mobileBibliographyLabels}
                   />

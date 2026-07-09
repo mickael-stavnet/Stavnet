@@ -1,6 +1,7 @@
 import Image from "next/image";
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
+import { redirect } from "@/i18n/routing";
 import {
   Pagination,
   PaginationContent,
@@ -124,8 +125,12 @@ function MobileBookCard({
   );
 }
 
-export default async function BooksListPage({ searchParams }: BooksPageProps) {
-  const [{ page, q, title, personLastName, personFirstName, organization, theme, publicationLanguage, year, generalSearch }, t] = await Promise.all([searchParams, getTranslations("Books")]);
+export default async function BooksListPage({ params, searchParams }: BooksPageProps) {
+  const [{ locale }, { page, q, title, personLastName, personFirstName, organization, theme, publicationLanguage, year, generalSearch }, t] = await Promise.all([
+    params,
+    searchParams,
+    getTranslations("Books"),
+  ]);
   const selection = resolveBooksListSelection({ page, q, title, personLastName, personFirstName, organization, theme, publicationLanguage, year, generalSearch });
   const { searchTerm, advancedFilters } = selection;
   const result =
@@ -134,6 +139,20 @@ export default async function BooksListPage({ searchParams }: BooksPageProps) {
       : selection.mode === "title"
         ? await getBooksPageByTitle(selection.pageNumber, selection.searchTerm)
         : await getBooksPage(selection.pageNumber);
+  const hasAppliedFilters = selection.mode !== "basic";
+
+  if (hasAppliedFilters && result.total === 1 && result.items[0]) {
+    redirect({
+      href: {
+        pathname: "/books/details",
+        query: {
+          id: result.items[0].id,
+        },
+      },
+      locale,
+    });
+  }
+
   const paginationItems = getPaginationItems(result.page, result.totalPages);
   const footerItems = [
     { key: "back", icon: "/icons/icons-nav/back.png", href: "/home" as const, label: t("footer.back") },

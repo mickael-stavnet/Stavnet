@@ -4,8 +4,6 @@ import BookPressCritiquesPage from "../../book-press-critiques-page";
 import { getBookDetailById, getDefaultBookDetail } from "@/lib/data/books";
 import { buildBookPageMetadata } from "@/lib/site-metadata";
 
-export const dynamic = "force-dynamic";
-
 interface BookPressCritiquesRouteProps {
   params: Promise<{
     locale: string;

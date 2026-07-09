@@ -4,8 +4,6 @@ import BookBackCoverPage from "../../book-back-cover-page";
 import { getBookDetailById, getDefaultBookDetail } from "@/lib/data/books";
 import { buildBookPageMetadata } from "@/lib/site-metadata";
 
-export const dynamic = "force-dynamic";
-
 interface BookBackCoverRouteProps {
   params: Promise<{
     locale: string;

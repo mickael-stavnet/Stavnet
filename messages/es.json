@@ -358,7 +358,8 @@
         "language": "Lenguas de publicación",
         "title": "Títulos: original o traducción",
         "year": "Año",
-        "issue": "Edición"
+        "parution": "Edición",
+        "faconnage": "Encuadernación"
       }
     },
     "content": {

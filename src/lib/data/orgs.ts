@@ -1,4 +1,4 @@
-import { cache } from "react";
+import { cacheData } from "@/lib/data/cache";
 import { supabase } from "@/lib/supabase";
 import { fixEncoding } from "@/lib/encoding";
 import { logError, logInfo, logWarn } from "@/lib/server-log";
@@ -332,209 +332,216 @@ async function fetchOrganizationsPagePayload(
   return (data as OrganizationPageRpc) ?? null;
 }
 
-export async function getOrganizationsPage(
-  page: number,
-  pageSize = ORGS_PAGE_SIZE,
-): Promise<OrganizationListResult> {
-  const currentPage = Math.max(1, page);
-  const payload = await fetchOrganizationsPagePayload(currentPage, pageSize);
-  return buildOrganizationsListResult(payload, currentPage, pageSize);
-}
+export const getOrganizationsPage = cacheData(
+  ["organizations-page"],
+  async (page: number, pageSize: number = ORGS_PAGE_SIZE): Promise<OrganizationListResult> => {
+    const currentPage = Math.max(1, page);
+    const payload = await fetchOrganizationsPagePayload(currentPage, pageSize);
+    return buildOrganizationsListResult(payload, currentPage, pageSize);
+  },
+  { revalidate: 60, tags: ["orgs"] },
+);
 
-export async function getOrganizationsPageByName(
-  page: number,
-  searchTerm: string,
-  pageSize = ORGS_PAGE_SIZE,
-): Promise<OrganizationListResult> {
-  const currentPage = Math.max(1, page);
-  const payload = await fetchOrganizationsPagePayload(currentPage, pageSize, searchTerm);
-  return buildOrganizationsListResult(payload, currentPage, pageSize);
-}
+export const getOrganizationsPageByName = cacheData(
+  ["organizations-page-by-name"],
+  async (page: number, searchTerm: string, pageSize: number = ORGS_PAGE_SIZE): Promise<OrganizationListResult> => {
+    const currentPage = Math.max(1, page);
+    const payload = await fetchOrganizationsPagePayload(currentPage, pageSize, searchTerm);
+    return buildOrganizationsListResult(payload, currentPage, pageSize);
+  },
+  { revalidate: 60, tags: ["orgs"] },
+);
 
-export async function getOrganizationsPageByType(
-  page: number,
-  type: string,
-  searchTerm = "",
-  pageSize = ORGS_PAGE_SIZE,
-): Promise<OrganizationListResult> {
-  const currentPage = Math.max(1, page);
-  const trimmedType = type.trim();
-  const trimmedSearchTerm = searchTerm.trim();
+export const getOrganizationsPageByType = cacheData(
+  ["organizations-page-by-type"],
+  async (page: number, type: string, searchTerm: string = "", pageSize: number = ORGS_PAGE_SIZE): Promise<OrganizationListResult> => {
+    const currentPage = Math.max(1, page);
+    const trimmedType = type.trim();
+    const trimmedSearchTerm = searchTerm.trim();
 
-  if (!trimmedType) {
-    return getOrganizationsPage(currentPage, pageSize);
-  }
+    if (!trimmedType) {
+      return getOrganizationsPage(currentPage, pageSize);
+    }
 
-  const normalizedType = normalizeOrganizationValue(trimmedType);
-  const normalizedSearchTerm = normalizeOrganizationValue(trimmedSearchTerm);
+    const normalizedType = normalizeOrganizationValue(trimmedType);
+    const normalizedSearchTerm = normalizeOrganizationValue(trimmedSearchTerm);
 
-  const [data, databaseTotal] = await Promise.all([
-    fetchAllOrganizationTableRows("data-organism", 'id,"Organisme","Type","Date_Creation","Pays","Nb_Titres","Nb_Auteurs"'),
-    getOrganizationsDatabaseTotal(),
-  ]);
+    const [data, databaseTotal] = await Promise.all([
+      fetchAllOrganizationTableRows("data-organism", 'id,"Organisme","Type","Date_Creation","Pays","Nb_Titres","Nb_Auteurs"'),
+      getOrganizationsDatabaseTotal(),
+    ]);
 
-  const filteredItems = data
-    .map((row) =>
-      mapOrganizationListItem({
-        name: row["Organisme"],
-        type: row["Type"],
-        creationDate: row["Date_Creation"],
-        country: row["Pays"],
-        publishedTitles: row["Nb_Titres"],
-        publishedAuthors: row["Nb_Auteurs"],
-      }),
-    )
-    .filter((item) => item.name.length > 0)
-    .filter((item) => normalizeOrganizationValue(item.type) === normalizedType)
-    .filter((item) => !normalizedSearchTerm || normalizeOrganizationValue(item.name).includes(normalizedSearchTerm))
-    .sort((left, right) => left.name.localeCompare(right.name, undefined, { sensitivity: "base" }));
+    const filteredItems = data
+      .map((row) =>
+        mapOrganizationListItem({
+          name: row["Organisme"],
+          type: row["Type"],
+          creationDate: row["Date_Creation"],
+          country: row["Pays"],
+          publishedTitles: row["Nb_Titres"],
+          publishedAuthors: row["Nb_Auteurs"],
+        }),
+      )
+      .filter((item) => item.name.length > 0)
+      .filter((item) => normalizeOrganizationValue(item.type) === normalizedType)
+      .filter((item) => !normalizedSearchTerm || normalizeOrganizationValue(item.name).includes(normalizedSearchTerm))
+      .sort((left, right) => left.name.localeCompare(right.name, undefined, { sensitivity: "base" }));
 
-  const start = (currentPage - 1) * pageSize;
-  const items = filteredItems.slice(start, start + pageSize);
+    const start = (currentPage - 1) * pageSize;
+    const items = filteredItems.slice(start, start + pageSize);
 
-  return {
-    items,
-    page: currentPage,
-    pageSize,
-    total: filteredItems.length,
-    totalPages: Math.max(1, Math.ceil(filteredItems.length / pageSize)),
-    databaseTotal,
-  };
-}
+    return {
+      items,
+      page: currentPage,
+      pageSize,
+      total: filteredItems.length,
+      totalPages: Math.max(1, Math.ceil(filteredItems.length / pageSize)),
+      databaseTotal,
+    };
+  },
+  { revalidate: 60, tags: ["orgs"] },
+);
 
-export async function getOrganizationsPageByCategory(
-  page: number,
-  category: OrganizationCategoryValue,
-  searchTerm = "",
-  pageSize = ORGS_PAGE_SIZE,
-): Promise<OrganizationListResult> {
-  const currentPage = Math.max(1, page);
-  const normalizedCategory = normalizeOrganizationValue(category);
-  const normalizedSearchTerm = normalizeOrganizationValue(searchTerm);
+export const getOrganizationsPageByCategory = cacheData(
+  ["organizations-page-by-category"],
+  async (page: number, category: OrganizationCategoryValue, searchTerm: string = "", pageSize: number = ORGS_PAGE_SIZE): Promise<OrganizationListResult> => {
+    const currentPage = Math.max(1, page);
+    const normalizedCategory = normalizeOrganizationValue(category);
+    const normalizedSearchTerm = normalizeOrganizationValue(searchTerm);
 
-  const [data, databaseTotal] = await Promise.all([
-    fetchAllOrganizationTableRows("data-organism", 'id,"Organisme","Type","Date_Creation","Pays","Nb_Titres","Nb_Auteurs"'),
-    getOrganizationsDatabaseTotal(),
-  ]);
+    const [data, databaseTotal] = await Promise.all([
+      fetchAllOrganizationTableRows("data-organism", 'id,"Organisme","Type","Date_Creation","Pays","Nb_Titres","Nb_Auteurs"'),
+      getOrganizationsDatabaseTotal(),
+    ]);
 
-  const filteredItems = data
-    .map((row) =>
-      mapOrganizationListItem({
-        name: row["Organisme"],
-        type: row["Type"],
-        creationDate: row["Date_Creation"],
-        country: row["Pays"],
-        publishedTitles: row["Nb_Titres"],
-        publishedAuthors: row["Nb_Auteurs"],
-      }),
-    )
-    .filter((item) => item.name.length > 0)
-    .filter((item) => {
-      const normalizedType = normalizeOrganizationValue(item.type);
-      const isLibrary = isLibraryOrganization(item.name);
+    const filteredItems = data
+      .map((row) =>
+        mapOrganizationListItem({
+          name: row["Organisme"],
+          type: row["Type"],
+          creationDate: row["Date_Creation"],
+          country: row["Pays"],
+          publishedTitles: row["Nb_Titres"],
+          publishedAuthors: row["Nb_Auteurs"],
+        }),
+      )
+      .filter((item) => item.name.length > 0)
+      .filter((item) => {
+        const normalizedType = normalizeOrganizationValue(item.type);
+        const isLibrary = isLibraryOrganization(item.name);
 
-      if (normalizedCategory === normalizeOrganizationValue("Editeur")) {
-        return normalizedType === normalizeOrganizationValue("Editeur");
-      }
+        if (normalizedCategory === normalizeOrganizationValue("Editeur")) {
+          return normalizedType === normalizeOrganizationValue("Editeur");
+        }
 
-      if (normalizedCategory === normalizeOrganizationValue("Bibliothèque")) {
-        return normalizedType === normalizeOrganizationValue("AutreOrganisme") && isLibrary;
-      }
+        if (normalizedCategory === normalizeOrganizationValue("Bibliothèque")) {
+          return normalizedType === normalizeOrganizationValue("AutreOrganisme") && isLibrary;
+        }
 
-      return normalizedType === normalizeOrganizationValue("AutreOrganisme") && !isLibrary;
-    })
-    .filter((item) => !normalizedSearchTerm || normalizeOrganizationValue(item.name).includes(normalizedSearchTerm))
-    .sort((left, right) => left.name.localeCompare(right.name, undefined, { sensitivity: "base" }));
+        return normalizedType === normalizeOrganizationValue("AutreOrganisme") && !isLibrary;
+      })
+      .filter((item) => !normalizedSearchTerm || normalizeOrganizationValue(item.name).includes(normalizedSearchTerm))
+      .sort((left, right) => left.name.localeCompare(right.name, undefined, { sensitivity: "base" }));
 
-  const start = (currentPage - 1) * pageSize;
-  const items = filteredItems.slice(start, start + pageSize);
+    const start = (currentPage - 1) * pageSize;
+    const items = filteredItems.slice(start, start + pageSize);
 
-  return {
-    items,
-    page: currentPage,
-    pageSize,
-    total: filteredItems.length,
-    totalPages: Math.max(1, Math.ceil(filteredItems.length / pageSize)),
-    databaseTotal,
-  };
-}
+    return {
+      items,
+      page: currentPage,
+      pageSize,
+      total: filteredItems.length,
+      totalPages: Math.max(1, Math.ceil(filteredItems.length / pageSize)),
+      databaseTotal,
+    };
+  },
+  { revalidate: 60, tags: ["orgs"] },
+);
 
-export const getOrganizationDetailByName = cache(async (name: string): Promise<OrganizationDetail | null> => {
-  const trimmedName = name.trim();
+export const getOrganizationDetailByName = cacheData(
+  ["organization-detail-by-name"],
+  async (name: string): Promise<OrganizationDetail | null> => {
+    const trimmedName = name.trim();
 
-  if (!trimmedName) {
-    logWarn("ORGS_RPC_DETAIL_EMPTY_NAME", { rawName: name });
-    return null;
-  }
+    if (!trimmedName) {
+      logWarn("ORGS_RPC_DETAIL_EMPTY_NAME", { rawName: name });
+      return null;
+    }
 
-  logInfo("ORGS_RPC_DETAIL_START", {
-    name: trimmedName,
-  });
+    logInfo("ORGS_RPC_DETAIL_START", {
+      name: trimmedName,
+    });
 
-  const { data, error, status, statusText } = await supabase.rpc("get_organization_detail_by_name", {
-    p_name: trimmedName,
-  });
+    const { data, error, status, statusText } = await supabase.rpc("get_organization_detail_by_name", {
+      p_name: trimmedName,
+    });
 
-  if (error) {
-    logError("ORGS_RPC_DETAIL_ERROR", {
+    if (error) {
+      logError("ORGS_RPC_DETAIL_ERROR", {
+        name: trimmedName,
+        status,
+        statusText,
+        error,
+      });
+      throw new Error(error.message);
+    }
+
+    const detail = mapOrganizationDetail((data as OrganizationDetailRpc) ?? null);
+
+    if (!detail) {
+      logWarn("ORGS_RPC_DETAIL_NOT_FOUND", {
+        name: trimmedName,
+        status,
+        statusText,
+      });
+      return null;
+    }
+
+    logInfo("ORGS_RPC_DETAIL_RESULT", {
       name: trimmedName,
       status,
       statusText,
-      error,
+      resolvedName: detail.name,
     });
-    throw new Error(error.message);
-  }
 
-  const detail = mapOrganizationDetail((data as OrganizationDetailRpc) ?? null);
+    return enrichOrganizationPublishedRows(detail);
+  },
+  { revalidate: 300, tags: ["orgs"] },
+);
 
-  if (!detail) {
-    logWarn("ORGS_RPC_DETAIL_NOT_FOUND", {
-      name: trimmedName,
+export const getDefaultOrganizationDetail = cacheData(
+  ["organization-default-detail"],
+  async (): Promise<OrganizationDetail | null> => {
+    logInfo("ORGS_RPC_DEFAULT_DETAIL_START", {});
+
+    const { data, error, status, statusText } = await supabase.rpc("get_default_organization_detail");
+
+    if (error) {
+      logError("ORGS_RPC_DEFAULT_DETAIL_ERROR", {
+        status,
+        statusText,
+        error,
+      });
+      throw new Error(error.message);
+    }
+
+    const detail = mapOrganizationDetail((data as OrganizationDetailRpc) ?? null);
+
+    if (!detail) {
+      logWarn("ORGS_RPC_DEFAULT_DETAIL_EMPTY", {
+        status,
+        statusText,
+      });
+      return null;
+    }
+
+    logInfo("ORGS_RPC_DEFAULT_DETAIL_RESULT", {
       status,
       statusText,
+      resolvedName: detail.name,
     });
-    return null;
-  }
 
-  logInfo("ORGS_RPC_DETAIL_RESULT", {
-    name: trimmedName,
-    status,
-    statusText,
-    resolvedName: detail.name,
-  });
-
-  return enrichOrganizationPublishedRows(detail);
-});
-
-export const getDefaultOrganizationDetail = cache(async (): Promise<OrganizationDetail | null> => {
-  logInfo("ORGS_RPC_DEFAULT_DETAIL_START", {});
-
-  const { data, error, status, statusText } = await supabase.rpc("get_default_organization_detail");
-
-  if (error) {
-    logError("ORGS_RPC_DEFAULT_DETAIL_ERROR", {
-      status,
-      statusText,
-      error,
-    });
-    throw new Error(error.message);
-  }
-
-  const detail = mapOrganizationDetail((data as OrganizationDetailRpc) ?? null);
-
-  if (!detail) {
-    logWarn("ORGS_RPC_DEFAULT_DETAIL_EMPTY", {
-      status,
-      statusText,
-    });
-    return null;
-  }
-
-  logInfo("ORGS_RPC_DEFAULT_DETAIL_RESULT", {
-    status,
-    statusText,
-    resolvedName: detail.name,
-  });
-
-  return enrichOrganizationPublishedRows(detail);
-});
+    return enrichOrganizationPublishedRows(detail);
+  },
+  { revalidate: 300, tags: ["orgs"] },
+);

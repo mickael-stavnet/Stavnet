@@ -358,7 +358,8 @@
         "language": "Publication languages",
         "title": "Titles: original or translation",
         "year": "Year",
-        "issue": "Issue"
+        "parution": "Issue",
+        "faconnage": "Binding"
       }
     },
     "content": {

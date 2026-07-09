@@ -1,6 +1,7 @@
 import Image from "next/image";
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
+import { redirect } from "@/i18n/routing";
 import { StavnetFooter } from "@/components/stavnet/footer";
 import { StavnetHeader } from "@/components/stavnet/header";
 import { ListNameSearch } from "@/components/stavnet/list-name-search";
@@ -11,8 +12,12 @@ import {
   getOrganizationsPageByName,
   getOrganizationsPageByType,
   ORGS_PAGE_SIZE,
-  type OrganizationCategoryValue,
 } from "@/lib/data/orgs";
+import {
+  buildOrganizationsPageHref,
+  ORGANIZATION_FILTER_OPTIONS,
+  resolveOrganizationsListSelection,
+} from "@/lib/orgs-search";
 import {
   Pagination,
   PaginationContent,
@@ -25,7 +30,6 @@ import {
 import { buildStaticPageMetadata } from "@/lib/site-metadata";
 
 const ORGS_COLUMN_WIDTHS = ["35.45%", "15.51%", "15.95%", "14.48%", "9.16%", "9.45%"] as const;
-const ORGANIZATION_FILTER_OPTIONS = ["Editeur", "Bibliothèque", "AutreOrganisme"] as const satisfies readonly OrganizationCategoryValue[];
 
 interface OrgsPageProps {
   params: Promise<{
@@ -45,18 +49,6 @@ export async function generateMetadata({ params }: OrgsPageProps): Promise<Metad
 
 function RedMarker() {
   return <span className="mr-2 inline-block h-[11px] w-[11px] rounded-full border-[2px] border-[#ff1d1d]" />;
-}
-
-function buildPageHref(page: number, searchTerm: string, typeFilter: string): string {
-  const params = new URLSearchParams();
-  params.set("page", String(page <= 1 ? 1 : page));
-  if (searchTerm.trim()) {
-    params.set("q", searchTerm);
-  }
-  if (typeFilter.trim()) {
-    params.set("type", typeFilter);
-  }
-  return `?${params.toString()}`;
 }
 
 function getPaginationItems(currentPage: number, totalPages: number): Array<number | string> {
@@ -114,20 +106,31 @@ function MobileOrganizationCard({
   );
 }
 
-export default async function OrganizationsListPage({ searchParams }: OrgsPageProps) {
-  const [{ page, q, type }, t] = await Promise.all([searchParams, getTranslations("Orgs")]);
-  const currentPage = Number.parseInt(page ?? "1", 10);
-  const searchTerm = (q ?? "").trim();
-  const typeFilter = (type ?? "").trim();
-  const categoryFilter = ORGANIZATION_FILTER_OPTIONS.find((value) => value === typeFilter) ?? "";
-  const pageNumber = Number.isFinite(currentPage) && currentPage > 0 ? currentPage : 1;
-  const result = categoryFilter
-    ? await getOrganizationsPageByCategory(pageNumber, categoryFilter, searchTerm)
-    : typeFilter
-      ? await getOrganizationsPageByType(pageNumber, typeFilter, searchTerm)
-      : searchTerm
-      ? await getOrganizationsPageByName(pageNumber, searchTerm)
-      : await getOrganizationsPage(pageNumber);
+export default async function OrganizationsListPage({ params, searchParams }: OrgsPageProps) {
+  const [{ locale }, { page, q, type }, t] = await Promise.all([params, searchParams, getTranslations("Orgs")]);
+  const selection = resolveOrganizationsListSelection({ page, q, type });
+  const result = selection.mode === "category"
+    ? await getOrganizationsPageByCategory(
+        selection.pageNumber,
+        selection.categoryFilter as (typeof ORGANIZATION_FILTER_OPTIONS)[number],
+        selection.searchTerm,
+      )
+    : selection.mode === "type"
+      ? await getOrganizationsPageByType(selection.pageNumber, selection.typeFilter, selection.searchTerm)
+      : selection.mode === "name"
+        ? await getOrganizationsPageByName(selection.pageNumber, selection.searchTerm)
+        : await getOrganizationsPage(selection.pageNumber);
+  if (selection.mode !== "basic" && result.total === 1 && result.items[0]) {
+    redirect({
+      href: {
+        pathname: "/orgs/details",
+        query: {
+          name: result.items[0].name,
+        },
+      },
+      locale,
+    });
+  }
   const paginationItems = getPaginationItems(result.page, result.totalPages);
   const footerItems = [
     { key: "back", icon: "/icons/icons-nav/back.png", href: "/home" as const, label: t("footer.back") },
@@ -169,19 +172,19 @@ export default async function OrganizationsListPage({ searchParams }: OrgsPagePr
           <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between md:gap-6">
             <div className="flex flex-col gap-3">
               <ListNameSearch
-                key={searchTerm}
+                key={selection.searchTerm}
                 label={t("search.label")}
                 placeholder={t("search.placeholder")}
-                initialValue={searchTerm}
+                initialValue={selection.searchTerm}
                 resetLabel={t("search.reset")}
               />
               <div className="flex flex-col gap-2">
                 <p className="text-[13px] font-bold leading-none text-black">{filterLabels.title}</p>
                 <div className="flex flex-wrap gap-2">
-                  <Link
-                    href={buildPageHref(1, searchTerm, "")}
+                    <Link
+                    href={buildOrganizationsPageHref(1, selection.searchTerm, "")}
                     className={`rounded-[8px] border px-3 py-2 text-[13px] font-bold leading-none shadow-[2px_2px_4px_rgba(0,0,0,0.12)] ${
-                      !typeFilter
+                      !selection.typeFilter
                         ? "border-[#7aa8b7] bg-[#91d3ea] text-black"
                         : "border-[#d1bb48] bg-[#ffea56] text-black hover:bg-[#fff16f]"
                     }`}
@@ -189,14 +192,14 @@ export default async function OrganizationsListPage({ searchParams }: OrgsPagePr
                     {filterLabels.all}
                   </Link>
                   {ORGANIZATION_FILTER_OPTIONS.map((option) => (
-                    <Link
-                      key={option}
-                      href={buildPageHref(1, searchTerm, option)}
-                      className={`rounded-[8px] border px-3 py-2 text-[13px] font-bold leading-none shadow-[2px_2px_4px_rgba(0,0,0,0.12)] ${
-                        typeFilter === option
+                      <Link
+                        key={option}
+                        href={buildOrganizationsPageHref(1, selection.searchTerm, option)}
+                        className={`rounded-[8px] border px-3 py-2 text-[13px] font-bold leading-none shadow-[2px_2px_4px_rgba(0,0,0,0.12)] ${
+                        selection.typeFilter === option
                           ? "border-[#7aa8b7] bg-[#91d3ea] text-black"
                           : "border-[#d1bb48] bg-[#ffea56] text-black hover:bg-[#fff16f]"
-                      }`}
+                        }`}
                     >
                       {filterLabels[option]}
                     </Link>
@@ -204,10 +207,12 @@ export default async function OrganizationsListPage({ searchParams }: OrgsPagePr
                 </div>
               </div>
             </div>
-            {typeFilter ? (
+            {selection.typeFilter ? (
               <div className="rounded-[8px] border border-[#7aa8b7] bg-[#a7dcee] px-4 py-3 shadow-[3px_3px_6px_rgba(0,0,0,0.12)]">
                 <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#07384a]">{columnLabels.type}</p>
-                <p className="mt-2 text-[18px] font-bold leading-tight text-black">{categoryFilter ? filterLabels[categoryFilter] : typeFilter}</p>
+                <p className="mt-2 text-[18px] font-bold leading-tight text-black">
+                  {selection.categoryFilter ? filterLabels[selection.categoryFilter as keyof typeof filterLabels] : selection.typeFilter}
+                </p>
               </div>
             ) : null}
             <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end sm:justify-end sm:gap-6">
@@ -301,8 +306,8 @@ export default async function OrganizationsListPage({ searchParams }: OrgsPagePr
             <Pagination>
               <PaginationContent className="flex-wrap justify-center">
                 <PaginationItem>
-                  <PaginationPrevious
-                    href={buildPageHref(result.page - 1, searchTerm, typeFilter)}
+                    <PaginationPrevious
+                    href={buildOrganizationsPageHref(result.page - 1, selection.searchTerm, selection.typeFilter)}
                     text={t("pagination.previous")}
                     className={result.page === 1 ? "pointer-events-none opacity-50" : ""}
                   />
@@ -310,7 +315,7 @@ export default async function OrganizationsListPage({ searchParams }: OrgsPagePr
                 {paginationItems.map((item) =>
                   typeof item === "number" ? (
                     <PaginationItem key={item}>
-                      <PaginationLink href={buildPageHref(item, searchTerm, typeFilter)} isActive={item === result.page}>
+                      <PaginationLink href={buildOrganizationsPageHref(item, selection.searchTerm, selection.typeFilter)} isActive={item === result.page}>
                         {item}
                       </PaginationLink>
                     </PaginationItem>
@@ -322,7 +327,7 @@ export default async function OrganizationsListPage({ searchParams }: OrgsPagePr
                 )}
                 <PaginationItem>
                   <PaginationNext
-                    href={buildPageHref(result.page + 1, searchTerm, typeFilter)}
+                    href={buildOrganizationsPageHref(result.page + 1, selection.searchTerm, selection.typeFilter)}
                     text={t("pagination.next")}
                     className={result.page === result.totalPages ? "pointer-events-none opacity-50" : ""}
                   />

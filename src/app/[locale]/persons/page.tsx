@@ -1,6 +1,7 @@
 import Image from "next/image";
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
+import { redirect } from "@/i18n/routing";
 import { StavnetFooter } from "@/components/stavnet/footer";
 import { StavnetHeader } from "@/components/stavnet/header";
 import { ListNameSearch } from "@/components/stavnet/list-name-search";
@@ -103,12 +104,23 @@ function MobilePersonCard({
   );
 }
 
-export default async function PersonsListPage({ searchParams }: PersonsPageProps) {
-  const [{ page, q }, t] = await Promise.all([searchParams, getTranslations("Persons")]);
+export default async function PersonsListPage({ params, searchParams }: PersonsPageProps) {
+  const [{ locale }, { page, q }, t] = await Promise.all([params, searchParams, getTranslations("Persons")]);
   const currentPage = Number.parseInt(page ?? "1", 10);
   const searchTerm = (q ?? "").trim();
   const pageNumber = Number.isFinite(currentPage) && currentPage > 0 ? currentPage : 1;
   const result = searchTerm ? await getPersonsPageByName(pageNumber, searchTerm) : await getPersonsPage(pageNumber);
+  if (searchTerm && result.total === 1 && result.items[0]) {
+    redirect({
+      href: {
+        pathname: "/persons/details",
+        query: {
+          name: result.items[0].name,
+        },
+      },
+      locale,
+    });
+  }
   const paginationItems = getPaginationItems(result.page, result.totalPages);
   const footerItems = [
     { key: "back", icon: "/icons/icons-nav/back.png", href: "/home" as const, label: t("footer.back") },

@@ -1,7 +1,7 @@
 import { Skeleton } from "@/components/ui/skeleton";
 
 const PERSON_BIBLIOGRAPHY_GRID =
-  "md:grid-cols-[minmax(0,0.84fr)_minmax(0,1.14fr)_minmax(0,2.58fr)_72px_126px]";
+  "md:grid-cols-[minmax(0,0.84fr)_minmax(0,1.14fr)_minmax(0,2.58fr)_72px_84px_84px]";
 
 export function PersonDetailSkeleton() {
   return (
@@ -121,8 +121,8 @@ export function PersonDetailSkeleton() {
 
               <section className="hidden min-h-0 flex-1 overflow-hidden border border-[#7aa8b7] bg-[#a7dcee] md:flex md:flex-col">
                 <div className={`grid w-full border-b border-[#7aa8b7] bg-[#fff8c8] px-0 py-0 ${PERSON_BIBLIOGRAPHY_GRID}`}>
-                  {["w-[88px]", "w-[132px]", "w-[214px]", "w-[44px]", "w-[52px]"].map((width, index) => (
-                    <div key={index} className={index < 4 ? "border-r border-[#7aa8b7] px-3 py-[7px]" : "px-3 py-[7px]"}>
+                  {["w-[88px]", "w-[132px]", "w-[214px]", "w-[44px]", "w-[48px]", "w-[52px]"].map((width, index) => (
+                    <div key={index} className={index < 5 ? "border-r border-[#7aa8b7] px-3 py-[7px]" : "px-3 py-[7px]"}>
                       <Skeleton className={`h-3 ${width} bg-[#efe6ab]`} />
                     </div>
                   ))}
@@ -130,8 +130,8 @@ export function PersonDetailSkeleton() {
 
                 {Array.from({ length: 2 }).map((_, rowIndex) => (
                   <div key={rowIndex} className={`grid w-full ${PERSON_BIBLIOGRAPHY_GRID}`}>
-                    {["w-[74px]", "w-[94px]", "w-[280px]", "w-[36px]", "w-[28px]"].map((width, index) => (
-                      <div key={index} className={index < 4 ? "flex h-[46px] items-center border-r border-t border-[#7aa8b7] px-3" : "flex h-[46px] items-center border-t border-[#7aa8b7] px-3"}>
+                    {["w-[74px]", "w-[94px]", "w-[280px]", "w-[36px]", "w-[34px]", "w-[30px]"].map((width, index) => (
+                      <div key={index} className={index < 5 ? "flex h-[46px] items-center border-r border-t border-[#7aa8b7] px-3" : "flex h-[46px] items-center border-t border-[#7aa8b7] px-3"}>
                         <Skeleton className={`h-4 ${width} bg-white/50`} />
                       </div>
                     ))}
@@ -143,6 +143,7 @@ export function PersonDetailSkeleton() {
                   <div className="border-r border-t border-[#7aa8b7]" />
                   <div className="border-r border-t border-[#7aa8b7]" />
                   <div className="border-r border-t border-[#7aa8b7]" />
+                  <div className="border-t border-[#7aa8b7]" />
                   <div className="border-t border-[#7aa8b7]" />
                 </div>
               </section>

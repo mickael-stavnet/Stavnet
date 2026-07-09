@@ -1,4 +1,4 @@
-import { cache } from "react";
+import { cacheData } from "@/lib/data/cache";
 import { supabase } from "@/lib/supabase";
 import { fixEncoding } from "@/lib/encoding";
 import { resolvePersonImageSrc } from "@/lib/person-images";
@@ -293,6 +293,14 @@ async function fetchPersonBibliographyRows(name: string, alternateName: string, 
     return [];
   }
 
+  logInfo("DEBUG_LOG_INFINITE_FETCH", {
+    route: "/persons/details",
+    phase: "bibliography-scan-start",
+    name,
+    alternateName: alternateName || null,
+    writingLanguage: writingLanguage || null,
+  });
+
   const [personData, bookData] = await Promise.all([
     fetchAllTableRows("data-person", "*"),
     fetchAllTableRows(
@@ -335,15 +343,43 @@ async function fetchPersonBibliographyRows(name: string, alternateName: string, 
       };
     });
 
-  return mergeBibliographyRows([...personRows, ...bookRows]);
+  const mergedRows = mergeBibliographyRows([...personRows, ...bookRows]);
+
+  logInfo("DEBUG_LOG_INFINITE_FETCH", {
+    route: "/persons/details",
+    phase: "bibliography-scan-result",
+    name,
+    alternateName: alternateName || null,
+    writingLanguage: writingLanguage || null,
+    personRows: personRows.length,
+    bookRows: bookRows.length,
+    mergedRows: mergedRows.length,
+  });
+
+  return mergedRows;
 }
 
 async function enrichPersonDetailBibliography(detail: PersonDetail): Promise<PersonDetail> {
   const bibliographyRows = await fetchPersonBibliographyRows(detail.name, detail.alternateName, detail.language);
 
   if (bibliographyRows.length <= detail.bibliographyRows.length) {
+    logInfo("DEBUG_LOG_INFINITE_FETCH", {
+      route: "/persons/details",
+      phase: "bibliography-no-enrichment",
+      name: detail.name,
+      existingRows: detail.bibliographyRows.length,
+      candidateRows: bibliographyRows.length,
+    });
     return detail;
   }
+
+  logInfo("DEBUG_LOG_INFINITE_FETCH", {
+    route: "/persons/details",
+    phase: "bibliography-enriched",
+    name: detail.name,
+    existingRows: detail.bibliographyRows.length,
+    candidateRows: bibliographyRows.length,
+  });
 
   return {
     ...detail,
@@ -416,98 +452,110 @@ async function fetchPersonsPagePayload(
   return (data as PersonPageRpc) ?? null;
 }
 
-export async function getPersonsPage(page: number, pageSize = PERSONS_PAGE_SIZE): Promise<PersonListResult> {
-  const currentPage = Math.max(1, page);
-  const payload = await fetchPersonsPagePayload(currentPage, pageSize);
-  return buildPersonListResult(payload, currentPage, pageSize);
-}
+export const getPersonsPage = cacheData(
+  ["persons-page"],
+  async (page: number, pageSize: number = PERSONS_PAGE_SIZE): Promise<PersonListResult> => {
+    const currentPage = Math.max(1, page);
+    const payload = await fetchPersonsPagePayload(currentPage, pageSize);
+    return buildPersonListResult(payload, currentPage, pageSize);
+  },
+  { revalidate: 60, tags: ["persons"] },
+);
 
-export async function getPersonsPageByName(
-  page: number,
-  searchTerm: string,
-  pageSize = PERSONS_PAGE_SIZE,
-): Promise<PersonListResult> {
-  const currentPage = Math.max(1, page);
-  const payload = await fetchPersonsPagePayload(currentPage, pageSize, searchTerm);
-  return buildPersonListResult(payload, currentPage, pageSize);
-}
+export const getPersonsPageByName = cacheData(
+  ["persons-page-by-name"],
+  async (page: number, searchTerm: string, pageSize: number = PERSONS_PAGE_SIZE): Promise<PersonListResult> => {
+    const currentPage = Math.max(1, page);
+    const payload = await fetchPersonsPagePayload(currentPage, pageSize, searchTerm);
+    return buildPersonListResult(payload, currentPage, pageSize);
+  },
+  { revalidate: 60, tags: ["persons"] },
+);
 
-export const getPersonDetailByName = cache(async (name: string): Promise<PersonDetail | null> => {
-  const trimmedName = name.trim();
+export const getPersonDetailByName = cacheData(
+  ["persons-detail-by-name"],
+  async (name: string): Promise<PersonDetail | null> => {
+    const trimmedName = name.trim();
 
-  if (!trimmedName) {
-    logWarn("PERSONS_RPC_DETAIL_EMPTY_NAME", { rawName: name });
-    return null;
-  }
+    if (!trimmedName) {
+      logWarn("PERSONS_RPC_DETAIL_EMPTY_NAME", { rawName: name });
+      return null;
+    }
 
-  logInfo("PERSONS_RPC_DETAIL_START", {
-    name: trimmedName,
-  });
+    logInfo("PERSONS_RPC_DETAIL_START", {
+      name: trimmedName,
+    });
 
-  const { data, error, status, statusText } = await supabase.rpc("get_person_detail_by_name", {
-    p_name: trimmedName,
-  });
+    const { data, error, status, statusText } = await supabase.rpc("get_person_detail_by_name", {
+      p_name: trimmedName,
+    });
 
-  if (error) {
-    logError("PERSONS_RPC_DETAIL_ERROR", {
+    if (error) {
+      logError("PERSONS_RPC_DETAIL_ERROR", {
+        name: trimmedName,
+        status,
+        statusText,
+        error,
+      });
+      throw new Error(error.message);
+    }
+
+    const detail = mapPersonDetail((data as PersonDetailRpc) ?? null);
+
+    if (!detail) {
+      logWarn("PERSONS_RPC_DETAIL_NOT_FOUND", {
+        name: trimmedName,
+        status,
+        statusText,
+      });
+      return null;
+    }
+
+    logInfo("PERSONS_RPC_DETAIL_RESULT", {
       name: trimmedName,
       status,
       statusText,
-      error,
+      resolvedName: detail.name,
     });
-    throw new Error(error.message);
-  }
 
-  const detail = mapPersonDetail((data as PersonDetailRpc) ?? null);
+    return enrichPersonDetailBibliography(detail);
+  },
+  { revalidate: 300, tags: ["persons"] },
+);
 
-  if (!detail) {
-    logWarn("PERSONS_RPC_DETAIL_NOT_FOUND", {
-      name: trimmedName,
+export const getDefaultPersonDetail = cacheData(
+  ["persons-default-detail"],
+  async (): Promise<PersonDetail | null> => {
+    logInfo("PERSONS_RPC_DEFAULT_DETAIL_START", {});
+
+    const { data, error, status, statusText } = await supabase.rpc("get_default_person_detail");
+
+    if (error) {
+      logError("PERSONS_RPC_DEFAULT_DETAIL_ERROR", {
+        status,
+        statusText,
+        error,
+      });
+      throw new Error(error.message);
+    }
+
+    const detail = mapPersonDetail((data as PersonDetailRpc) ?? null);
+
+    if (!detail) {
+      logWarn("PERSONS_RPC_DEFAULT_DETAIL_EMPTY", {
+        status,
+        statusText,
+      });
+      return null;
+    }
+
+    logInfo("PERSONS_RPC_DEFAULT_DETAIL_RESULT", {
       status,
       statusText,
+      resolvedName: detail.name,
     });
-    return null;
-  }
 
-  logInfo("PERSONS_RPC_DETAIL_RESULT", {
-    name: trimmedName,
-    status,
-    statusText,
-    resolvedName: detail.name,
-  });
-
-  return enrichPersonDetailBibliography(detail);
-});
-
-export const getDefaultPersonDetail = cache(async (): Promise<PersonDetail | null> => {
-  logInfo("PERSONS_RPC_DEFAULT_DETAIL_START", {});
-
-  const { data, error, status, statusText } = await supabase.rpc("get_default_person_detail");
-
-  if (error) {
-    logError("PERSONS_RPC_DEFAULT_DETAIL_ERROR", {
-      status,
-      statusText,
-      error,
-    });
-    throw new Error(error.message);
-  }
-
-  const detail = mapPersonDetail((data as PersonDetailRpc) ?? null);
-
-  if (!detail) {
-    logWarn("PERSONS_RPC_DEFAULT_DETAIL_EMPTY", {
-      status,
-      statusText,
-    });
-    return null;
-  }
-
-  logInfo("PERSONS_RPC_DEFAULT_DETAIL_RESULT", {
-    status,
-    statusText,
-    resolvedName: detail.name,
-  });
-
-  return enrichPersonDetailBibliography(detail);
-});
+    return enrichPersonDetailBibliography(detail);
+  },
+  { revalidate: 300, tags: ["persons"] },
+);

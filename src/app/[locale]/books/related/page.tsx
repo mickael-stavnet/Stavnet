@@ -2,6 +2,7 @@ import Image from "next/image";
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
+import { redirect } from "@/i18n/routing";
 import {
   Pagination,
   PaginationContent,
@@ -17,8 +18,7 @@ import { Link } from "@/i18n/routing";
 import { BOOK_RELATED_FACET_LABEL_KEYS, isBookRelatedFacet, type BookRelatedFacet } from "@/lib/book-related";
 import { BOOKS_PAGE_SIZE, getBooksPageByFacet } from "@/lib/data/books";
 import { buildRelatedBooksPageMetadata } from "@/lib/site-metadata";
-
-export const dynamic = "force-dynamic";
+import { logInfo } from "@/lib/server-log";
 
 const BOOKS_COLUMN_WIDTHS = ["34.71%", "17.90%", "13.56%", "11.06%", "6.72%", "6.94%", "6.72%", "6.72%"] as const;
 
@@ -35,6 +35,12 @@ interface RelatedBooksPageProps {
 
 export async function generateMetadata({ params, searchParams }: RelatedBooksPageProps): Promise<Metadata> {
   const [{ locale }, { value }] = await Promise.all([params, searchParams]);
+  logInfo("DEBUG_LOG_INFINITE_FETCH", {
+    route: "/books/related",
+    phase: "metadata-start",
+    locale,
+    value: value?.trim() ?? null,
+  });
   return buildRelatedBooksPageMetadata(locale, "/books/related", value?.trim());
 }
 
@@ -105,23 +111,71 @@ function MobileBookCard({
   );
 }
 
-export default async function RelatedBooksPage({ searchParams }: RelatedBooksPageProps) {
-  const [{ facet: rawFacet, value: rawValue, page }, tBooks, tRelated] = await Promise.all([
+export default async function RelatedBooksPage({ params, searchParams }: RelatedBooksPageProps) {
+  const [{ locale }, { facet: rawFacet, value: rawValue, page }, tBooks, tRelated] = await Promise.all([
+    params,
     searchParams,
     getTranslations("Books"),
     getTranslations("BooksRelated"),
   ]);
+  logInfo("DEBUG_LOG_INFINITE_FETCH", {
+    route: "/books/related",
+    phase: "page-start",
+    locale,
+    facet: rawFacet ?? null,
+    value: rawValue ?? null,
+    page: page ?? null,
+  });
   const currentPage = Number.parseInt(page ?? "1", 10);
   const pageNumber = Number.isFinite(currentPage) && currentPage > 0 ? currentPage : 1;
   const facet = rawFacet?.trim() ?? "";
   const value = rawValue?.trim() ?? "";
 
   if (!facet || !value || !isBookRelatedFacet(facet)) {
+    logInfo("DEBUG_LOG_INFINITE_FETCH", {
+      route: "/books/related",
+      phase: "page-not-found",
+      locale,
+      facet: facet || null,
+      value: value || null,
+    });
     notFound();
   }
 
   const result = await getBooksPageByFacet(pageNumber, facet, value);
+  const singleBook = result.total === 1 ? result.items[0] : null;
+
+  if (singleBook) {
+    logInfo("DEBUG_LOG_INFINITE_FETCH", {
+      route: "/books/related",
+      phase: "page-redirect-single-result",
+      locale,
+      facet,
+      value,
+      resolvedBookId: singleBook.id,
+    });
+    redirect({
+      href: {
+        pathname: "/books/details",
+        query: {
+          id: singleBook.id,
+        },
+      },
+      locale,
+    });
+  }
+
   const paginationItems = getPaginationItems(result.page, result.totalPages);
+  logInfo("DEBUG_LOG_INFINITE_FETCH", {
+    route: "/books/related",
+    phase: "page-resolved",
+    locale,
+    facet,
+    value,
+    total: result.total,
+    page: result.page,
+    totalPages: result.totalPages,
+  });
   const footerItems = [
     { key: "back", icon: "/icons/icons-nav/back.png", href: "/books" as const, label: tBooks("footer.back") },
     { key: "menu", icon: "/icons/icons-nav/menu.png", href: "/menu" as const, label: tBooks("footer.menu") },

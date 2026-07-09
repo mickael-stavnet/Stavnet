@@ -19,6 +19,7 @@ export function ListNameSearch({ label, placeholder, initialValue, resetLabel }:
   const [value, setValue] = useState(initialValue);
   const [isPending, startTransition] = useTransition();
   const isComposingRef = useRef(false);
+  const hasMountedRef = useRef(false);
   const searchParamsString = searchParams.toString();
   const currentQuery = (searchParams.get("q") ?? "").trim();
   const currentPage = searchParams.get("page") ?? "1";
@@ -54,6 +55,11 @@ export function ListNameSearch({ label, placeholder, initialValue, resetLabel }:
   }, [currentPage, currentQuery, pathname, router, searchParamsString, startTransition, value]);
 
   useEffect(() => {
+    if (!hasMountedRef.current) {
+      hasMountedRef.current = true;
+      return;
+    }
+
     if (isComposingRef.current) {
       return;
     }

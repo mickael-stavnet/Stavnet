@@ -325,10 +325,10 @@ export default function BookDetailPage({ book }: BookDetailPageProps) {
             <nav className="grid grid-cols-2 gap-2 pb-2 md:grid md:w-full md:grid-cols-[1.05fr_1.28fr_1.26fr_0.92fr_1.28fr_1.08fr_0.96fr_1.02fr] md:items-end md:gap-[8px] md:pb-0">
               {tabs.map((tabKey) => {
                 const tabClassName = cn(
-                  "min-h-[44px] min-w-0 rounded-t-[8px] border border-[#d1bb48] px-3 py-[10px] text-center text-[13px] font-bold leading-[1.1] shadow-[3px_3px_5px_rgba(0,0,0,0.28)] transition-colors md:flex md:min-h-[60px] md:w-full md:items-center md:justify-center md:px-4 md:text-[15px] md:leading-[1.08] md:whitespace-normal",
-                  activeTab === tabKey
-                    ? "bg-[#91d3ea] font-semibold text-black md:min-h-[68px] md:text-[19px] md:font-bold"
-                    : "bg-[#ffea56] text-black hover:bg-[#fff16f]",
+                    "min-h-[36px] min-w-0 rounded-t-[8px] border border-[#d1bb48] px-3 py-[8px] text-center text-[13px] font-bold leading-[1.1] shadow-[3px_3px_5px_rgba(0,0,0,0.28)] transition-colors md:flex md:min-h-[48px] md:w-full md:items-center md:justify-center md:px-4 md:text-[15px] md:leading-[1.08] md:whitespace-normal",
+                    activeTab === tabKey
+                      ? "bg-[#91d3ea] font-semibold text-black md:min-h-[54px] md:text-[19px] md:font-bold"
+                      : "bg-[#ffea56] text-black hover:bg-[#fff16f]",
                 );
 
                 if (tabKey === "backCover") {

@@ -1,4 +1,4 @@
-import { cache } from "react";
+import { cacheData } from "@/lib/data/cache";
 import { resolveBookCoverSrc } from "@/lib/book-images";
 import type { BookRelatedFacet } from "@/lib/book-related";
 import { fixEncoding } from "@/lib/encoding";
@@ -768,7 +768,9 @@ function matchesBookRelatedFacet(row: BookRow, facet: BookRelatedFacet, normaliz
   }
 }
 
-const getOrganizationCountryMap = cache(async (): Promise<Map<string, string>> => {
+const getOrganizationCountryMap = cacheData(
+  ["books-organization-country-map"],
+  async (): Promise<Map<string, string>> => {
   const { data, error } = await supabase.from("data-organism").select('"Organisme","Pays"');
 
   if (error) {
@@ -787,7 +789,9 @@ const getOrganizationCountryMap = cache(async (): Promise<Map<string, string>> =
   }
 
   return countryMap;
-});
+  },
+  { revalidate: 300, tags: ["books"] },
+);
 
 function buildAvailabilityRows(row: BookRow, organizationCountryMap: Map<string, string>): BookAvailabilityRow[] {
   const availability: BookAvailabilityRow[] = [];
@@ -935,7 +939,9 @@ function mapBookRelatedPageItem(item: BookRelatedPageItemRpc): BookListItem {
   };
 }
 
-const getBooksDatabaseTotals = cache(async (): Promise<{ cardsFound: number; databaseContains: number }> => {
+const getBooksDatabaseTotals = cacheData(
+  ["books-database-totals"],
+  async (): Promise<{ cardsFound: number; databaseContains: number }> => {
   const [validResult, databaseResult] = await Promise.all([
     supabase.from("data-books").select("id", { count: "exact", head: true }).not("Titre", "is", null).neq("Titre", "").neq("Titre", "NULL"),
     supabase.from("data-books").select("id", { count: "exact", head: true }),
@@ -953,7 +959,9 @@ const getBooksDatabaseTotals = cache(async (): Promise<{ cardsFound: number; dat
     cardsFound: validResult.count ?? 0,
     databaseContains: databaseResult.count ?? 0,
   };
-});
+  },
+  { revalidate: 300, tags: ["books"] },
+);
 
 function mapBookDetail(
   row: BookRow,
@@ -1312,7 +1320,9 @@ export async function getBooksPageByFacet(
   };
 }
 
-export const resolveBookByExactTitle = cache(async (title: string): Promise<BookTitleResolutionResult> => {
+export const resolveBookByExactTitle = cacheData(
+  ["books-resolve-by-exact-title"],
+  async (title: string): Promise<BookTitleResolutionResult> => {
   const trimmedTitle = title.trim();
 
   if (!trimmedTitle) {
@@ -1353,9 +1363,13 @@ export const resolveBookByExactTitle = cache(async (title: string): Promise<Book
   }
 
   return { kind: "none" };
-});
+  },
+  { revalidate: 300, tags: ["books"] },
+);
 
-export const getBookDetailById = cache(async (id: string): Promise<BookDetail | null> => {
+export const getBookDetailById = cacheData(
+  ["books-detail-by-id"],
+  async (id: string): Promise<BookDetail | null> => {
   const trimmedId = id.trim();
 
   if (!trimmedId) {
@@ -1415,9 +1429,13 @@ export const getBookDetailById = cache(async (id: string): Promise<BookDetail | 
   });
 
   return detail;
-});
+  },
+  { revalidate: 300, tags: ["books"] },
+);
 
-export const getDefaultBookDetail = cache(async (): Promise<BookDetail | null> => {
+export const getDefaultBookDetail = cacheData(
+  ["books-default-detail"],
+  async (): Promise<BookDetail | null> => {
   logInfo("BOOK_DEFAULT_DETAIL_START", {});
 
   const [rowResult, totals, organizationCountryMap] = await Promise.all([
@@ -1470,4 +1488,6 @@ export const getDefaultBookDetail = cache(async (): Promise<BookDetail | null> =
   });
 
   return detail;
-});
+  },
+  { revalidate: 300, tags: ["books"] },
+);

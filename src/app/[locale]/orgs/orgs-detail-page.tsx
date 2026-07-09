@@ -166,7 +166,7 @@ export default function OrganizationsDetailPage({
           pageName={t("header.cardTitle")}
           title={t("header.title")}
           subtitle={t("header.subtitle")}
-          titleBlockClassName="md:w-[84vw]"
+          titleBlockClassName="md:w-[84vw] md:pr-[42px]"
         />
 
         <section className="mt-6 flex min-w-0 flex-col gap-5 md:absolute md:left-1/2 md:top-[172px] md:bottom-[118px] md:w-[1341px] md:max-w-[calc(100vw-24px)] md:-translate-x-1/2 md:box-border md:pl-[186px] md:pr-[35px]">
@@ -248,9 +248,9 @@ export default function OrganizationsDetailPage({
                   key={tabKey}
                   type="button"
                   onClick={() => setActiveTab(tabKey)}
-                  className={`min-h-[52px] min-w-0 rounded-t-[8px] border border-[#d1bb48] px-2 py-[8px] text-center text-[12px] font-bold leading-[1.08] shadow-[3px_3px_5px_rgba(0,0,0,0.28)] transition-colors md:min-h-[60px] md:px-4 md:text-[15px] ${
+                  className={`min-h-[42px] min-w-0 rounded-t-[8px] border border-[#d1bb48] px-2 py-[6px] text-center text-[12px] font-bold leading-[1.08] shadow-[3px_3px_5px_rgba(0,0,0,0.28)] transition-colors md:min-h-[48px] md:px-4 md:text-[15px] ${
                     activeTab === tabKey
-                      ? "bg-[#91d3ea] font-semibold text-black md:min-h-[68px] md:text-[19px] md:font-bold"
+                      ? "bg-[#91d3ea] font-semibold text-black md:min-h-[54px] md:text-[19px] md:font-bold"
                       : "bg-[#ffea56] text-black hover:bg-[#fff16f]"
                   }`}
                 >

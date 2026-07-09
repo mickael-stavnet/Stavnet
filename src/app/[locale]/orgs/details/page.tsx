@@ -6,8 +6,6 @@ import { redirect } from "@/i18n/routing";
 import { getDefaultOrganizationDetail, getOrganizationDetailByName } from "@/lib/data/orgs";
 import { buildOrganizationPageMetadata } from "@/lib/site-metadata";
 
-export const dynamic = "force-dynamic";
-
 interface OrganizationDetailsPageProps {
   params: Promise<{
     locale: string;

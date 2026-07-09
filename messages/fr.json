@@ -358,7 +358,8 @@
         "language": "Langues de parution",
         "title": "Titres : original ou traduction",
         "year": "Année",
-        "issue": "Parution"
+        "parution": "Parution",
+        "faconnage": "Façonnage"
       }
     },
     "content": {

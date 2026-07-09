@@ -358,7 +358,8 @@
         "language": "שפות פרסום",
         "title": "כותרות: מקור או תרגום",
         "year": "שנה",
-        "issue": "פרסום"
+        "parution": "פרסום",
+        "faconnage": "כריכה"
       }
     },
     "content": {
