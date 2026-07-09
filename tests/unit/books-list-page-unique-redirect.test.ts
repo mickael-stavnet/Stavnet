@@ -21,7 +21,7 @@ vi.mock("next-intl/server", () => ({
 }));
 
 vi.mock("@/lib/data/books", () => ({
-  BOOKS_PAGE_SIZE: 13,
+  BOOKS_PAGE_SIZE: 10,
   getBooksPage: getBooksPageMock,
   getBooksPageByTitle: getBooksPageByTitleMock,
   getBooksPageByAdvancedSearch: getBooksPageByAdvancedSearchMock,
@@ -82,7 +82,7 @@ describe("BooksListPage", () => {
     getBooksPageByTitleMock.mockResolvedValueOnce({
       items: [{ id: "41", title: "De grammatica van het gevoel" }],
       page: 1,
-      pageSize: 13,
+      pageSize: 10,
       total: 1,
       totalPages: 1,
       databaseTotal: 4998,
@@ -98,7 +98,7 @@ describe("BooksListPage", () => {
       }),
     ).rejects.toBe(redirectError);
 
-    expect(getBooksPageByTitleMock).toHaveBeenCalledWith(1, "De grammatica van het gevoel");
+    expect(getBooksPageByTitleMock).toHaveBeenCalledWith(1, "De grammatica van het gevoel", 10);
     expect(redirectMock).toHaveBeenCalledWith({
       href: {
         pathname: "/books/details",

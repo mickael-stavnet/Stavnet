@@ -6,7 +6,7 @@ import { StavnetFooter } from "@/components/stavnet/footer";
 import { StavnetHeader } from "@/components/stavnet/header";
 import { ListNameSearch } from "@/components/stavnet/list-name-search";
 import { Link } from "@/i18n/routing";
-import { getPersonsPage, getPersonsPageByName, PERSONS_PAGE_SIZE } from "@/lib/data/persons";
+import { getPersonsPage, getPersonsPageByName } from "@/lib/data/persons";
 import {
   Pagination,
   PaginationContent,
@@ -20,6 +20,14 @@ import { buildStaticPageMetadata } from "@/lib/site-metadata";
 
 const PERSONS_COLUMN_WIDTHS =
   ["24.35%", "13.92%", "13.42%", "7.16%", "7.75%", "8.15%", "7.95%", "8.15%", "7.95%", "9.15%"] as const;
+const PERSONS_PAGE_SIZE = 10;
+const PERSONS_TABLE_SHELL_CLASS =
+  "overflow-hidden rounded-[12px] border border-[#8fa0a8] bg-[linear-gradient(180deg,#dfe4e9_0%,#d6dce1_100%)] shadow-[0_10px_24px_rgba(53,78,91,0.12),inset_0_1px_0_rgba(255,255,255,0.55)] md:flex md:min-h-0 md:flex-1 md:flex-col";
+const PERSONS_TABLE_HEAD_ROW_CLASS = "border-b border-[#9aa8b0] bg-[#fff68f] text-[10px] uppercase leading-[1.08] tracking-[0.04em] [@media(max-height:950px)]:text-[9px]";
+const PERSONS_TABLE_HEAD_CELL_CLASS = "border-r border-[#9aa8b0] px-3 py-[13px] text-center font-semibold [@media(max-height:950px)]:py-[6px]";
+const PERSONS_TABLE_BODY_CLASS = "text-[13px] leading-[1.2] [@media(max-height:950px)]:text-[11px] [@media(max-height:950px)]:leading-[1]";
+const PERSONS_TABLE_ROW_CLASS = "border-b border-[#b1bac0]/80 bg-[rgba(236,241,244,0.92)] transition-colors odd:bg-[rgba(228,233,237,0.78)] hover:bg-[#eef4f8]";
+const PERSONS_TABLE_CELL_CLASS = "border-r border-[#b1bac0]/70 px-3 py-[18px] align-middle [@media(max-height:950px)]:py-[5px]";
 
 interface PersonsPageProps {
   params: Promise<{
@@ -37,7 +45,7 @@ export async function generateMetadata({ params }: PersonsPageProps): Promise<Me
 }
 
 function RedMarker() {
-  return <span className="mr-2 inline-block h-[11px] w-[11px] rounded-full border-[2px] border-[#ff1d1d]" />;
+  return <span className="inline-block h-[9px] w-[9px] shrink-0 rounded-full border-[1.5px] border-[#ff1d1d]" />;
 }
 
 function buildPageHref(page: number, searchTerm: string): string {
@@ -109,7 +117,9 @@ export default async function PersonsListPage({ params, searchParams }: PersonsP
   const currentPage = Number.parseInt(page ?? "1", 10);
   const searchTerm = (q ?? "").trim();
   const pageNumber = Number.isFinite(currentPage) && currentPage > 0 ? currentPage : 1;
-  const result = searchTerm ? await getPersonsPageByName(pageNumber, searchTerm) : await getPersonsPage(pageNumber);
+  const result = searchTerm
+    ? await getPersonsPageByName(pageNumber, searchTerm, PERSONS_PAGE_SIZE)
+    : await getPersonsPage(pageNumber, PERSONS_PAGE_SIZE);
   if (searchTerm && result.total === 1 && result.items[0]) {
     redirect({
       href: {
@@ -150,8 +160,8 @@ export default async function PersonsListPage({ params, searchParams }: PersonsP
           subtitle={t("header.subtitle")}
         />
 
-        <section className="mt-6 min-w-0 flex flex-col gap-4 md:absolute md:left-1/2 md:top-[178px] md:bottom-[132px] md:w-[min(1320px,96vw)] md:-translate-x-1/2">
-          <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between md:gap-6">
+        <section className="mt-6 min-w-0 flex flex-col gap-4 md:absolute md:left-1/2 md:top-[178px] md:bottom-[132px] md:w-[min(1320px,96vw)] md:-translate-x-1/2 [@media(max-height:950px)]:top-[122px] [@media(max-height:950px)]:bottom-[84px]">
+          <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between md:gap-6 [@media(max-height:950px)]:gap-2">
             <ListNameSearch
               key={searchTerm}
               label={t("search.label")}
@@ -159,13 +169,13 @@ export default async function PersonsListPage({ params, searchParams }: PersonsP
               initialValue={searchTerm}
               resetLabel={t("search.reset")}
             />
-            <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end sm:justify-end sm:gap-6">
-              <div className="flex items-center gap-3 text-[18px] leading-none text-black">
+            <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end sm:justify-end sm:gap-6 [@media(max-height:950px)]:gap-2">
+              <div className="flex items-center gap-3 text-[18px] leading-none text-black [@media(max-height:950px)]:gap-2 [@media(max-height:950px)]:text-[15px]">
                 <span>{t("stats.cardsFound")}</span>
                 <span>:</span>
                 <span className="font-bold text-[#ff1d1d]">{result.total}</span>
               </div>
-              <div className="flex items-center gap-3 text-[18px] leading-none text-black">
+              <div className="flex items-center gap-3 text-[18px] leading-none text-black [@media(max-height:950px)]:gap-2 [@media(max-height:950px)]:text-[15px]">
                 <span>{t("stats.databaseContains")}</span>
                 <span>:</span>
                 <span className="font-bold text-[#ff1d1d]">{result.databaseTotal}</span>
@@ -173,7 +183,7 @@ export default async function PersonsListPage({ params, searchParams }: PersonsP
             </div>
           </div>
 
-          <section className="overflow-hidden rounded-[8px] border border-[#9aa8b0] bg-[#d8dde2] shadow-[4px_4px_8px_rgba(0,0,0,0.12)]">
+          <section className={PERSONS_TABLE_SHELL_CLASS}>
             <div className="space-y-3 p-3 md:hidden">
               {result.items.length > 0 ? (
                 result.items.map((person) => (
@@ -192,9 +202,9 @@ export default async function PersonsListPage({ params, searchParams }: PersonsP
               )}
             </div>
 
-            <div className="hidden md:block">
+            <div className="hidden md:block md:flex-1 md:min-h-0">
               {result.items.length > 0 ? (
-                <div className="overflow-auto">
+                <div className="overflow-auto md:h-full md:min-h-0">
                   <table className="min-w-[1260px] table-fixed border-collapse text-black">
                     <colgroup>
                       {PERSONS_COLUMN_WIDTHS.map((width, index) => (
@@ -202,40 +212,40 @@ export default async function PersonsListPage({ params, searchParams }: PersonsP
                       ))}
                     </colgroup>
                     <thead>
-                      <tr className="border-b border-[#9aa8b0] bg-[#fff68f] text-[11px] uppercase leading-none">
-                        <th className="rounded-tl-[10px] border-r border-[#9aa8b0] px-3 py-[9px] text-center font-normal">{t("columns.persons")}</th>
-                        <th className="border-r border-[#9aa8b0] px-3 py-[9px] text-center font-normal">{t("columns.type")}</th>
-                        <th className="border-r border-[#9aa8b0] px-3 py-[9px] text-center font-normal">{t("columns.language")}</th>
-                        <th className="border-r border-[#9aa8b0] px-3 py-[9px] text-center font-normal">{t("columns.originalTitles")}</th>
-                        <th className="border-r border-[#9aa8b0] px-3 py-[9px] text-center font-normal">{t("columns.translatedTitles")}</th>
-                        <th className="border-r border-[#9aa8b0] px-3 py-[9px] text-center font-normal">{t("columns.translationLanguages")}</th>
-                        <th className="border-r border-[#9aa8b0] px-3 py-[9px] text-center font-normal">{t("columns.awards")}</th>
-                        <th className="border-r border-[#9aa8b0] px-3 py-[9px] text-center font-normal">{t("columns.regularReissues")}</th>
-                        <th className="border-r border-[#9aa8b0] px-3 py-[9px] text-center font-normal">{t("columns.pocketReissues")}</th>
-                        <th className="rounded-tr-[10px] px-3 py-[9px] text-center font-normal">{t("columns.publicationCountries")}</th>
+                      <tr className={PERSONS_TABLE_HEAD_ROW_CLASS}>
+                        <th className={`${PERSONS_TABLE_HEAD_CELL_CLASS} rounded-tl-[12px]`}>{t("columns.persons")}</th>
+                        <th className={PERSONS_TABLE_HEAD_CELL_CLASS}>{t("columns.type")}</th>
+                        <th className={PERSONS_TABLE_HEAD_CELL_CLASS}>{t("columns.language")}</th>
+                        <th className={PERSONS_TABLE_HEAD_CELL_CLASS}>{t("columns.originalTitles")}</th>
+                        <th className={PERSONS_TABLE_HEAD_CELL_CLASS}>{t("columns.translatedTitles")}</th>
+                        <th className={PERSONS_TABLE_HEAD_CELL_CLASS}>{t("columns.translationLanguages")}</th>
+                        <th className={PERSONS_TABLE_HEAD_CELL_CLASS}>{t("columns.awards")}</th>
+                        <th className={PERSONS_TABLE_HEAD_CELL_CLASS}>{t("columns.regularReissues")}</th>
+                        <th className={PERSONS_TABLE_HEAD_CELL_CLASS}>{t("columns.pocketReissues")}</th>
+                        <th className={`${PERSONS_TABLE_HEAD_CELL_CLASS} rounded-tr-[12px] border-r-0`}>{t("columns.publicationCountries")}</th>
                       </tr>
                     </thead>
-                    <tbody className="text-[14px] leading-none">
+                    <tbody className={PERSONS_TABLE_BODY_CLASS}>
                       {result.items.map((person, rowIndex) => (
-                        <tr key={`${person.name}-${result.page}-${rowIndex}`} className="border-b border-[#b1bac0] last:border-b-0">
-                          <td className="border-r border-[#b1bac0] px-3 py-[15px] align-middle">
+                        <tr key={`${person.name}-${result.page}-${rowIndex}`} className={PERSONS_TABLE_ROW_CLASS}>
+                          <td className={PERSONS_TABLE_CELL_CLASS}>
                             <Link
                               href={{ pathname: "/persons/details", query: { name: person.name } }}
-                              className="flex items-center text-black hover:underline"
+                              className="flex items-center gap-2 text-black hover:underline"
                             >
                               <RedMarker />
                               <span className="w-full break-words">{person.name}</span>
                             </Link>
                           </td>
-                          <td className="border-r border-[#b1bac0] px-3 py-[15px] align-middle">{person.type || "—"}</td>
-                          <td className="border-r border-[#b1bac0] px-3 py-[15px] align-middle">{person.language || "—"}</td>
-                          <td className="border-r border-[#b1bac0] px-3 py-[15px] text-center align-middle">{person.originalTitles}</td>
-                          <td className="border-r border-[#b1bac0] px-3 py-[15px] text-center align-middle">{person.translatedTitles}</td>
-                          <td className="border-r border-[#b1bac0] px-3 py-[15px] text-center align-middle">{person.translationLanguages}</td>
-                          <td className="border-r border-[#b1bac0] px-3 py-[15px] text-center align-middle">{person.awards}</td>
-                          <td className="border-r border-[#b1bac0] px-3 py-[15px] text-center align-middle">{person.regularReissues}</td>
-                          <td className="border-r border-[#b1bac0] px-3 py-[15px] text-center align-middle">{person.pocketReissues}</td>
-                          <td className="px-3 py-[15px] text-center align-middle">{person.publicationCountries}</td>
+                          <td className={PERSONS_TABLE_CELL_CLASS}>{person.type || "—"}</td>
+                          <td className={PERSONS_TABLE_CELL_CLASS}>{person.language || "—"}</td>
+                          <td className={`${PERSONS_TABLE_CELL_CLASS} text-center`}>{person.originalTitles}</td>
+                          <td className={`${PERSONS_TABLE_CELL_CLASS} text-center`}>{person.translatedTitles}</td>
+                          <td className={`${PERSONS_TABLE_CELL_CLASS} text-center`}>{person.translationLanguages}</td>
+                          <td className={`${PERSONS_TABLE_CELL_CLASS} text-center`}>{person.awards}</td>
+                          <td className={`${PERSONS_TABLE_CELL_CLASS} text-center`}>{person.regularReissues}</td>
+                          <td className={`${PERSONS_TABLE_CELL_CLASS} text-center`}>{person.pocketReissues}</td>
+                          <td className="px-3 py-[18px] text-center align-middle">{person.publicationCountries}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -247,7 +257,7 @@ export default async function PersonsListPage({ params, searchParams }: PersonsP
             </div>
           </section>
 
-          <div className="flex flex-col items-center gap-3 md:pb-6">
+          <div className="flex flex-col items-center gap-3 md:pb-6 [@media(max-height:950px)]:gap-1.5">
             <p className="text-center text-[13px] font-bold leading-none text-black">
               {t("pagination.results", {
                 start: String((result.page - 1) * PERSONS_PAGE_SIZE + 1),

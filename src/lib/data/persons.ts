@@ -127,6 +127,19 @@ function normalizePersonValue(value: string): string {
   return readText(value).toLocaleLowerCase();
 }
 
+function buildPersonNameCandidates(value: string): string[] {
+  const trimmedValue = readText(value);
+  if (!trimmedValue) {
+    return [];
+  }
+
+  const words = trimmedValue.split(/\s+/).filter(Boolean);
+  const reversedValue = words.length > 1 ? words.slice().reverse().join(" ") : "";
+  const candidates = [trimmedValue, reversedValue].filter(Boolean);
+
+  return candidates.filter((candidate, index) => candidates.indexOf(candidate) === index);
+}
+
 function readNumber(value: unknown): number {
   if (typeof value === "number") {
     return Number.isFinite(value) ? value : 0;
@@ -387,6 +400,32 @@ async function enrichPersonDetailBibliography(detail: PersonDetail): Promise<Per
   };
 }
 
+async function fetchPersonDetailRpcByName(name: string): Promise<{
+  detail: PersonDetail | null;
+  status: number;
+  statusText: string;
+}> {
+  const { data, error, status, statusText } = await supabase.rpc("get_person_detail_by_name", {
+    p_name: name,
+  });
+
+  if (error) {
+    logError("PERSONS_RPC_DETAIL_ERROR", {
+      name,
+      status,
+      statusText,
+      error,
+    });
+    throw new Error(error.message);
+  }
+
+  return {
+    detail: mapPersonDetail((data as PersonDetailRpc) ?? null),
+    status,
+    statusText,
+  };
+}
+
 function buildPersonListResult(
   payload: PersonPageRpc,
   currentPage: number,
@@ -473,7 +512,7 @@ export const getPersonsPageByName = cacheData(
 );
 
 export const getPersonDetailByName = cacheData(
-  ["persons-detail-by-name"],
+  ["persons-detail-by-name-v2"],
   async (name: string): Promise<PersonDetail | null> => {
     const trimmedName = name.trim();
 
@@ -486,45 +525,46 @@ export const getPersonDetailByName = cacheData(
       name: trimmedName,
     });
 
-    const { data, error, status, statusText } = await supabase.rpc("get_person_detail_by_name", {
-      p_name: trimmedName,
-    });
+    const candidates = buildPersonNameCandidates(trimmedName);
 
-    if (error) {
-      logError("PERSONS_RPC_DETAIL_ERROR", {
+    for (const candidate of candidates) {
+      const { detail, status, statusText } = await fetchPersonDetailRpcByName(candidate);
+
+      if (!detail) {
+        continue;
+      }
+
+      if (candidate !== trimmedName) {
+        logInfo("PERSONS_RPC_DETAIL_VARIANT_MATCH", {
+          name: trimmedName,
+          candidate,
+          status,
+          statusText,
+          resolvedName: detail.name,
+        });
+      }
+
+      logInfo("PERSONS_RPC_DETAIL_RESULT", {
         name: trimmedName,
         status,
         statusText,
-        error,
+        resolvedName: detail.name,
       });
-      throw new Error(error.message);
+
+      return enrichPersonDetailBibliography(detail);
     }
 
-    const detail = mapPersonDetail((data as PersonDetailRpc) ?? null);
-
-    if (!detail) {
-      logWarn("PERSONS_RPC_DETAIL_NOT_FOUND", {
-        name: trimmedName,
-        status,
-        statusText,
-      });
-      return null;
-    }
-
-    logInfo("PERSONS_RPC_DETAIL_RESULT", {
+    logWarn("PERSONS_RPC_DETAIL_NOT_FOUND", {
       name: trimmedName,
-      status,
-      statusText,
-      resolvedName: detail.name,
+      candidates,
     });
-
-    return enrichPersonDetailBibliography(detail);
+    return null;
   },
   { revalidate: 300, tags: ["persons"] },
 );
 
 export const getDefaultPersonDetail = cacheData(
-  ["persons-default-detail"],
+  ["persons-default-detail-v2"],
   async (): Promise<PersonDetail | null> => {
     logInfo("PERSONS_RPC_DEFAULT_DETAIL_START", {});
 

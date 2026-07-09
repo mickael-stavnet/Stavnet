@@ -24,13 +24,13 @@ export function OrgsListSkeleton() {
         <div className="hidden md:block">
           <div className="grid min-w-[1100px] grid-cols-[2.4fr_1.05fr_1.08fr_0.98fr_0.62fr_0.64fr] border-b border-[#9aa8b0] bg-[#fff68f] p-0">
             {Array.from({ length: 6 }).map((_, index) => (
-              <div key={index} className="border-r border-[#9aa8b0] px-3 py-[9px] last:border-r-0">
+              <div key={index} className="border-r border-[#9aa8b0] px-3 py-[13px] last:border-r-0">
                 <Skeleton className="h-3 w-full bg-black/10" />
               </div>
             ))}
           </div>
           <div className="overflow-auto">
-            {Array.from({ length: 15 }).map((_, rowIndex) => (
+            {Array.from({ length: 10 }).map((_, rowIndex) => (
               <div
                 key={rowIndex}
                 className="grid min-w-[1100px] grid-cols-[2.4fr_1.05fr_1.08fr_0.98fr_0.62fr_0.64fr] border-b border-[#b1bac0] last:border-b-0"

@@ -15,11 +15,19 @@ import { StavnetFooter } from "@/components/stavnet/footer";
 import { StavnetHeader } from "@/components/stavnet/header";
 import { ListNameSearch } from "@/components/stavnet/list-name-search";
 import { Link } from "@/i18n/routing";
-import { BOOKS_PAGE_SIZE, getBooksPage, getBooksPageByAdvancedSearch, getBooksPageByTitle, type BookSearchFilters } from "@/lib/data/books";
+import { getBooksPage, getBooksPageByAdvancedSearch, getBooksPageByTitle, type BookSearchFilters } from "@/lib/data/books";
 import { resolveBooksListSelection } from "@/lib/books-search";
 import { buildStaticPageMetadata } from "@/lib/site-metadata";
 
 const BOOKS_COLUMN_WIDTHS = ["30.48%", "15.24%", "11.60%", "9.44%", "9.44%", "5.90%", "6.10%", "5.90%", "5.90%"] as const;
+const BOOKS_PAGE_SIZE = 10;
+const BOOKS_TABLE_SHELL_CLASS =
+  "overflow-hidden rounded-[12px] border border-[#8fa0a8] bg-[linear-gradient(180deg,#dfe4e9_0%,#d6dce1_100%)] shadow-[0_10px_24px_rgba(53,78,91,0.12),inset_0_1px_0_rgba(255,255,255,0.55)] md:flex md:min-h-0 md:flex-1 md:flex-col";
+const BOOKS_TABLE_HEAD_ROW_CLASS = "border-b border-[#9aa8b0] bg-[#fff68f] text-[10px] uppercase leading-[1.08] tracking-[0.04em] [@media(max-height:950px)]:text-[9px]";
+const BOOKS_TABLE_HEAD_CELL_CLASS = "border-r border-[#9aa8b0] px-3 py-[13px] text-center font-semibold [@media(max-height:950px)]:py-[6px]";
+const BOOKS_TABLE_BODY_CLASS = "text-[13px] leading-[1.2] [@media(max-height:950px)]:text-[11px] [@media(max-height:950px)]:leading-[1]";
+const BOOKS_TABLE_ROW_CLASS = "border-b border-[#b1bac0]/80 bg-[rgba(236,241,244,0.92)] transition-colors odd:bg-[rgba(228,233,237,0.78)] hover:bg-[#eef4f8]";
+const BOOKS_TABLE_CELL_CLASS = "border-r border-[#b1bac0]/70 px-3 py-[18px] align-middle [@media(max-height:950px)]:py-[5px]";
 
 interface BooksPageProps {
   params: Promise<{
@@ -134,11 +142,11 @@ export default async function BooksListPage({ params, searchParams }: BooksPageP
   const selection = resolveBooksListSelection({ page, q, title, personLastName, personFirstName, organization, theme, publicationLanguage, year, generalSearch });
   const { searchTerm, advancedFilters } = selection;
   const result =
-    selection.mode === "advanced"
-      ? await getBooksPageByAdvancedSearch(selection.pageNumber, selection.advancedFilters)
+      selection.mode === "advanced"
+      ? await getBooksPageByAdvancedSearch(selection.pageNumber, selection.advancedFilters, BOOKS_PAGE_SIZE)
       : selection.mode === "title"
-        ? await getBooksPageByTitle(selection.pageNumber, selection.searchTerm)
-        : await getBooksPage(selection.pageNumber);
+        ? await getBooksPageByTitle(selection.pageNumber, selection.searchTerm, BOOKS_PAGE_SIZE)
+        : await getBooksPage(selection.pageNumber, BOOKS_PAGE_SIZE);
   const hasAppliedFilters = selection.mode !== "basic";
 
   if (hasAppliedFilters && result.total === 1 && result.items[0]) {
@@ -182,8 +190,8 @@ export default async function BooksListPage({ params, searchParams }: BooksPageP
           subtitle={t("header.subtitle")}
         />
 
-        <section className="mt-6 min-w-0 flex flex-col gap-4 md:absolute md:left-1/2 md:top-[178px] md:bottom-[132px] md:w-[min(1320px,96vw)] md:-translate-x-1/2">
-          <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between md:gap-6">
+        <section className="mt-6 min-w-0 flex flex-col gap-4 md:absolute md:left-1/2 md:top-[178px] md:bottom-[132px] md:w-[min(1320px,96vw)] md:-translate-x-1/2 [@media(max-height:950px)]:top-[122px] [@media(max-height:950px)]:bottom-[84px]">
+          <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between md:gap-6 [@media(max-height:950px)]:gap-2">
             <ListNameSearch
               key={selection.searchTerm}
               label={t("search.label")}
@@ -191,13 +199,13 @@ export default async function BooksListPage({ params, searchParams }: BooksPageP
               initialValue={selection.searchTerm}
               resetLabel={t("search.reset")}
             />
-            <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end sm:justify-end sm:gap-6">
-              <div className="flex items-center gap-3 text-[18px] leading-none text-black">
+            <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end sm:justify-end sm:gap-6 [@media(max-height:950px)]:gap-2">
+              <div className="flex items-center gap-3 text-[18px] leading-none text-black [@media(max-height:950px)]:gap-2 [@media(max-height:950px)]:text-[15px]">
                 <span>{t("stats.cardsFound")}</span>
                 <span>:</span>
                 <span className="font-bold text-[#ff1d1d]">{result.total}</span>
               </div>
-              <div className="flex items-center gap-3 text-[18px] leading-none text-black">
+              <div className="flex items-center gap-3 text-[18px] leading-none text-black [@media(max-height:950px)]:gap-2 [@media(max-height:950px)]:text-[15px]">
                 <span>{t("stats.databaseContains")}</span>
                 <span>:</span>
                 <span className="font-bold text-[#ff1d1d]">{result.databaseTotal}</span>
@@ -205,7 +213,7 @@ export default async function BooksListPage({ params, searchParams }: BooksPageP
             </div>
           </div>
 
-          <section className="overflow-hidden rounded-[8px] border border-[#9aa8b0] bg-[#d8dde2] shadow-[4px_4px_8px_rgba(0,0,0,0.12)]">
+          <section className={BOOKS_TABLE_SHELL_CLASS}>
             <div className="space-y-3 p-3 md:hidden">
               {result.items.length > 0 ? (
                 result.items.map((book) => (
@@ -225,9 +233,9 @@ export default async function BooksListPage({ params, searchParams }: BooksPageP
               )}
             </div>
 
-            <div className="hidden md:block">
+            <div className="hidden md:block md:flex-1 md:min-h-0">
               {result.items.length > 0 ? (
-                <div className="overflow-auto">
+                <div className="overflow-auto md:h-full md:min-h-0">
                   <table className="min-w-[1280px] table-fixed border-collapse text-black">
                     <colgroup>
                       {BOOKS_COLUMN_WIDTHS.map((width, index) => (
@@ -235,38 +243,38 @@ export default async function BooksListPage({ params, searchParams }: BooksPageP
                       ))}
                     </colgroup>
                     <thead>
-                      <tr className="border-b border-[#9aa8b0] bg-[#fff68f] text-[11px] uppercase leading-none">
-                        <th className="rounded-tl-[10px] border-r border-[#9aa8b0] px-3 py-[9px] text-center font-normal">{t("columns.titles")}</th>
-                        <th className="border-r border-[#9aa8b0] px-3 py-[9px] text-center font-normal">{t("columns.authors")}</th>
-                        <th className="border-r border-[#9aa8b0] px-3 py-[9px] text-center font-normal">{t("columns.publishers")}</th>
-                        <th className="border-r border-[#9aa8b0] px-3 py-[9px] text-center font-normal">{t("columns.languages")}</th>
-                        <th className="border-r border-[#9aa8b0] px-3 py-[9px] text-center font-normal">{t("columns.writingLanguage")}</th>
-                        <th className="border-r border-[#9aa8b0] px-3 py-[9px] text-center font-normal">{t("columns.year")}</th>
-                        <th className="border-r border-[#9aa8b0] px-3 py-[9px] text-center font-normal">{t("columns.publication")}</th>
-                        <th className="border-r border-[#9aa8b0] px-3 py-[9px] text-center font-normal">{t("columns.issue")}</th>
-                        <th className="rounded-tr-[10px] px-3 py-[9px] text-center font-normal">{t("columns.edition")}</th>
+                      <tr className={BOOKS_TABLE_HEAD_ROW_CLASS}>
+                        <th className={`${BOOKS_TABLE_HEAD_CELL_CLASS} rounded-tl-[12px]`}>{t("columns.titles")}</th>
+                        <th className={BOOKS_TABLE_HEAD_CELL_CLASS}>{t("columns.authors")}</th>
+                        <th className={BOOKS_TABLE_HEAD_CELL_CLASS}>{t("columns.publishers")}</th>
+                        <th className={BOOKS_TABLE_HEAD_CELL_CLASS}>{t("columns.languages")}</th>
+                        <th className={BOOKS_TABLE_HEAD_CELL_CLASS}>{t("columns.writingLanguage")}</th>
+                        <th className={BOOKS_TABLE_HEAD_CELL_CLASS}>{t("columns.year")}</th>
+                        <th className={BOOKS_TABLE_HEAD_CELL_CLASS}>{t("columns.publication")}</th>
+                        <th className={BOOKS_TABLE_HEAD_CELL_CLASS}>{t("columns.issue")}</th>
+                        <th className={`${BOOKS_TABLE_HEAD_CELL_CLASS} rounded-tr-[12px] border-r-0`}>{t("columns.edition")}</th>
                       </tr>
                     </thead>
-                    <tbody className="text-[14px] leading-none">
+                    <tbody className={BOOKS_TABLE_BODY_CLASS}>
                       {result.items.map((book, rowIndex) => (
-                        <tr key={`${book.id}-${result.page}-${rowIndex}`} className="border-b border-[#b1bac0] last:border-b-0">
-                          <td className="border-r border-[#b1bac0] px-3 py-[15px] align-middle">
+                        <tr key={`${book.id}-${result.page}-${rowIndex}`} className={BOOKS_TABLE_ROW_CLASS}>
+                          <td className={BOOKS_TABLE_CELL_CLASS}>
                             <Link
                               href={{ pathname: "/books/details", query: { id: book.id } }}
-                              className="flex items-center text-black hover:underline"
+                              className="flex items-center gap-2 text-black hover:underline"
                             >
                               <RedMarker />
                               <span className="w-full break-words">{book.title}</span>
                             </Link>
                           </td>
-                          <td className="border-r border-[#b1bac0] px-3 py-[15px] align-middle">{book.author || "—"}</td>
-                          <td className="border-r border-[#b1bac0] px-3 py-[15px] align-middle">{book.publisher || "—"}</td>
-                          <td className="border-r border-[#b1bac0] px-3 py-[15px] align-middle">{book.language || "—"}</td>
-                          <td className="border-r border-[#b1bac0] px-3 py-[15px] align-middle">{book.writingLanguage || "—"}</td>
-                          <td className="border-r border-[#b1bac0] px-3 py-[15px] text-center align-middle">{book.year || "—"}</td>
-                          <td className="border-r border-[#b1bac0] px-3 py-[15px] text-center align-middle">{book.publication || "—"}</td>
-                          <td className="border-r border-[#b1bac0] px-3 py-[15px] text-center align-middle">{book.issue || "—"}</td>
-                          <td className="px-3 py-[15px] text-center align-middle">{book.edition || "—"}</td>
+                          <td className={BOOKS_TABLE_CELL_CLASS}>{book.author || "—"}</td>
+                          <td className={BOOKS_TABLE_CELL_CLASS}>{book.publisher || "—"}</td>
+                          <td className={BOOKS_TABLE_CELL_CLASS}>{book.language || "—"}</td>
+                          <td className={BOOKS_TABLE_CELL_CLASS}>{book.writingLanguage || "—"}</td>
+                          <td className={`${BOOKS_TABLE_CELL_CLASS} text-center`}>{book.year || "—"}</td>
+                          <td className={`${BOOKS_TABLE_CELL_CLASS} text-center`}>{book.publication || "—"}</td>
+                          <td className={`${BOOKS_TABLE_CELL_CLASS} text-center`}>{book.issue || "—"}</td>
+                          <td className="px-3 py-[18px] text-center align-middle [@media(max-height:950px)]:py-[5px]">{book.edition || "—"}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -278,7 +286,7 @@ export default async function BooksListPage({ params, searchParams }: BooksPageP
             </div>
           </section>
 
-          <div className="flex flex-col items-center gap-3 md:pb-6">
+          <div className="flex flex-col items-center gap-3 md:pb-6 [@media(max-height:950px)]:gap-1.5">
             <p className="text-center text-[13px] font-bold leading-none text-black">
               {t("pagination.results", {
                 start: String((result.page - 1) * BOOKS_PAGE_SIZE + 1),

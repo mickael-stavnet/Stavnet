@@ -7,6 +7,8 @@ import { getDefaultPersonDetail, getPersonDetailByName } from "@/lib/data/person
 import { buildPersonPageMetadata } from "@/lib/site-metadata";
 import { logInfo } from "@/lib/server-log";
 
+export const dynamic = "force-dynamic";
+
 interface PersonDetailsPageProps {
   params: Promise<{
     locale: string;

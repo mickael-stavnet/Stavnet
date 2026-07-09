@@ -22,7 +22,7 @@ vi.mock("next-intl/server", () => ({
 }));
 
 vi.mock("@/lib/data/orgs", () => ({
-  ORGS_PAGE_SIZE: 13,
+  ORGS_PAGE_SIZE: 10,
   getOrganizationsPage: getOrganizationsPageMock,
   getOrganizationsPageByName: getOrganizationsPageByNameMock,
   getOrganizationsPageByType: getOrganizationsPageByTypeMock,
@@ -88,7 +88,7 @@ describe("OrganizationsListPage", () => {
     getOrganizationsPageByNameMock.mockResolvedValueOnce({
       items: [{ name: "Contact" }],
       page: 1,
-      pageSize: 13,
+      pageSize: 10,
       total: 1,
       totalPages: 1,
       databaseTotal: 0,
@@ -104,7 +104,7 @@ describe("OrganizationsListPage", () => {
       }),
     ).rejects.toBe(redirectError);
 
-    expect(getOrganizationsPageByNameMock).toHaveBeenCalledWith(1, "Contact");
+    expect(getOrganizationsPageByNameMock).toHaveBeenCalledWith(1, "Contact", 10);
     expect(redirectMock).toHaveBeenCalledWith({
       href: {
         pathname: "/orgs/details",

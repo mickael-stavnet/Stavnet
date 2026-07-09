@@ -118,6 +118,10 @@
 - 12:04 - Remplacement complet de la page d’accueil `/(locale)` par le visuel de `/(locale)/home`, avec mutualisation du composant entre `"/"` et `"/home"`, réintégration du texte historique de présentation de la base et ajustement du bouton `Suite` pour poursuivre vers le menu.
 - 14:16 - Mise en place d’un workflow GitHub Actions de CI sur tous les `push` de branches, avec installation PNPM, cache Next.js et validation systématique par `pnpm lint` puis `pnpm build`.
 - 14:39 - Mise en place du socle de tests de l’application avec `Vitest` pour la logique métier, `Playwright` pour les parcours navigateur, tests de bootstrap Supabase, couverture initiale des helpers, des flux livres/personnes/organisations et ajout des scripts de test dédiés.
+
+# 09-07-2026
+
+- 15:08 - Refonte des tableaux desktop des pages `/[locale]/books`, `/[locale]/persons` et `/[locale]/orgs` avec style plus compact, pagination allégée et affichage strict de 10 lignes par page.
 - 15:08 - Mise en fonctionnement réelle de la page `/[locale]/search`, avec branchement du formulaire de recherche avancée vers la liste `/[locale]/books`, transmission des critères métier dans l’URL et exploitation du nouveau filtrage multi-champs côté serveur applicatif.
 
 # 06-07-2026

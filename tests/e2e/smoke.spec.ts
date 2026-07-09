@@ -31,5 +31,5 @@ test("person and organization interlinks work on key detail flows", async ({ pag
   await page.goto("/fr/orgs");
   await page.getByRole("link", { name: "Editeurs" }).click();
   await expect(page).toHaveURL(/\/fr\/orgs\?page=1&type=Editeur/);
-  await expect(page.locator("table")).toBeVisible();
+  await expect(page.locator("table:visible").first()).toBeVisible();
 });

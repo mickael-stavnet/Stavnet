@@ -24,7 +24,7 @@ function PaginationContent({
     <ul
       data-slot="pagination-content"
       className={cn(
-        "inline-flex flex-wrap items-center justify-center gap-2 rounded-[18px] border border-[#8bbac8] bg-[#dff2f8] px-3 py-2 shadow-[0_10px_24px_rgba(53,97,117,0.16),inset_0_1px_0_rgba(255,255,255,0.7)]",
+        "inline-flex flex-wrap items-center justify-center gap-1.5 rounded-[14px] border border-[#91b7c4] bg-[#e7f4f8] px-2 py-1.5 shadow-[0_6px_14px_rgba(53,97,117,0.12),inset_0_1px_0_rgba(255,255,255,0.72)]",
         className
       )}
       {...props}
@@ -53,7 +53,7 @@ function PaginationLink({
       variant="ghost"
       size={size}
       className={cn(
-        "h-10 min-w-10 rounded-[12px] border border-[#d7bc3f] bg-[linear-gradient(180deg,#fff6ab_0%,#ffe768_46%,#ffd948_100%)] px-3 text-[13px] font-bold text-[#342600] shadow-[0_4px_10px_rgba(163,126,21,0.22),inset_0_1px_0_rgba(255,255,255,0.68)] transition-[transform,box-shadow,background-color,border-color] duration-150 hover:-translate-y-px hover:border-[#c8aa22] hover:bg-[linear-gradient(180deg,#fff8bc_0%,#ffeb78_46%,#ffdd57_100%)] hover:text-[#221800] hover:shadow-[0_8px_16px_rgba(163,126,21,0.26),inset_0_1px_0_rgba(255,255,255,0.74)] active:translate-y-0 data-[active=true]:border-[#5d9cb1] data-[active=true]:bg-[linear-gradient(180deg,#d7f4ff_0%,#9fdcf0_48%,#7dc8df_100%)] data-[active=true]:text-[#0c3445] data-[active=true]:shadow-[0_6px_14px_rgba(54,122,145,0.22),inset_0_1px_0_rgba(255,255,255,0.7)]",
+        "size-8 rounded-[10px] border border-[#d1b73f] bg-[linear-gradient(180deg,#fff8c0_0%,#ffe87a_46%,#ffdc57_100%)] px-2 text-[12px] font-semibold leading-none text-[#3a2b00] shadow-[0_3px_8px_rgba(163,126,21,0.18),inset_0_1px_0_rgba(255,255,255,0.72)] transition-[transform,box-shadow,background-color,border-color] duration-150 hover:-translate-y-px hover:border-[#bea321] hover:bg-[linear-gradient(180deg,#fffad0_0%,#fff088_46%,#ffe36e_100%)] hover:text-[#251a00] hover:shadow-[0_6px_12px_rgba(163,126,21,0.22),inset_0_1px_0_rgba(255,255,255,0.76)] active:translate-y-0 data-[active=true]:border-[#6ba7ba] data-[active=true]:bg-[linear-gradient(180deg,#e1f7ff_0%,#b4e3f1_48%,#91cfdf_100%)] data-[active=true]:text-[#0b3445] data-[active=true]:shadow-[0_5px_12px_rgba(54,122,145,0.18),inset_0_1px_0_rgba(255,255,255,0.72)]",
         className
       )}
     >
@@ -76,7 +76,7 @@ function PaginationPrevious({
     <PaginationLink
       aria-label="Go to previous page"
       size="default"
-      className={cn("min-w-[112px] gap-1.5 px-3.5!", className)}
+      className={cn("min-w-[96px] gap-1 px-2.5 text-[12px]", className)}
       {...props}
     >
       <ChevronLeftIcon data-icon="inline-start" />
@@ -94,7 +94,7 @@ function PaginationNext({
     <PaginationLink
       aria-label="Go to next page"
       size="default"
-      className={cn("min-w-[112px] gap-1.5 px-3.5!", className)}
+      className={cn("min-w-[96px] gap-1 px-2.5 text-[12px]", className)}
       {...props}
     >
       <span className="hidden sm:block">{text}</span>
@@ -112,14 +112,13 @@ function PaginationEllipsis({
       aria-hidden
       data-slot="pagination-ellipsis"
       className={cn(
-        "flex size-10 items-center justify-center [&_svg:not([class*='size-'])]:size-4",
-        "rounded-[12px] border border-[#d8c05c] bg-[linear-gradient(180deg,#fff9c8_0%,#fff0a8_100%)] text-[#5a4700] shadow-[0_4px_10px_rgba(163,126,21,0.16),inset_0_1px_0_rgba(255,255,255,0.64)]",
+        "flex size-8 items-center justify-center [&_svg:not([class*='size-'])]:size-4",
+        "rounded-[10px] border border-[#d9c45f] bg-[linear-gradient(180deg,#fffad2_0%,#fff2b1_100%)] text-[#5a4700] shadow-[0_3px_8px_rgba(163,126,21,0.14),inset_0_1px_0_rgba(255,255,255,0.7)]",
         className
       )}
       {...props}
     >
-      <MoreHorizontalIcon
-      />
+      <MoreHorizontalIcon />
       <span className="sr-only">More pages</span>
     </span>
   )

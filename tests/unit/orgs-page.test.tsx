@@ -68,7 +68,7 @@ vi.mock("next-intl/server", () => ({
 }));
 
 vi.mock("@/lib/data/orgs", () => ({
-  ORGS_PAGE_SIZE: 13,
+  ORGS_PAGE_SIZE: 10,
   getOrganizationsPage: getOrganizationsPageMock,
   getOrganizationsPageByCategory: getOrganizationsPageByCategoryMock,
   getOrganizationsPageByName: getOrganizationsPageByNameMock,
@@ -140,7 +140,7 @@ describe("OrganizationsListPage", () => {
         },
       ],
       page: 2,
-      pageSize: 13,
+      pageSize: 10,
       total: 24,
       totalPages: 3,
       databaseTotal: 1200,
@@ -153,7 +153,7 @@ describe("OrganizationsListPage", () => {
 
     render(page);
 
-    expect(getOrganizationsPageByCategoryMock).toHaveBeenCalledWith(2, "Editeur", "Fay");
+    expect(getOrganizationsPageByCategoryMock).toHaveBeenCalledWith(2, "Editeur", "Fay", 10);
     expect(getOrganizationsPageByTypeMock).not.toHaveBeenCalled();
 
     const activeFilterLink = screen.getByRole("link", { name: "Editeurs" });
@@ -166,7 +166,7 @@ describe("OrganizationsListPage", () => {
     getOrganizationsPageByTypeMock.mockResolvedValueOnce({
       items: [],
       page: 1,
-      pageSize: 13,
+      pageSize: 10,
       total: 0,
       totalPages: 1,
       databaseTotal: 1200,
@@ -179,7 +179,7 @@ describe("OrganizationsListPage", () => {
 
     render(page);
 
-    expect(getOrganizationsPageByTypeMock).toHaveBeenCalledWith(1, "Diffuseur", "");
+    expect(getOrganizationsPageByTypeMock).toHaveBeenCalledWith(1, "Diffuseur", "", 10);
     expect(getOrganizationsPageByCategoryMock).not.toHaveBeenCalled();
   });
 });

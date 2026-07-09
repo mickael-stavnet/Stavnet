@@ -11,6 +11,7 @@ export default defineConfig({
   },
   test: {
     environment: "node",
+    pool: "threads",
     setupFiles: ["./vitest.setup.ts"],
     include: ["tests/**/*.test.ts", "tests/**/*.test.tsx"],
     exclude: ["tests/e2e/**"],

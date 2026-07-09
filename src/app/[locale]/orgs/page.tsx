@@ -11,7 +11,6 @@ import {
   getOrganizationsPageByCategory,
   getOrganizationsPageByName,
   getOrganizationsPageByType,
-  ORGS_PAGE_SIZE,
 } from "@/lib/data/orgs";
 import {
   buildOrganizationsPageHref,
@@ -30,6 +29,14 @@ import {
 import { buildStaticPageMetadata } from "@/lib/site-metadata";
 
 const ORGS_COLUMN_WIDTHS = ["35.45%", "15.51%", "15.95%", "14.48%", "9.16%", "9.45%"] as const;
+const ORGS_PAGE_SIZE = 10;
+const ORGS_TABLE_SHELL_CLASS =
+  "overflow-hidden rounded-[12px] border border-[#8fa0a8] bg-[linear-gradient(180deg,#dfe4e9_0%,#d6dce1_100%)] shadow-[0_10px_24px_rgba(53,78,91,0.12),inset_0_1px_0_rgba(255,255,255,0.55)] md:flex md:min-h-0 md:flex-1 md:flex-col";
+const ORGS_TABLE_HEAD_ROW_CLASS = "border-b border-[#9aa8b0] bg-[#fff68f] text-[10px] uppercase leading-[1.08] tracking-[0.04em] [@media(max-height:950px)]:text-[9px]";
+const ORGS_TABLE_HEAD_CELL_CLASS = "border-r border-[#9aa8b0] px-3 py-[13px] text-center font-semibold [@media(max-height:950px)]:py-[4px]";
+const ORGS_TABLE_BODY_CLASS = "text-[13px] leading-[1.2] [@media(max-height:950px)]:text-[10px] [@media(max-height:950px)]:leading-[1]";
+const ORGS_TABLE_ROW_CLASS = "border-b border-[#b1bac0]/80 bg-[rgba(236,241,244,0.92)] transition-colors odd:bg-[rgba(228,233,237,0.78)] hover:bg-[#eef4f8]";
+const ORGS_TABLE_CELL_CLASS = "border-r border-[#b1bac0]/70 px-3 py-[18px] align-middle [@media(max-height:950px)]:py-[2px]";
 
 interface OrgsPageProps {
   params: Promise<{
@@ -48,7 +55,7 @@ export async function generateMetadata({ params }: OrgsPageProps): Promise<Metad
 }
 
 function RedMarker() {
-  return <span className="mr-2 inline-block h-[11px] w-[11px] rounded-full border-[2px] border-[#ff1d1d]" />;
+  return <span className="inline-block h-[9px] w-[9px] shrink-0 rounded-full border-[1.5px] border-[#ff1d1d]" />;
 }
 
 function getPaginationItems(currentPage: number, totalPages: number): Array<number | string> {
@@ -114,12 +121,13 @@ export default async function OrganizationsListPage({ params, searchParams }: Or
         selection.pageNumber,
         selection.categoryFilter as (typeof ORGANIZATION_FILTER_OPTIONS)[number],
         selection.searchTerm,
+        ORGS_PAGE_SIZE,
       )
     : selection.mode === "type"
-      ? await getOrganizationsPageByType(selection.pageNumber, selection.typeFilter, selection.searchTerm)
+      ? await getOrganizationsPageByType(selection.pageNumber, selection.typeFilter, selection.searchTerm, ORGS_PAGE_SIZE)
       : selection.mode === "name"
-        ? await getOrganizationsPageByName(selection.pageNumber, selection.searchTerm)
-        : await getOrganizationsPage(selection.pageNumber);
+        ? await getOrganizationsPageByName(selection.pageNumber, selection.searchTerm, ORGS_PAGE_SIZE)
+        : await getOrganizationsPage(selection.pageNumber, ORGS_PAGE_SIZE);
   if (selection.mode !== "basic" && result.total === 1 && result.items[0]) {
     redirect({
       href: {
@@ -168,8 +176,8 @@ export default async function OrganizationsListPage({ params, searchParams }: Or
           subtitle={t("header.subtitle")}
         />
 
-        <section className="mt-6 min-w-0 flex flex-col gap-4 md:absolute md:left-1/2 md:top-[178px] md:bottom-[132px] md:w-[min(1320px,96vw)] md:-translate-x-1/2">
-          <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between md:gap-6">
+        <section className="mt-6 min-w-0 flex flex-col gap-4 md:absolute md:left-1/2 md:top-[178px] md:bottom-[132px] md:w-[min(1320px,96vw)] md:-translate-x-1/2 [@media(max-height:950px)]:top-[112px] [@media(max-height:950px)]:bottom-[68px]">
+          <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between md:gap-6 [@media(max-height:950px)]:gap-1.5">
             <div className="flex flex-col gap-3">
               <ListNameSearch
                 key={selection.searchTerm}
@@ -178,12 +186,12 @@ export default async function OrganizationsListPage({ params, searchParams }: Or
                 initialValue={selection.searchTerm}
                 resetLabel={t("search.reset")}
               />
-              <div className="flex flex-col gap-2">
-                <p className="text-[13px] font-bold leading-none text-black">{filterLabels.title}</p>
-                <div className="flex flex-wrap gap-2">
+              <div className="flex flex-col gap-2 [@media(max-height:950px)]:gap-1">
+                <p className="text-[13px] font-bold leading-none text-black [@media(max-height:950px)]:text-[12px]">{filterLabels.title}</p>
+                <div className="flex flex-wrap gap-2 [@media(max-height:950px)]:gap-1">
                     <Link
                     href={buildOrganizationsPageHref(1, selection.searchTerm, "")}
-                    className={`rounded-[8px] border px-3 py-2 text-[13px] font-bold leading-none shadow-[2px_2px_4px_rgba(0,0,0,0.12)] ${
+                    className={`rounded-[8px] border px-3 py-2 text-[13px] font-bold leading-none shadow-[2px_2px_4px_rgba(0,0,0,0.12)] [@media(max-height:950px)]:px-2 [@media(max-height:950px)]:py-1 [@media(max-height:950px)]:text-[12px] ${
                       !selection.typeFilter
                         ? "border-[#7aa8b7] bg-[#91d3ea] text-black"
                         : "border-[#d1bb48] bg-[#ffea56] text-black hover:bg-[#fff16f]"
@@ -195,7 +203,7 @@ export default async function OrganizationsListPage({ params, searchParams }: Or
                       <Link
                         key={option}
                         href={buildOrganizationsPageHref(1, selection.searchTerm, option)}
-                        className={`rounded-[8px] border px-3 py-2 text-[13px] font-bold leading-none shadow-[2px_2px_4px_rgba(0,0,0,0.12)] ${
+                        className={`rounded-[8px] border px-3 py-2 text-[13px] font-bold leading-none shadow-[2px_2px_4px_rgba(0,0,0,0.12)] [@media(max-height:950px)]:px-2 [@media(max-height:950px)]:py-1 [@media(max-height:950px)]:text-[12px] ${
                         selection.typeFilter === option
                           ? "border-[#7aa8b7] bg-[#91d3ea] text-black"
                           : "border-[#d1bb48] bg-[#ffea56] text-black hover:bg-[#fff16f]"
@@ -208,20 +216,20 @@ export default async function OrganizationsListPage({ params, searchParams }: Or
               </div>
             </div>
             {selection.typeFilter ? (
-              <div className="rounded-[8px] border border-[#7aa8b7] bg-[#a7dcee] px-4 py-3 shadow-[3px_3px_6px_rgba(0,0,0,0.12)]">
-                <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#07384a]">{columnLabels.type}</p>
-                <p className="mt-2 text-[18px] font-bold leading-tight text-black">
+              <div className="rounded-[8px] border border-[#7aa8b7] bg-[#a7dcee] px-4 py-3 shadow-[3px_3px_6px_rgba(0,0,0,0.12)] [@media(max-height:950px)]:px-3 [@media(max-height:950px)]:py-2">
+                <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#07384a] [@media(max-height:950px)]:text-[10px]">{columnLabels.type}</p>
+                <p className="mt-2 text-[18px] font-bold leading-tight text-black [@media(max-height:950px)]:mt-1 [@media(max-height:950px)]:text-[15px]">
                   {selection.categoryFilter ? filterLabels[selection.categoryFilter as keyof typeof filterLabels] : selection.typeFilter}
                 </p>
               </div>
             ) : null}
-            <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end sm:justify-end sm:gap-6">
-              <div className="flex items-center gap-3 text-[18px] leading-none text-black">
+            <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end sm:justify-end sm:gap-6 [@media(max-height:950px)]:gap-1.5">
+              <div className="flex items-center gap-3 text-[18px] leading-none text-black [@media(max-height:950px)]:gap-2 [@media(max-height:950px)]:text-[15px]">
                 <span>{t("stats.cardsFound")}</span>
                 <span>:</span>
                 <span className="font-bold text-[#ff1d1d]">{result.total}</span>
               </div>
-              <div className="flex items-center gap-3 text-[18px] leading-none text-black">
+              <div className="flex items-center gap-3 text-[18px] leading-none text-black [@media(max-height:950px)]:gap-2 [@media(max-height:950px)]:text-[15px]">
                 <span>{t("stats.databaseContains")}</span>
                 <span>:</span>
                 <span className="font-bold text-[#ff1d1d]">{result.databaseTotal}</span>
@@ -229,7 +237,7 @@ export default async function OrganizationsListPage({ params, searchParams }: Or
             </div>
           </div>
 
-          <section className="overflow-hidden rounded-[8px] border border-[#9aa8b0] bg-[#d8dde2] shadow-[4px_4px_8px_rgba(0,0,0,0.12)]">
+          <section className={ORGS_TABLE_SHELL_CLASS}>
             <div className="space-y-3 p-3 md:hidden">
               {result.items.length > 0 ? (
                 result.items.map((organization) => (
@@ -248,9 +256,9 @@ export default async function OrganizationsListPage({ params, searchParams }: Or
               )}
             </div>
 
-            <div className="hidden md:block">
+            <div className="hidden md:block md:flex-1 md:min-h-0">
               {result.items.length > 0 ? (
-                <div className="overflow-auto">
+                <div className="overflow-auto md:h-full md:min-h-0">
                   <table className="min-w-[1100px] table-fixed border-collapse text-black">
                     <colgroup>
                       {ORGS_COLUMN_WIDTHS.map((width, index) => (
@@ -258,32 +266,32 @@ export default async function OrganizationsListPage({ params, searchParams }: Or
                       ))}
                     </colgroup>
                     <thead>
-                      <tr className="border-b border-[#9aa8b0] bg-[#fff68f] text-[11px] uppercase leading-none">
-                        <th className="rounded-tl-[10px] border-r border-[#9aa8b0] px-3 py-[9px] text-center font-normal">{columnLabels.organizations}</th>
-                        <th className="border-r border-[#9aa8b0] px-3 py-[9px] text-center font-normal">{columnLabels.type}</th>
-                        <th className="border-r border-[#9aa8b0] px-3 py-[9px] text-center font-normal">{columnLabels.creationDate}</th>
-                        <th className="border-r border-[#9aa8b0] px-3 py-[9px] text-center font-normal">{columnLabels.country}</th>
-                        <th className="border-r border-[#9aa8b0] px-3 py-[9px] text-center font-normal">{columnLabels.titlesPublished}</th>
-                        <th className="rounded-tr-[10px] px-3 py-[9px] text-center font-normal">{columnLabels.authorsPublished}</th>
+                      <tr className={ORGS_TABLE_HEAD_ROW_CLASS}>
+                        <th className={`${ORGS_TABLE_HEAD_CELL_CLASS} rounded-tl-[12px]`}>{columnLabels.organizations}</th>
+                        <th className={ORGS_TABLE_HEAD_CELL_CLASS}>{columnLabels.type}</th>
+                        <th className={ORGS_TABLE_HEAD_CELL_CLASS}>{columnLabels.creationDate}</th>
+                        <th className={ORGS_TABLE_HEAD_CELL_CLASS}>{columnLabels.country}</th>
+                        <th className={ORGS_TABLE_HEAD_CELL_CLASS}>{columnLabels.titlesPublished}</th>
+                        <th className={`${ORGS_TABLE_HEAD_CELL_CLASS} rounded-tr-[12px] border-r-0`}>{columnLabels.authorsPublished}</th>
                       </tr>
                     </thead>
-                    <tbody className="text-[14px] leading-none">
+                    <tbody className={ORGS_TABLE_BODY_CLASS}>
                       {result.items.map((organization, rowIndex) => (
-                        <tr key={`${organization.name}-${result.page}-${rowIndex}`} className="border-b border-[#b1bac0] last:border-b-0">
-                          <td className="border-r border-[#b1bac0] px-3 py-[15px] align-middle">
+                        <tr key={`${organization.name}-${result.page}-${rowIndex}`} className={ORGS_TABLE_ROW_CLASS}>
+                          <td className={ORGS_TABLE_CELL_CLASS}>
                             <Link
                               href={{ pathname: "/orgs/details", query: { name: organization.name } }}
-                              className="flex items-center text-black hover:underline"
+                              className="flex items-center gap-2 text-black hover:underline"
                             >
                               <RedMarker />
                               <span className="w-full break-words">{organization.name}</span>
                             </Link>
                           </td>
-                          <td className="border-r border-[#b1bac0] px-3 py-[15px] align-middle">{organization.type || "—"}</td>
-                          <td className="border-r border-[#b1bac0] px-3 py-[15px] align-middle">{organization.creationDate || "—"}</td>
-                          <td className="border-r border-[#b1bac0] px-3 py-[15px] align-middle">{organization.country || "—"}</td>
-                          <td className="border-r border-[#b1bac0] px-3 py-[15px] text-center align-middle">{organization.publishedTitles}</td>
-                          <td className="px-3 py-[15px] text-center align-middle">{organization.publishedAuthors}</td>
+                          <td className={ORGS_TABLE_CELL_CLASS}>{organization.type || "—"}</td>
+                          <td className={ORGS_TABLE_CELL_CLASS}>{organization.creationDate || "—"}</td>
+                          <td className={ORGS_TABLE_CELL_CLASS}>{organization.country || "—"}</td>
+                          <td className={`${ORGS_TABLE_CELL_CLASS} text-center`}>{organization.publishedTitles}</td>
+                          <td className="px-3 py-[18px] text-center align-middle">{organization.publishedAuthors}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -295,7 +303,7 @@ export default async function OrganizationsListPage({ params, searchParams }: Or
             </div>
           </section>
 
-          <div className="flex flex-col items-center gap-3 md:pb-6">
+          <div className="flex flex-col items-center gap-3 md:pb-6 [@media(max-height:950px)]:gap-1">
             <p className="text-center text-[13px] font-bold leading-none text-black">
               {t("pagination.results", {
                 start: String((result.page - 1) * ORGS_PAGE_SIZE + 1),
