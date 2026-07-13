@@ -3,14 +3,14 @@
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
-import { getPersonImageEntries } from "@/lib/person-images";
+import { getPersonImageEntries, type PersonImageEntry } from "@/lib/person-images";
 
-const MAX_SHOWCASE_COUNT = 24;
+const MAX_SHOWCASE_COUNT = 12;
 const DEBUG_STAR_MODEL = process.env.NODE_ENV !== "production";
 const MODEL_BASE_SIZE = 9.2;
 const MODEL_GLOBAL_SCALE = 1.5;
 const CAMERA_DISTANCE_FACTOR = 0.78 / MODEL_GLOBAL_SCALE;
-const PORTRAIT_SIZE_MULTIPLIER = 2;
+const PORTRAIT_SIZE_MULTIPLIER = 2.3;
 
 type ExteriorPanel = {
   area: number;
@@ -139,6 +139,7 @@ function getMeshTriangles(mesh: THREE.Mesh) {
   const triangles: Array<{
     area: number;
     center: THREE.Vector3;
+    edgeKeys: [string, string, string];
     normal: THREE.Vector3;
     vertices: [THREE.Vector3, THREE.Vector3, THREE.Vector3];
   }> = [];
@@ -177,9 +178,18 @@ function getMeshTriangles(mesh: THREE.Mesh) {
 
     normal.normalize();
     center.copy(firstVertex).add(secondVertex).add(thirdVertex).multiplyScalar(1 / 3);
+    const vertexKey = (vertex: THREE.Vector3) =>
+      [vertex.x, vertex.y, vertex.z].map((value) => Math.round(value * 10000) / 10000).join(",");
+    const vertexKeys = [vertexKey(firstVertex), vertexKey(secondVertex), vertexKey(thirdVertex)];
+    const edgeKeys = [
+      [vertexKeys[0], vertexKeys[1]].toSorted().join("|") ,
+      [vertexKeys[1], vertexKeys[2]].toSorted().join("|") ,
+      [vertexKeys[2], vertexKeys[0]].toSorted().join("|") ,
+    ] as [string, string, string];
     triangles.push({
       area,
       center: center.clone(),
+      edgeKeys,
       normal: normal.clone(),
       vertices: [firstVertex.clone(), secondVertex.clone(), thirdVertex.clone()],
     });
@@ -189,106 +199,151 @@ function getMeshTriangles(mesh: THREE.Mesh) {
 }
 
 function detectExteriorPanels(meshes: THREE.Mesh[], modelCenter: THREE.Vector3) {
-  const panelMap = new Map<string, RawPanel>();
   let triangleCount = 0;
   let verticalTriangleCount = 0;
+  let componentCount = 0;
+  const allPanels: RawPanel[] = [];
 
-  meshes.forEach((mesh) => {
-    getMeshTriangles(mesh).forEach((triangle) => {
-      triangleCount += 1;
-      if (Math.abs(triangle.normal.y) > 0.32) {
-        return;
-      }
+  const addPanel = (mesh: THREE.Mesh, triangles: ReturnType<typeof getMeshTriangles>) => {
+    if (triangles.length === 0) {
+      return;
+    }
 
-      verticalTriangleCount += 1;
-      const horizontalNormal = triangle.normal.clone().setY(0).normalize();
-      const normalAngle = Math.round(Math.atan2(horizontalNormal.z, horizontalNormal.x) * 8);
-      const planeDistance = horizontalNormal.dot(triangle.center);
-      const planeBucket = Math.round(planeDistance * 4);
-      const key = `${mesh.name}-${normalAngle}-${planeBucket}`;
-      const uAxis = new THREE.Vector3(0, 1, 0).cross(horizontalNormal).normalize();
-      const uValues = triangle.vertices.map((vertex) => uAxis.dot(vertex));
-      const vValues = triangle.vertices.map((vertex) => vertex.y);
-      const triangleUMin = Math.min(...uValues);
-      const triangleUMax = Math.max(...uValues);
-      const triangleVMin = Math.min(...vValues);
-      const triangleVMax = Math.max(...vValues);
-      const existingPanel = panelMap.get(key);
-      if (existingPanel) {
-        const totalArea = existingPanel.area + triangle.area;
-        existingPanel.center
-          .multiplyScalar(existingPanel.area)
-          .add(triangle.center.clone().multiplyScalar(triangle.area))
-          .multiplyScalar(1 / totalArea);
-        existingPanel.min.min(triangle.center);
-        existingPanel.max.max(triangle.center);
-        existingPanel.uMin = Math.min(existingPanel.uMin, triangleUMin);
-        existingPanel.uMax = Math.max(existingPanel.uMax, triangleUMax);
-        existingPanel.vMin = Math.min(existingPanel.vMin, triangleVMin);
-        existingPanel.vMax = Math.max(existingPanel.vMax, triangleVMax);
-        existingPanel.normal
-          .multiplyScalar(existingPanel.area)
-          .add(horizontalNormal.clone().multiplyScalar(triangle.area))
-          .normalize();
-        existingPanel.planeDistance =
-          (existingPanel.planeDistance * existingPanel.area + planeDistance * triangle.area) /
-          totalArea;
-        existingPanel.area = totalArea;
-        existingPanel.triangleCount += 1;
-        return;
-      }
-
-      panelMap.set(key, {
-        area: triangle.area,
-        center: triangle.center.clone(),
-        key,
-        max: triangle.center.clone(),
-        mesh,
-        min: triangle.center.clone(),
-        normal: horizontalNormal,
-        exteriorScore: 0,
-        planeDistance,
-        radialDistance: 0,
-        triangleCount: 1,
-        uAxis,
-        uMax: triangleUMax,
-        uMin: triangleUMin,
-        vMax: triangleVMax,
-        vMin: triangleVMin,
-        width: 0,
+    const edgeMap = new Map<string, number[]>();
+    triangles.forEach((triangle, triangleIndex) => {
+      triangle.edgeKeys.forEach((edgeKey) => {
+        const connected = edgeMap.get(edgeKey) ?? [];
+        connected.push(triangleIndex);
+        edgeMap.set(edgeKey, connected);
       });
     });
+
+    const parent = triangles.map((_, index) => index);
+    const find = (index: number): number => {
+      if (parent[index] !== index) {
+        parent[index] = find(parent[index]);
+      }
+      return parent[index];
+    };
+    const union = (first: number, second: number) => {
+      const firstRoot = find(first);
+      const secondRoot = find(second);
+      if (firstRoot !== secondRoot) {
+        parent[secondRoot] = firstRoot;
+      }
+    };
+
+    edgeMap.forEach((connected) => {
+      for (let firstIndex = 0; firstIndex < connected.length; firstIndex += 1) {
+        for (let secondIndex = firstIndex + 1; secondIndex < connected.length; secondIndex += 1) {
+          const first = triangles[connected[firstIndex]];
+          const second = triangles[connected[secondIndex]];
+          const coplanar =
+            first.normal.dot(second.normal) > 0.995 &&
+            Math.abs(first.normal.dot(first.center) - second.normal.dot(second.center)) < 0.01;
+          if (coplanar) {
+            union(connected[firstIndex], connected[secondIndex]);
+          }
+        }
+      }
+    });
+
+    const components = new Map<number, typeof triangles>();
+    triangles.forEach((triangle, triangleIndex) => {
+      const root = find(triangleIndex);
+      const component = components.get(root) ?? [];
+      component.push(triangle);
+      components.set(root, component);
+    });
+    componentCount += components.size;
+
+    components.forEach((component, componentIndex) => {
+      const area = component.reduce((sum, triangle) => sum + triangle.area, 0);
+      const normal = component
+        .reduce(
+          (sum, triangle) => sum.addScaledVector(triangle.normal, triangle.area),
+          new THREE.Vector3(),
+        )
+        .normalize()
+        .setY(0)
+        .normalize();
+      const uAxis = new THREE.Vector3(0, 1, 0).cross(normal).normalize();
+      const vertices = component.flatMap((triangle) => triangle.vertices);
+      const uValues = vertices.map((vertex) => uAxis.dot(vertex));
+      const vValues = vertices.map((vertex) => vertex.y);
+      const planeDistance = normal.dot(component[0].center);
+      const uMin = Math.min(...uValues);
+      const uMax = Math.max(...uValues);
+      const vMin = Math.min(...vValues);
+      const vMax = Math.max(...vValues);
+      const center = normal
+        .clone()
+        .multiplyScalar(planeDistance)
+        .add(uAxis.clone().multiplyScalar((uMin + uMax) / 2))
+        .add(new THREE.Vector3(0, (vMin + vMax) / 2, 0));
+      const radial = center.clone().sub(modelCenter).setY(0);
+      const radialDistance = radial.length();
+      const exteriorScore =
+        radialDistance > 0.0001 ? normal.dot(radial.normalize()) : 0;
+      allPanels.push({
+        area,
+        center,
+        exteriorScore,
+        key: `${mesh.name}-component-${componentIndex}`,
+        max: new THREE.Vector3(Math.max(...vertices.map((vertex) => vertex.x)), vMax, Math.max(...vertices.map((vertex) => vertex.z))),
+        mesh,
+        min: new THREE.Vector3(Math.min(...vertices.map((vertex) => vertex.x)), vMin, Math.min(...vertices.map((vertex) => vertex.z))),
+        normal,
+        planeDistance,
+        radialDistance,
+        triangleCount: component.length,
+        uAxis,
+        uMax,
+        uMin,
+        vMax,
+        vMin,
+        width: uMax - uMin,
+      });
+    });
+  };
+
+  meshes.forEach((mesh) => {
+    const triangles = getMeshTriangles(mesh);
+    triangleCount += triangles.length;
+    const verticalTriangles = triangles.filter((triangle) => {
+      const isVertical = Math.abs(triangle.normal.y) <= 0.32;
+      if (isVertical) {
+        verticalTriangleCount += 1;
+      }
+      return isVertical;
+    });
+    addPanel(mesh, verticalTriangles);
   });
 
-  const panels = Array.from(panelMap.values())
-    .filter((panel) => panel.area > 0.05)
-    .map((panel) => {
-      panel.width = panel.uMax - panel.uMin;
-      const uCenter = (panel.uMin + panel.uMax) / 2;
-      const vCenter = (panel.vMin + panel.vMax) / 2;
-      panel.center = panel.normal
-        .clone()
-        .multiplyScalar(panel.planeDistance)
-        .add(panel.uAxis.clone().multiplyScalar(uCenter))
-        .add(new THREE.Vector3(0, vCenter, 0));
-      const radial = panel.center.clone().sub(modelCenter).setY(0);
-      panel.radialDistance = radial.length();
-      panel.exteriorScore =
-        panel.radialDistance > 0.0001 ? panel.normal.dot(radial.normalize()) : 0;
-      return panel;
-    })
-    .filter(
-      (panel) =>
-        panel.exteriorScore > 0.45 &&
-        panel.radialDistance > 2.9 &&
-        panel.width > 0.5 &&
-        panel.vMax - panel.vMin > 0.8,
-    )
+  const rejectedPanels = allPanels
+    .filter((panel) => panel.area <= 0.05 || panel.exteriorScore <= 0.45 || panel.radialDistance <= 2.9 || panel.width <= 0.5 || panel.vMax - panel.vMin <= 0.8)
+    .map((panel) => ({
+      panel,
+      reason:
+        panel.area <= 0.05
+          ? "area-too-small"
+          : panel.exteriorScore <= 0.45
+            ? "interior-or-inward-normal"
+            : panel.radialDistance <= 2.9
+              ? "near-model-center"
+              : panel.width <= 0.5
+                ? "width-too-small"
+                : "height-too-small",
+    }));
+  const panels = allPanels
+    .filter((panel) => !rejectedPanels.some((rejected) => rejected.panel.key === panel.key))
     .toSorted((first, second) => second.area - first.area);
 
   return {
+    componentCount,
     exteriorTriangleCount: panels.reduce((count, panel) => count + panel.triangleCount, 0),
     panels,
+    rejectedPanels,
     triangleCount,
     verticalTriangleCount,
   };
@@ -357,15 +412,38 @@ export function StarModelViewer() {
     let cancelled = false;
 
     const addPortraitStacks = async (boxSize: THREE.Vector3) => {
-      const selectedEntries = shuffle(getPersonImageEntries()).slice(
-        0,
-        MAX_SHOWCASE_COUNT,
-      );
+      const fallbackEntries = shuffle(getPersonImageEntries()).slice(0, MAX_SHOWCASE_COUNT);
+      let selectedEntries: PersonImageEntry[] = fallbackEntries;
+      let selectionSource = "fallback";
+
+      try {
+        const response = await fetch(`/api/showcase?ts=${Date.now()}`, { cache: "no-store" });
+        if (response.ok) {
+          const payload = (await response.json()) as {
+            entries?: PersonImageEntry[];
+            source?: string;
+          };
+          if (Array.isArray(payload.entries) && payload.entries.length > 0) {
+            selectedEntries = payload.entries.slice(0, MAX_SHOWCASE_COUNT);
+            selectionSource = payload.source ?? "database";
+          }
+        } else {
+          logStarModelDebug("showcase selection request failed", { status: response.status });
+        }
+      } catch (error) {
+        logStarModelDebug("showcase selection request unavailable", {
+          message: error instanceof Error ? error.message : "unknown error",
+        });
+      }
+
       if (selectedEntries.length === 0 || cancelled) {
         return;
       }
 
-      logStarModelDebug("selected portrait entries", selectedEntries);
+      logStarModelDebug("selected portrait entries", {
+        entries: selectedEntries,
+        source: selectionSource,
+      });
 
       const textureResults = await Promise.allSettled(
         selectedEntries.map(async (entry) => {
@@ -432,7 +510,7 @@ export function StarModelViewer() {
       const localBox = new THREE.Box3().setFromObject(loadedModel);
       const localSize = localBox.getSize(new THREE.Vector3());
       const localCenter = localBox.getCenter(new THREE.Vector3());
-      const targetPortraitHeight = Math.min(localSize.y * 0.25 * PORTRAIT_SIZE_MULTIPLIER, 2);
+      const targetPortraitHeight = Math.min(localSize.y * 0.25 * PORTRAIT_SIZE_MULTIPLIER, 2.3);
       const surfaceOffset = THREE.MathUtils.clamp(localSize.z * 0.0025, 0.012, 0.025);
       const exteriorFaceAnalysis = detectExteriorPanels(candidateMeshes, localCenter);
       logStarModelDebug("model geometry analysis", {
@@ -460,7 +538,7 @@ export function StarModelViewer() {
           };
         }),
       });
-      const evaluatedPanels = exteriorFaceAnalysis.panels
+      const panelMetrics = exteriorFaceAnalysis.panels
         .filter((panel) => {
           const panelHeight = panel.vMax - panel.vMin;
           return panel.mesh.name === "Cube009_1" && panelHeight > 0.8 && panel.width > 0.5;
@@ -469,36 +547,62 @@ export function StarModelViewer() {
           const panelHeight = panel.vMax - panel.vMin;
           const panelWidth = panel.width;
           const horizontalMargin = Math.max(panelWidth * 0.14, 0.04);
-          const verticalMargin = Math.max(panelHeight * 0.09, 0.04);
+          const verticalMargin = Math.max(localSize.y * 0.035, 0.08);
           const safeWidth = Math.max(panelWidth - horizontalMargin * 2, 0);
-          const safeHeight = Math.max(panelHeight - verticalMargin * 2, 0);
-          const portraitHeight = Math.min(targetPortraitHeight, safeHeight, safeWidth / 0.69);
-          const portraitWidth = Math.min(portraitHeight * 0.69, safeWidth);
-          const position = panel.center.clone().addScaledVector(panel.normal, surfaceOffset);
-          const basis = new THREE.Matrix4().makeBasis(
-            panel.uAxis.clone().normalize(),
-            new THREE.Vector3(0, 1, 0),
-            panel.normal.clone().normalize(),
-          );
+          const safeHeight = Math.max(panelHeight - verticalMargin - Math.max(panelHeight * 0.09, 0.04), 0);
           return {
+            panel,
             area: panel.area,
             horizontalMargin,
-            isUsable: portraitWidth > 0.08 && portraitHeight > 0.12,
-            orientation: new THREE.Quaternion().setFromRotationMatrix(basis),
-            panelId: panel.key,
             panelHeight,
             panelWidth,
-            portraitHeight,
-            portraitWidth,
             safeHeight,
             safeWidth,
             verticalMargin,
-            meshName: panel.mesh.name,
-            normal: panel.normal.clone(),
-            position,
-            triangleCount: panel.triangleCount,
           };
         });
+      const uniformPortraitHeight = panelMetrics.length > 0
+        ? Math.min(
+            targetPortraitHeight,
+            ...panelMetrics.map((metric) => Math.min(metric.safeHeight, metric.safeWidth / 0.69)),
+          )
+        : 0;
+      const uniformPortraitWidth = uniformPortraitHeight * 0.69;
+      const evaluatedPanels = panelMetrics.map((metric) => {
+        const { panel } = metric;
+        const uCenter = (panel.uMin + panel.uMax) / 2;
+        const bottomMargin = metric.verticalMargin;
+        const position = panel.normal
+          .clone()
+          .multiplyScalar(panel.planeDistance)
+          .add(panel.uAxis.clone().normalize().multiplyScalar(uCenter))
+          .add(new THREE.Vector3(0, panel.vMin + bottomMargin + uniformPortraitHeight / 2, 0))
+          .addScaledVector(panel.normal, surfaceOffset);
+        const basis = new THREE.Matrix4().makeBasis(
+          panel.uAxis.clone().normalize(),
+          new THREE.Vector3(0, 1, 0),
+          panel.normal.clone().normalize(),
+        );
+        return {
+          area: metric.area,
+          horizontalMargin: metric.horizontalMargin,
+          isUsable: uniformPortraitWidth > 0.08 && uniformPortraitHeight > 0.12,
+          orientation: new THREE.Quaternion().setFromRotationMatrix(basis),
+          panelId: panel.key,
+          panelHeight: metric.panelHeight,
+          panelWidth: metric.panelWidth,
+          portraitHeight: uniformPortraitHeight,
+          portraitWidth: uniformPortraitWidth,
+          safeHeight: metric.safeHeight,
+          safeWidth: metric.safeWidth,
+          verticalMargin: bottomMargin,
+          bottomMargin,
+          meshName: panel.mesh.name,
+          normal: panel.normal.clone(),
+          position,
+          triangleCount: panel.triangleCount,
+        };
+      });
       const projectionPoints = evaluatedPanels
         .filter((point) => point.isUsable)
         .slice(0, Math.min(textures.length, MAX_SHOWCASE_COUNT));
@@ -510,8 +614,12 @@ export function StarModelViewer() {
         targetMesh: targetMesh.name,
         surfaceOffset,
         targetPortraitHeight,
+        uniformPortraitHeight,
+        uniformPortraitWidth,
         exteriorFaceAnalysis: {
+          componentCount: exteriorFaceAnalysis.componentCount,
           exteriorTriangleCount: exteriorFaceAnalysis.exteriorTriangleCount,
+          allPanelCount: exteriorFaceAnalysis.panels.length + exteriorFaceAnalysis.rejectedPanels.length,
           panelCount: exteriorFaceAnalysis.panels.length,
           panels: exteriorFaceAnalysis.panels.map((panel) => ({
             area: panel.area,
@@ -531,17 +639,25 @@ export function StarModelViewer() {
             uMin: panel.uMin,
             vMax: panel.vMax,
             vMin: panel.vMin,
+              width: panel.width,
+            })),
+          rejectedPanels: exteriorFaceAnalysis.rejectedPanels.map(({ panel, reason }) => ({
+            area: panel.area,
+            center: panel.center.toArray(),
+            exteriorScore: panel.exteriorScore,
+            height: panel.vMax - panel.vMin,
+            meshName: panel.mesh.name,
+            normal: panel.normal.toArray(),
+            panelId: panel.key,
+            radialDistance: panel.radialDistance,
+            reason,
+            triangleCount: panel.triangleCount,
             width: panel.width,
           })),
-          rejectedPanels: evaluatedPanels
+          rejectedDisplayablePanels: evaluatedPanels
             .filter((point) => !point.isUsable)
             .map((point) => ({
               area: point.area,
-              exteriorScore: exteriorFaceAnalysis.panels.find(
-                (panel) => panel.key === point.panelId,
-              )?.exteriorScore,
-              meshName: point.meshName,
-              normal: point.normal.toArray(),
               panelId: point.panelId,
               panelHeight: point.panelHeight,
               panelWidth: point.panelWidth,
@@ -550,6 +666,7 @@ export function StarModelViewer() {
               position: point.position.toArray(),
               safeHeight: point.safeHeight,
               safeWidth: point.safeWidth,
+              reason: "too-small-after-safe-margins",
             })),
           triangleCount: exteriorFaceAnalysis.triangleCount,
           verticalTriangleCount: exteriorFaceAnalysis.verticalTriangleCount,
@@ -579,6 +696,7 @@ export function StarModelViewer() {
             point.orientation.w,
           ],
           verticalMargin: point.verticalMargin,
+          bottomMargin: point.bottomMargin,
         })),
         visibilityFromInitialCamera: projectionPoints.map((point, index) => {
           const worldNormal = point.normal
