@@ -173,7 +173,7 @@
   },
   "BookDetailsPage": {
     "header": {
-      "cardTitle": "بطاقة كتاب",
+      "cardTitle": "بطاقة المؤلفات",
       "title": "الأدب الإسرائيلي",
       "subtitle": "قاعدة بيانات ببليوغرافية وبيوغرافية"
     },
@@ -183,7 +183,7 @@
     "noCoverAvailable": "لا يوجد غلاف متاح",
     "summary": "الملخص",
     "tabs": {
-      "bookCard": "بطاقة كتاب",
+      "bookCard": "بطاقة المؤلفات",
       "backCover": "الغلاف الخلفي",
       "tableOfContents": "جدول المحتويات",
       "extracts": "مقتطفات",
@@ -214,18 +214,18 @@
     },
     "tables": {
       "authors": "المؤلفون، المؤلفون المشاركون، المحررون: الاسم الأول، الاسم العائلي",
-      "authorType": "نوع المؤلف",
+      "authorType": "المؤلف",
       "writingLanguage": "لغة الكتابة",
-      "contributors": "المساهمون: المترجمون، الرسامون...",
+      "contributors": "المساهمون",
       "contributionType": "نوع المساهمة",
       "publishers": "الناشرون",
       "country": "البلد",
       "isbn": "ISBN",
       "yearPages": "السنة، عدد الصفحات، الأبعاد، التجليد، سعر البيع",
-      "category": "الفئة",
-      "subject": "الموضوع",
+      "category": "القسم",
+      "subject": "الموضوعات",
       "gender": "النوع",
-      "targetAudience": "الفئة المستهدفة"
+      "targetAudience": "أخرى"
     },
     "right": {
       "bookCardsFound": "بطاقات الكتب المعثور عليها",
@@ -620,17 +620,17 @@
     "facets": {
       "author": "المؤلف",
       "translationLanguage": "لغة الترجمة",
-      "authorType": "نوع المؤلف",
+      "authorType": "المؤلف",
       "authorWritingLanguage": "لغة الكتابة",
       "contributor": "المساهم",
       "contributorType": "نوع المساهمة",
       "contributorLanguage": "لغة المساهم",
       "publisher": "الناشر",
       "publisherCountry": "بلد الناشر",
-      "category": "الفئة",
-      "subject": "الموضوع",
+      "category": "القسم",
+      "subject": "الموضوعات",
       "genre": "النوع",
-      "targetAudience": "الجمهور المستهدف"
+      "targetAudience": "أخرى"
     }
   },
   "DefinitionPage": {

@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import PersonDetailPage from "../person-detail-page";
 import { isBookRelatedFacet } from "@/lib/book-related";
 import { redirect } from "@/i18n/routing";
+import { getBooksPageByFacet } from "@/lib/data/books";
 import { getDefaultPersonDetail, getPersonDetailByName } from "@/lib/data/persons";
 import { buildPersonPageMetadata } from "@/lib/site-metadata";
 import { logInfo } from "@/lib/server-log";
@@ -22,18 +23,19 @@ interface PersonDetailsPageProps {
 
 export async function generateMetadata({ params, searchParams }: PersonDetailsPageProps): Promise<Metadata> {
   const [{ locale }, { name }] = await Promise.all([params, searchParams]);
-  logInfo("DEBUG_LOG_INFINITE_FETCH", {
+  const trimmedName = name?.trim() ?? "";
+  logInfo("PERSON_DETAILS_ROUTE_METADATA", {
     route: "/persons/details",
-    phase: "metadata-start",
+    phase: "start",
     locale,
-    name: name ?? null,
+    name: trimmedName || null,
   });
-  const person = name ? await getPersonDetailByName(name) : await getDefaultPersonDetail();
-  logInfo("DEBUG_LOG_INFINITE_FETCH", {
+  const person = trimmedName ? await getPersonDetailByName(trimmedName) : await getDefaultPersonDetail();
+  logInfo("PERSON_DETAILS_ROUTE_METADATA", {
     route: "/persons/details",
-    phase: "metadata-resolved",
+    phase: "resolved",
     locale,
-    name: name ?? null,
+    name: trimmedName || null,
     resolvedName: person?.name ?? null,
   });
   return buildPersonPageMetadata(locale, "/persons/details", person?.name);
@@ -41,49 +43,78 @@ export async function generateMetadata({ params, searchParams }: PersonDetailsPa
 
 export default async function PersonDetailsPage({ params, searchParams }: PersonDetailsPageProps) {
   const [{ locale }, { name, fallbackFacet, fallbackValue }] = await Promise.all([params, searchParams]);
-  logInfo("DEBUG_LOG_INFINITE_FETCH", {
+  const trimmedName = name?.trim() ?? "";
+  const trimmedFallbackValue = fallbackValue?.trim() ?? "";
+  logInfo("PERSON_DETAILS_ROUTE_DECISION", {
     route: "/persons/details",
-    phase: "page-start",
+    phase: "start",
     locale,
-    name: name ?? null,
+    name: trimmedName || null,
     fallbackFacet: fallbackFacet ?? null,
-    fallbackValue: fallbackValue ?? null,
+    fallbackValue: trimmedFallbackValue || null,
   });
-  const person = name ? await getPersonDetailByName(name) : await getDefaultPersonDetail();
-  logInfo("DEBUG_LOG_INFINITE_FETCH", {
+  const person = trimmedName ? await getPersonDetailByName(trimmedName) : await getDefaultPersonDetail();
+  logInfo("PERSON_DETAILS_ROUTE_DECISION", {
     route: "/persons/details",
-    phase: "page-resolved",
+    phase: "resolved",
     locale,
-    name: name ?? null,
+    name: trimmedName || null,
     resolvedName: person?.name ?? null,
   });
 
   if (!person) {
-    if (fallbackFacet && fallbackValue && isBookRelatedFacet(fallbackFacet)) {
-      logInfo("DEBUG_LOG_INFINITE_FETCH", {
+    if (fallbackFacet && trimmedFallbackValue && isBookRelatedFacet(fallbackFacet)) {
+      const relatedBooks = await getBooksPageByFacet(1, fallbackFacet, trimmedFallbackValue);
+
+      if (relatedBooks.total > 0) {
+        logInfo("PERSON_DETAILS_ROUTE_DECISION", {
+          route: "/persons/details",
+          phase: "redirect-related-books",
+          outcome: "redirect_related_books",
+          locale,
+          fallbackFacet,
+          fallbackValue: trimmedFallbackValue,
+          total: relatedBooks.total,
+        });
+        redirect({
+          href: {
+            pathname: "/books/related",
+            query: {
+              facet: fallbackFacet,
+              value: trimmedFallbackValue,
+            },
+          },
+          locale,
+        });
+      }
+    }
+
+    if (trimmedName) {
+      logInfo("PERSON_DETAILS_ROUTE_DECISION", {
         route: "/persons/details",
-        phase: "page-redirect-fallback",
+        phase: "redirect-books-search",
+        outcome: "redirect_books_search",
         locale,
-        fallbackFacet,
-        fallbackValue,
+        name: trimmedName,
       });
       redirect({
         href: {
-          pathname: "/books/related",
+          pathname: "/books",
           query: {
-            facet: fallbackFacet,
-            value: fallbackValue,
+            page: "1",
+            q: trimmedName,
           },
         },
         locale,
       });
     }
 
-    logInfo("DEBUG_LOG_INFINITE_FETCH", {
+    logInfo("PERSON_DETAILS_ROUTE_DECISION", {
       route: "/persons/details",
-      phase: "page-not-found",
+      phase: "not-found",
+      outcome: "not_found",
       locale,
-      name: name ?? null,
+      name: trimmedName || null,
     });
     notFound();
   }

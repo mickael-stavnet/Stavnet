@@ -17,6 +17,7 @@ import {
   ORGANIZATION_FILTER_OPTIONS,
   resolveOrganizationsListSelection,
 } from "@/lib/orgs-search";
+import { isPageWithinLimit, MAX_ORGANIZATIONS_PAGE } from "@/lib/pagination";
 import {
   Pagination,
   PaginationContent,
@@ -116,6 +117,17 @@ function MobileOrganizationCard({
 export default async function OrganizationsListPage({ params, searchParams }: OrgsPageProps) {
   const [{ locale }, { page, q, type }, t] = await Promise.all([params, searchParams, getTranslations("Orgs")]);
   const selection = resolveOrganizationsListSelection({ page, q, type });
+
+  if (!isPageWithinLimit(selection.pageNumber, MAX_ORGANIZATIONS_PAGE)) {
+    redirect({
+      href: {
+        pathname: "/orgs",
+        query: { page: "1" },
+      },
+      locale,
+    });
+  }
+
   const result = selection.mode === "category"
     ? await getOrganizationsPageByCategory(
         selection.pageNumber,

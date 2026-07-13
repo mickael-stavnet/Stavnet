@@ -18,6 +18,7 @@ import { Link } from "@/i18n/routing";
 import { BOOK_RELATED_FACET_LABEL_KEYS, isBookRelatedFacet, type BookRelatedFacet } from "@/lib/book-related";
 import { BOOKS_PAGE_SIZE, getBooksPageByFacet } from "@/lib/data/books";
 import { buildRelatedBooksPageMetadata } from "@/lib/site-metadata";
+import { isPageWithinLimit, MAX_BOOKS_PAGE } from "@/lib/pagination";
 import { logInfo } from "@/lib/server-log";
 
 const BOOKS_COLUMN_WIDTHS = ["34.71%", "17.90%", "13.56%", "11.06%", "6.72%", "6.94%", "6.72%", "6.72%"] as const;
@@ -140,6 +141,20 @@ export default async function RelatedBooksPage({ params, searchParams }: Related
       value: value || null,
     });
     notFound();
+  }
+
+  if (!isPageWithinLimit(pageNumber, MAX_BOOKS_PAGE)) {
+    redirect({
+      href: {
+        pathname: "/books/related",
+        query: {
+          facet,
+          value,
+          page: "1",
+        },
+      },
+      locale,
+    });
   }
 
   const result = await getBooksPageByFacet(pageNumber, facet, value);

@@ -173,7 +173,7 @@
   },
   "BookDetailsPage": {
     "header": {
-      "cardTitle": "כרטיס ספר",
+      "cardTitle": "כרטיסי ספרים",
       "title": "ספרות ישראלית",
       "subtitle": "מאגר ביבליוגרפי וביוגרפי"
     },
@@ -183,7 +183,7 @@
     "noCoverAvailable": "אין עטיפה זמינה",
     "summary": "תקציר",
     "tabs": {
-      "bookCard": "כרטיס ספר",
+      "bookCard": "כרטיסי ספרים",
       "backCover": "כריכה אחורית",
       "tableOfContents": "תוכן העניינים",
       "extracts": "קטעים",
@@ -214,18 +214,18 @@
     },
     "tables": {
       "authors": "מחברים, מחברים שותפים, עורכים: שם פרטי, שם משפחה",
-      "authorType": "סוג המחבר",
+      "authorType": "מחבר",
       "writingLanguage": "שפת כתיבה",
-      "contributors": "תורמים: מתרגמים, מאיירים...",
+      "contributors": "תורמים",
       "contributionType": "סוג התרומה",
       "publishers": "מוציאים לאור",
       "country": "מדינה",
       "isbn": "ISBN",
       "yearPages": "שנה, מספר עמודים, מידות, כריכה, מחיר קמעונאי",
-      "category": "קטגוריה",
-      "subject": "נושא",
+      "category": "מדור",
+      "subject": "נושאים",
       "gender": "ז'אנר",
-      "targetAudience": "קהל יעד"
+      "targetAudience": "אחרים"
     },
     "right": {
       "bookCardsFound": "כרטיסי ספר שנמצאו",
@@ -620,17 +620,17 @@
     "facets": {
       "author": "מחבר",
       "translationLanguage": "שפת תרגום",
-      "authorType": "סוג מחבר",
+      "authorType": "מחבר",
       "authorWritingLanguage": "שפת כתיבה",
       "contributor": "תורם",
       "contributorType": "סוג תרומה",
       "contributorLanguage": "שפת התורם",
       "publisher": "מוציא לאור",
       "publisherCountry": "מדינת המוציא לאור",
-      "category": "קטגוריה",
-      "subject": "נושא",
+      "category": "מדור",
+      "subject": "נושאים",
       "genre": "ז'אנר",
-      "targetAudience": "קהל יעד"
+      "targetAudience": "אחרים"
     }
   },
   "DefinitionPage": {

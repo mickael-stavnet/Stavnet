@@ -173,7 +173,7 @@
   },
   "BookDetailsPage": {
     "header": {
-      "cardTitle": "Buchkartei",
+      "cardTitle": "Werkkartei",
       "title": "Israelische Literatur",
       "subtitle": "Bibliografische und biografische Datenbank"
     },
@@ -183,7 +183,7 @@
     "noCoverAvailable": "Kein Cover verfügbar",
     "summary": "Zusammenfassung",
     "tabs": {
-      "bookCard": "Buchkarte",
+      "bookCard": "Werkkartei",
       "backCover": "Rückseite",
       "tableOfContents": "Inhaltsverzeichnis",
       "extracts": "Auszüge",
@@ -214,18 +214,18 @@
     },
     "tables": {
       "authors": "Autoren, Mitautoren, Herausgeber: Vorname, Nachname",
-      "authorType": "Autorentyp",
+      "authorType": "Autor",
       "writingLanguage": "Schriftsprache",
-      "contributors": "Mitwirkende: Übersetzer, Illustratoren...",
+      "contributors": "Mitwirkende",
       "contributionType": "Beitragsart",
       "publishers": "Verlage",
       "country": "Land",
       "isbn": "ISBN",
       "yearPages": "Jahr, Seitenzahl, Maße, Bindung, Verkaufspreis",
-      "category": "Kategorie",
-      "subject": "Thema",
+      "category": "Rubrik",
+      "subject": "Themen",
       "gender": "Genre",
-      "targetAudience": "Zielpublikum"
+      "targetAudience": "Sonstiges"
     },
     "right": {
       "bookCardsFound": "Gefundene Buchkarten",
@@ -620,17 +620,17 @@
     "facets": {
       "author": "Autor",
       "translationLanguage": "Übersetzungssprache",
-      "authorType": "Autorentyp",
+      "authorType": "Autor",
       "authorWritingLanguage": "Schriftsprache",
       "contributor": "Mitwirkender",
       "contributorType": "Beitragstyp",
       "contributorLanguage": "Sprache des Mitwirkenden",
       "publisher": "Verlag",
       "publisherCountry": "Land des Verlags",
-      "category": "Kategorie",
-      "subject": "Thema",
+      "category": "Rubrik",
+      "subject": "Themen",
       "genre": "Genre",
-      "targetAudience": "Zielpublikum"
+      "targetAudience": "Sonstiges"
     }
   },
   "DefinitionPage": {

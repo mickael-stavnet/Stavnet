@@ -462,8 +462,8 @@ export default function BookDetailPage({ book }: BookDetailPageProps) {
 
                     <div className="grid gap-[12px] self-end sm:grid-cols-2 md:grid-cols-4">
                       <MiniCard title={t("tables.category")} values={buildFacetCardValues(book.category, "category")} />
-                      <MiniCard title={t("tables.subject")} values={buildFacetCardValues(book.subject, "subject")} />
                       <MiniCard title={t("tables.gender")} values={buildFacetCardValues(book.genre, "genre")} />
+                      <MiniCard title={t("tables.subject")} values={buildFacetCardValues(book.subject, "subject")} />
                       <MiniCard title={t("tables.targetAudience")} values={buildFacetCardValues(book.targetAudience, "targetAudience")} />
                     </div>
                   </div>
@@ -480,8 +480,8 @@ export default function BookDetailPage({ book }: BookDetailPageProps) {
                     <BlankContent title={t("content.statistics")} rows={2} />
                     <div className="grid gap-[10px] sm:grid-cols-2 md:grid-cols-4">
                       <MiniCard title={t("tables.category")} values={buildFacetCardValues(book.category, "category")} />
-                      <MiniCard title={t("tables.subject")} values={buildFacetCardValues(book.subject, "subject")} />
                       <MiniCard title={t("tables.gender")} values={buildFacetCardValues(book.genre, "genre")} />
+                      <MiniCard title={t("tables.subject")} values={buildFacetCardValues(book.subject, "subject")} />
                       <MiniCard title={t("tables.targetAudience")} values={buildFacetCardValues(book.targetAudience, "targetAudience")} />
                     </div>
                   </div>

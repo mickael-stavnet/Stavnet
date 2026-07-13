@@ -1,6 +1,5 @@
 import Image from "next/image";
-import { BookDetailSkeleton } from "@/components/skeletons/book-detail-skeleton";
-import { StavnetHeader } from "@/components/stavnet/header";
+import { StavnetLoadingIndicator } from "@/components/stavnet/loading-indicator";
 
 export default function BookDetailsLoading() {
   return (
@@ -14,15 +13,8 @@ export default function BookDetailsLoading() {
         className="object-cover object-center opacity-95 saturate-[1.08]"
       />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.18),transparent_32%),linear-gradient(180deg,rgba(210,229,242,0.18),rgba(210,229,242,0.08))]" />
-      <div className="relative z-10 mx-auto flex min-h-[100svh] w-full max-w-[1120px] flex-col px-4 pb-5 pt-4 md:h-screen md:max-w-none md:px-0 md:pb-0 md:pt-0">
-        <StavnetHeader
-          pageName="Fiche Livre"
-          title="Littérature israélienne"
-          subtitle="Base de données bibliographiques et biographiques"
-        />
-        <section className="mt-6 flex flex-col gap-4 md:absolute md:left-1/2 md:top-[172px] md:bottom-[118px] md:w-[1436px] md:max-w-[calc(100vw-24px)] md:-translate-x-1/2">
-          <BookDetailSkeleton />
-        </section>
+      <div className="relative z-10 flex min-h-[100svh] items-center justify-center px-4">
+        <StavnetLoadingIndicator />
       </div>
     </main>
   );

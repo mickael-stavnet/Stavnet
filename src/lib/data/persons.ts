@@ -111,6 +111,13 @@ export interface PersonListResult {
   databaseTotal: number;
 }
 
+type PersonDetailResolutionOutcome =
+  | "empty-name"
+  | "direct-match"
+  | "variant-match"
+  | "fallback-candidate-match"
+  | "not-found";
+
 function readText(value: unknown): string {
   if (value === null || value === undefined) {
     return "";
@@ -127,6 +134,15 @@ function normalizePersonValue(value: string): string {
   return readText(value).toLocaleLowerCase();
 }
 
+function normalizeLoosePersonValue(value: string): string {
+  return readText(value)
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[’'`´-]/g, " ")
+    .replace(/\s+/g, " ")
+    .toLocaleLowerCase();
+}
+
 function buildPersonNameCandidates(value: string): string[] {
   const trimmedValue = readText(value);
   if (!trimmedValue) {
@@ -138,6 +154,13 @@ function buildPersonNameCandidates(value: string): string[] {
   const candidates = [trimmedValue, reversedValue].filter(Boolean);
 
   return candidates.filter((candidate, index) => candidates.indexOf(candidate) === index);
+}
+
+function dedupePersonCandidates(values: string[]): string[] {
+  return values
+    .map((value) => readText(value))
+    .filter(Boolean)
+    .filter((value, index, array) => array.indexOf(value) === index);
 }
 
 function readNumber(value: unknown): number {
@@ -400,6 +423,44 @@ async function enrichPersonDetailBibliography(detail: PersonDetail): Promise<Per
   };
 }
 
+async function findFallbackPersonNameCandidates(name: string): Promise<string[]> {
+  const normalizedTarget = normalizeLoosePersonValue(name);
+
+  if (!normalizedTarget) {
+    return [];
+  }
+
+  const personData = await fetchAllTableRows("data-person", "*");
+  const fallbackMatches = personData.flatMap((row) => {
+    const sourceRow = row as PersonSourceRow;
+    const candidateEntries = [
+      { source: "first-last", value: readSourceField(sourceRow, ["Prénom Nom", "Prenom Nom"]) },
+      { source: "last-first", value: readSourceField(sourceRow, ["Nom Prénom", "Nom Prenom"]) },
+      { source: "original-author", value: readSourceField(sourceRow, ["Auteur Original"]) },
+    ].filter((entry) => entry.value.length > 0);
+    const matchedEntries = candidateEntries.filter((entry) => normalizeLoosePersonValue(entry.value) === normalizedTarget);
+
+    if (matchedEntries.length === 0) {
+      return [];
+    }
+
+    return matchedEntries;
+  });
+
+  const fallbackCandidates = dedupePersonCandidates(fallbackMatches.map((entry) => entry.value));
+
+  logInfo("PERSONS_RPC_DETAIL_FALLBACK_SCAN", {
+    name,
+    normalizedTarget,
+    scannedRows: personData.length,
+    matchedRows: fallbackMatches.length,
+    matchedSources: fallbackMatches.map((entry) => entry.source),
+    fallbackCandidates,
+  });
+
+  return fallbackCandidates;
+}
+
 async function fetchPersonDetailRpcByName(name: string): Promise<{
   detail: PersonDetail | null;
   status: number;
@@ -512,40 +573,48 @@ export const getPersonsPageByName = cacheData(
 );
 
 export const getPersonDetailByName = cacheData(
-  ["persons-detail-by-name-v2"],
+  ["persons-detail-by-name-v4-disabled-cache-null"],
   async (name: string): Promise<PersonDetail | null> => {
     const trimmedName = name.trim();
+    const normalizedName = normalizePersonValue(trimmedName);
+    const normalizedLooseName = normalizeLoosePersonValue(trimmedName);
 
     if (!trimmedName) {
-      logWarn("PERSONS_RPC_DETAIL_EMPTY_NAME", { rawName: name });
+      logWarn("PERSONS_RPC_DETAIL_DECISION", {
+        outcome: "empty-name" satisfies PersonDetailResolutionOutcome,
+        rawName: name,
+      });
       return null;
     }
 
+    const candidates = buildPersonNameCandidates(trimmedName);
+
     logInfo("PERSONS_RPC_DETAIL_START", {
       name: trimmedName,
+      normalizedName,
+      normalizedLooseName,
+      candidates,
     });
-
-    const candidates = buildPersonNameCandidates(trimmedName);
 
     for (const candidate of candidates) {
       const { detail, status, statusText } = await fetchPersonDetailRpcByName(candidate);
 
       if (!detail) {
-        continue;
-      }
-
-      if (candidate !== trimmedName) {
-        logInfo("PERSONS_RPC_DETAIL_VARIANT_MATCH", {
+        logInfo("PERSONS_RPC_DETAIL_CANDIDATE_MISS", {
           name: trimmedName,
           candidate,
           status,
           statusText,
-          resolvedName: detail.name,
         });
+        continue;
       }
 
-      logInfo("PERSONS_RPC_DETAIL_RESULT", {
+      const outcome: PersonDetailResolutionOutcome = candidate === trimmedName ? "direct-match" : "variant-match";
+
+      logInfo("PERSONS_RPC_DETAIL_DECISION", {
+        outcome,
         name: trimmedName,
+        candidate,
         status,
         statusText,
         resolvedName: detail.name,
@@ -554,17 +623,52 @@ export const getPersonDetailByName = cacheData(
       return enrichPersonDetailBibliography(detail);
     }
 
-    logWarn("PERSONS_RPC_DETAIL_NOT_FOUND", {
+    const fallbackCandidates = await findFallbackPersonNameCandidates(trimmedName);
+
+    for (const candidate of fallbackCandidates) {
+      if (candidates.includes(candidate)) {
+        continue;
+      }
+
+      const { detail, status, statusText } = await fetchPersonDetailRpcByName(candidate);
+
+      if (!detail) {
+        logInfo("PERSONS_RPC_DETAIL_FALLBACK_CANDIDATE_MISS", {
+          name: trimmedName,
+          candidate,
+          status,
+          statusText,
+        });
+        continue;
+      }
+
+      logInfo("PERSONS_RPC_DETAIL_DECISION", {
+        outcome: "fallback-candidate-match" satisfies PersonDetailResolutionOutcome,
+        name: trimmedName,
+        candidate,
+        status,
+        statusText,
+        resolvedName: detail.name,
+      });
+
+      return enrichPersonDetailBibliography(detail);
+    }
+
+    logWarn("PERSONS_RPC_DETAIL_DECISION", {
+      outcome: "not-found" satisfies PersonDetailResolutionOutcome,
       name: trimmedName,
+      normalizedName,
+      normalizedLooseName,
       candidates,
+      fallbackCandidates,
     });
     return null;
   },
-  { revalidate: 300, tags: ["persons"] },
+  { revalidate: 1, tags: ["persons"] },
 );
 
 export const getDefaultPersonDetail = cacheData(
-  ["persons-default-detail-v2"],
+  ["persons-default-detail-v3"],
   async (): Promise<PersonDetail | null> => {
     logInfo("PERSONS_RPC_DEFAULT_DETAIL_START", {});
 

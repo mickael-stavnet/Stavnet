@@ -173,7 +173,7 @@
   },
   "BookDetailsPage": {
     "header": {
-      "cardTitle": "Ficha Libro",
+      "cardTitle": "Ficha de obras",
       "title": "Literatura israelí",
       "subtitle": "Base de datos bibliográfica y biográfica"
     },
@@ -183,7 +183,7 @@
     "noCoverAvailable": "No hay portada disponible",
     "summary": "Resumen",
     "tabs": {
-      "bookCard": "Ficha Libro",
+      "bookCard": "Ficha de obras",
       "backCover": "Contraportada",
       "tableOfContents": "Tabla de contenidos",
       "extracts": "Extractos",
@@ -214,18 +214,18 @@
     },
     "tables": {
       "authors": "Autores, coautores, editores: nombre, apellido",
-      "authorType": "Tipo de autor",
+      "authorType": "Autor",
       "writingLanguage": "Lengua de escritura",
-      "contributors": "Contribuyentes: traductores, ilustradores...",
+      "contributors": "Contribuyentes",
       "contributionType": "Tipo de contribución",
       "publishers": "Editores",
       "country": "País",
       "isbn": "ISBN",
       "yearPages": "Año, número de páginas, dimensiones, encuadernación, precio de venta",
-      "category": "Categoría",
-      "subject": "Tema",
+      "category": "Rubro",
+      "subject": "Temas",
       "gender": "Género",
-      "targetAudience": "Público objetivo"
+      "targetAudience": "Otros"
     },
     "right": {
       "bookCardsFound": "Fichas de libros encontradas",
@@ -620,17 +620,17 @@
     "facets": {
       "author": "Autor",
       "translationLanguage": "Lengua de traducción",
-      "authorType": "Tipo de autor",
+      "authorType": "Autor",
       "authorWritingLanguage": "Lengua de escritura",
       "contributor": "Contribuidor",
       "contributorType": "Tipo de contribución",
       "contributorLanguage": "Lengua del contribuidor",
       "publisher": "Editor",
       "publisherCountry": "País del editor",
-      "category": "Categoría",
-      "subject": "Tema",
+      "category": "Rubro",
+      "subject": "Temas",
       "genre": "Género",
-      "targetAudience": "Público destinatario"
+      "targetAudience": "Otros"
     }
   },
   "DefinitionPage": {

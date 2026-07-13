@@ -62,6 +62,11 @@ const PERSON_IMAGE_BASE_NAMES = [
 const PERSON_IMAGE_FALLBACK_SRC =
   "https://st3.depositphotos.com/9998432/13335/v/450/depositphotos_133352156-stock-illustration-default-placeholder-profile-icon.jpg";
 
+export type PersonImageEntry = {
+  name: string;
+  src: string;
+};
+
 function normalizePersonImageKey(value: string): string {
   return value
     .normalize("NFD")
@@ -91,6 +96,17 @@ const PERSON_IMAGE_MAP = new Map(
     ),
   ),
 );
+
+export function getPersonImageSources(): string[] {
+  return Array.from(new Set(PERSON_IMAGE_MAP.values()));
+}
+
+export function getPersonImageEntries(): PersonImageEntry[] {
+  return PERSON_IMAGE_BASE_NAMES.map((baseName) => ({
+    name: baseName.trim(),
+    src: `/images/persons/${baseName}.jpg`,
+  }));
+}
 
 export function resolvePersonImageSrc(
   name: string,

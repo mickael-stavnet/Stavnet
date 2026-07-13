@@ -84,4 +84,72 @@ describe("person detail name resolution", () => {
       p_name: "Aharoni Ada",
     });
   });
+
+  it("falls back to an accent-insensitive table match when the rpc misses", async () => {
+    rpcMock
+      .mockResolvedValueOnce({
+        data: null,
+        error: null,
+        status: 200,
+        statusText: "OK",
+      })
+      .mockResolvedValueOnce({
+        data: null,
+        error: null,
+        status: 200,
+        statusText: "OK",
+      })
+      .mockResolvedValueOnce({
+        data: {
+          name: "Mickaël Pariente",
+          alternateName: "Pariente Mickael",
+          type: "Auteur",
+          language: "Français",
+          birthInfo: "",
+          deathInfo: "",
+          residence: "",
+          professionalActivity: "",
+          biography: "",
+          bibliographyStats: {
+            originalTitles: "0",
+            translations: "0",
+            publicationLanguages: "0",
+          },
+          bibliographyRows: [],
+          stats: {
+            cardsFound: "697",
+            databaseContains: "1231",
+          },
+        },
+        error: null,
+        status: 200,
+        statusText: "OK",
+      });
+
+    fromMock.mockImplementation((table: string) => ({
+      select: () => ({
+        range: vi.fn().mockResolvedValue({
+          data: table === "data-person"
+            ? [
+                {
+                  "Prénom Nom": "Mickaël Pariente",
+                  "Nom Prénom": "Pariente Mickael",
+                  "Auteur Original": "",
+                },
+              ]
+            : [],
+          error: null,
+          status: 200,
+          statusText: "OK",
+        }),
+      }),
+    }));
+
+    const detail = await getPersonDetailByName("Mickaél Parienté");
+
+    expect(detail?.name).toBe("Mickaël Pariente");
+    expect(rpcMock).toHaveBeenNthCalledWith(3, "get_person_detail_by_name", {
+      p_name: "Mickaël Pariente",
+    });
+  });
 });

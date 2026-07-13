@@ -79,7 +79,7 @@ export default function HomePageClient() {
 
       <section
         data-stavnet-animate="star-viewer"
-        className="pointer-events-none absolute left-[calc(50%-2px)] top-[44svh] z-10 h-[clamp(176px,23.5svh,230px)] w-[min(66vw,244px)] -translate-x-1/2 -translate-y-1/2 md:left-0 md:right-0 md:top-[11vh] md:h-[66vh] md:w-full md:translate-x-0 md:translate-y-0"
+        className="absolute left-[calc(50%-2px)] top-[44svh] z-30 h-[clamp(176px,23.5svh,230px)] w-[min(66vw,244px)] -translate-x-1/2 -translate-y-1/2 md:left-0 md:right-0 md:top-[11vh] md:h-[66vh] md:w-full md:translate-x-0 md:translate-y-0"
       >
         <StarModelViewer />
       </section>
@@ -100,7 +100,7 @@ export default function HomePageClient() {
         <section data-stavnet-animate="cover-content" className="mt-5 flex flex-1 flex-col md:hidden">
           <div className="flex flex-1 flex-col justify-end pb-[232px]">
             <div className="mx-auto w-full max-w-[460px] px-2">
-              <p className="text-justify text-[18px] leading-[1.36] text-black">
+              <p className="text-center text-[18px] leading-[1.36] text-black">
                 {`${tHome("coverDescriptionLine1")} ${tHome("coverDescriptionLine2")} ${tHome("coverDescriptionLine3")}`}
               </p>
             </div>
@@ -109,7 +109,7 @@ export default function HomePageClient() {
 
         <section data-stavnet-animate="cover-content" className="hidden md:block">
           <div className="absolute left-1/2 top-[77.8vh] w-[82vw] max-w-[1320px] -translate-x-1/2">
-            <p className="w-full text-justify text-[clamp(18px,1.22vw,22px)] leading-[1.42] text-black">
+            <p className="w-full text-center text-[clamp(18px,1.22vw,22px)] leading-[1.42] text-black">
               {`${tHome("coverDescriptionLine1")} ${tHome("coverDescriptionLine2")} ${tHome("coverDescriptionLine3")}`}
             </p>
           </div>

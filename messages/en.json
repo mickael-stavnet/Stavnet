@@ -173,7 +173,7 @@
   },
   "BookDetailsPage": {
     "header": {
-      "cardTitle": "Book File",
+      "cardTitle": "Book records",
       "title": "Israeli literature",
       "subtitle": "Bibliography and Biography Database"
     },
@@ -183,7 +183,7 @@
     "noCoverAvailable": "No cover available",
     "summary": "Summary",
     "tabs": {
-      "bookCard": "Book Card",
+      "bookCard": "Book records",
       "backCover": "Back cover",
       "tableOfContents": "Table of contents",
       "extracts": "Extracts",
@@ -214,18 +214,18 @@
     },
     "tables": {
       "authors": "Authors, co-authors, editors: first name, last name",
-      "authorType": "Type of author",
+      "authorType": "Author",
       "writingLanguage": "Writing language",
-      "contributors": "Contributors: translators, illustrators...",
+      "contributors": "Contributors",
       "contributionType": "Type of contribution",
       "publishers": "Publishers",
       "country": "Country",
       "isbn": "ISBN",
       "yearPages": "Year, number of pages, dimensions, binding, retail price",
-      "category": "Category",
-      "subject": "Subject",
+      "category": "Section",
+      "subject": "Themes",
       "gender": "Gender",
-      "targetAudience": "Target audience"
+      "targetAudience": "Others"
     },
     "right": {
       "bookCardsFound": "Book Cards found",
@@ -620,17 +620,17 @@
     "facets": {
       "author": "Author",
       "translationLanguage": "Translation language",
-      "authorType": "Author type",
+      "authorType": "Author",
       "authorWritingLanguage": "Writing language",
       "contributor": "Contributor",
       "contributorType": "Contribution type",
       "contributorLanguage": "Contributor language",
       "publisher": "Publisher",
       "publisherCountry": "Publisher country",
-      "category": "Category",
-      "subject": "Subject",
+      "category": "Section",
+      "subject": "Themes",
       "genre": "Genre",
-      "targetAudience": "Target audience"
+      "targetAudience": "Others"
     }
   },
   "DefinitionPage": {

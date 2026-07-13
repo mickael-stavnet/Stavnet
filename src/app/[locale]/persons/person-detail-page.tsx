@@ -32,7 +32,7 @@ interface PersonDetailPageProps {
   person: PersonDetail;
 }
 
-const PERSON_BIBLIOGRAPHY_COLUMN_WIDTHS = ["15%", "20%", "37%", "8%", "10%", "10%"] as const;
+const PERSON_BIBLIOGRAPHY_COLUMN_WIDTHS = ["14%", "18%", "32%", "12%", "12%", "12%"] as const;
 const EMPTY_BIBLIOGRAPHY_ROW: PersonBibliographyDisplayRow = {
   type: "",
   language: "",

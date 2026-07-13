@@ -24,7 +24,9 @@ export function RouteErrorScreen({
   error,
 }: RouteErrorScreenProps) {
   useEffect(() => {
-    console.error(error);
+    if (process.env.NODE_ENV === "development") {
+      console.error(error);
+    }
   }, [error]);
 
   return (

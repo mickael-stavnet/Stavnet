@@ -24,6 +24,10 @@ function safeSerialize(value: unknown): string {
 }
 
 function write(level: LogLevel, title: string, emoji: string, payload?: unknown): void {
+  if (process.env.NODE_ENV !== "development") {
+    return;
+  }
+
   const prefix = `[${title}] ${emoji} [${level}]`;
   if (payload === undefined) {
     console.log(prefix);

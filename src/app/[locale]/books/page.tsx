@@ -17,6 +17,7 @@ import { ListNameSearch } from "@/components/stavnet/list-name-search";
 import { Link } from "@/i18n/routing";
 import { getBooksPage, getBooksPageByAdvancedSearch, getBooksPageByTitle, type BookSearchFilters } from "@/lib/data/books";
 import { resolveBooksListSelection } from "@/lib/books-search";
+import { isPageWithinLimit, MAX_BOOKS_PAGE } from "@/lib/pagination";
 import { buildStaticPageMetadata } from "@/lib/site-metadata";
 
 const BOOKS_COLUMN_WIDTHS = ["30.48%", "15.24%", "11.60%", "9.44%", "9.44%", "5.90%", "6.10%", "5.90%", "5.90%"] as const;
@@ -141,6 +142,17 @@ export default async function BooksListPage({ params, searchParams }: BooksPageP
   ]);
   const selection = resolveBooksListSelection({ page, q, title, personLastName, personFirstName, organization, theme, publicationLanguage, year, generalSearch });
   const { searchTerm, advancedFilters } = selection;
+
+  if (!isPageWithinLimit(selection.pageNumber, MAX_BOOKS_PAGE)) {
+    redirect({
+      href: {
+        pathname: "/books",
+        query: { page: "1" },
+      },
+      locale,
+    });
+  }
+
   const result =
       selection.mode === "advanced"
       ? await getBooksPageByAdvancedSearch(selection.pageNumber, selection.advancedFilters, BOOKS_PAGE_SIZE)

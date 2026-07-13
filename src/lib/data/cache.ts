@@ -8,6 +8,9 @@ type CacheEntry<Result> = {
   value: Result;
 };
 
+const isDevelopment = process.env.NODE_ENV === "development";
+const useLocalMemoryCache = process.env.NODE_ENV !== "production";
+const MAX_LOCAL_MEMORY_ENTRIES = 256;
 const inFlightCache = new Map<string, Promise<unknown>>();
 const memoryCache = new Map<string, CacheEntry<unknown>>();
 const cacheCallCounts = new Map<string, number>();
@@ -20,6 +23,34 @@ function getCallCount(cacheKey: string): number {
   const nextCount = (cacheCallCounts.get(cacheKey) ?? 0) + 1;
   cacheCallCounts.set(cacheKey, nextCount);
   return nextCount;
+}
+
+function purgeExpiredMemoryEntries(now: number): void {
+  if (!useLocalMemoryCache) {
+    return;
+  }
+
+  for (const [cacheKey, entry] of memoryCache) {
+    if (entry.expiresAt <= now) {
+      memoryCache.delete(cacheKey);
+    }
+  }
+}
+
+function setMemoryEntry(cacheKey: string, entry: CacheEntry<unknown>): void {
+  if (!useLocalMemoryCache) {
+    return;
+  }
+
+  if (memoryCache.size >= MAX_LOCAL_MEMORY_ENTRIES && !memoryCache.has(cacheKey)) {
+    const oldestKey = memoryCache.keys().next().value;
+
+    if (typeof oldestKey === "string") {
+      memoryCache.delete(oldestKey);
+    }
+  }
+
+  memoryCache.set(cacheKey, entry);
 }
 
 function getMemoryTtlMs(options: CacheOptions): number {
@@ -39,11 +70,13 @@ export function cacheData<Args extends unknown[], Result>(
 ): (...args: Args) => Promise<Result> {
   const cachedFn = unstable_cache(
     async (...args: Args) => {
-      logInfo("DEBUG_LOG_INFINITE_FETCH", {
-        cacheKey: keyParts.join("|"),
-        phase: "source-start",
-        args,
-      });
+      if (isDevelopment) {
+        logInfo("DEBUG_LOG_INFINITE_FETCH", {
+          cacheKey: keyParts.join("|"),
+          phase: "source-start",
+          args,
+        });
+      }
       return fn(...args);
     },
     keyParts,
@@ -53,39 +86,46 @@ export function cacheData<Args extends unknown[], Result>(
 
   return async (...args: Args) => {
     const cacheKey = buildCacheKey(keyParts, args);
-    const callCount = getCallCount(cacheKey);
     const now = Date.now();
-    const memoryEntry = memoryCache.get(cacheKey);
+    purgeExpiredMemoryEntries(now);
+    const callCount = isDevelopment ? getCallCount(cacheKey) : 0;
+    const memoryEntry = useLocalMemoryCache ? memoryCache.get(cacheKey) : undefined;
 
-    logInfo("DEBUG_LOG_INFINITE_FETCH", {
-      cacheKey: keyParts.join("|"),
-      phase: "wrapper-enter",
-      callCount,
-      args,
-      hasMemoryEntry: Boolean(memoryEntry),
-      hasInFlightEntry: inFlightCache.has(cacheKey),
-      ttlMs,
-    });
-
-    if (memoryEntry && memoryEntry.expiresAt > now) {
+    if (isDevelopment) {
       logInfo("DEBUG_LOG_INFINITE_FETCH", {
         cacheKey: keyParts.join("|"),
-        phase: "memory-hit",
+        phase: "wrapper-enter",
         callCount,
         args,
+        hasMemoryEntry: Boolean(memoryEntry),
+        hasInFlightEntry: inFlightCache.has(cacheKey),
+        ttlMs,
       });
+    }
+
+    if (memoryEntry && memoryEntry.expiresAt > now) {
+      if (isDevelopment) {
+        logInfo("DEBUG_LOG_INFINITE_FETCH", {
+          cacheKey: keyParts.join("|"),
+          phase: "memory-hit",
+          callCount,
+          args,
+        });
+      }
       return memoryEntry.value as Result;
     }
 
     const inFlight = inFlightCache.get(cacheKey);
 
     if (inFlight) {
-      logInfo("DEBUG_LOG_INFINITE_FETCH", {
-        cacheKey: keyParts.join("|"),
-        phase: "deduped-in-flight",
-        callCount,
-        args,
-      });
+      if (isDevelopment) {
+        logInfo("DEBUG_LOG_INFINITE_FETCH", {
+          cacheKey: keyParts.join("|"),
+          phase: "deduped-in-flight",
+          callCount,
+          args,
+        });
+      }
       return inFlight as Promise<Result>;
     }
 
@@ -94,35 +134,39 @@ export function cacheData<Args extends unknown[], Result>(
         const result = await cachedFn(...args);
 
         if (ttlMs > 0) {
-          memoryCache.set(cacheKey, {
+          setMemoryEntry(cacheKey, {
             expiresAt: Date.now() + ttlMs,
             value: result,
           });
         }
 
-        logInfo("DEBUG_LOG_INFINITE_FETCH", {
-          cacheKey: keyParts.join("|"),
-          phase: "wrapper-resolve",
-          callCount,
-          args,
-        });
+        if (isDevelopment) {
+          logInfo("DEBUG_LOG_INFINITE_FETCH", {
+            cacheKey: keyParts.join("|"),
+            phase: "wrapper-resolve",
+            callCount,
+            args,
+          });
+        }
 
         return result;
       } catch (error: unknown) {
         const message = error instanceof Error ? error.message : "";
 
         if (message.includes("incrementalCache missing")) {
-          logWarn("DEBUG_LOG_INFINITE_FETCH", {
-            cacheKey: keyParts.join("|"),
-            phase: "fallback-raw-fn",
-            callCount,
-            args,
-          });
+          if (isDevelopment) {
+            logWarn("DEBUG_LOG_INFINITE_FETCH", {
+              cacheKey: keyParts.join("|"),
+              phase: "fallback-raw-fn",
+              callCount,
+              args,
+            });
+          }
 
           const result = await fn(...args);
 
           if (ttlMs > 0) {
-            memoryCache.set(cacheKey, {
+            setMemoryEntry(cacheKey, {
               expiresAt: Date.now() + ttlMs,
               value: result,
             });
@@ -131,13 +175,15 @@ export function cacheData<Args extends unknown[], Result>(
           return result;
         }
 
-        logWarn("DEBUG_LOG_INFINITE_FETCH", {
-          cacheKey: keyParts.join("|"),
-          phase: "wrapper-error",
-          callCount,
-          args,
-          error: message || String(error),
-        });
+        if (isDevelopment) {
+          logWarn("DEBUG_LOG_INFINITE_FETCH", {
+            cacheKey: keyParts.join("|"),
+            phase: "wrapper-error",
+            callCount,
+            args,
+            error: message || String(error),
+          });
+        }
         throw error;
       } finally {
         inFlightCache.delete(cacheKey);

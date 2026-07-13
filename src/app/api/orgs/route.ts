@@ -8,6 +8,7 @@ import {
   getOrganizationsPage,
   ORGS_PAGE_SIZE,
 } from "@/lib/data/orgs";
+import { MAX_ORGANIZATIONS_PAGE } from "@/lib/pagination";
 import { logError, logInfo } from "@/lib/server-log";
 
 function parsePage(value: string | null): number {
@@ -53,6 +54,11 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 
     const page = parsePage(searchParams.get("page"));
     const pageSize = parsePageSize(searchParams.get("pageSize"), ORGS_PAGE_SIZE);
+
+    if (page > MAX_ORGANIZATIONS_PAGE) {
+      return NextResponse.json({ error: "Page out of range" }, { status: 400 });
+    }
+
     const type = searchParams.get("type")?.trim() ?? "";
     const q = searchParams.get("q")?.trim() ?? "";
     const result = type === "Editeur" || type === "Bibliothèque" || type === "AutreOrganisme"

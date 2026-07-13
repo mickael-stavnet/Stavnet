@@ -3,6 +3,7 @@ import { resolveBookCoverSrc } from "@/lib/book-images";
 import type { BookRelatedFacet } from "@/lib/book-related";
 import { fixEncoding } from "@/lib/encoding";
 import { logError, logInfo, logWarn } from "@/lib/server-log";
+import { MAX_BOOKS_PAGE } from "@/lib/pagination";
 import { supabase } from "@/lib/supabase";
 
 export const BOOKS_PAGE_SIZE = 13;
@@ -266,6 +267,16 @@ type BookRelatedPageItemRpc = {
   year?: unknown;
   publicationCode?: unknown;
 };
+
+type BookPageItemRpc = BookRelatedPageItemRpc & {
+  writingLanguage?: unknown;
+};
+
+type BookPageRpc = {
+  items?: BookPageItemRpc[] | null;
+  totalCount?: unknown;
+  databaseTotal?: unknown;
+} | null;
 
 type BookRelatedPageRpc = {
   items?: BookRelatedPageItemRpc[] | null;
@@ -939,6 +950,66 @@ function mapBookRelatedPageItem(item: BookRelatedPageItemRpc): BookListItem {
   };
 }
 
+function mapBookPageItem(item: BookPageItemRpc): BookListItem {
+  const code = parsePublicationCode(readText(item.publicationCode));
+
+  return {
+    id: readId(item.id),
+    title: readText(item.title),
+    author: readText(item.author),
+    publisher: readText(item.publisher),
+    language: readText(item.language),
+    writingLanguage: readText(item.writingLanguage),
+    year: readText(item.year),
+    publication: code.publication,
+    issue: code.issue,
+    edition: code.edition,
+  };
+}
+
+async function fetchBooksPageRpc(
+  page: number,
+  pageSize: number,
+  searchTerm: string,
+  filters: Partial<BookSearchFilters>,
+): Promise<BookListResult | null> {
+  const { data, error } = await supabase.rpc("get_books_page", {
+    p_page: page,
+    p_page_size: pageSize,
+    p_search: searchTerm.trim() || null,
+    p_title: filters.title?.trim() || null,
+    p_person_last_name: filters.personLastName?.trim() || null,
+    p_person_first_name: filters.personFirstName?.trim() || null,
+    p_organization: filters.organization?.trim() || null,
+    p_theme: filters.theme?.trim() || null,
+    p_publication_language: filters.publicationLanguage?.trim() || null,
+    p_year: filters.year?.trim() || null,
+    p_general_search: filters.generalSearch?.trim() || null,
+  });
+
+  if (error) {
+    if (error.message.includes("Could not find the function public.get_books_page")) {
+      return null;
+    }
+
+    throw new Error(error.message);
+  }
+
+  const payload = (data as BookPageRpc) ?? null;
+  const items = Array.isArray(payload?.items) ? payload.items.map(mapBookPageItem) : [];
+  const total = readNumber(payload?.totalCount);
+  const databaseTotal = readNumber(payload?.databaseTotal);
+
+  return {
+    items: items.filter((item) => item.id.length > 0 && item.title.length > 0),
+    page,
+    pageSize,
+    total,
+    totalPages: Math.max(1, Math.ceil(total / pageSize)),
+    databaseTotal,
+  };
+}
+
 const getBooksDatabaseTotals = cacheData(
   ["books-database-totals"],
   async (): Promise<{ cardsFound: number; databaseContains: number }> => {
@@ -1219,47 +1290,102 @@ function buildBookListResult(rows: BookRow[], total: number, currentPage: number
   };
 }
 
-export async function getBooksPage(page: number, pageSize = BOOKS_PAGE_SIZE): Promise<BookListResult> {
+export const getBooksPage = cacheData<[number, number?], BookListResult>(
+  ["books-page"],
+  async (page: number, pageSize = BOOKS_PAGE_SIZE): Promise<BookListResult> => {
   const currentPage = Math.max(1, page);
+
+  if (currentPage > MAX_BOOKS_PAGE) {
+    return buildBookListResult([], 0, currentPage, pageSize, 0);
+  }
+
+  const rpcResult = await fetchBooksPageRpc(currentPage, pageSize, "", {});
+
+  if (rpcResult) {
+    return rpcResult;
+  }
+
   const [{ rows, total }, totals] = await Promise.all([
     fetchBooksPagePayload(currentPage, pageSize),
     getBooksDatabaseTotals(),
   ]);
 
   return buildBookListResult(rows, total, currentPage, pageSize, totals.databaseContains);
-}
+  },
+  { revalidate: 300, tags: ["books"] },
+);
 
-export async function getBooksPageByTitle(page: number, searchTerm: string, pageSize = BOOKS_PAGE_SIZE): Promise<BookListResult> {
+export const getBooksPageByTitle = cacheData<[number, string, number?], BookListResult>(
+  ["books-page-by-title"],
+  async (page: number, searchTerm: string, pageSize = BOOKS_PAGE_SIZE): Promise<BookListResult> => {
   const currentPage = Math.max(1, page);
+
+  if (currentPage > MAX_BOOKS_PAGE) {
+    return buildBookListResult([], 0, currentPage, pageSize, 0);
+  }
+
+  const rpcResult = await fetchBooksPageRpc(currentPage, pageSize, searchTerm, {});
+
+  if (rpcResult) {
+    return rpcResult;
+  }
+
   const [{ rows, total }, totals] = await Promise.all([
     fetchBooksPagePayload(currentPage, pageSize, searchTerm),
     getBooksDatabaseTotals(),
   ]);
 
   return buildBookListResult(rows, total, currentPage, pageSize, totals.databaseContains);
-}
+  },
+  { revalidate: 300, tags: ["books"] },
+);
 
-export async function getBooksPageByAdvancedSearch(
-  page: number,
-  filters: Partial<BookSearchFilters>,
-  pageSize = BOOKS_PAGE_SIZE,
-): Promise<BookListResult> {
+export const getBooksPageByAdvancedSearch = cacheData<
+  [number, Partial<BookSearchFilters>, number?],
+  BookListResult
+>(
+  ["books-page-by-advanced-search"],
+  async (
+    page: number,
+    filters: Partial<BookSearchFilters>,
+    pageSize = BOOKS_PAGE_SIZE,
+  ): Promise<BookListResult> => {
   const currentPage = Math.max(1, page);
+
+  if (currentPage > MAX_BOOKS_PAGE) {
+    return buildBookListResult([], 0, currentPage, pageSize, 0);
+  }
+
+  const rpcResult = await fetchBooksPageRpc(currentPage, pageSize, "", filters);
+
+  if (rpcResult) {
+    return rpcResult;
+  }
+
   const [{ rows, total }, totals] = await Promise.all([
     fetchBooksPagePayload(currentPage, pageSize, "", filters),
     getBooksDatabaseTotals(),
   ]);
 
   return buildBookListResult(rows, total, currentPage, pageSize, totals.databaseContains);
-}
+  },
+  { revalidate: 300, tags: ["books"] },
+);
 
-export async function getBooksPageByFacet(
-  page: number,
-  facet: BookRelatedFacet,
-  value: string,
-  pageSize = BOOKS_PAGE_SIZE,
-): Promise<BookListResult> {
+export const getBooksPageByFacet = cacheData<[number, BookRelatedFacet, string, number?], BookListResult>(
+  ["books-page-by-facet"],
+  async (
+    page: number,
+    facet: BookRelatedFacet,
+    value: string,
+    pageSize = BOOKS_PAGE_SIZE,
+  ): Promise<BookListResult> => {
   const currentPage = Math.max(1, page);
+
+  if (currentPage > MAX_BOOKS_PAGE) {
+    return buildBookListResult([], 0, currentPage, pageSize, 0);
+  }
+
   const trimmedValue = value.trim();
 
   logInfo("BOOKS_RPC_RELATED_PAGE_START", {
@@ -1318,7 +1444,9 @@ export async function getBooksPageByFacet(
     totalPages: Math.max(1, Math.ceil(total / pageSize)),
     databaseTotal,
   };
-}
+  },
+  { revalidate: 300, tags: ["books"] },
+);
 
 export const resolveBookByExactTitle = cacheData(
   ["books-resolve-by-exact-title"],

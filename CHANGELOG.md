@@ -155,3 +155,15 @@
 - 09:57 - Refactor de la couche Supabase en services cachés par domaine pour `books`, `persons` et `orgs`, avec cache Next explicite sur les lectures coûteuses, retrait des `force-dynamic` inutiles sur les routes de détail et correction du rechargement infini via un garde-fou sur la synchronisation de recherche.
 - 10:33 - Ajout de traces `DEBUG_LOG_INFINITE_FETCH` sur les pages détail et dans le cache serveur pour compter les appels, détecter les doublons concurrents et réduire les hits Supabase répétés sur les parcours `persons` et `books`.
 - 10:45 - Ajout de `error.tsx` sur les segments async `books`, `persons` et `orgs` concernés, avec écran d’erreur local et bouton de retry pour éviter les relances de chargement sans retour visuel quand le rendu plante.
+
+# 10-07-2026
+
+- 09:49 - Durcissement des fiches détail `persons`, `books` et `orgs` avec nouveau routeur de secours pour les URLs directes, résolution plus tolérante des noms côté serveur, logs de diagnostic renforcés et revalidation du parcours `persons/details` sur plusieurs auteurs en navigateur.
+- 11:52 - Recalage du modèle 3D d’accueil avec portraits d’auteurs projetés en vitrines sur les panneaux extérieurs détectés du mesh GLB via `DecalGeometry`, analyse des triangles verticaux, regroupement par plans extérieurs, espacement anti-superposition des slots et logs détaillant dimensions, position, normale et surface des faces.
+- 14:09 - Répartition des portraits du modèle 3D d’accueil en une vitrine par panneau extérieur détecté, avec dimensionnement propre à chaque face pour éviter les superpositions et couverture élargie au-delà de la limite précédente de neuf images.
+- 14:23 - Renforcement de l’analyse géométrique du modèle 3D d’accueil avec mesure des faces par sommets en repère local, centrage strict des vitrines dans une zone utile avec marges et logs détaillant dimensions globales, meshes, panneaux extérieurs, axes, bornes et placements.
+- 14:30 - Ajustement de la détection des vitrines du modèle 3D d’accueil sur le contour extérieur réel de l’étoile de David, avec rejet des faces trop petites pour respecter les marges internes et logs des panneaux utilisables ou écartés.
+
+# 11-07-2026
+
+- 21:35 - Réduction de la consommation serveur en production avec désactivation des logs applicatifs hors développement, cache mémoire limité au développement, pagination bornée et lecture paginée des livres via une fonction Supabase dédiée.

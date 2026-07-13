@@ -14,6 +14,7 @@ const notFoundMock = vi.hoisted(() =>
 );
 const getPersonDetailByNameMock = vi.hoisted(() => vi.fn());
 const getDefaultPersonDetailMock = vi.hoisted(() => vi.fn());
+const getBooksPageByFacetMock = vi.hoisted(() => vi.fn());
 
 vi.mock("next/navigation", () => ({
   notFound: notFoundMock,
@@ -26,6 +27,10 @@ vi.mock("@/i18n/routing", () => ({
 vi.mock("@/lib/data/persons", () => ({
   getPersonDetailByName: getPersonDetailByNameMock,
   getDefaultPersonDetail: getDefaultPersonDetailMock,
+}));
+
+vi.mock("@/lib/data/books", () => ({
+  getBooksPageByFacet: getBooksPageByFacetMock,
 }));
 
 vi.mock("@/lib/site-metadata", () => ({
@@ -44,6 +49,7 @@ describe("PersonDetailsPage", () => {
     notFoundMock.mockClear();
     getPersonDetailByNameMock.mockReset();
     getDefaultPersonDetailMock.mockReset();
+    getBooksPageByFacetMock.mockReset();
   });
 
   it("renders the detail page when the person exists", async () => {
@@ -66,6 +72,7 @@ describe("PersonDetailsPage", () => {
 
   it("redirects to related books when the person is missing and a valid fallback is provided", async () => {
     getPersonDetailByNameMock.mockResolvedValueOnce(null);
+    getBooksPageByFacetMock.mockResolvedValueOnce({ total: 1 });
 
     await expect(
       PersonDetailsPage({
@@ -90,7 +97,7 @@ describe("PersonDetailsPage", () => {
     });
   });
 
-  it("falls through to notFound when the person is missing without a valid fallback", async () => {
+  it("redirects to a books search when the person is missing without related books", async () => {
     getPersonDetailByNameMock.mockResolvedValueOnce(null);
 
     await expect(
@@ -102,9 +109,18 @@ describe("PersonDetailsPage", () => {
           fallbackValue: "Unknown Person",
         }),
       }),
-    ).rejects.toBe(notFoundError);
+    ).rejects.toBe(redirectError);
 
-    expect(notFoundMock).toHaveBeenCalled();
-    expect(redirectMock).not.toHaveBeenCalled();
+    expect(redirectMock).toHaveBeenCalledWith({
+      href: {
+        pathname: "/books",
+        query: {
+          page: "1",
+          q: "Unknown Person",
+        },
+      },
+      locale: "fr",
+    });
+    expect(notFoundMock).not.toHaveBeenCalled();
   });
 });

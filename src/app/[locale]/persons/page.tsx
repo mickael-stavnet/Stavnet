@@ -17,6 +17,7 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { buildStaticPageMetadata } from "@/lib/site-metadata";
+import { isPageWithinLimit, MAX_PERSONS_PAGE } from "@/lib/pagination";
 
 const PERSONS_COLUMN_WIDTHS =
   ["24.35%", "13.92%", "13.42%", "7.16%", "7.75%", "8.15%", "7.95%", "8.15%", "7.95%", "9.15%"] as const;
@@ -117,6 +118,17 @@ export default async function PersonsListPage({ params, searchParams }: PersonsP
   const currentPage = Number.parseInt(page ?? "1", 10);
   const searchTerm = (q ?? "").trim();
   const pageNumber = Number.isFinite(currentPage) && currentPage > 0 ? currentPage : 1;
+
+  if (!isPageWithinLimit(pageNumber, MAX_PERSONS_PAGE)) {
+    redirect({
+      href: {
+        pathname: "/persons",
+        query: { page: "1" },
+      },
+      locale,
+    });
+  }
+
   const result = searchTerm
     ? await getPersonsPageByName(pageNumber, searchTerm, PERSONS_PAGE_SIZE)
     : await getPersonsPage(pageNumber, PERSONS_PAGE_SIZE);

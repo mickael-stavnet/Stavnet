@@ -5,6 +5,7 @@ import {
   getPersonsPage,
   PERSONS_PAGE_SIZE,
 } from "@/lib/data/persons";
+import { MAX_PERSONS_PAGE } from "@/lib/pagination";
 import { logError, logInfo } from "@/lib/server-log";
 
 function parsePage(value: string | null): number {
@@ -50,6 +51,11 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 
     const page = parsePage(searchParams.get("page"));
     const pageSize = parsePageSize(searchParams.get("pageSize"), PERSONS_PAGE_SIZE);
+
+    if (page > MAX_PERSONS_PAGE) {
+      return NextResponse.json({ error: "Page out of range" }, { status: 400 });
+    }
+
     const result = await getPersonsPage(page, pageSize);
 
     const responseBody = {
