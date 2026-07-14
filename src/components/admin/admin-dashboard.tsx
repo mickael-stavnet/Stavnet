@@ -2,23 +2,26 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { type FormEvent, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import {
   Check,
+  ChevronsUpDown,
   Eye,
-  ImagePlus,
+  Home,
   KeyRound,
-  LayoutDashboard,
+  Loader2,
   LockKeyhole,
-  Minus,
-  RefreshCw,
+  MoreHorizontal,
   Save,
   Search,
+  Shield,
+  Sparkles,
   Users,
   X,
 } from "lucide-react";
 
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -36,7 +39,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
-import { TooltipProvider } from "@/components/ui/tooltip";
 import {
   Sidebar,
   SidebarContent,
@@ -52,6 +54,15 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import { getPersonImageEntries, type PersonImageEntry } from "@/lib/person-images";
 
 const MAX_SHOWCASE_COUNT = 12;
@@ -69,20 +80,25 @@ function readSelectedNames(payload: unknown): string[] {
   if (typeof payload === "object" && payload !== null && "selectedNames" in payload) {
     const selectedNames = (payload as ApiAuthorsResponse).selectedNames;
     if (Array.isArray(selectedNames)) {
-      return selectedNames.filter((name): name is string => typeof name === "string").slice(0, MAX_SHOWCASE_COUNT);
+      return selectedNames
+        .filter((name): name is string => typeof name === "string")
+        .slice(0, MAX_SHOWCASE_COUNT);
     }
   }
 
   if (typeof payload === "object" && payload !== null && "entries" in payload) {
     const entries = (payload as ApiAuthorsResponse).entries;
     if (Array.isArray(entries)) {
-      return entries.flatMap((entry) => {
-        if (typeof entry === "object" && entry !== null && "name" in entry) {
-          const name = (entry as { name?: unknown }).name;
-          return typeof name === "string" ? [name] : [];
-        }
-        return [];
-      }).slice(0, MAX_SHOWCASE_COUNT);
+      return entries
+        .flatMap((entry) => {
+          if (typeof entry === "object" && entry !== null && "name" in entry) {
+            const name = (entry as { name?: unknown }).name;
+            return typeof name === "string" ? [name] : [];
+          }
+
+          return [];
+        })
+        .slice(0, MAX_SHOWCASE_COUNT);
     }
   }
 
@@ -109,7 +125,7 @@ function LoginScreen({ onAuthenticated }: { onAuthenticated: () => void }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
 
-  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setIsSubmitting(true);
     setError("");
@@ -121,9 +137,11 @@ function LoginScreen({ onAuthenticated }: { onAuthenticated: () => void }) {
         body: JSON.stringify({ password }),
       });
       const payload: unknown = await response.json().catch(() => null);
+
       if (!response.ok) {
         throw new Error(getErrorMessage(payload, "Mot de passe incorrect."));
       }
+
       onAuthenticated();
       toast.success("Accès administrateur autorisé");
     } catch (caughtError) {
@@ -134,20 +152,11 @@ function LoginScreen({ onAuthenticated }: { onAuthenticated: () => void }) {
   }
 
   return (
-    <main className="flex min-h-svh items-center justify-center bg-background p-4">
-      <Card className="w-full max-w-md">
+    <main className="flex min-h-svh items-center justify-center bg-background p-6">
+      <Card className="w-full max-w-sm">
         <CardHeader>
-          <div className="flex items-center gap-3">
-            <div className="grid size-9 place-items-center bg-primary text-primary-foreground">
-              <span className="font-serif text-lg">מ</span>
-            </div>
-            <div>
-              <p className="text-sm font-semibold">STAVNET</p>
-              <p className="text-sm text-muted-foreground">Administration</p>
-            </div>
-          </div>
-          <CardTitle className="pt-6 text-2xl">Connexion administrateur</CardTitle>
-          <CardDescription>Gérez les auteurs présentés sur la vitrine 3D de la page d’accueil.</CardDescription>
+          <CardTitle>Administration</CardTitle>
+          <CardDescription>Connectez-vous pour gérer les contenus administrables.</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -159,14 +168,17 @@ function LoginScreen({ onAuthenticated }: { onAuthenticated: () => void }) {
                 autoComplete="current-password"
                 value={password}
                 onChange={(event) => setPassword(event.target.value)}
-                placeholder="Saisir le mot de passe"
                 required
               />
-              {error ? <p className="text-sm text-destructive" role="alert">{error}</p> : null}
+              {error ? (
+                <p className="text-sm text-destructive" role="alert">
+                  {error}
+                </p>
+              ) : null}
             </div>
             <Button type="submit" disabled={isSubmitting} className="w-full">
-              {isSubmitting ? <RefreshCw className="size-4 animate-spin" /> : <KeyRound className="size-4" />}
-              {isSubmitting ? "Vérification…" : "Se connecter"}
+              {isSubmitting ? <Loader2 className="size-4 animate-spin" /> : <KeyRound className="size-4" />}
+              {isSubmitting ? "Vérification" : "Se connecter"}
             </Button>
           </form>
         </CardContent>
@@ -188,63 +200,189 @@ function SelectionDialog({
   const [query, setQuery] = useState("");
   const filteredEntries = useMemo(() => {
     const normalizedQuery = query.trim().toLocaleLowerCase("fr");
-    return normalizedQuery ? entries.filter((entry) => entry.name.toLocaleLowerCase("fr").includes(normalizedQuery)) : entries;
+
+    if (!normalizedQuery) {
+      return entries;
+    }
+
+    return entries.filter((entry) => entry.name.toLocaleLowerCase("fr").includes(normalizedQuery));
   }, [entries, query]);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" disabled={selectedNames.size >= MAX_SHOWCASE_COUNT}>
-          <ImagePlus className="size-4" />
-          Ajouter des auteurs
+        <Button variant="outline">
+          <Users className="size-4" />
+          Modifier la sélection
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-3xl">
+      <DialogContent className="sm:max-w-5xl">
         <DialogHeader>
-          <DialogTitle>Choisir les auteurs de la vitrine</DialogTitle>
+          <DialogTitle>Choisir les auteurs</DialogTitle>
           <DialogDescription>
-            Sélectionnez au maximum {MAX_SHOWCASE_COUNT} auteurs. Seuls les portraits présents dans public/images/persons/ sont proposés.
+            Sélectionnez jusqu’à {MAX_SHOWCASE_COUNT} portraits. Les auteurs disponibles sont ceux du dossier public/images/persons/.
           </DialogDescription>
         </DialogHeader>
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-          <Input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Rechercher un auteur" aria-label="Rechercher un auteur" className="pl-9" />
+        <div className="flex items-center gap-2">
+          <div className="relative w-full">
+            <Search className="absolute left-2 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+              placeholder="Rechercher un auteur"
+              aria-label="Rechercher un auteur"
+              className="pl-8"
+            />
+          </div>
+          <Badge variant="outline">
+            {selectedNames.size} / {MAX_SHOWCASE_COUNT}
+          </Badge>
         </div>
-        <div className="max-h-[55vh] overflow-y-auto rounded-md border">
-          {filteredEntries.length > 0 ? filteredEntries.map((entry) => {
-            const selected = selectedNames.has(entry.name);
-            const disabled = !selected && selectedNames.size >= MAX_SHOWCASE_COUNT;
-            return (
-              <label key={entry.name} className="flex cursor-pointer items-center gap-3 border-b p-3 last:border-b-0 has-[:disabled]:cursor-not-allowed has-[:disabled]:opacity-50">
-                <Checkbox checked={selected} disabled={disabled} onCheckedChange={(checked) => onToggle(entry.name, checked === true)} aria-label={`Afficher ${entry.name} sur l’étoile`} />
-                <Image src={entry.src} alt={`Portrait de ${entry.name}`} width={48} height={48} sizes="48px" className="size-12 rounded-md object-cover" />
-                <span className="min-w-0 flex-1 truncate text-sm font-medium">{entry.name}</span>
-                {selected ? <Check className="size-4" /> : null}
-              </label>
-            );
-          }) : <p className="p-8 text-center text-sm text-muted-foreground">Aucun auteur trouvé.</p>}
+        <div className="max-h-[60vh] overflow-auto rounded-md border">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-10" />
+                <TableHead className="w-16">Image</TableHead>
+                <TableHead>Auteur</TableHead>
+                <TableHead className="text-right">État</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {filteredEntries.length > 0 ? (
+                filteredEntries.map((entry) => {
+                  const selected = selectedNames.has(entry.name);
+                  const disabled = !selected && selectedNames.size >= MAX_SHOWCASE_COUNT;
+
+                  return (
+                    <TableRow key={entry.name} data-state={selected ? "selected" : undefined}>
+                      <TableCell>
+                        <Checkbox
+                          checked={selected}
+                          disabled={disabled}
+                          onCheckedChange={(checked) => onToggle(entry.name, checked === true)}
+                          aria-label={`Afficher ${entry.name} sur l’étoile`}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Image
+                          src={entry.src}
+                          alt={`Portrait de ${entry.name}`}
+                          width={40}
+                          height={40}
+                          sizes="40px"
+                          className="size-10 rounded-md object-cover"
+                        />
+                      </TableCell>
+                      <TableCell className="font-medium">{entry.name}</TableCell>
+                      <TableCell className="text-right">
+                        {selected ? (
+                          <Badge variant="secondary">
+                            <Check className="size-3" />
+                            Sélectionné
+                          </Badge>
+                        ) : (
+                          <Badge variant="outline">Disponible</Badge>
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  );
+                })
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={4} className="h-24 text-center">
+                    Aucun auteur trouvé.
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
         </div>
         <DialogFooter>
-          <p className="mr-auto text-sm text-muted-foreground">{selectedNames.size} / {MAX_SHOWCASE_COUNT} sélectionnés</p>
-          <DialogClose asChild><Button variant="outline">Fermer</Button></DialogClose>
+          <DialogClose asChild>
+            <Button variant="outline">Fermer</Button>
+          </DialogClose>
         </DialogFooter>
       </DialogContent>
     </Dialog>
   );
 }
 
-function SelectedAuthorRow({ entry, onRemove }: { entry: PersonImageEntry & { position: number }; onRemove: (name: string) => void }) {
-  return (
-    <div className="flex items-center gap-3 border-b p-3 last:border-b-0">
-      <Image src={entry.src} alt={`Portrait de ${entry.name}`} width={56} height={72} sizes="56px" className="size-14 rounded-md object-cover" />
-      <div className="min-w-0 flex-1">
-        <p className="truncate text-sm font-medium">{entry.name}</p>
-        <p className="text-sm text-muted-foreground">Portrait #{entry.position}</p>
+function SelectedAuthorsTable({
+  entries,
+  isLoading,
+  loadError,
+  onRemove,
+}: {
+  entries: Array<PersonImageEntry & { position: number }>;
+  isLoading: boolean;
+  loadError: string;
+  onRemove: (name: string) => void;
+}) {
+  if (isLoading) {
+    return (
+      <div className="space-y-2 p-4">
+        {Array.from({ length: 8 }).map((_, index) => (
+          <Skeleton key={index} className="h-14 w-full" />
+        ))}
       </div>
-      <Button variant="ghost" size="icon" onClick={() => onRemove(entry.name)} aria-label={`Retirer ${entry.name}`}>
-        <X className="size-4" />
-      </Button>
-    </div>
+    );
+  }
+
+  if (loadError) {
+    return (
+      <div className="p-6 text-sm text-destructive" role="alert">
+        {loadError}
+      </div>
+    );
+  }
+
+  return (
+    <Table>
+      <TableHeader>
+        <TableRow>
+          <TableHead className="w-16">Image</TableHead>
+          <TableHead>Auteur</TableHead>
+          <TableHead>Position</TableHead>
+          <TableHead>Source</TableHead>
+          <TableHead className="w-10" />
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {entries.length > 0 ? (
+          entries.map((entry) => (
+            <TableRow key={entry.name}>
+              <TableCell>
+                <Image
+                  src={entry.src}
+                  alt={`Portrait de ${entry.name}`}
+                  width={44}
+                  height={44}
+                  sizes="44px"
+                  className="size-11 rounded-md object-cover"
+                />
+              </TableCell>
+              <TableCell className="font-medium">{entry.name}</TableCell>
+              <TableCell>
+                <Badge variant="outline">#{entry.position}</Badge>
+              </TableCell>
+              <TableCell className="text-muted-foreground">public/images/persons/</TableCell>
+              <TableCell>
+                <Button variant="ghost" size="icon" onClick={() => onRemove(entry.name)} aria-label={`Retirer ${entry.name}`}>
+                  <X className="size-4" />
+                </Button>
+              </TableCell>
+            </TableRow>
+          ))
+        ) : (
+          <TableRow>
+            <TableCell colSpan={5} className="h-24 text-center">
+              Aucun auteur sélectionné.
+            </TableCell>
+          </TableRow>
+        )}
+      </TableBody>
+    </Table>
   );
 }
 
@@ -258,43 +396,70 @@ function AdminShell({ onLogout }: { onLogout: () => void }) {
 
   useEffect(() => {
     let isCurrent = true;
+
     async function loadSelection() {
       try {
         const response = await fetch("/api/admin/showcase", { cache: "no-store" });
         const payload: unknown = await response.json().catch(() => null);
-        if (!response.ok) throw new Error(getErrorMessage(payload, "Impossible de charger la sélection."));
+
+        if (!response.ok) {
+          throw new Error(getErrorMessage(payload, "Impossible de charger la sélection."));
+        }
+
         const names = new Set(readSelectedNames(payload));
+
         if (isCurrent) {
           setSelectedNames(names);
           setSavedNames(new Set(names));
         }
       } catch (caughtError) {
-        if (isCurrent) setLoadError(caughtError instanceof Error ? caughtError.message : "Impossible de charger la sélection.");
+        if (isCurrent) {
+          setLoadError(caughtError instanceof Error ? caughtError.message : "Impossible de charger la sélection.");
+        }
       } finally {
-        if (isCurrent) setIsLoading(false);
+        if (isCurrent) {
+          setIsLoading(false);
+        }
       }
     }
+
     void loadSelection();
-    return () => { isCurrent = false; };
+
+    return () => {
+      isCurrent = false;
+    };
   }, []);
 
-  const selectedEntries = useMemo(() => Array.from(selectedNames).flatMap((name, index) => {
-    const entry = entries.find((candidate) => candidate.name === name);
-    return entry ? [{ ...entry, position: index + 1 }] : [];
-  }), [entries, selectedNames]);
+  const selectedEntries = useMemo(
+    () =>
+      Array.from(selectedNames).flatMap((name, index) => {
+        const entry = entries.find((candidate) => candidate.name === name);
+        return entry ? [{ ...entry, position: index + 1 }] : [];
+      }),
+    [entries, selectedNames],
+  );
   const hasChanges = !sameNames(selectedNames, savedNames);
+  const remainingSlots = MAX_SHOWCASE_COUNT - selectedNames.size;
 
   function toggleAuthor(name: string, checked: boolean) {
     setSelectedNames((current) => {
       const next = new Set(current);
-      if (checked && next.size < MAX_SHOWCASE_COUNT) next.add(name);
-      if (!checked) next.delete(name);
+
+      if (checked && next.size < MAX_SHOWCASE_COUNT) {
+        next.add(name);
+      }
+
+      if (!checked) {
+        next.delete(name);
+      }
+
       return next;
     });
   }
 
   async function saveSelection() {
     setIsSaving(true);
+
     try {
       const response = await fetch("/api/admin/showcase", {
         method: "PUT",
@@ -302,7 +467,11 @@ function AdminShell({ onLogout }: { onLogout: () => void }) {
         body: JSON.stringify({ names: Array.from(selectedNames).slice(0, MAX_SHOWCASE_COUNT) }),
       });
       const payload: unknown = await response.json().catch(() => null);
-      if (!response.ok) throw new Error(getErrorMessage(payload, "La sauvegarde a échoué."));
+
+      if (!response.ok) {
+        throw new Error(getErrorMessage(payload, "La sauvegarde a échoué."));
+      }
+
       const names = new Set(readSelectedNames(payload));
       setSelectedNames(names);
       setSavedNames(new Set(names));
@@ -318,54 +487,151 @@ function AdminShell({ onLogout }: { onLogout: () => void }) {
     <TooltipProvider>
       <SidebarProvider>
         <Sidebar collapsible="icon">
-          <SidebarHeader className="border-b p-4 group-data-[collapsible=icon]:p-2">
-            <div className="flex items-center gap-3 overflow-hidden">
-              <div className="grid size-9 shrink-0 place-items-center bg-primary text-primary-foreground"><span className="font-serif text-lg">מ</span></div>
-              <div className="min-w-0 group-data-[collapsible=icon]:hidden"><p className="truncate text-sm font-semibold">STAVNET</p><p className="truncate text-sm text-muted-foreground">Administration</p></div>
-            </div>
+          <SidebarHeader>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton size="lg">
+                  <Shield className="size-4" />
+                  <span>STAVNET Admin</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
           </SidebarHeader>
           <SidebarContent>
             <SidebarGroup>
-              <SidebarGroupLabel>Configuration</SidebarGroupLabel>
+              <SidebarGroupLabel>Navigation</SidebarGroupLabel>
               <SidebarGroupContent>
                 <SidebarMenu>
-                  <SidebarMenuItem><SidebarMenuButton isActive tooltip="Vitrine des auteurs"><LayoutDashboard /><span>Vitrine des auteurs</span></SidebarMenuButton></SidebarMenuItem>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton isActive tooltip="Vitrine des auteurs">
+                      <Sparkles className="size-4" />
+                      <span>Vitrine des auteurs</span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
                 </SidebarMenu>
               </SidebarGroupContent>
             </SidebarGroup>
           </SidebarContent>
-          <SidebarFooter className="border-t p-3 group-data-[collapsible=icon]:p-2">
+          <SidebarFooter>
             <SidebarMenu>
-              <SidebarMenuItem><SidebarMenuButton asChild tooltip="Page d’accueil"><Link href="/en"><Eye /><span>Page d’accueil</span></Link></SidebarMenuButton></SidebarMenuItem>
-              <SidebarMenuItem><SidebarMenuButton onClick={onLogout} tooltip="Se déconnecter"><LockKeyhole /><span>Se déconnecter</span></SidebarMenuButton></SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild tooltip="Page d’accueil">
+                  <Link href="/en">
+                    <Home className="size-4" />
+                    <span>Page d’accueil</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton onClick={onLogout} tooltip="Se déconnecter">
+                  <LockKeyhole className="size-4" />
+                  <span>Se déconnecter</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
             </SidebarMenu>
           </SidebarFooter>
         </Sidebar>
 
-        <SidebarInset>
-          <header className="sticky top-0 z-10 flex h-16 items-center justify-between border-b bg-background px-4 sm:px-6">
-            <div className="flex items-center gap-3"><SidebarTrigger /><Separator orientation="vertical" className="hidden h-5 sm:block" /><div><p className="text-sm text-muted-foreground">Administration</p><h1 className="font-semibold">Vitrine des auteurs</h1></div></div>
-            <Button onClick={() => void saveSelection()} disabled={!hasChanges || isSaving || isLoading}><Save className="size-4" />{isSaving ? "Enregistrement…" : "Enregistrer"}</Button>
+        <SidebarInset className="min-w-0 overflow-x-hidden">
+          <header className="flex h-12 shrink-0 items-center gap-2 border-b px-4">
+            <SidebarTrigger />
+            <Separator orientation="vertical" className="h-4" />
+            <div className="flex min-w-0 flex-1 items-center justify-between gap-4">
+              <div className="flex min-w-0 items-center gap-2">
+                <ChevronsUpDown className="size-4 text-muted-foreground" />
+                <p className="truncate text-sm font-medium">Vitrine des auteurs</p>
+              </div>
+              <Button asChild variant="ghost">
+                <Link href="/en">
+                  <Eye className="size-4" />
+                  Voir le site
+                </Link>
+              </Button>
+            </div>
           </header>
 
-          <main className="mx-auto w-full max-w-5xl space-y-6 p-4 sm:p-6">
-            <div className="space-y-2">
-              <h2 className="text-2xl font-semibold tracking-tight">Auteurs affichés sur l’étoile</h2>
-              <p className="max-w-2xl text-sm text-muted-foreground">Choisissez les portraits qui apparaissent sur les faces extérieures de l’étoile 3D. L’étoile accepte exactement 12 portraits au maximum.</p>
+          <main className="flex min-w-0 flex-1 flex-col gap-6 p-6">
+            <div className="grid min-w-0 gap-4 md:grid-cols-2 xl:grid-cols-4">
+              <Card className="min-w-0">
+                <CardHeader>
+                  <CardDescription>Portraits sélectionnés</CardDescription>
+                  <CardTitle>{selectedNames.size}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-muted-foreground">Maximum {MAX_SHOWCASE_COUNT} auteurs.</p>
+                </CardContent>
+              </Card>
+              <Card className="min-w-0">
+                <CardHeader>
+                  <CardDescription>Auteurs disponibles</CardDescription>
+                  <CardTitle>{entries.length}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-muted-foreground">Images trouvées dans le dossier public.</p>
+                </CardContent>
+              </Card>
+              <Card className="min-w-0">
+                <CardHeader>
+                  <CardDescription>Places restantes</CardDescription>
+                  <CardTitle>{remainingSlots}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-muted-foreground">Capacité de l’étoile 3D.</p>
+                </CardContent>
+              </Card>
+              <Card className="min-w-0">
+                <CardHeader>
+                  <CardDescription>État</CardDescription>
+                  <CardTitle>{hasChanges ? "Modifié" : "À jour"}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-muted-foreground">{hasChanges ? "Sauvegarde requise." : "Sélection synchronisée."}</p>
+                </CardContent>
+              </Card>
             </div>
 
-            <Card>
-              <CardHeader className="gap-4 border-b sm:flex-row sm:items-center sm:justify-between">
-                <div><CardTitle className="text-base">Sélection actuelle</CardTitle><CardDescription>{selectedNames.size} / {MAX_SHOWCASE_COUNT} portraits sélectionnés</CardDescription></div>
-                <SelectionDialog entries={entries} selectedNames={selectedNames} onToggle={toggleAuthor} />
+            <Card className="min-w-0">
+              <CardHeader className="flex flex-col gap-4 border-b md:flex-row md:items-center md:justify-between">
+                <div>
+                  <CardTitle>Auteurs affichés sur l’étoile</CardTitle>
+                  <CardDescription>Une sélection unique est utilisée par la page d’accueil pour la vitrine 3D.</CardDescription>
+                </div>
+                <div className="flex flex-wrap items-center gap-2">
+                  <SelectionDialog entries={entries} selectedNames={selectedNames} onToggle={toggleAuthor} />
+                  <Button onClick={() => void saveSelection()} disabled={!hasChanges || isSaving || isLoading}>
+                    {isSaving ? <Loader2 className="size-4 animate-spin" /> : <Save className="size-4" />}
+                    {isSaving ? "Enregistrement" : "Enregistrer"}
+                  </Button>
+                </div>
               </CardHeader>
               <CardContent className="p-0">
-                {loadError ? <p className="border-b p-4 text-sm text-destructive" role="alert">{loadError}</p> : null}
-                {isLoading ? <div className="space-y-3 p-4">{Array.from({ length: 4 }).map((_, index) => <Skeleton key={index} className="h-16 w-full" />)}</div> : selectedEntries.length > 0 ? <div>{selectedEntries.map((entry) => <SelectedAuthorRow key={entry.name} entry={entry} onRemove={(name) => toggleAuthor(name, false)} />)}</div> : <div className="p-10 text-center"><Users className="mx-auto size-8 text-muted-foreground" /><p className="mt-3 text-sm font-medium">Aucun auteur sélectionné</p><p className="mt-1 text-sm text-muted-foreground">Ouvrez le dialog pour composer la vitrine.</p></div>}
+                <SelectedAuthorsTable
+                  entries={selectedEntries}
+                  isLoading={isLoading}
+                  loadError={loadError}
+                  onRemove={(name) => toggleAuthor(name, false)}
+                />
               </CardContent>
             </Card>
 
-            <div className="flex items-start gap-3 text-sm text-muted-foreground"><Minus className="mt-0.5 size-4 shrink-0" /><p>Les images sont chargées exclusivement depuis public/images/persons/. Les changements sont appliqués au prochain chargement de la vitrine 3D.</p></div>
+            <Card className="min-w-0">
+              <CardHeader className="flex flex-row items-center justify-between">
+                <div>
+                  <CardTitle>Règles de publication</CardTitle>
+                  <CardDescription>Contraintes appliquées à la vitrine.</CardDescription>
+                </div>
+                <Button variant="ghost" size="icon" aria-label="Options">
+                  <MoreHorizontal className="size-4" />
+                </Button>
+              </CardHeader>
+              <CardContent>
+                <div className="grid gap-3 md:grid-cols-3">
+                  <Badge variant="outline">12 portraits maximum</Badge>
+                  <Badge variant="outline">Images uniquement</Badge>
+                  <Badge variant="outline">Sauvegarde persistante</Badge>
+                </div>
+              </CardContent>
+            </Card>
           </main>
         </SidebarInset>
       </SidebarProvider>
@@ -379,6 +645,7 @@ export function AdminDashboard() {
 
   useEffect(() => {
     let isCurrent = true;
+
     fetch("/api/admin/auth", { cache: "no-store" })
       .then(async (response) => {
         const payload: unknown = await response.json().catch(() => null);
@@ -390,8 +657,15 @@ export function AdminDashboard() {
           setIsCheckingSession(false);
         }
       })
-      .catch(() => { if (isCurrent) setIsCheckingSession(false); });
-    return () => { isCurrent = false; };
+      .catch(() => {
+        if (isCurrent) {
+          setIsCheckingSession(false);
+        }
+      });
+
+    return () => {
+      isCurrent = false;
+    };
   }, []);
 
   async function handleLogout() {
@@ -399,7 +673,17 @@ export function AdminDashboard() {
     setIsAuthenticated(false);
   }
 
-  if (isCheckingSession) return <main className="flex min-h-svh items-center justify-center bg-background"><Skeleton className="h-10 w-48" /></main>;
-  if (!isAuthenticated) return <LoginScreen onAuthenticated={() => setIsAuthenticated(true)} />;
+  if (isCheckingSession) {
+    return (
+      <main className="flex min-h-svh items-center justify-center bg-background">
+        <Skeleton className="h-10 w-48" />
+      </main>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return <LoginScreen onAuthenticated={() => setIsAuthenticated(true)} />;
+  }
+
   return <AdminShell onLogout={() => void handleLogout()} />;
 }

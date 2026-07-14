@@ -167,3 +167,7 @@
 # 11-07-2026
 
 - 21:35 - Réduction de la consommation serveur en production avec désactivation des logs applicatifs hors développement, cache mémoire limité au développement, pagination bornée et lecture paginée des livres via une fonction Supabase dédiée.
+
+# 14-07-2026
+
+- 10:47 - Refonte visuelle du dashboard `/admin` sur une composition shadcn/ui pleine largeur, avec sidebar native, cartes de synthèse, tableau des auteurs sélectionnés et dialog de sélection limité à 12 portraits.
