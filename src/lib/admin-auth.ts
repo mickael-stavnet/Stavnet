@@ -1,7 +1,7 @@
 import { createHmac, timingSafeEqual } from "node:crypto";
 
 export const ADMIN_SESSION_COOKIE = "stavnet_admin_session";
-export const ADMIN_PASSWORD = "N7!vQ2#kL9@rX4$zP8mC";
+export const ADMIN_PASSWORD = "StavNet92";
 
 function expectedSessionToken(): string {
   return createHmac("sha256", ADMIN_PASSWORD)
