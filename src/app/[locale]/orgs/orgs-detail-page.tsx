@@ -214,7 +214,7 @@ export default function OrganizationsDetailPage({
             </button>
           </section>
 
-          <aside className="hidden md:absolute md:left-0 md:top-[66px] md:flex md:h-[660px] md:w-[174px] md:flex-col md:items-center md:gap-5">
+          <aside className="hidden md:absolute md:left-0 md:top-[66px] md:flex md:h-[min(660px,calc(100vh-440px))] md:w-[174px] md:flex-col md:items-center md:gap-5">
               <div className="flex h-[176px] w-[174px] items-center justify-center border border-[#c9b87f] bg-[#efe7d4] px-4 text-center shadow-[3px_3px_6px_rgba(0,0,0,0.18)]">
                 <span className="text-[18px] leading-[1.2] text-[#6e5f38]">
                   {t("noLogoAvailable")}
@@ -258,14 +258,14 @@ export default function OrganizationsDetailPage({
               ))}
             </nav>
 
-            <div className="relative mt-[2px] flex min-h-[660px] flex-col rounded-[8px] border border-[#7aa8b7] bg-[linear-gradient(180deg,#8ecfe8_0%,#a8dbed_100%)] shadow-[4px_4px_8px_rgba(0,0,0,0.18)] md:h-[660px] md:flex-row">
+            <div className="relative mt-[2px] flex min-h-[660px] flex-col rounded-[8px] border border-[#7aa8b7] bg-[linear-gradient(180deg,#8ecfe8_0%,#a8dbed_100%)] shadow-[4px_4px_8px_rgba(0,0,0,0.18)] md:h-[min(660px,calc(100vh-430px))] md:min-h-0 md:overflow-hidden md:flex-row">
               <aside className="border-b border-[#7aa8b7] px-3 py-4 md:w-[126px] md:border-b-0 md:border-r md:px-4 md:py-5">
                 <p className="text-center text-[18px] font-bold leading-tight text-black md:text-[22px]">
                   {t("side.editorCard")}
                 </p>
               </aside>
 
-              <div className="min-w-0 flex-1 px-[12px] py-[12px] md:px-[16px] md:py-[16px]">
+              <div className="min-w-0 flex-1 px-[12px] py-[12px] md:min-h-0 md:overflow-y-auto md:px-[16px] md:py-[16px]">
                 {activeTab === "editorCard" ? (
                   <div className="grid h-full grid-rows-[auto_minmax(0,1fr)] gap-y-[14px] md:gap-y-[16px]">
                     <div className="grid gap-[10px] lg:grid-cols-[2.28fr_1fr]">
@@ -440,7 +440,7 @@ export default function OrganizationsDetailPage({
             </div>
           </section>
 
-          <aside className="hidden md:absolute md:right-0 md:top-[66px] md:flex md:h-[660px] md:w-[34px] md:items-center md:justify-center">
+          <aside className="hidden md:absolute md:right-0 md:top-[66px] md:flex md:h-[min(660px,calc(100vh-440px))] md:w-[34px] md:items-center md:justify-center">
             <div className="flex flex-col items-center justify-center gap-[14px] text-[15px] leading-none text-black">
               <span className="[writing-mode:vertical-rl]">
                 {t("right.organizationCardsFound")}

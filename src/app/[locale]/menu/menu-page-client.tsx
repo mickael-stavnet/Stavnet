@@ -230,7 +230,7 @@ export default function MenuPageClient() {
                 setActiveMenu(DEFAULT_MENU_KEY);
               }
             }}
-            className="mt-5 flex flex-col gap-5 md:absolute md:left-[11vw] md:right-[11vw] md:top-[258px] md:mt-0 md:h-[600px] md:gap-0"
+            className="mt-5 flex flex-col gap-5 md:absolute md:left-[11vw] md:right-[11vw] md:top-[258px] md:mt-0 md:h-[600px] md:gap-0 [@media(max-height:950px)]:top-[214px] [@media(max-height:950px)]:origin-top [@media(max-height:950px)]:scale-[0.86]"
           >
             <div className="flex flex-col gap-4 md:absolute md:left-0 md:right-0 md:top-[-56px] md:flex-row md:items-center md:justify-between">
               <div className="max-w-[560px] text-left">

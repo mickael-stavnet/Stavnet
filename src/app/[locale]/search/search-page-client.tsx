@@ -140,7 +140,7 @@ export default function SearchPageClient() {
           subtitle={t("header.subtitle")}
         />
 
-        <section className="mt-6 rounded-[16px] border border-[#9fc6d5] bg-[rgba(232,246,251,0.82)] p-4 shadow-[0_10px_24px_rgba(80,126,145,0.18)] backdrop-blur-[1px] md:absolute md:left-[4.9vw] md:right-[4.9vw] md:top-[286px] md:mx-auto md:w-full md:max-w-[1104px] md:p-5">
+        <section className="mt-6 rounded-[16px] border border-[#9fc6d5] bg-[rgba(232,246,251,0.82)] p-4 shadow-[0_10px_24px_rgba(80,126,145,0.18)] backdrop-blur-[1px] md:absolute md:left-[4.9vw] md:right-[4.9vw] md:top-[286px] md:mx-auto md:max-h-[calc(100vh-400px)] md:w-full md:max-w-[1104px] md:overflow-y-auto md:p-5 [@media(max-height:950px)]:top-[214px] [@media(max-height:950px)]:max-h-[calc(100vh-334px)]">
           <div className="flex flex-col gap-5 md:grid md:grid-cols-[264px_1fr] md:items-stretch md:gap-[22px]">
             <aside className="flex flex-col rounded-[10px] border border-[#5da9c5] bg-[#9cd5eb] px-3 py-5 text-center shadow-[inset_1px_1px_0_rgba(255,255,255,0.6)] md:overflow-hidden">
               <p className="text-[18px] font-bold leading-tight">
