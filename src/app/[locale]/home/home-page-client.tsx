@@ -79,7 +79,7 @@ export default function HomePageClient() {
 
       <section
         data-stavnet-animate="star-viewer"
-        className="absolute left-[calc(50%-2px)] top-[44svh] z-30 h-[clamp(176px,23.5svh,230px)] w-[min(66vw,244px)] -translate-x-1/2 -translate-y-1/2 md:left-0 md:right-0 md:top-[11vh] md:h-[66vh] md:w-full md:translate-x-0 md:translate-y-0"
+        className="absolute left-[calc(50%-2px)] top-[44svh] z-30 h-[clamp(176px,23.5svh,230px)] w-[min(66vw,244px)] -translate-x-1/2 -translate-y-1/2 md:left-[21vw] md:right-auto md:top-[9vh] md:h-[74vh] md:w-[76vw] md:translate-x-0 md:translate-y-0"
       >
         <StarModelViewer />
       </section>
@@ -89,29 +89,35 @@ export default function HomePageClient() {
           pageName={
             <>
               {tHome("coverTitleLine1")}
-              <br />
-              {tHome("coverTitleLine2")}
+              {tHome("coverTitleLine2") ? (
+                <>
+                  <br />
+                  {tHome("coverTitleLine2")}
+                </>
+              ) : null}
             </>
           }
           title={tHome("coverMainTitle")}
           subtitle={tHome("coverSubtitle")}
         />
 
+        <aside
+          data-stavnet-animate="cover-description"
+          className="hidden md:absolute md:left-[5.2vw] md:top-[156px] md:z-40 md:block md:min-h-[372px] md:w-[176px] md:border md:border-[#0016a8]/70 md:bg-[#fffdf2]/80 md:p-0 md:shadow-[inset_0_0_0_1px_rgba(255,255,255,0.72),0_10px_24px_rgba(0,22,168,0.08)] md:backdrop-blur-[1px]"
+        >
+          <div className="h-1.5 w-full bg-[#0016a8]" />
+          <p className="px-3.5 py-3.5 text-left font-[Georgia,Times_New_Roman,serif] text-[16px] leading-[1.18] text-black first-letter:float-left first-letter:mr-1 first-letter:text-[43px] first-letter:font-bold first-letter:leading-[0.85] first-letter:text-[#0016a8]">
+            {`${tHome("coverDescriptionLine1")} ${tHome("coverDescriptionLine2")} ${tHome("coverDescriptionLine3")}`}
+          </p>
+        </aside>
+
         <section data-stavnet-animate="cover-content" className="mt-5 flex flex-1 flex-col md:hidden">
           <div className="flex flex-1 flex-col justify-end pb-[232px]">
-            <div className="mx-auto w-full max-w-[460px] px-2">
+            <div className="mx-auto w-full max-w-[460px] border border-black/55 bg-white/45 px-3 py-3">
               <p className="text-center text-[18px] leading-[1.36] text-black">
                 {`${tHome("coverDescriptionLine1")} ${tHome("coverDescriptionLine2")} ${tHome("coverDescriptionLine3")}`}
               </p>
             </div>
-          </div>
-        </section>
-
-        <section data-stavnet-animate="cover-content" className="hidden md:block">
-          <div className="absolute left-1/2 top-[77.8vh] w-[82vw] max-w-[1320px] -translate-x-1/2">
-            <p className="w-full text-center text-[clamp(18px,1.22vw,22px)] leading-[1.42] text-black">
-              {`${tHome("coverDescriptionLine1")} ${tHome("coverDescriptionLine2")} ${tHome("coverDescriptionLine3")}`}
-            </p>
           </div>
         </section>
 

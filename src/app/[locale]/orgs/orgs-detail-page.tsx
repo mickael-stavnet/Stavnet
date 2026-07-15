@@ -166,7 +166,6 @@ export default function OrganizationsDetailPage({
           pageName={t("header.cardTitle")}
           title={t("header.title")}
           subtitle={t("header.subtitle")}
-          titleBlockClassName="md:w-[84vw] md:pr-[42px]"
         />
 
         <section className="mt-6 flex min-w-0 flex-col gap-5 md:absolute md:left-1/2 md:top-[172px] md:bottom-[118px] md:w-[1341px] md:max-w-[calc(100vw-24px)] md:-translate-x-1/2 md:box-border md:pl-[186px] md:pr-[35px]">

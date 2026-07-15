@@ -171,3 +171,10 @@
 # 14-07-2026
 
 - 10:47 - Refonte visuelle du dashboard `/admin` sur une composition shadcn/ui pleine largeur, avec sidebar native, cartes de synthèse, tableau des auteurs sélectionnés et dialog de sélection limité à 12 portraits.
+
+# 15-07-2026
+
+- 09:20 - Ajout d’un tooltip shadcn/ui au survol des portraits d’auteurs sur le modèle 3D d’accueil, avec affichage du nom détecté par raycast directement au-dessus de l’image visée.
+- 09:34 - Déplacement du texte de présentation de la page d’accueil dans un bloc encadré sous le logo de l’aside gauche, avec retrait de son affichage desktop sous le modèle 3D.
+- 10:05 - Recalage global du header partagé STAVNET sur toutes les pages pour aligner le bloc titre desktop avec une marge droite symétrique à la marge gauche du logo, en supprimant aussi les surcharges locales qui cassaient cet équilibre.
+- 10:18 - Correction du responsive desktop de la fiche auteur pour borner la hauteur du panneau principal selon l’espace disponible entre header et footer, avec scroll interne afin d’éviter que le footer recouvre les tableaux sur les écrans fixes.

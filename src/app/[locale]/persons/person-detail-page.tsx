@@ -261,7 +261,7 @@ export default function PersonDetailPage({ person }: PersonDetailPageProps) {
         />
 
         <section className="mt-6 flex min-w-0 flex-col gap-5 md:absolute md:left-1/2 md:top-[172px] md:bottom-[118px] md:w-[1341px] md:max-w-[calc(100vw-24px)] md:-translate-x-1/2 md:box-border md:pl-[186px] md:pr-[35px]">
-          <aside className="hidden md:absolute md:left-0 md:top-[66px] md:flex md:h-[660px] md:w-[174px] md:flex-col md:items-end md:gap-5">
+          <aside className="hidden md:absolute md:left-0 md:top-[66px] md:flex md:h-[min(660px,calc(100vh-356px))] md:w-[174px] md:flex-col md:items-end md:gap-5">
             <div className="relative h-[212px] w-[174px] overflow-hidden border border-[#6c99a7] bg-[#d7eef6] shadow-[3px_3px_6px_rgba(0,0,0,0.18)]">
               <Image
                 src={person.imageSrc}
@@ -290,12 +290,12 @@ export default function PersonDetailPage({ person }: PersonDetailPageProps) {
               ))}
             </nav>
 
-            <div className="relative mt-[2px] flex min-h-[660px] flex-col rounded-[8px] border border-[#7aa8b7] bg-[linear-gradient(180deg,#8ecfe8_0%,#a8dbed_100%)] shadow-[4px_4px_8px_rgba(0,0,0,0.18)] md:h-[660px] md:flex-row">
+            <div className="relative mt-[2px] flex min-h-[660px] flex-col rounded-[8px] border border-[#7aa8b7] bg-[linear-gradient(180deg,#8ecfe8_0%,#a8dbed_100%)] shadow-[4px_4px_8px_rgba(0,0,0,0.18)] md:h-[min(660px,calc(100vh-346px))] md:min-h-0 md:overflow-hidden md:flex-row">
               <aside className="border-b border-[#7aa8b7] px-3 py-4 md:w-[126px] md:border-b-0 md:border-r md:px-4 md:py-5">
                 <p className="text-center text-[18px] font-bold leading-tight text-black md:text-[22px]">{t("side.authorCard")}</p>
               </aside>
 
-              <div className="min-w-0 flex-1 px-[12px] py-[12px] md:px-[16px] md:py-[16px]">
+              <div className="min-w-0 flex-1 px-[12px] py-[12px] md:min-h-0 md:overflow-y-auto md:px-[16px] md:py-[16px]">
                 {activeTab === "authorCard" ? (
                   <div className="grid h-full grid-rows-[auto_auto_minmax(0,1fr)] gap-y-[14px] md:gap-y-[16px]">
                     <div className="grid gap-[10px] lg:grid-cols-[2.1fr_0.98fr]">
@@ -421,7 +421,7 @@ export default function PersonDetailPage({ person }: PersonDetailPageProps) {
             </div>
           </section>
 
-          <aside className="hidden md:absolute md:right-0 md:top-[66px] md:flex md:h-[660px] md:w-[34px] md:items-center md:justify-center">
+          <aside className="hidden md:absolute md:right-0 md:top-[66px] md:flex md:h-[min(660px,calc(100vh-356px))] md:w-[34px] md:items-center md:justify-center">
             <div className="flex flex-col items-center justify-center gap-[14px] text-[15px] leading-none text-black">
               <span className="[writing-mode:vertical-rl]">{t("right.personCardsFound")}</span>
               <span className="[writing-mode:vertical-rl] text-[17px] font-bold text-[#ff1d1d]">{person.stats.cardsFound}</span>

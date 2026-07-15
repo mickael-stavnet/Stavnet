@@ -7,8 +7,8 @@
     "footerTitle": "מאגר המידע STAVNET",
     "footerDescription": "נבנה עבור אנשי מקצוע וחוקרים אקדמיים.",
     "academicAccess": "גישה אקדמית בלבד",
-    "coverTitleLine1": "עמוד",
-    "coverTitleLine2": "שער",
+    "coverTitleLine1": "ברוכים הבאים",
+    "coverTitleLine2": "",
     "coverMainTitle": "ספרות ישראלית",
     "coverSubtitle": "מאגר מידע ביבליוגרפי וביוגרפי",
     "coverDescriptionLine1": "מאגר זה מאגד כמעט את כל היצירה הספרותית של סופרים ישראלים,",
@@ -33,7 +33,7 @@
   },
   "MenuPage": {
     "header": {
-      "cardTitle": "תפריט",
+      "cardTitle": "ברוכים הבאים",
       "title": "ספרות ישראלית",
       "subtitle": "מאגר מידע ביבליוגרפי וביוגרפי"
     },
@@ -125,7 +125,7 @@
   },
   "SearchPage": {
     "header": {
-      "cardTitle": "חיפוש",
+      "cardTitle": "ברוכים הבאים",
       "title": "ספרות ישראלית",
       "subtitle": "מאגר ביבליוגרפי וביוגרפי"
     },
@@ -173,7 +173,7 @@
   },
   "BookDetailsPage": {
     "header": {
-      "cardTitle": "כרטיסי ספרים",
+      "cardTitle": "ברוכים הבאים",
       "title": "ספרות ישראלית",
       "subtitle": "מאגר ביבליוגרפי וביוגרפי"
     },
@@ -321,7 +321,7 @@
   },
   "PersonFilePage": {
     "header": {
-      "cardTitle": "קובץ אנשים",
+      "cardTitle": "ברוכים הבאים",
       "title": "ספרות ישראלית",
       "subtitle": "מאגר ביבליוגרפי וביוגרפי"
     },
@@ -387,7 +387,7 @@
   },
   "OrganizationFilePage": {
     "header": {
-      "cardTitle": "קובץ ארגונים",
+      "cardTitle": "ברוכים הבאים",
       "title": "ספרות ישראלית",
       "subtitle": "מאגר ביבליוגרפי וביוגרפי"
     },
@@ -470,7 +470,7 @@
   },
   "Orgs": {
     "header": {
-      "cardTitle": "רשימת ארגונים",
+      "cardTitle": "ברוכים הבאים",
       "title": "ספרות ישראלית",
       "subtitle": "מאגר ביבליוגרפי וביוגרפי"
     },
@@ -520,7 +520,7 @@
   },
   "Persons": {
     "header": {
-      "cardTitle": "Persons list",
+      "cardTitle": "ברוכים הבאים",
       "title": "Israeli literature",
       "subtitle": "Bibliographic and biographical database"
     },
@@ -565,7 +565,7 @@
   },
   "Books": {
     "header": {
-      "cardTitle": "רשימת ספרים",
+      "cardTitle": "ברוכים הבאים",
       "title": "ספרות ישראלית",
       "subtitle": "מאגר ביבליוגרפי וביוגרפי"
     },
@@ -608,7 +608,7 @@
   },
   "BooksRelated": {
     "header": {
-      "cardTitle": "ספרים קשורים",
+      "cardTitle": "ברוכים הבאים",
       "title": "ספרות ישראלית",
       "subtitle": "מאגר ביבליוגרפי וביוגרפי"
     },
@@ -635,7 +635,7 @@
   },
   "DefinitionPage": {
     "header": {
-      "cardTitle": "הגדרה",
+      "cardTitle": "ברוכים הבאים",
       "title": "ספרות ישראלית",
       "subtitle": "מאגר ביבליוגרפי וביוגרפי"
     },

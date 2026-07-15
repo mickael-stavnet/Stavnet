@@ -199,7 +199,6 @@ export default function MenuPageClient() {
             pageName={t("header.cardTitle")}
             title={t("header.title")}
             subtitle={t("header.subtitle")}
-            titleBlockClassName="md:w-[78vw]"
             titleClassName="md:text-[35px]"
             subtitleClassName="md:text-[18px]"
           />

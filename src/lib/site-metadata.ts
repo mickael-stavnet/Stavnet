@@ -53,7 +53,7 @@ const localeMetadata: Record<AppLocale, LocaleMetadataDictionary> = {
           "Entry page for Israeli Literature, a multilingual database dedicated to Israeli books, authors, translations and literary organizations.",
       },
       cover: {
-        title: "Cover Page",
+        title: "Welcome",
         description:
           "Presentation page of Israeli Literature and its bibliographic and biographical database dedicated to Israeli literary creation.",
       },
@@ -149,7 +149,7 @@ const localeMetadata: Record<AppLocale, LocaleMetadataDictionary> = {
           "Page d'entrée d'Israeli Literature, une base multilingue consacrée aux livres israéliens, aux auteurs, aux traductions et aux organismes littéraires.",
       },
       cover: {
-        title: "Page de couverture",
+        title: "Bienvenue",
         description:
           "Page de présentation d'Israeli Literature et de sa base bibliographique et biographique dédiée à la création littéraire israélienne.",
       },
@@ -245,7 +245,7 @@ const localeMetadata: Record<AppLocale, LocaleMetadataDictionary> = {
           "Página de entrada de Israeli Literature, una base multilingüe dedicada a libros israelíes, autores, traducciones y organizaciones literarias.",
       },
       cover: {
-        title: "Portada",
+        title: "Bienvenida",
         description:
           "Página de presentación de Israeli Literature y de su base bibliográfica y biográfica dedicada a la creación literaria israelí.",
       },
@@ -341,7 +341,7 @@ const localeMetadata: Record<AppLocale, LocaleMetadataDictionary> = {
           "Einstiegsseite von Israeli Literature, einer mehrsprachigen Datenbank zu israelischen Büchern, Autorinnen und Autoren, Übersetzungen und literarischen Einrichtungen.",
       },
       cover: {
-        title: "Titelseite",
+        title: "Willkommen",
         description:
           "Präsentationsseite von Israeli Literature und seiner bibliografischen und biografischen Datenbank zur israelischen Literatur.",
       },
@@ -437,7 +437,7 @@ const localeMetadata: Record<AppLocale, LocaleMetadataDictionary> = {
           "עמוד הכניסה של Israeli Literature, מאגר רב-לשוני המוקדש לספרים ישראליים, לסופרים, לתרגומים ולגופים ספרותיים.",
       },
       cover: {
-        title: "עמוד שער",
+        title: "ברוכים הבאים",
         description:
           "עמוד ההצגה של Israeli Literature ושל המאגר הביבליוגרפי והביוגרפי שלו המוקדש ליצירה הספרותית הישראלית.",
       },
@@ -533,7 +533,7 @@ const localeMetadata: Record<AppLocale, LocaleMetadataDictionary> = {
           "صفحة الدخول إلى Israeli Literature، وهي قاعدة متعددة اللغات مخصصة للكتب الإسرائيلية والكتّاب والترجمات والمؤسسات الأدبية.",
       },
       cover: {
-        title: "صفحة الغلاف",
+        title: "أهلا وسهلا",
         description:
           "صفحة تقديم Israeli Literature وقاعدته الببليوغرافية والبيوغرافية المخصصة للإنتاج الأدبي الإسرائيلي.",
       },

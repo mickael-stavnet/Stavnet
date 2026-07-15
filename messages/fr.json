@@ -7,8 +7,8 @@
     "footerTitle": "Base de données STAVNET",
     "footerDescription": "Conçu pour les professionnels et les chercheurs universitaires.",
     "academicAccess": "Accès académique uniquement",
-    "coverTitleLine1": "Page",
-    "coverTitleLine2": "de garde",
+    "coverTitleLine1": "Bienvenue",
+    "coverTitleLine2": "",
     "coverMainTitle": "Littérature israélienne",
     "coverSubtitle": "Base de données bibliographiques et biographiques",
     "coverDescriptionLine1": "Cette base de données regroupe la quasi-totalité de la création littéraire d'auteurs israéliens,",
@@ -33,7 +33,7 @@
   },
   "MenuPage": {
     "header": {
-      "cardTitle": "Menu",
+      "cardTitle": "Bienvenue",
       "title": "Littérature israélienne",
       "subtitle": "Base de données bibliographiques et biographiques"
     },
@@ -125,7 +125,7 @@
   },
   "SearchPage": {
     "header": {
-      "cardTitle": "Rechercher",
+      "cardTitle": "Bienvenue",
       "title": "Littérature israélienne",
       "subtitle": "Base de données bibliographiques et biographiques"
     },
@@ -173,7 +173,7 @@
   },
   "BookDetailsPage": {
     "header": {
-      "cardTitle": "Fiche ouvrages",
+      "cardTitle": "Bienvenue",
       "title": "Littérature israélienne",
       "subtitle": "Base de données bibliographiques et biographiques"
     },
@@ -321,7 +321,7 @@
   },
   "PersonFilePage": {
     "header": {
-      "cardTitle": "Fichier personnes",
+      "cardTitle": "Bienvenue",
       "title": "Littérature israélienne",
       "subtitle": "Base de données bibliographiques et biographiques"
     },
@@ -387,7 +387,7 @@
   },
   "OrganizationFilePage": {
     "header": {
-      "cardTitle": "Fichier organismes",
+      "cardTitle": "Bienvenue",
       "title": "Littérature israélienne",
       "subtitle": "Base de données bibliographiques et biographiques"
     },
@@ -470,7 +470,7 @@
   },
   "Orgs": {
     "header": {
-      "cardTitle": "Liste organismes",
+      "cardTitle": "Bienvenue",
       "title": "Littérature israélienne",
       "subtitle": "Base de données bibliographiques et biographiques"
     },
@@ -520,7 +520,7 @@
   },
   "Persons": {
     "header": {
-      "cardTitle": "Liste personnes",
+      "cardTitle": "Bienvenue",
       "title": "Littérature israélienne",
       "subtitle": "Base de données bibliographiques et biographiques"
     },
@@ -565,7 +565,7 @@
   },
   "Books": {
     "header": {
-      "cardTitle": "Liste ouvrages",
+      "cardTitle": "Bienvenue",
       "title": "Littérature israélienne",
       "subtitle": "Base de données bibliographiques et biographiques"
     },
@@ -608,7 +608,7 @@
   },
   "BooksRelated": {
     "header": {
-      "cardTitle": "Ouvrages liés",
+      "cardTitle": "Bienvenue",
       "title": "Littérature israélienne",
       "subtitle": "Base de données bibliographiques et biographiques"
     },
@@ -635,7 +635,7 @@
   },
   "DefinitionPage": {
     "header": {
-      "cardTitle": "Définition",
+      "cardTitle": "Bienvenue",
       "title": "Littérature israélienne",
       "subtitle": "Base de données bibliographiques et biographiques"
     },

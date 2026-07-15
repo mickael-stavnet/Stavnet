@@ -1,15 +1,21 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { getPersonImageEntries, type PersonImageEntry } from "@/lib/person-images";
 
 const MAX_SHOWCASE_COUNT = 12;
 const DEBUG_STAR_MODEL = process.env.NODE_ENV !== "production";
 const MODEL_BASE_SIZE = 9.2;
 const MODEL_GLOBAL_SCALE = 1.5;
-const CAMERA_DISTANCE_FACTOR = 0.78 / MODEL_GLOBAL_SCALE;
+const CAMERA_DISTANCE_FACTOR = 0.9 / MODEL_GLOBAL_SCALE;
 const PORTRAIT_SIZE_MULTIPLIER = 2.3;
 
 type ExteriorPanel = {
@@ -351,6 +357,8 @@ function detectExteriorPanels(meshes: THREE.Mesh[], modelCenter: THREE.Vector3) 
 
 export function StarModelViewer() {
   const containerRef = useRef<HTMLDivElement>(null);
+  const tooltipAnchorRef = useRef<HTMLSpanElement>(null);
+  const [hoveredAuthor, setHoveredAuthor] = useState<{ name: string } | null>(null);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -906,7 +914,29 @@ export function StarModelViewer() {
     };
 
     const handlePointerMove = (event: PointerEvent) => {
-      renderer.domElement.style.cursor = findClickedShowcase(event) ? "pointer" : "default";
+      const hoveredShowcase = findClickedShowcase(event);
+      const personName = hoveredShowcase?.object.userData.personName;
+      renderer.domElement.style.cursor = hoveredShowcase ? "pointer" : "default";
+      if (!hoveredShowcase || typeof personName !== "string" || personName.length === 0) {
+        setHoveredAuthor(null);
+        return;
+      }
+
+      const bounds = container.getBoundingClientRect();
+      if (tooltipAnchorRef.current) {
+        tooltipAnchorRef.current.style.left = `${event.clientX - bounds.left}px`;
+        tooltipAnchorRef.current.style.top = `${event.clientY - bounds.top}px`;
+      }
+      setHoveredAuthor({ name: personName });
+    };
+
+    const handlePointerLeave = () => {
+      renderer.domElement.style.cursor = "default";
+      if (tooltipAnchorRef.current) {
+        tooltipAnchorRef.current.style.left = "-9999px";
+        tooltipAnchorRef.current.style.top = "-9999px";
+      }
+      setHoveredAuthor(null);
     };
 
     const handleClick = (event: MouseEvent) => {
@@ -927,6 +957,7 @@ export function StarModelViewer() {
     };
 
     renderer.domElement.addEventListener("pointermove", handlePointerMove);
+    renderer.domElement.addEventListener("pointerleave", handlePointerLeave);
     renderer.domElement.addEventListener("click", handleClick);
 
     const render = () => {
@@ -940,6 +971,7 @@ export function StarModelViewer() {
       cancelled = true;
       window.cancelAnimationFrame(frameId);
       renderer.domElement.removeEventListener("pointermove", handlePointerMove);
+      renderer.domElement.removeEventListener("pointerleave", handlePointerLeave);
       renderer.domElement.removeEventListener("click", handleClick);
       resizeObserver.disconnect();
       if (loadedModel) {
@@ -970,10 +1002,25 @@ export function StarModelViewer() {
   }, []);
 
   return (
-    <div
-      ref={containerRef}
-      className="relative h-full w-full"
-      aria-label="Modèle 3D étoile"
-    />
+    <TooltipProvider>
+      <Tooltip open={Boolean(hoveredAuthor)}>
+        <div
+          ref={containerRef}
+          className="relative h-full w-full"
+          aria-label="Modèle 3D étoile"
+        >
+          <TooltipTrigger asChild>
+            <span
+              ref={tooltipAnchorRef}
+              aria-hidden="true"
+              className="pointer-events-none absolute -left-[9999px] -top-[9999px] z-20 size-1"
+            />
+          </TooltipTrigger>
+          <TooltipContent side="top" sideOffset={8}>
+            {hoveredAuthor?.name}
+          </TooltipContent>
+        </div>
+      </Tooltip>
+    </TooltipProvider>
   );
 }

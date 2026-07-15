@@ -7,8 +7,8 @@
     "footerTitle": "قاعدة بيانات STAVNET",
     "footerDescription": "بنيت للمهنيين والباحثين الأكاديميين.",
     "academicAccess": "الوصول الأكاديمي فقط",
-    "coverTitleLine1": "صفحة",
-    "coverTitleLine2": "الغلاف",
+    "coverTitleLine1": "أهلا وسهلا",
+    "coverTitleLine2": "",
     "coverMainTitle": "الأدب الإسرائيلي",
     "coverSubtitle": "قاعدة بيانات ببليوغرافية وبيوغرافية",
     "coverDescriptionLine1": "تجمع قاعدة البيانات هذه شبه كامل النتاج الأدبي لمؤلفين إسرائيليين،",
@@ -33,7 +33,7 @@
   },
   "MenuPage": {
     "header": {
-      "cardTitle": "القائمة",
+      "cardTitle": "أهلا وسهلا",
       "title": "الأدب الإسرائيلي",
       "subtitle": "قاعدة بيانات ببليوغرافية وبيوغرافية"
     },
@@ -125,7 +125,7 @@
   },
   "SearchPage": {
     "header": {
-      "cardTitle": "بحث",
+      "cardTitle": "أهلا وسهلا",
       "title": "الأدب الإسرائيلي",
       "subtitle": "قاعدة بيانات ببليوغرافية وبيوغرافية"
     },
@@ -173,7 +173,7 @@
   },
   "BookDetailsPage": {
     "header": {
-      "cardTitle": "بطاقة المؤلفات",
+      "cardTitle": "أهلا وسهلا",
       "title": "الأدب الإسرائيلي",
       "subtitle": "قاعدة بيانات ببليوغرافية وبيوغرافية"
     },
@@ -321,7 +321,7 @@
   },
   "PersonFilePage": {
     "header": {
-      "cardTitle": "ملف الأشخاص",
+      "cardTitle": "أهلا وسهلا",
       "title": "الأدب الإسرائيلي",
       "subtitle": "قاعدة بيانات ببليوغرافية وبيوغرافية"
     },
@@ -387,7 +387,7 @@
   },
   "OrganizationFilePage": {
     "header": {
-      "cardTitle": "ملف الهيئات",
+      "cardTitle": "أهلا وسهلا",
       "title": "الأدب الإسرائيلي",
       "subtitle": "قاعدة بيانات ببليوغرافية وسيرية"
     },
@@ -470,7 +470,7 @@
   },
   "Orgs": {
     "header": {
-      "cardTitle": "قائمة الهيئات",
+      "cardTitle": "أهلا وسهلا",
       "title": "الأدب الإسرائيلي",
       "subtitle": "قاعدة بيانات ببليوغرافية وسيرية"
     },
@@ -520,7 +520,7 @@
   },
   "Persons": {
     "header": {
-      "cardTitle": "Persons list",
+      "cardTitle": "أهلا وسهلا",
       "title": "Israeli literature",
       "subtitle": "Bibliographic and biographical database"
     },
@@ -565,7 +565,7 @@
   },
   "Books": {
     "header": {
-      "cardTitle": "قائمة الكتب",
+      "cardTitle": "أهلا وسهلا",
       "title": "الأدب الإسرائيلي",
       "subtitle": "قاعدة بيانات ببليوغرافية وبيوغرافية"
     },
@@ -608,7 +608,7 @@
   },
   "BooksRelated": {
     "header": {
-      "cardTitle": "كتب مرتبطة",
+      "cardTitle": "أهلا وسهلا",
       "title": "الأدب الإسرائيلي",
       "subtitle": "قاعدة بيانات ببليوغرافية وبيوغرافية"
     },
@@ -635,7 +635,7 @@
   },
   "DefinitionPage": {
     "header": {
-      "cardTitle": "تعريف",
+      "cardTitle": "أهلا وسهلا",
       "title": "الأدب الإسرائيلي",
       "subtitle": "قاعدة بيانات ببليوغرافية وبيوغرافية"
     },
