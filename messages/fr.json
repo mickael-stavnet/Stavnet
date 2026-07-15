@@ -120,6 +120,7 @@
       "diaporama": "Diaporama",
       "sound": "Son",
       "introduction": "Introduction",
+      "statistics": "Statistiques",
       "help": "Aide"
     }
   },
@@ -665,6 +666,102 @@
       "search": "Rechercher",
       "help": "Aide",
       "move": "Naviguer"
+    }
+  },
+  "StatisticsPage": {
+    "header": {
+      "cardTitle": "Statistiques",
+      "title": "Littérature israélienne",
+      "subtitle": "Base de données bibliographiques et biographiques"
+    },
+    "title": "Accès aux différents graphes et données statistiques",
+    "description": "Les options proposées ci-dessous offrent de multiples graphes (courbes, camemberts, barres et histogrammes). Il suffit de cocher une configuration et de la valider. Pour les \"Statistiques & Comparaison\", il est possible d'associer certaines options.",
+    "groups": {
+      "accounting": {
+        "title": "Compte & classement",
+        "options": {
+          "0": "Nb. de titres originaux par auteur",
+          "1": "Nb. de traductions par auteur",
+          "2": "Nb. de titres par langue de traduction",
+          "3": "Nb. de traductions par éditeur",
+          "4": "Nb. de traductions par ouvrage",
+          "5": "Nb. de traductions par traducteur",
+          "6": "Nb. de publications post mortem",
+          "7": "Nb. de rééditions Poche par auteur"
+        }
+      },
+      "distribution": {
+        "title": "Répartition",
+        "options": {
+          "0": "Genres d'écriture",
+          "1": "Langues d'écriture",
+          "2": "Sexe des auteurs (Féminin/Masculin)",
+          "3": "Lieu de naissance des auteurs",
+          "4": "Auteurs en vie ou décédés",
+          "5": "Tranches d'âge des auteurs",
+          "6": "Bibliothèques & leur fond"
+        }
+      },
+      "comparison": {
+        "title": "Statistiques & Comparaison",
+        "options": {
+          "0": "Traductions dans 1 à 5 langues",
+          "1": "Population du pays des traductions",
+          "2": "Traductions dans les pays",
+          "3": "Population du pays des originaux"
+        }
+      },
+      "other": {
+        "title": "Autres données",
+        "options": {
+          "0": "Auteurs d'une seule traduction",
+          "1": "Editeurs d'une seule traduction",
+          "2": "Premier titre traduit en toute langue"
+        }
+      }
+    },
+    "lists": {
+      "translationLanguages": {
+        "title": "Langues des Traductions",
+        "items": {
+          "0": "Telugu",
+          "1": "Tamil",
+          "2": "Allemand"
+        }
+      },
+      "originalCountries": {
+        "title": "Pays des Originaux",
+        "items": {
+          "0": "Israël",
+          "1": "Pologne",
+          "2": "Allemagne"
+        }
+      },
+      "translationCountries": {
+        "title": "Pays des Traductions",
+        "items": {
+          "0": "Suisse",
+          "1": "Pays-Bas",
+          "2": "Allemagne"
+        }
+      }
+    },
+    "period": {
+      "title": "Période à visualiser",
+      "rows": {
+        "0": { "label": "Année de début", "value": "1948" },
+        "1": { "label": "Année de fin", "value": "2005" },
+        "2": { "label": "Intervalle d'années", "value": "5" }
+      }
+    },
+    "actions": {
+      "validate": "Valider"
+    },
+    "footer": {
+      "back": "Return",
+      "menu": "Menu",
+      "close": "Close",
+      "help": "Help"
     }
   }
 }

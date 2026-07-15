@@ -179,3 +179,4 @@
 - 10:05 - Recalage global du header partagé STAVNET sur toutes les pages pour aligner le bloc titre desktop avec une marge droite symétrique à la marge gauche du logo, en supprimant aussi les surcharges locales qui cassaient cet équilibre.
 - 10:18 - Correction du responsive desktop de la fiche auteur pour borner la hauteur du panneau principal selon l’espace disponible entre header et footer, avec scroll interne afin d’éviter que le footer recouvre les tableaux sur les écrans fixes.
 - 11:18 - Renforcement de l’écart desktop entre les contenus STAVNET et le footer sur les fiches, listes, menu, recherche et écrans liés, avec hauteurs de panneaux bornées et scroll interne pour préserver la lecture sur grands écrans.
+- 14:40 - Création de la page `/statistics` reproduisant l’écran FileMaker des graphes et données statistiques, avec blocs d’options, listes de pays/langues, période de visualisation, navigation STAVNET et traductions multilingues.

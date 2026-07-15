@@ -120,6 +120,7 @@
       "diaporama": "Diashow",
       "sound": "Ton",
       "introduction": "Einführung",
+      "statistics": "Statistiken",
       "help": "Hilfe"
     }
   },
@@ -665,6 +666,102 @@
       "search": "Suche",
       "help": "Hilfe",
       "move": "Navigieren"
+    }
+  },
+  "StatisticsPage": {
+    "header": {
+      "cardTitle": "Statistiken",
+      "title": "Israelische Literatur",
+      "subtitle": "Bibliografische und biografische Datenbank"
+    },
+    "title": "Zugang zu verschiedenen statistischen Grafiken und Daten",
+    "description": "Die unten vorgeschlagenen Optionen bieten mehrere Grafiken (Kurven, Kreisdiagramme, Balken und Histogramme). Wählen Sie eine Konfiguration aus und bestätigen Sie sie. Für \"Statistiken & Vergleich\" können bestimmte Optionen kombiniert werden.",
+    "groups": {
+      "accounting": {
+        "title": "Zählung & Rangfolge",
+        "options": {
+          "0": "Anzahl Originaltitel nach Autor",
+          "1": "Anzahl Übersetzungen nach Autor",
+          "2": "Anzahl Titel nach Übersetzungssprache",
+          "3": "Anzahl Übersetzungen nach Verlag",
+          "4": "Anzahl Übersetzungen nach Werk",
+          "5": "Anzahl Übersetzungen nach Übersetzer",
+          "6": "Anzahl posthumer Veröffentlichungen",
+          "7": "Anzahl Taschenbuch-Neuauflagen nach Autor"
+        }
+      },
+      "distribution": {
+        "title": "Verteilung",
+        "options": {
+          "0": "Schreibgenres",
+          "1": "Schreibsprachen",
+          "2": "Geschlecht der Autoren (weiblich/männlich)",
+          "3": "Geburtsort der Autoren",
+          "4": "Lebende oder verstorbene Autoren",
+          "5": "Altersgruppen der Autoren",
+          "6": "Bibliotheken & Bestände"
+        }
+      },
+      "comparison": {
+        "title": "Statistiken & Vergleich",
+        "options": {
+          "0": "Übersetzungen in 1 bis 5 Sprachen",
+          "1": "Bevölkerung des Übersetzungslands",
+          "2": "Übersetzungen in den Ländern",
+          "3": "Bevölkerung des Ursprungslands"
+        }
+      },
+      "other": {
+        "title": "Weitere Daten",
+        "options": {
+          "0": "Autoren mit nur einer Übersetzung",
+          "1": "Verlage mit nur einer Übersetzung",
+          "2": "Erster in eine beliebige Sprache übersetzter Titel"
+        }
+      }
+    },
+    "lists": {
+      "translationLanguages": {
+        "title": "Sprachen der Übersetzungen",
+        "items": {
+          "0": "Telugu",
+          "1": "Tamil",
+          "2": "Deutsch"
+        }
+      },
+      "originalCountries": {
+        "title": "Länder der Originale",
+        "items": {
+          "0": "Israel",
+          "1": "Polen",
+          "2": "Deutschland"
+        }
+      },
+      "translationCountries": {
+        "title": "Länder der Übersetzungen",
+        "items": {
+          "0": "Schweiz",
+          "1": "Niederlande",
+          "2": "Deutschland"
+        }
+      }
+    },
+    "period": {
+      "title": "Zeitraum anzeigen",
+      "rows": {
+        "0": { "label": "Anfangsjahr", "value": "1948" },
+        "1": { "label": "Endjahr", "value": "2005" },
+        "2": { "label": "Jahresintervall", "value": "5" }
+      }
+    },
+    "actions": {
+      "validate": "Bestätigen"
+    },
+    "footer": {
+      "back": "Zurück",
+      "menu": "Menü",
+      "close": "Schließen",
+      "help": "Hilfe"
     }
   }
 }

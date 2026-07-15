@@ -388,6 +388,17 @@ export interface BookListResult {
   databaseTotal: number;
 }
 
+export interface BookStatisticsFacetLists {
+  translationLanguages: string[];
+  originalCountries: string[];
+  translationCountries: string[];
+  period: {
+    startYear: string;
+    endYear: string;
+    interval: string;
+  };
+}
+
 export type BookTitleResolutionResult =
   | { kind: "unique"; id: string }
   | { kind: "none" }
@@ -443,6 +454,29 @@ function isBookReferenceCode(value: string): boolean {
 
 function normalizeBookFacetValue(value: string): string {
   return readText(value).toLocaleLowerCase();
+}
+
+function normalizeStatisticsFacetKey(value: string): string {
+  return readText(value)
+    .normalize("NFD")
+    .replace(/\p{Diacritic}/gu, "")
+    .replace(/[^\p{Letter}\p{Number}]/gu, "")
+    .toLocaleLowerCase();
+}
+
+function addStatisticsFacetValue(values: Map<string, string>, value: string): void {
+  const cleanedValue = readText(value);
+
+  if (!cleanedValue) {
+    return;
+  }
+
+  const key = normalizeStatisticsFacetKey(cleanedValue);
+  const currentValue = values.get(key);
+
+  if (!currentValue || cleanedValue.length < currentValue.length || /\p{Diacritic}/u.test(cleanedValue)) {
+    values.set(key, cleanedValue);
+  }
 }
 
 function normalizeBookSearchFilters(filters?: Partial<BookSearchFilters>): BookSearchFilters {
@@ -1029,6 +1063,82 @@ const getBooksDatabaseTotals = cacheData(
   return {
     cardsFound: validResult.count ?? 0,
     databaseContains: databaseResult.count ?? 0,
+  };
+  },
+  { revalidate: 300, tags: ["books"] },
+);
+
+export const getBookStatisticsFacetLists = cacheData(
+  ["books-statistics-facet-lists"],
+  async (): Promise<BookStatisticsFacetLists> => {
+  const batchSize = 1000;
+  const rows: BookRow[] = [];
+  let from = 0;
+
+  while (true) {
+    const { data, error } = await supabase
+      .from("data-books")
+      .select('"Langue","Catégorie. 1","Année","Pays. Éditeur","Éditeur. 1. Pays","Éditeur. 2. Pays"')
+      .range(from, from + batchSize - 1);
+
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    const batch = Array.isArray(data) ? (data as unknown as BookRow[]) : [];
+    rows.push(...batch);
+
+    if (batch.length < batchSize) {
+      break;
+    }
+
+    from += batchSize;
+  }
+
+  const translationLanguages = new Map<string, string>();
+  const originalCountries = new Map<string, string>();
+  const translationCountries = new Map<string, string>();
+  const years: number[] = [];
+
+  for (const row of rows) {
+    const language = readText(row["Langue"]);
+    const code = parseBookReferenceCode(readText(row["Catégorie. 1"]));
+    const status = code.status || "T";
+    const countries = readList([row["Pays. Éditeur"], row["Éditeur. 1. Pays"], row["Éditeur. 2. Pays"]]);
+    const yearMatch = readText(row["Année"]).match(/\d{4}/);
+
+    addStatisticsFacetValue(translationLanguages, language);
+
+    if (yearMatch) {
+      const year = Number.parseInt(yearMatch[0], 10);
+
+      if (Number.isFinite(year)) {
+        years.push(year);
+      }
+    }
+
+    for (const country of countries) {
+      if (status === "O") {
+        addStatisticsFacetValue(originalCountries, country);
+      } else {
+        addStatisticsFacetValue(translationCountries, country);
+      }
+    }
+  }
+
+  const sortValues = (values: Map<string, string>) => [...values.values()].sort((left, right) => left.localeCompare(right, "fr", { sensitivity: "base" }));
+  const minYear = years.length > 0 ? Math.min(...years) : 1948;
+  const maxYear = years.length > 0 ? Math.max(...years) : 2005;
+
+  return {
+    translationLanguages: sortValues(translationLanguages),
+    originalCountries: sortValues(originalCountries),
+    translationCountries: sortValues(translationCountries),
+    period: {
+      startYear: String(minYear),
+      endYear: String(maxYear),
+      interval: "5",
+    },
   };
   },
   { revalidate: 300, tags: ["books"] },

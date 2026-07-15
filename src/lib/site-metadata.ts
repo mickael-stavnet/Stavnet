@@ -7,6 +7,7 @@ type StaticPageKey =
   | "cover"
   | "menu"
   | "search"
+  | "statistics"
   | "definition"
   | "books"
   | "persons"
@@ -66,6 +67,11 @@ const localeMetadata: Record<AppLocale, LocaleMetadataDictionary> = {
         title: "Search",
         description:
           "Search the Israeli Literature database by title, person, organization, theme, publication language or year.",
+      },
+      statistics: {
+        title: "Statistics",
+        description:
+          "Access statistical graphs and comparison options for titles, translations, languages, countries and publication periods.",
       },
       definition: {
         title: "Definition",
@@ -163,6 +169,11 @@ const localeMetadata: Record<AppLocale, LocaleMetadataDictionary> = {
         description:
           "Recherchez dans la base Israeli Literature par titre, personne, organisme, thème, langue de publication ou année.",
       },
+      statistics: {
+        title: "Statistiques",
+        description:
+          "Accédez aux graphes statistiques et aux options de comparaison par titres, traductions, langues, pays et périodes de parution.",
+      },
       definition: {
         title: "Définition",
         description:
@@ -258,6 +269,11 @@ const localeMetadata: Record<AppLocale, LocaleMetadataDictionary> = {
         title: "Búsqueda",
         description:
           "Busque en la base Israeli Literature por título, persona, organización, tema, idioma de publicación o año.",
+      },
+      statistics: {
+        title: "Estadísticas",
+        description:
+          "Acceda a gráficos estadísticos y opciones de comparación por títulos, traducciones, idiomas, países y períodos de publicación.",
       },
       definition: {
         title: "Definición",
@@ -355,6 +371,11 @@ const localeMetadata: Record<AppLocale, LocaleMetadataDictionary> = {
         description:
           "Durchsuchen Sie die Datenbank Israeli Literature nach Titel, Person, Organisation, Thema, Publikationssprache oder Jahr.",
       },
+      statistics: {
+        title: "Statistiken",
+        description:
+          "Greifen Sie auf statistische Grafiken und Vergleichsoptionen nach Titeln, Übersetzungen, Sprachen, Ländern und Publikationszeiträumen zu.",
+      },
       definition: {
         title: "Definition",
         description:
@@ -451,6 +472,11 @@ const localeMetadata: Record<AppLocale, LocaleMetadataDictionary> = {
         description:
           "חפשו במאגר Israeli Literature לפי כותר, אדם, ארגון, נושא, שפת פרסום או שנה.",
       },
+      statistics: {
+        title: "סטטיסטיקה",
+        description:
+          "גישה לגרפים סטטיסטיים ולאפשרויות השוואה לפי כותרים, תרגומים, שפות, מדינות ותקופות פרסום.",
+      },
       definition: {
         title: "הגדרה",
         description:
@@ -546,6 +572,11 @@ const localeMetadata: Record<AppLocale, LocaleMetadataDictionary> = {
         title: "البحث",
         description:
           "ابحث في قاعدة Israeli Literature حسب العنوان أو الشخص أو المؤسسة أو الموضوع أو لغة النشر أو السنة.",
+      },
+      statistics: {
+        title: "الإحصاءات",
+        description:
+          "الوصول إلى الرسوم البيانية الإحصائية وخيارات المقارنة حسب العناوين والترجمات واللغات والبلدان وفترات النشر.",
       },
       definition: {
         title: "التعريف",

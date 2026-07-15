@@ -17,6 +17,7 @@ type AppHref =
   | "/orgs"
   | "/persons"
   | "/search"
+  | "/statistics"
   | "/books";
 
 const submenuDestinations: Record<MenuKey, AppHref> = {
@@ -56,7 +57,7 @@ export default function MenuPageClient() {
     ["libraries", "/orgs"],
     ["editions", "/menu"],
     ["bookstores", "/menu"],
-    ["statistics", "/menu"],
+    ["statistics", "/statistics"],
   ] as const;
   const footerItems = [
     {
@@ -94,6 +95,12 @@ export default function MenuPageClient() {
       icon: "/icons/icons-nav/introduction.png",
       href: "/menu" as const,
       label: t("bottom.introduction"),
+    },
+    {
+      key: "statistics",
+      icon: "/icons/icons-nav/next.png",
+      href: "/statistics" as const,
+      label: t("bottom.statistics"),
     },
     {
       key: "help",

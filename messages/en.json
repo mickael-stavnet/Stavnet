@@ -120,6 +120,7 @@
       "diaporama": "Diaporama",
       "sound": "Sound",
       "introduction": "Introduction",
+      "statistics": "Statistics",
       "help": "Help"
     }
   },
@@ -665,6 +666,102 @@
       "search": "Search",
       "help": "Help",
       "move": "Navigate"
+    }
+  },
+  "StatisticsPage": {
+    "header": {
+      "cardTitle": "Statistics",
+      "title": "Israeli Literature",
+      "subtitle": "Bibliography and Biography Database"
+    },
+    "title": "Access to the different statistical graphs and data",
+    "description": "The options below provide multiple graphs (curves, pie charts, bars and histograms). Select a configuration and validate it. For \"Statistics & Comparison\", some options can be combined.",
+    "groups": {
+      "accounting": {
+        "title": "Count & ranking",
+        "options": {
+          "0": "No. of original titles by author",
+          "1": "No. of translations by author",
+          "2": "No. of titles by translation language",
+          "3": "No. of translations by publisher",
+          "4": "No. of translations by book",
+          "5": "No. of translations by translator",
+          "6": "No. of posthumous publications",
+          "7": "No. of pocket reissues by author"
+        }
+      },
+      "distribution": {
+        "title": "Distribution",
+        "options": {
+          "0": "Writing genres",
+          "1": "Writing languages",
+          "2": "Author gender (Female/Male)",
+          "3": "Authors' place of birth",
+          "4": "Living or deceased authors",
+          "5": "Authors' age ranges",
+          "6": "Libraries & their holdings"
+        }
+      },
+      "comparison": {
+        "title": "Statistics & Comparison",
+        "options": {
+          "0": "Translations in 1 to 5 languages",
+          "1": "Population of translation countries",
+          "2": "Translations in countries",
+          "3": "Population of original countries"
+        }
+      },
+      "other": {
+        "title": "Other data",
+        "options": {
+          "0": "Authors with a single translation",
+          "1": "Publishers with a single translation",
+          "2": "First title translated into any language"
+        }
+      }
+    },
+    "lists": {
+      "translationLanguages": {
+        "title": "Translation Languages",
+        "items": {
+          "0": "Telugu",
+          "1": "Tamil",
+          "2": "German"
+        }
+      },
+      "originalCountries": {
+        "title": "Original Countries",
+        "items": {
+          "0": "Israel",
+          "1": "Poland",
+          "2": "Germany"
+        }
+      },
+      "translationCountries": {
+        "title": "Translation Countries",
+        "items": {
+          "0": "Switzerland",
+          "1": "Netherlands",
+          "2": "Germany"
+        }
+      }
+    },
+    "period": {
+      "title": "Period to display",
+      "rows": {
+        "0": { "label": "Start year", "value": "1948" },
+        "1": { "label": "End year", "value": "2005" },
+        "2": { "label": "Year interval", "value": "5" }
+      }
+    },
+    "actions": {
+      "validate": "Validate"
+    },
+    "footer": {
+      "back": "Return",
+      "menu": "Menu",
+      "close": "Close",
+      "help": "Help"
     }
   }
 }

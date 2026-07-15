@@ -120,6 +120,7 @@
       "diaporama": "Diapositivas",
       "sound": "Sonido",
       "introduction": "Introducción",
+      "statistics": "Estadísticas",
       "help": "Ayuda"
     }
   },
@@ -665,6 +666,102 @@
       "search": "Buscar",
       "help": "Ayuda",
       "move": "Navegar"
+    }
+  },
+  "StatisticsPage": {
+    "header": {
+      "cardTitle": "Estadísticas",
+      "title": "Literatura israelí",
+      "subtitle": "Base de datos bibliográfica y biográfica"
+    },
+    "title": "Acceso a los distintos gráficos y datos estadísticos",
+    "description": "Las opciones siguientes ofrecen múltiples gráficos (curvas, sectores, barras e histogramas). Basta con seleccionar una configuración y validarla. Para \"Estadísticas & Comparación\", es posible asociar algunas opciones.",
+    "groups": {
+      "accounting": {
+        "title": "Cuenta y clasificación",
+        "options": {
+          "0": "N.º de títulos originales por autor",
+          "1": "N.º de traducciones por autor",
+          "2": "N.º de títulos por idioma de traducción",
+          "3": "N.º de traducciones por editor",
+          "4": "N.º de traducciones por obra",
+          "5": "N.º de traducciones por traductor",
+          "6": "N.º de publicaciones póstumas",
+          "7": "N.º de reediciones de bolsillo por autor"
+        }
+      },
+      "distribution": {
+        "title": "Repartición",
+        "options": {
+          "0": "Géneros de escritura",
+          "1": "Idiomas de escritura",
+          "2": "Sexo de los autores (Femenino/Masculino)",
+          "3": "Lugar de nacimiento de los autores",
+          "4": "Autores vivos o fallecidos",
+          "5": "Franjas de edad de los autores",
+          "6": "Bibliotecas y sus fondos"
+        }
+      },
+      "comparison": {
+        "title": "Estadísticas & Comparación",
+        "options": {
+          "0": "Traducciones en 1 a 5 idiomas",
+          "1": "Población del país de las traducciones",
+          "2": "Traducciones en los países",
+          "3": "Población del país de los originales"
+        }
+      },
+      "other": {
+        "title": "Otros datos",
+        "options": {
+          "0": "Autores de una sola traducción",
+          "1": "Editores de una sola traducción",
+          "2": "Primer título traducido en cualquier idioma"
+        }
+      }
+    },
+    "lists": {
+      "translationLanguages": {
+        "title": "Idiomas de las traducciones",
+        "items": {
+          "0": "Telugu",
+          "1": "Tamil",
+          "2": "Alemán"
+        }
+      },
+      "originalCountries": {
+        "title": "Países de los originales",
+        "items": {
+          "0": "Israel",
+          "1": "Polonia",
+          "2": "Alemania"
+        }
+      },
+      "translationCountries": {
+        "title": "Países de las traducciones",
+        "items": {
+          "0": "Suiza",
+          "1": "Países Bajos",
+          "2": "Alemania"
+        }
+      }
+    },
+    "period": {
+      "title": "Período a visualizar",
+      "rows": {
+        "0": { "label": "Año de inicio", "value": "1948" },
+        "1": { "label": "Año de fin", "value": "2005" },
+        "2": { "label": "Intervalo de años", "value": "5" }
+      }
+    },
+    "actions": {
+      "validate": "Validar"
+    },
+    "footer": {
+      "back": "Volver",
+      "menu": "Menú",
+      "close": "Cerrar",
+      "help": "Ayuda"
     }
   }
 }

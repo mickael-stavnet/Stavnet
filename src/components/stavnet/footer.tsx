@@ -23,6 +23,7 @@ interface StavnetFooterItem {
     | "/persons"
     | "/persons/details"
     | "/search"
+    | "/statistics"
     | "/books";
   icon: string;
   label: string;
