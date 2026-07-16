@@ -277,10 +277,10 @@ export default function BookDetailSecondaryLayout({
           subtitle={t("header.subtitle")}
         />
 
-        <section className="mt-6 flex min-w-0 flex-col gap-3 md:absolute md:left-1/2 md:top-[172px] md:bottom-[190px] md:w-[1436px] md:max-w-[calc(100vw-24px)] md:-translate-x-1/2">
-          <div className="flex min-w-0 flex-col gap-3 md:grid md:grid-cols-[270px_1120px] md:gap-x-[12px]">
-            <aside className="min-w-0 md:h-[404px] md:w-[270px]">
-              <div className="w-full max-w-[270px] border border-[#b7ab92] bg-[#f3ead4] p-[6px] shadow-[2px_2px_4px_rgba(0,0,0,0.12)] md:h-[404px] md:w-[270px] md:max-w-none">
+        <section className="mt-6 flex min-w-0 flex-col gap-3 md:absolute md:left-1/2 md:top-[172px] md:bottom-[190px] md:w-[1200px] md:max-w-[calc(100vw-24px)] md:-translate-x-1/2">
+          <div className="flex min-w-0 flex-col gap-3 md:grid md:grid-cols-[230px_minmax(0,1fr)] md:gap-x-[12px]">
+            <aside className="min-w-0 md:h-[344px] md:w-[230px]">
+              <div className="w-full max-w-[270px] border border-[#b7ab92] bg-[#f3ead4] p-[6px] shadow-[2px_2px_4px_rgba(0,0,0,0.12)] md:h-[344px] md:w-[230px] md:max-w-none">
                 {hasMissingCover ? (
                   <div className="flex h-[240px] w-full items-center justify-center bg-[#efe5d2] px-6 text-center text-[16px] leading-[1.3] text-[#6d614d] md:h-full md:text-[17px]">
                     {t("noCoverAvailable")}
@@ -291,8 +291,8 @@ export default function BookDetailSecondaryLayout({
               </div>
             </aside>
 
-            <section className="min-w-0 md:h-[404px] md:w-[1120px]">
-              <div className="flex min-h-0 min-w-0 flex-col overflow-hidden rounded-[8px] border border-[#7aa8b7] bg-[linear-gradient(180deg,#8ecfe8_0%,#a8dbed_100%)] shadow-[4px_4px_8px_rgba(0,0,0,0.18)] md:h-[404px]">
+            <section className="min-w-0 md:h-[344px]">
+              <div className="flex min-h-0 min-w-0 flex-col overflow-hidden rounded-[8px] border border-[#7aa8b7] bg-[linear-gradient(180deg,#8ecfe8_0%,#a8dbed_100%)] shadow-[4px_4px_8px_rgba(0,0,0,0.18)] md:h-[344px]">
                 <div className="flex h-full min-w-0 flex-col gap-[8px] px-3 py-3 md:px-[12px] md:py-[10px]">
                   <InfoField label={t("fields.title")} value={bookTitle} valueClassName="font-bold" />
                   <div className="grid gap-[3px] md:grid-cols-[1.08fr_1.05fr_1.12fr]">
@@ -317,23 +317,14 @@ export default function BookDetailSecondaryLayout({
             </section>
           </div>
 
-          <section className="min-w-0 md:w-[1402px] md:max-w-none">{children}</section>
+          <section className="min-w-0 md:flex md:min-h-0 md:flex-1">{children}</section>
 
-          <aside className="hidden items-start justify-start md:absolute md:right-0 md:top-[76px] md:flex">
-            <div className="flex flex-col items-center justify-start gap-[14px] text-[14px] leading-none text-black">
-              <span className="[writing-mode:vertical-rl]">{t("right.bookCardsFound")}</span>
-              <span className="[writing-mode:vertical-rl] text-[#ff1d1d]">{book.stats.cardsFound}</span>
-              <div className="h-[18px]" />
-              <span className="[writing-mode:vertical-rl]">{t("right.databaseContains")}</span>
-              <span className="[writing-mode:vertical-rl] text-[#ff1d1d]">{book.stats.databaseContains}</span>
-            </div>
-          </aside>
         </section>
 
         <StavnetFooter
           items={footerItems}
           desktopMode="compact"
-          className="md:left-1/2 md:right-auto md:w-[1436px] md:max-w-[calc(100vw-24px)] md:-translate-x-1/2"
+          className="md:left-1/2 md:right-auto md:w-[1200px] md:max-w-[calc(100vw-24px)] md:-translate-x-1/2"
         />
       </div>
     </main>

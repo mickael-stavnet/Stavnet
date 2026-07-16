@@ -36,7 +36,7 @@ function PressExtractsTable({
   extractsLabel: string;
 }) {
   return (
-    <section className="border border-[#7ea8b8] bg-[#a6d9eb]">
+    <section className="border border-[#7ea8b8] bg-[#a6d9eb] md:min-h-0 md:flex-1 md:overflow-y-auto">
       <div className="space-y-3 p-3 md:hidden">
         {rows.map((row, rowIndex) => {
           const sourceLines = row[0]?.split("\n") ?? [];
@@ -114,6 +114,7 @@ export default function BookPressCritiquesPage({ book }: BookPressCritiquesPageP
 
   return (
     <BookDetailSecondaryLayout book={book} pageName={t("tabs.pressCritiques")} pagePath="/books/details/press-critiques">
+      <div className="flex min-h-0 flex-1 flex-col">
       <div className="mb-[6px] pl-[8px] text-[14px] font-bold leading-none text-black md:text-[16px]">
         <span className="text-[#ff1d1d]">{pressExtracts.length}</span> <span>{pageData.pressSectionTitle}</span>
       </div>
@@ -129,6 +130,7 @@ export default function BookPressCritiquesPage({ book }: BookPressCritiquesPageP
           </div>
         </section>
       )}
+      </div>
     </BookDetailSecondaryLayout>
   );
 }

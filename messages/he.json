@@ -33,7 +33,7 @@
   },
   "MenuPage": {
     "header": {
-      "cardTitle": "ברוכים הבאים",
+      "cardTitle": "תפריט",
       "title": "ספרות ישראלית",
       "subtitle": "מאגר מידע ביבליוגרפי וביוגרפי"
     },
@@ -126,7 +126,7 @@
   },
   "SearchPage": {
     "header": {
-      "cardTitle": "ברוכים הבאים",
+      "cardTitle": "חיפוש",
       "title": "ספרות ישראלית",
       "subtitle": "מאגר ביבליוגרפי וביוגרפי"
     },
@@ -174,7 +174,7 @@
   },
   "BookDetailsPage": {
     "header": {
-      "cardTitle": "ברוכים הבאים",
+      "cardTitle": "כרטיס ספר",
       "title": "ספרות ישראלית",
       "subtitle": "מאגר ביבליוגרפי וביוגרפי"
     },
@@ -322,7 +322,7 @@
   },
   "PersonFilePage": {
     "header": {
-      "cardTitle": "ברוכים הבאים",
+      "cardTitle": "כרטיס אדם",
       "title": "ספרות ישראלית",
       "subtitle": "מאגר ביבליוגרפי וביוגרפי"
     },
@@ -388,7 +388,7 @@
   },
   "OrganizationFilePage": {
     "header": {
-      "cardTitle": "ברוכים הבאים",
+      "cardTitle": "כרטיס ארגון",
       "title": "ספרות ישראלית",
       "subtitle": "מאגר ביבליוגרפי וביוגרפי"
     },
@@ -471,7 +471,7 @@
   },
   "Orgs": {
     "header": {
-      "cardTitle": "ברוכים הבאים",
+      "cardTitle": "ארגונים",
       "title": "ספרות ישראלית",
       "subtitle": "מאגר ביבליוגרפי וביוגרפי"
     },
@@ -521,7 +521,7 @@
   },
   "Persons": {
     "header": {
-      "cardTitle": "ברוכים הבאים",
+      "cardTitle": "אנשים",
       "title": "Israeli literature",
       "subtitle": "Bibliographic and biographical database"
     },
@@ -566,7 +566,7 @@
   },
   "Books": {
     "header": {
-      "cardTitle": "ברוכים הבאים",
+      "cardTitle": "ספרים",
       "title": "ספרות ישראלית",
       "subtitle": "מאגר ביבליוגרפי וביוגרפי"
     },
@@ -609,7 +609,7 @@
   },
   "BooksRelated": {
     "header": {
-      "cardTitle": "ברוכים הבאים",
+      "cardTitle": "ספרים קשורים",
       "title": "ספרות ישראלית",
       "subtitle": "מאגר ביבליוגרפי וביוגרפי"
     },
@@ -636,7 +636,7 @@
   },
   "DefinitionPage": {
     "header": {
-      "cardTitle": "ברוכים הבאים",
+      "cardTitle": "הגדרה",
       "title": "ספרות ישראלית",
       "subtitle": "מאגר ביבליוגרפי וביוגרפי"
     },
@@ -763,5 +763,11 @@
       "close": "סגירה",
       "help": "עזרה"
     }
+  },
+  "Errors": {
+    "personDetails": { "title": "שגיאה בקובץ האדם", "message": "אירעה שגיאה בעת טעינת כרטיס האדם. רענן את העמוד כדי לנסות שוב.", "return": "חזרה לאנשים", "retry": "נסה שוב" },
+    "bookDetails": { "title": "שגיאה בכרטיס הספר", "message": "אירעה שגיאה בעת טעינת כרטיס הספר. רענן את העמוד כדי לנסות שוב.", "return": "חזרה לספרים", "retry": "נסה שוב" },
+    "organizationDetails": { "title": "שגיאה בכרטיס הארגון", "message": "אירעה שגיאה בעת טעינת כרטיס הארגון. רענן את העמוד כדי לנסות שוב.", "return": "חזרה לארגונים", "retry": "נסה שוב" },
+    "relatedBooks": { "title": "שגיאה בספרים קשורים", "message": "אירעה שגיאה בעת טעינת ספרים קשורים. רענן את העמוד כדי לנסות שוב.", "return": "חזרה לספרים", "retry": "נסה שוב" }
   }
 }

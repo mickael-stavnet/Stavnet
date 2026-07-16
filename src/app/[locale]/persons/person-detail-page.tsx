@@ -118,33 +118,33 @@ function DesktopBibliographyTable({ rows, labels, className }: DesktopBibliograp
             ))}
           </colgroup>
           <thead>
-            <tr className="bg-[#fff8c8] text-[13px] uppercase leading-none">
-              <th className="border border-[#7aa8b7] px-3 py-[5px] text-left font-normal">{labels.type}</th>
-              <th className="border border-[#7aa8b7] px-3 py-[5px] text-left font-normal">{labels.language}</th>
-              <th className="border border-[#7aa8b7] px-3 py-[5px] text-left font-normal">{labels.title}</th>
-              <th className="border border-[#7aa8b7] px-3 py-[5px] text-left font-normal">{labels.year}</th>
-              <th className="border border-[#7aa8b7] px-3 py-[5px] text-left font-normal">{labels.parution}</th>
-              <th className="border border-[#7aa8b7] px-3 py-[5px] text-left font-normal">{labels.faconnage}</th>
+            <tr className="bg-[#fff8c8] text-[12px] uppercase leading-none">
+              <th className="border border-[#7aa8b7] px-3 py-[3px] text-left font-normal">{labels.type}</th>
+              <th className="border border-[#7aa8b7] px-3 py-[3px] text-left font-normal">{labels.language}</th>
+              <th className="border border-[#7aa8b7] px-3 py-[3px] text-left font-normal">{labels.title}</th>
+              <th className="border border-[#7aa8b7] px-3 py-[3px] text-left font-normal">{labels.year}</th>
+              <th className="border border-[#7aa8b7] px-3 py-[3px] text-left font-normal">{labels.parution}</th>
+              <th className="border border-[#7aa8b7] px-3 py-[3px] text-left font-normal">{labels.faconnage}</th>
             </tr>
           </thead>
           <tbody>
             {filledRows.map((row, rowIndex) => (
               <tr key={rowIndex}>
-                <td className="h-[46px] border border-[#7aa8b7] px-3 align-middle text-[15px]">{row.type || "—"}</td>
-                <td className="h-[46px] border border-[#7aa8b7] px-3 align-middle text-[15px]">{row.language || "—"}</td>
-                <td className="h-[46px] border border-[#7aa8b7] px-3 align-middle text-[15px]">{renderBookTitleValue(row.title)}</td>
-                <td className="h-[46px] border border-[#7aa8b7] px-3 align-middle text-[15px]">{row.year || "—"}</td>
-                <td className="h-[46px] border border-[#7aa8b7] px-3 align-middle text-[15px]">{row.parution || "—"}</td>
-                <td className="h-[46px] border border-[#7aa8b7] px-3 align-middle text-[15px]">{row.faconnage || "—"}</td>
+                <td className="h-[34px] border border-[#7aa8b7] px-3 align-middle text-[14px]">{row.type || "—"}</td>
+                <td className="h-[34px] border border-[#7aa8b7] px-3 align-middle text-[14px]">{row.language || "—"}</td>
+                <td className="h-[34px] border border-[#7aa8b7] px-3 align-middle text-[14px]">{renderBookTitleValue(row.title)}</td>
+                <td className="h-[34px] border border-[#7aa8b7] px-3 align-middle text-[14px]">{row.year || "—"}</td>
+                <td className="h-[34px] border border-[#7aa8b7] px-3 align-middle text-[14px]">{row.parution || "—"}</td>
+                <td className="h-[34px] border border-[#7aa8b7] px-3 align-middle text-[14px]">{row.faconnage || "—"}</td>
               </tr>
             ))}
             <tr>
-              <td className="h-[92px] border border-[#7aa8b7]" />
-              <td className="h-[92px] border border-[#7aa8b7]" />
-              <td className="h-[92px] border border-[#7aa8b7]" />
-              <td className="h-[92px] border border-[#7aa8b7]" />
-              <td className="h-[92px] border border-[#7aa8b7]" />
-              <td className="h-[92px] border border-[#7aa8b7]" />
+              <td className="h-[64px] border border-[#7aa8b7]" />
+              <td className="h-[64px] border border-[#7aa8b7]" />
+              <td className="h-[64px] border border-[#7aa8b7]" />
+              <td className="h-[64px] border border-[#7aa8b7]" />
+              <td className="h-[64px] border border-[#7aa8b7]" />
+              <td className="h-[64px] border border-[#7aa8b7]" />
             </tr>
           </tbody>
         </table>
@@ -197,8 +197,8 @@ function FilledBox({ value, className }: FilledBoxProps) {
   );
 }
 
-function LabelCell({ label }: { label: string }) {
-  return <div className="border border-[#7aa8b7] bg-[#fff8c8] px-[10px] py-[4px] text-[11px] uppercase leading-none text-black md:px-3 md:text-[12px]">{label}</div>;
+function LabelCell({ label, className }: { label: string; className?: string }) {
+  return <div className={cn("border border-[#7aa8b7] bg-[#fff8c8] px-[10px] py-[4px] text-[11px] uppercase leading-none text-black md:px-3 md:text-[12px]", className)}>{label}</div>;
 }
 
 function BlankTabPanel({ title, rows = 3 }: { title: string; rows?: number }) {
@@ -260,14 +260,14 @@ export default function PersonDetailPage({ person }: PersonDetailPageProps) {
           subtitle={t("header.subtitle")}
         />
 
-        <section className="mt-6 flex min-w-0 flex-col gap-5 md:absolute md:left-1/2 md:top-[172px] md:bottom-[118px] md:w-[1341px] md:max-w-[calc(100vw-24px)] md:-translate-x-1/2 md:box-border md:pl-[186px] md:pr-[35px]">
-          <aside className="hidden md:absolute md:left-0 md:top-[66px] md:flex md:h-[min(660px,calc(100vh-440px))] md:w-[174px] md:flex-col md:items-end md:gap-5">
-            <div className="relative h-[212px] w-[174px] overflow-hidden border border-[#6c99a7] bg-[#d7eef6] shadow-[3px_3px_6px_rgba(0,0,0,0.18)]">
+        <section className="mt-6 flex min-w-0 flex-col gap-5 md:absolute md:left-1/2 md:top-[172px] md:bottom-[118px] md:w-[1341px] md:max-w-[calc(100vw-24px)] md:-translate-x-1/2 md:box-border md:pl-[221px] md:pr-[35px]">
+          <aside className="hidden md:absolute md:left-0 md:top-[66px] md:flex md:h-[min(660px,calc(100vh-440px))] md:w-[209px] md:flex-col md:items-end md:gap-5">
+            <div className="relative h-[254px] w-[209px] overflow-hidden border border-[#6c99a7] bg-[#d7eef6] shadow-[3px_3px_6px_rgba(0,0,0,0.18)]">
               <Image
                 src={person.imageSrc}
                 alt={person.name}
                 fill
-                sizes="174px"
+                sizes="209px"
                 className="object-cover object-center"
               />
             </div>
@@ -297,44 +297,44 @@ export default function PersonDetailPage({ person }: PersonDetailPageProps) {
 
               <div className="min-w-0 flex-1 px-[12px] py-[12px] md:min-h-0 md:overflow-y-auto md:px-[16px] md:py-[16px]">
                 {activeTab === "authorCard" ? (
-                  <div className="grid h-full grid-rows-[auto_auto_minmax(0,1fr)] gap-y-[14px] md:gap-y-[16px]">
-                    <div className="grid gap-[10px] lg:grid-cols-[2.1fr_0.98fr]">
+                  <div className="grid h-full grid-rows-[auto_auto_minmax(0,1fr)] gap-y-[14px] md:gap-y-[8px]">
+                    <div className="grid gap-[10px] md:gap-[8px] lg:grid-cols-[2.1fr_0.98fr]">
                       <section className="border border-[#7aa8b7] bg-[#a7dcee]">
-                        <LabelCell label={t("fields.person")} />
-                        <FilledBox value={person.name} className="border-x-0 border-b text-[16px] md:text-[17px]" />
+                        <LabelCell label={t("fields.person")} className="md:py-[4px]" />
+                        <FilledBox value={person.name} className="border-x-0 border-b text-[16px] md:min-h-[36px] md:text-[17px]" />
                         <div className="grid md:grid-cols-3">
                           <div className="md:col-span-2">
-                            <LabelCell label={t("fields.birth")} />
-                            <FilledBox value={person.birthInfo} className="border-x-0 border-b md:border-b-0" />
+                            <LabelCell label={t("fields.birth")} className="md:py-[4px]" />
+                            <FilledBox value={person.birthInfo} className="border-x-0 border-b md:min-h-[36px] md:border-b-0" />
                           </div>
                           <div>
-                            <LabelCell label={t("fields.death")} />
-                            <FilledBox value={person.deathInfo} className="border-x-0" />
+                            <LabelCell label={t("fields.death")} className="md:py-[4px]" />
+                            <FilledBox value={person.deathInfo} className="border-x-0 md:min-h-[36px]" />
                           </div>
                         </div>
                         <div className="grid md:grid-cols-[1.6fr_1fr]">
                           <div>
-                            <LabelCell label={t("fields.activity")} />
-                            <FilledBox value={person.professionalActivity} className="border-x-0 border-b-0 md:text-[15px]" />
+                            <LabelCell label={t("fields.activity")} className="md:py-[4px]" />
+                            <FilledBox value={person.professionalActivity} className="border-x-0 border-b-0 md:min-h-[36px] md:text-[15px]" />
                           </div>
                           <div>
-                            <LabelCell label={t("fields.language")} />
+                            <LabelCell label={t("fields.language")} className="md:py-[4px]" />
                             <FilledBox
                               value={
                                 person.language
                                   ? <ClickableDetailValue href={buildRelatedBooksHref("authorWritingLanguage", person.language)} value={person.language} />
                                   : person.residence || person.type || "—"
                               }
-                              className="border-x-0 border-b-0 md:text-[15px]"
+                              className="border-x-0 border-b-0 md:min-h-[36px] md:text-[15px]"
                             />
                           </div>
                         </div>
                       </section>
 
                       <section className="border border-[#7aa8b7] bg-[#a7dcee]">
-                        <LabelCell label={t("fields.synonyms")} />
-                        <div className="grid h-full grid-rows-[42px_repeat(4,1fr)]">
-                          <FilledBox value={person.alternateName} className="border-x-0 border-b text-[14px] font-normal md:text-[15px]" />
+                        <LabelCell label={t("fields.synonyms")} className="md:py-[4px]" />
+                        <div className="grid h-full grid-rows-[42px_repeat(4,1fr)] md:grid-rows-[36px_repeat(4,1fr)]">
+                          <FilledBox value={person.alternateName} className="border-x-0 border-b text-[14px] font-normal md:min-h-[36px] md:text-[15px]" />
                           <div className="border-b border-[#7aa8b7]" />
                           <div className="border-b border-[#7aa8b7]" />
                           <div className="border-b border-[#7aa8b7]" />
@@ -344,8 +344,8 @@ export default function PersonDetailPage({ person }: PersonDetailPageProps) {
                     </div>
 
                     <section className="border border-[#7aa8b7] bg-[#a7dcee]">
-                      <LabelCell label={t("fields.biography")} />
-                      <div className="max-h-[154px] overflow-auto px-3 py-3 text-[13px] leading-[1.45] text-black md:h-[128px] md:max-h-none md:text-[16px] md:leading-[1.5]">
+                      <LabelCell label={t("fields.biography")} className="md:py-[4px]" />
+                      <div className="max-h-[154px] overflow-auto px-3 py-3 text-[13px] leading-[1.45] text-black md:h-[76px] md:max-h-none md:py-2 md:text-[15px] md:leading-[1.4]">
                         {person.biography || "—"}
                       </div>
                     </section>

@@ -18,7 +18,10 @@ export function createAdminSessionToken(): string {
 }
 
 export function isValidAdminSessionToken(token: unknown): token is string {
-  if (typeof token !== "string" || token.length !== expectedSessionToken().length) {
+  if (
+    typeof token !== "string" ||
+    token.length !== expectedSessionToken().length
+  ) {
     return false;
   }
 

@@ -180,3 +180,11 @@
 - 10:18 - Correction du responsive desktop de la fiche auteur pour borner la hauteur du panneau principal selon l’espace disponible entre header et footer, avec scroll interne afin d’éviter que le footer recouvre les tableaux sur les écrans fixes.
 - 11:18 - Renforcement de l’écart desktop entre les contenus STAVNET et le footer sur les fiches, listes, menu, recherche et écrans liés, avec hauteurs de panneaux bornées et scroll interne pour préserver la lecture sur grands écrans.
 - 14:40 - Création de la page `/statistics` reproduisant l’écran FileMaker des graphes et données statistiques, avec blocs d’options, listes de pays/langues, période de visualisation, navigation STAVNET et traductions multilingues.
+
+# 16-07-2026
+
+- 09:50 - Refonte partagée des écrans d’erreur des fiches STAVNET avec composition responsive, hiérarchie visuelle renforcée et actions `Réessayer` / retour construites sur les composants shadcn/ui.
+- 09:55 - Internationalisation des écrans d’erreur de fiches et d’ouvrages liés dans les six langues de l’application, avec messages, actions de réessai et liens de retour adaptés à chaque locale.
+- 10:20 - Rééquilibrage vertical de la fiche personne pour rendre la bibliographie directement lisible sur desktop, avec compaction des champs d’identité, biographie défilante et tableau d’ouvrages densifié sans régression mobile.
+- 10:43 - Refonte du gabarit partagé des pages secondaires d’ouvrages: quatrième de couverture, critiques de presse, disponibilité et parution disposent d’une largeur desktop harmonisée, d’une fiche supérieure plus compacte et de zones de contenu extensibles avec défilement adapté.
+- 10:52 - Correction des intitulés du cartouche central du header dans les six langues: chaque écran de recherche, liste, fiche et définition affiche désormais son titre fonctionnel au lieu du message de bienvenue.

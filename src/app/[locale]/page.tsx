@@ -14,5 +14,5 @@ export async function generateMetadata({ params }: CoverPageProps): Promise<Meta
 }
 
 export default function HomePage() {
-  return <HomePageClient />;
+  return <HomePageClient showLanguageSwitcher />;
 }

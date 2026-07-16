@@ -2,11 +2,16 @@
 
 import Image from "next/image";
 import { useTranslations } from "next-intl";
+import { LanguageSwitcher } from "@/components/home/language-switcher";
 import { StarModelViewer } from "@/components/home/star-model-viewer";
 import { StavnetHeader } from "@/components/stavnet/header";
 import { StavnetFooter } from "@/components/stavnet/footer";
 
-export default function HomePageClient() {
+interface HomePageClientProps {
+  showLanguageSwitcher?: boolean;
+}
+
+export default function HomePageClient({ showLanguageSwitcher = false }: HomePageClientProps) {
   const tHome = useTranslations("Home");
   const tHomeMenu = useTranslations("HomeMenu");
   const footerItems = [
@@ -79,7 +84,7 @@ export default function HomePageClient() {
 
       <section
         data-stavnet-animate="star-viewer"
-        className="absolute left-[calc(50%-2px)] top-[44svh] z-30 h-[clamp(176px,23.5svh,230px)] w-[min(66vw,244px)] -translate-x-1/2 -translate-y-1/2 md:left-[21vw] md:right-auto md:top-[9vh] md:h-[74vh] md:w-[76vw] md:translate-x-0 md:translate-y-0"
+        className="absolute left-[calc(50%-2px)] top-[44svh] z-30 h-[clamp(176px,23.5svh,230px)] w-[min(66vw,244px)] -translate-x-1/2 -translate-y-1/2 md:left-[21vw] md:right-auto md:top-[15vh] md:h-[74vh] md:w-[76vw] md:translate-x-0 md:translate-y-0"
       >
         <StarModelViewer />
       </section>
@@ -101,19 +106,24 @@ export default function HomePageClient() {
           subtitle={tHome("coverSubtitle")}
         />
 
+        {showLanguageSwitcher ? (
+          <div className="relative z-50 mt-3 flex justify-center md:absolute md:left-[5.2vw] md:top-[164px] md:mt-0 md:block">
+            <LanguageSwitcher />
+          </div>
+        ) : null}
+
         <aside
           data-stavnet-animate="cover-description"
-          className="hidden md:absolute md:left-[5.2vw] md:top-[156px] md:z-40 md:block md:min-h-[372px] md:w-[176px] md:border md:border-[#0016a8]/70 md:bg-[#fffdf2]/80 md:p-0 md:shadow-[inset_0_0_0_1px_rgba(255,255,255,0.72),0_10px_24px_rgba(0,22,168,0.08)] md:backdrop-blur-[1px]"
+          className="hidden md:absolute md:left-[5.2vw] md:top-[236px] md:z-40 md:block md:min-h-[372px] md:w-[204px] md:p-0 [@media(max-width:1100px)]:md:w-[186px]"
         >
-          <div className="h-1.5 w-full bg-[#0016a8]" />
-          <p className="px-3.5 py-3.5 text-left font-[Georgia,Times_New_Roman,serif] text-[16px] leading-[1.18] text-black first-letter:float-left first-letter:mr-1 first-letter:text-[43px] first-letter:font-bold first-letter:leading-[0.85] first-letter:text-[#0016a8]">
+          <p className="px-3.5 py-3.5 text-justify font-[Georgia,Times_New_Roman,serif] text-[17px] leading-[1.08] text-black first-letter:float-left first-letter:mr-1 first-letter:text-[46px] first-letter:font-bold first-letter:leading-[0.85] first-letter:text-[#0016a8]">
             {`${tHome("coverDescriptionLine1")} ${tHome("coverDescriptionLine2")} ${tHome("coverDescriptionLine3")}`}
           </p>
         </aside>
 
         <section data-stavnet-animate="cover-content" className="mt-5 flex flex-1 flex-col md:hidden">
           <div className="flex flex-1 flex-col justify-end pb-[232px]">
-            <div className="mx-auto w-full max-w-[460px] border border-black/55 bg-white/45 px-3 py-3">
+            <div className="mx-auto w-full max-w-[460px] px-3 py-3">
               <p className="text-center text-[18px] leading-[1.36] text-black">
                 {`${tHome("coverDescriptionLine1")} ${tHome("coverDescriptionLine2")} ${tHome("coverDescriptionLine3")}`}
               </p>

@@ -8,6 +8,7 @@ import { Link, useRouter } from "@/i18n/routing";
 import { StavnetHeader } from "@/components/stavnet/header";
 import { StavnetFooter } from "@/components/stavnet/footer";
 import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
 
 type MenuKey = (typeof menuColumns)[number]["key"];
 type AppHref =
@@ -42,6 +43,27 @@ const menuColumns = [
     icon: "/icons/icons-nav/organismes.png",
   },
 ] as const;
+
+const desktopMenuLayout: Record<
+  MenuKey,
+  {
+    articleClassName: string;
+    buttonClassName: string;
+  }
+> = {
+  books: {
+    articleClassName: "md:w-[320px] md:justify-self-start",
+    buttonClassName: "md:w-full md:justify-start",
+  },
+  persons: {
+    articleClassName: "md:w-[336px] md:justify-self-center",
+    buttonClassName: "md:w-full md:justify-center",
+  },
+  organizations: {
+    articleClassName: "md:w-[354px] md:justify-self-end",
+    buttonClassName: "md:w-full md:justify-end",
+  },
+};
 
 export default function MenuPageClient() {
   const t = useTranslations("MenuPage");
@@ -286,11 +308,14 @@ export default function MenuPageClient() {
               </div>
             </div>
 
-            <div className="grid gap-4 md:absolute md:left-0 md:right-0 md:top-[64px] md:grid-cols-3 md:gap-5">
+            <div className="grid gap-4 md:absolute md:left-0 md:right-0 md:top-[64px] md:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] md:items-start md:gap-0">
               {menuColumns.map((column, columnIndex) => (
                 <article
                   key={column.key}
-                  className="min-w-0 rounded-[18px] border border-[#b5c9d2] bg-[rgba(236,247,250,0.82)] p-4 shadow-[0_10px_18px_rgba(53,96,120,0.14)] md:rounded-none md:border-0 md:bg-transparent md:p-0 md:shadow-none"
+                  className={cn(
+                    "min-w-0 rounded-[18px] border border-[#b5c9d2] bg-[rgba(236,247,250,0.82)] p-4 shadow-[0_10px_18px_rgba(53,96,120,0.14)] md:rounded-none md:border-0 md:bg-transparent md:p-0 md:shadow-none",
+                    desktopMenuLayout[column.key].articleClassName,
+                  )}
                 >
                   <button
                     type="button"
@@ -301,7 +326,10 @@ export default function MenuPageClient() {
                     onMouseEnter={() => setActiveMenu(column.key)}
                     onFocus={() => setActiveMenu(column.key)}
                     onClick={() => router.push(submenuDestinations[column.key])}
-                    className="flex min-h-[52px] min-w-0 items-start gap-4 text-left will-change-transform md:gap-3"
+                    className={cn(
+                      "flex min-h-[52px] min-w-0 items-start gap-4 text-left will-change-transform md:gap-3",
+                      desktopMenuLayout[column.key].buttonClassName,
+                    )}
                   >
                     <Image
                       src={column.icon}

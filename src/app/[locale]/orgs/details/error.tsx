@@ -1,6 +1,7 @@
 "use client";
 
 import { RouteErrorScreen } from "@/components/stavnet/route-error-screen";
+import { useTranslations } from "next-intl";
 
 export default function OrganizationDetailsError({
   error,
@@ -9,13 +10,15 @@ export default function OrganizationDetailsError({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  const t = useTranslations("Errors");
+
   return (
     <RouteErrorScreen
-      title="Erreur du fichier organisme"
-      message="Une erreur est survenue pendant le chargement de la fiche organisme. Relance la page pour réessayer."
+      title={t("organizationDetails.title")}
+      message={t("organizationDetails.message")}
       homeHref="/orgs"
-      homeLabel="Retour aux organismes"
-      retryLabel="Réessayer"
+      homeLabel={t("organizationDetails.return")}
+      retryLabel={t("organizationDetails.retry")}
       reset={reset}
       error={error}
     />

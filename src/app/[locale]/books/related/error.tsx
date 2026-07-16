@@ -1,6 +1,7 @@
 "use client";
 
 import { RouteErrorScreen } from "@/components/stavnet/route-error-screen";
+import { useTranslations } from "next-intl";
 
 export default function RelatedBooksError({
   error,
@@ -9,13 +10,15 @@ export default function RelatedBooksError({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  const t = useTranslations("Errors");
+
   return (
     <RouteErrorScreen
-      title="Erreur des ouvrages liés"
-      message="Une erreur est survenue pendant le chargement des ouvrages liés. Relance la page pour réessayer."
+      title={t("relatedBooks.title")}
+      message={t("relatedBooks.message")}
       homeHref="/books"
-      homeLabel="Retour aux livres"
-      retryLabel="Réessayer"
+      homeLabel={t("relatedBooks.return")}
+      retryLabel={t("relatedBooks.retry")}
       reset={reset}
       error={error}
     />

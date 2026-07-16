@@ -33,7 +33,7 @@
   },
   "MenuPage": {
     "header": {
-      "cardTitle": "Willkommen",
+      "cardTitle": "Menü",
       "title": "Israelische Literatur",
       "subtitle": "Bibliografische und biografische Datenbank"
     },
@@ -126,7 +126,7 @@
   },
   "SearchPage": {
     "header": {
-      "cardTitle": "Willkommen",
+      "cardTitle": "Suche",
       "title": "Israelische Literatur",
       "subtitle": "Bibliografische und biografische Datenbank"
     },
@@ -174,7 +174,7 @@
   },
   "BookDetailsPage": {
     "header": {
-      "cardTitle": "Willkommen",
+      "cardTitle": "Buchdetails",
       "title": "Israelische Literatur",
       "subtitle": "Bibliografische und biografische Datenbank"
     },
@@ -322,7 +322,7 @@
   },
   "PersonFilePage": {
     "header": {
-      "cardTitle": "Willkommen",
+      "cardTitle": "Personenkarte",
       "title": "Israelische Literatur",
       "subtitle": "Bibliografische und biografische Datenbank"
     },
@@ -388,7 +388,7 @@
   },
   "OrganizationFilePage": {
     "header": {
-      "cardTitle": "Willkommen",
+      "cardTitle": "Organisationskarte",
       "title": "Israelische Literatur",
       "subtitle": "Bibliografische und biografische Datenbank"
     },
@@ -471,7 +471,7 @@
   },
   "Orgs": {
     "header": {
-      "cardTitle": "Willkommen",
+      "cardTitle": "Organisationen",
       "title": "Israelische Literatur",
       "subtitle": "Bibliografische und biografische Datenbank"
     },
@@ -521,7 +521,7 @@
   },
   "Persons": {
     "header": {
-      "cardTitle": "Willkommen",
+      "cardTitle": "Personen",
       "title": "Israeli literature",
       "subtitle": "Bibliographic and biographical database"
     },
@@ -566,7 +566,7 @@
   },
   "Books": {
     "header": {
-      "cardTitle": "Willkommen",
+      "cardTitle": "Bücher",
       "title": "Israelische Literatur",
       "subtitle": "Bibliografische und biografische Datenbank"
     },
@@ -609,7 +609,7 @@
   },
   "BooksRelated": {
     "header": {
-      "cardTitle": "Willkommen",
+      "cardTitle": "Verwandte Bücher",
       "title": "Israelische Literatur",
       "subtitle": "Bibliografische und biografische Datenbank"
     },
@@ -636,7 +636,7 @@
   },
   "DefinitionPage": {
     "header": {
-      "cardTitle": "Willkommen",
+      "cardTitle": "Definition",
       "title": "Israelische Literatur",
       "subtitle": "Bibliografische und biografische Datenbank"
     },
@@ -763,5 +763,11 @@
       "close": "Schließen",
       "help": "Hilfe"
     }
+  },
+  "Errors": {
+    "personDetails": { "title": "Fehler in der Personendatei", "message": "Beim Laden der Personenakte ist ein Fehler aufgetreten. Laden Sie die Seite erneut, um es noch einmal zu versuchen.", "return": "Zurück zu den Personen", "retry": "Erneut versuchen" },
+    "bookDetails": { "title": "Fehler in der Buchdatei", "message": "Beim Laden der Buchakte ist ein Fehler aufgetreten. Laden Sie die Seite erneut, um es noch einmal zu versuchen.", "return": "Zurück zu den Büchern", "retry": "Erneut versuchen" },
+    "organizationDetails": { "title": "Fehler in der Organisationsdatei", "message": "Beim Laden der Organisationsakte ist ein Fehler aufgetreten. Laden Sie die Seite erneut, um es noch einmal zu versuchen.", "return": "Zurück zu den Organisationen", "retry": "Erneut versuchen" },
+    "relatedBooks": { "title": "Fehler bei verwandten Büchern", "message": "Beim Laden verwandter Bücher ist ein Fehler aufgetreten. Laden Sie die Seite erneut, um es noch einmal zu versuchen.", "return": "Zurück zu den Büchern", "retry": "Erneut versuchen" }
   }
 }

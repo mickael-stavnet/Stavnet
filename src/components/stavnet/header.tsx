@@ -69,7 +69,7 @@ export function StavnetHeader({
           badgeClassName,
         )}
       >
-        <div className="font-serif text-[18px] font-bold italic leading-[0.98] text-[#0018c9] md:text-[25px]">
+        <div className="mx-auto w-full max-w-[144px] font-serif text-[18px] font-bold italic leading-[0.98] text-[#0018c9] md:max-w-[148px] md:text-[25px]">
           {pageName}
         </div>
         {badgeBody ? (

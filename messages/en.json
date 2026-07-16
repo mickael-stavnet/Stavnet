@@ -33,7 +33,7 @@
   },
   "MenuPage": {
     "header": {
-      "cardTitle": "Welcome",
+      "cardTitle": "Menu",
       "title": "Israeli literature",
       "subtitle": "Bibliographic and biographical database"
     },
@@ -126,7 +126,7 @@
   },
   "SearchPage": {
     "header": {
-      "cardTitle": "Welcome",
+      "cardTitle": "Search",
       "title": "Israeli literature",
       "subtitle": "Bibliographic and biographical database"
     },
@@ -174,7 +174,7 @@
   },
   "BookDetailsPage": {
     "header": {
-      "cardTitle": "Welcome",
+      "cardTitle": "Book record",
       "title": "Israeli literature",
       "subtitle": "Bibliography and Biography Database"
     },
@@ -322,7 +322,7 @@
   },
   "PersonFilePage": {
     "header": {
-      "cardTitle": "Welcome",
+      "cardTitle": "Person record",
       "title": "Israeli literature",
       "subtitle": "Bibliographic and biographical database"
     },
@@ -388,7 +388,7 @@
   },
   "OrganizationFilePage": {
     "header": {
-      "cardTitle": "Welcome",
+      "cardTitle": "Organization record",
       "title": "Israeli literature",
       "subtitle": "Bibliographic and biographical database"
     },
@@ -471,7 +471,7 @@
   },
   "Orgs": {
     "header": {
-      "cardTitle": "Welcome",
+      "cardTitle": "Organizations",
       "title": "Israeli literature",
       "subtitle": "Bibliographic and biographical database"
     },
@@ -521,7 +521,7 @@
   },
   "Persons": {
     "header": {
-      "cardTitle": "Welcome",
+      "cardTitle": "Persons",
       "title": "Israeli literature",
       "subtitle": "Bibliographic and biographical database"
     },
@@ -566,7 +566,7 @@
   },
   "Books": {
     "header": {
-      "cardTitle": "Welcome",
+      "cardTitle": "Books",
       "title": "Israeli literature",
       "subtitle": "Bibliographic and biographical database"
     },
@@ -609,7 +609,7 @@
   },
   "BooksRelated": {
     "header": {
-      "cardTitle": "Welcome",
+      "cardTitle": "Related books",
       "title": "Israeli literature",
       "subtitle": "Bibliographic and biographical database"
     },
@@ -636,7 +636,7 @@
   },
   "DefinitionPage": {
     "header": {
-      "cardTitle": "Welcome",
+      "cardTitle": "Definition",
       "title": "Israeli literature",
       "subtitle": "Bibliographic and biographical database"
     },
@@ -763,5 +763,11 @@
       "close": "Close",
       "help": "Help"
     }
+  },
+  "Errors": {
+    "personDetails": { "title": "Person record error", "message": "An error occurred while loading the person's record. Reload the page to try again.", "return": "Back to people", "retry": "Try again" },
+    "bookDetails": { "title": "Book record error", "message": "An error occurred while loading the book record. Reload the page to try again.", "return": "Back to books", "retry": "Try again" },
+    "organizationDetails": { "title": "Organization record error", "message": "An error occurred while loading the organization record. Reload the page to try again.", "return": "Back to organizations", "retry": "Try again" },
+    "relatedBooks": { "title": "Related books error", "message": "An error occurred while loading related books. Reload the page to try again.", "return": "Back to books", "retry": "Try again" }
   }
 }

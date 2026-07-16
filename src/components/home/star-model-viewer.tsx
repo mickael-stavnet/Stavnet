@@ -16,7 +16,7 @@ const DEBUG_STAR_MODEL = process.env.NODE_ENV !== "production";
 const MODEL_BASE_SIZE = 9.2;
 const MODEL_GLOBAL_SCALE = 1.5;
 const CAMERA_DISTANCE_FACTOR = 0.9 / MODEL_GLOBAL_SCALE;
-const PORTRAIT_SIZE_MULTIPLIER = 2.3;
+const PORTRAIT_SIZE_MULTIPLIER = 2.53;
 
 type ExteriorPanel = {
   area: number;

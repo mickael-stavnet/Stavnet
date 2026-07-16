@@ -51,7 +51,7 @@ function PublishingSummary({ stats, t }: { stats: BookPublishingStat[]; t: Retur
 
 function PublishingTable({ pageData, rows }: { pageData: PublishingPageData; rows: BookPublishingRow[] }) {
   return (
-    <section className="overflow-hidden rounded-[8px] border border-[#7ea8b8] bg-[#a6d9eb]">
+    <section className="min-h-0 overflow-hidden rounded-[8px] border border-[#7ea8b8] bg-[#a6d9eb] md:h-full md:overflow-y-auto">
       <div className="space-y-3 p-3 md:hidden">
         {rows.map((row, rowIndex) => (
           <article key={`${row.language}-${row.publisher}-${rowIndex}`} className="rounded-[6px] border border-[#7ea8b8] bg-[#b6e2ef] p-3">
@@ -139,7 +139,7 @@ export default function BookPublishingPage({ book }: BookPublishingPageProps) {
 
   return (
     <BookDetailSecondaryLayout book={book} pageName={t("tabs.publishing")} pagePath="/books/details/publishing">
-      <section className="grid min-w-0 gap-[8px] md:ml-[4px] md:w-[1402px] md:max-w-none md:grid-cols-[282px_1fr] md:items-start">
+      <section className="grid min-w-0 flex-1 gap-[8px] md:grid-cols-[230px_minmax(0,1fr)] md:items-stretch">
         <PublishingSummary stats={book.publishingStats} t={t} />
         <PublishingTable pageData={pageData} rows={publishingRows} />
       </section>
