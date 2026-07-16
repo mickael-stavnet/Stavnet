@@ -168,7 +168,7 @@ export default function OrganizationsDetailPage({
           subtitle={t("header.subtitle")}
         />
 
-        <section className="mt-6 flex min-w-0 flex-col gap-5 md:absolute md:left-1/2 md:top-[172px] md:bottom-[118px] md:w-[1341px] md:max-w-[calc(100vw-24px)] md:-translate-x-1/2 md:box-border md:pl-[186px] md:pr-[35px]">
+        <section className="mt-6 flex min-w-0 flex-col gap-5 md:absolute md:left-1/2 md:top-[160px] md:bottom-[100px] md:w-[1341px] md:max-w-[calc(100vw-24px)] md:-translate-x-1/2 md:box-border md:pl-[186px] md:pr-[35px]">
           <section className="grid gap-2 md:hidden">
             <div className="grid grid-cols-2 gap-2">
               <div className="rounded-[8px] border border-[#7aa8b7] bg-[#d8dde2] px-3 py-2">
@@ -214,7 +214,7 @@ export default function OrganizationsDetailPage({
             </button>
           </section>
 
-          <aside className="hidden md:absolute md:left-0 md:top-[66px] md:flex md:h-[min(660px,calc(100vh-440px))] md:w-[174px] md:flex-col md:items-center md:gap-5">
+          <aside className="hidden md:absolute md:left-0 md:top-[66px] md:flex md:h-[min(660px,calc(100dvh-380px))] md:w-[174px] md:flex-col md:items-center md:gap-5">
               <div className="flex h-[176px] w-[174px] items-center justify-center border border-[#c9b87f] bg-[#efe7d4] px-4 text-center shadow-[3px_3px_6px_rgba(0,0,0,0.18)]">
                 <span className="text-[18px] leading-[1.2] text-[#6e5f38]">
                   {t("noLogoAvailable")}
@@ -241,15 +241,15 @@ export default function OrganizationsDetailPage({
           </aside>
 
           <section className="min-w-0 md:w-full md:max-w-none">
-            <nav className="grid grid-cols-2 gap-2 pb-2 md:grid-cols-[108px_repeat(7,minmax(0,1fr))] md:items-end md:gap-[12px] md:pb-0">
+            <nav className="grid grid-cols-2 gap-2 pb-2 md:grid-cols-[108px_repeat(7,minmax(0,1fr))] md:items-end md:gap-[12px] md:pb-0 [@media(max-width:1440px)]:gap-[8px]">
               {tabs.map((tabKey) => (
                 <button
                   key={tabKey}
                   type="button"
                   onClick={() => setActiveTab(tabKey)}
-                  className={`min-h-[42px] min-w-0 rounded-t-[8px] border border-[#d1bb48] px-2 py-[6px] text-center text-[12px] font-bold leading-[1.08] shadow-[3px_3px_5px_rgba(0,0,0,0.28)] transition-colors md:min-h-[48px] md:px-4 md:text-[15px] ${
+                  className={`min-h-[42px] min-w-0 rounded-t-[8px] border border-[#d1bb48] px-2 py-[6px] text-center text-[12px] font-bold leading-[1.08] shadow-[3px_3px_5px_rgba(0,0,0,0.28)] transition-colors md:min-h-[48px] md:px-4 md:text-[15px] [@media(max-width:1440px)]:min-h-[44px] [@media(max-width:1440px)]:px-2 [@media(max-width:1440px)]:text-[13px] ${
                     activeTab === tabKey
-                      ? "bg-[#91d3ea] font-semibold text-black md:min-h-[54px] md:text-[19px] md:font-bold"
+                      ? "bg-[#91d3ea] font-semibold text-black md:min-h-[54px] md:text-[19px] md:font-bold [@media(max-width:1440px)]:min-h-[48px] [@media(max-width:1440px)]:text-[16px]"
                       : "bg-[#ffea56] text-black hover:bg-[#fff16f]"
                   }`}
                 >
@@ -258,7 +258,7 @@ export default function OrganizationsDetailPage({
               ))}
             </nav>
 
-            <div className="relative mt-[2px] flex min-h-[660px] flex-col rounded-[8px] border border-[#7aa8b7] bg-[linear-gradient(180deg,#8ecfe8_0%,#a8dbed_100%)] shadow-[4px_4px_8px_rgba(0,0,0,0.18)] md:h-[min(660px,calc(100vh-430px))] md:min-h-0 md:overflow-hidden md:flex-row">
+            <div className="relative mt-[2px] flex min-h-[660px] flex-col rounded-[8px] border border-[#7aa8b7] bg-[linear-gradient(180deg,#8ecfe8_0%,#a8dbed_100%)] shadow-[4px_4px_8px_rgba(0,0,0,0.18)] md:h-[min(660px,calc(100dvh-370px))] md:min-h-0 md:overflow-hidden md:flex-row">
               <aside className="border-b border-[#7aa8b7] px-3 py-4 md:w-[126px] md:border-b-0 md:border-r md:px-4 md:py-5">
                 <p className="text-center text-[18px] font-bold leading-tight text-black md:text-[22px]">
                   {t("side.editorCard")}
@@ -440,7 +440,7 @@ export default function OrganizationsDetailPage({
             </div>
           </section>
 
-          <aside className="hidden md:absolute md:right-0 md:top-[66px] md:flex md:h-[min(660px,calc(100vh-440px))] md:w-[34px] md:items-center md:justify-center">
+          <aside className="hidden md:absolute md:right-0 md:top-[66px] md:flex md:h-[min(660px,calc(100dvh-380px))] md:w-[34px] md:items-center md:justify-center">
             <div className="flex flex-col items-center justify-center gap-[14px] text-[15px] leading-none text-black">
               <span className="[writing-mode:vertical-rl]">
                 {t("right.organizationCardsFound")}

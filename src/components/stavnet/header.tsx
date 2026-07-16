@@ -49,7 +49,7 @@ export function StavnetHeader({
     >
       <div
         className={cn(
-          "hidden md:absolute md:bottom-[8px] md:left-[5.2vw] md:block md:w-[270px]",
+          "hidden md:absolute md:bottom-[8px] md:left-[clamp(58px,5.2vw,112px)] md:block md:w-[270px]",
           logoClassName,
         )}
       >
@@ -88,7 +88,7 @@ export function StavnetHeader({
 
       <section
         className={cn(
-          "hidden md:absolute md:bottom-[8px] md:left-[5.2vw] md:right-[5.2vw] md:flex md:min-h-[84px] md:flex-col md:items-end md:justify-end md:text-right",
+          "hidden md:absolute md:bottom-[8px] md:left-[clamp(58px,5.2vw,112px)] md:right-[clamp(58px,5.2vw,112px)] md:flex md:min-h-[84px] md:flex-col md:items-end md:justify-end md:text-right",
           titleBlockClassName,
         )}
       >
@@ -119,7 +119,7 @@ export function StavnetHeader({
       {rightControl ? (
         <div
           className={cn(
-            "hidden md:absolute md:left-[5.2vw] md:right-[5.2vw] md:top-[124px] md:flex md:justify-end md:text-right",
+            "hidden md:absolute md:left-[clamp(58px,5.2vw,112px)] md:right-[clamp(58px,5.2vw,112px)] md:top-[124px] md:flex md:justify-end md:text-right",
             rightControlClassName,
           )}
         >

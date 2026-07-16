@@ -220,8 +220,8 @@ export default async function RelatedBooksPage({ params, searchParams }: Related
           subtitle={tRelated("header.subtitle")}
         />
 
-        <section className="mt-6 min-w-0 flex flex-col gap-4 md:absolute md:left-1/2 md:top-[178px] md:bottom-[190px] md:w-[min(1320px,96vw)] md:-translate-x-1/2">
-          <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between md:gap-6">
+        <section className="mt-6 min-w-0 flex min-h-0 flex-col gap-4 md:absolute md:left-1/2 md:top-[178px] md:bottom-[190px] md:w-[min(1320px,96vw)] md:-translate-x-1/2 [@media(max-height:950px)]:top-[160px] [@media(max-height:950px)]:bottom-[118px] [@media(max-height:950px)]:gap-2">
+          <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between md:gap-6 [@media(max-height:950px)]:gap-2">
             <div className="rounded-[8px] border border-[#7aa8b7] bg-[#a7dcee] px-4 py-3 shadow-[3px_3px_6px_rgba(0,0,0,0.12)]">
               <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#07384a]">{tRelated("activeCriterion")}</p>
               <p className="mt-2 text-[18px] font-bold leading-tight text-black">
@@ -242,7 +242,7 @@ export default async function RelatedBooksPage({ params, searchParams }: Related
             </div>
           </div>
 
-          <section className="overflow-hidden rounded-[8px] border border-[#9aa8b0] bg-[#d8dde2] shadow-[4px_4px_8px_rgba(0,0,0,0.12)]">
+          <section className="overflow-hidden rounded-[8px] border border-[#9aa8b0] bg-[#d8dde2] shadow-[4px_4px_8px_rgba(0,0,0,0.12)] md:flex md:min-h-0 md:flex-1 md:flex-col">
             <div className="space-y-3 p-3 md:hidden">
               {result.items.length > 0 ? (
                 result.items.map((book) => (
@@ -263,9 +263,9 @@ export default async function RelatedBooksPage({ params, searchParams }: Related
               )}
             </div>
 
-            <div className="hidden md:block">
+            <div className="hidden md:min-h-0 md:flex-1 md:flex-col">
               {result.items.length > 0 ? (
-                <div className="overflow-auto">
+                <div className="min-h-0 flex-1 overflow-auto">
                   <table className="min-w-[1160px] table-fixed border-collapse text-black">
                     <colgroup>
                       {BOOKS_COLUMN_WIDTHS.map((width, index) => (
@@ -273,21 +273,21 @@ export default async function RelatedBooksPage({ params, searchParams }: Related
                       ))}
                     </colgroup>
                     <thead>
-                      <tr className="border-b border-[#9aa8b0] bg-[#fff68f] text-[11px] uppercase leading-none">
-                        <th className="rounded-tl-[10px] border-r border-[#9aa8b0] px-3 py-[9px] text-center font-normal">{tBooks("columns.titles")}</th>
-                        <th className="border-r border-[#9aa8b0] px-3 py-[9px] text-center font-normal">{tBooks("columns.authors")}</th>
-                        <th className="border-r border-[#9aa8b0] px-3 py-[9px] text-center font-normal">{tBooks("columns.publishers")}</th>
-                        <th className="border-r border-[#9aa8b0] px-3 py-[9px] text-center font-normal">{tBooks("columns.languages")}</th>
-                        <th className="border-r border-[#9aa8b0] px-3 py-[9px] text-center font-normal">{tBooks("columns.year")}</th>
-                        <th className="border-r border-[#9aa8b0] px-3 py-[9px] text-center font-normal">{tBooks("columns.publication")}</th>
-                        <th className="border-r border-[#9aa8b0] px-3 py-[9px] text-center font-normal">{tBooks("columns.issue")}</th>
-                        <th className="rounded-tr-[10px] px-3 py-[9px] text-center font-normal">{tBooks("columns.edition")}</th>
+                      <tr className="border-b border-[#9aa8b0] bg-[#fff68f] text-[11px] uppercase leading-none [@media(max-height:950px)]:text-[10px]">
+                        <th className="rounded-tl-[10px] border-r border-[#9aa8b0] px-3 py-[9px] text-center font-normal [@media(max-height:950px)]:px-2 [@media(max-height:950px)]:py-1.5">{tBooks("columns.titles")}</th>
+                        <th className="border-r border-[#9aa8b0] px-3 py-[9px] text-center font-normal [@media(max-height:950px)]:px-2 [@media(max-height:950px)]:py-1.5">{tBooks("columns.authors")}</th>
+                        <th className="border-r border-[#9aa8b0] px-3 py-[9px] text-center font-normal [@media(max-height:950px)]:px-2 [@media(max-height:950px)]:py-1.5">{tBooks("columns.publishers")}</th>
+                        <th className="border-r border-[#9aa8b0] px-3 py-[9px] text-center font-normal [@media(max-height:950px)]:px-2 [@media(max-height:950px)]:py-1.5">{tBooks("columns.languages")}</th>
+                        <th className="border-r border-[#9aa8b0] px-3 py-[9px] text-center font-normal [@media(max-height:950px)]:px-2 [@media(max-height:950px)]:py-1.5">{tBooks("columns.year")}</th>
+                        <th className="border-r border-[#9aa8b0] px-3 py-[9px] text-center font-normal [@media(max-height:950px)]:px-2 [@media(max-height:950px)]:py-1.5">{tBooks("columns.publication")}</th>
+                        <th className="border-r border-[#9aa8b0] px-3 py-[9px] text-center font-normal [@media(max-height:950px)]:px-2 [@media(max-height:950px)]:py-1.5">{tBooks("columns.issue")}</th>
+                        <th className="rounded-tr-[10px] px-3 py-[9px] text-center font-normal [@media(max-height:950px)]:px-2 [@media(max-height:950px)]:py-1.5">{tBooks("columns.edition")}</th>
                       </tr>
                     </thead>
-                    <tbody className="text-[14px] leading-none">
+                    <tbody className="text-[14px] leading-none [@media(max-height:950px)]:text-[12px]">
                       {result.items.map((book, rowIndex) => (
                         <tr key={`${book.id}-${result.page}-${rowIndex}`} className="border-b border-[#b1bac0] last:border-b-0">
-                          <td className="border-r border-[#b1bac0] px-3 py-[15px] align-middle">
+                          <td className="border-r border-[#b1bac0] px-3 py-[15px] align-middle [@media(max-height:950px)]:px-2 [@media(max-height:950px)]:py-2">
                             <Link
                               href={{ pathname: "/books/details", query: { id: book.id } }}
                               className="flex items-center text-black hover:underline"
@@ -296,13 +296,13 @@ export default async function RelatedBooksPage({ params, searchParams }: Related
                               <span className="w-full break-words">{book.title}</span>
                             </Link>
                           </td>
-                          <td className="border-r border-[#b1bac0] px-3 py-[15px] align-middle">{book.author || "—"}</td>
-                          <td className="border-r border-[#b1bac0] px-3 py-[15px] align-middle">{book.publisher || "—"}</td>
-                          <td className="border-r border-[#b1bac0] px-3 py-[15px] align-middle">{book.language || "—"}</td>
-                          <td className="border-r border-[#b1bac0] px-3 py-[15px] text-center align-middle">{book.year || "—"}</td>
-                          <td className="border-r border-[#b1bac0] px-3 py-[15px] text-center align-middle">{book.publication || "—"}</td>
-                          <td className="border-r border-[#b1bac0] px-3 py-[15px] text-center align-middle">{book.issue || "—"}</td>
-                          <td className="px-3 py-[15px] text-center align-middle">{book.edition || "—"}</td>
+                          <td className="border-r border-[#b1bac0] px-3 py-[15px] align-middle [@media(max-height:950px)]:px-2 [@media(max-height:950px)]:py-2">{book.author || "—"}</td>
+                          <td className="border-r border-[#b1bac0] px-3 py-[15px] align-middle [@media(max-height:950px)]:px-2 [@media(max-height:950px)]:py-2">{book.publisher || "—"}</td>
+                          <td className="border-r border-[#b1bac0] px-3 py-[15px] align-middle [@media(max-height:950px)]:px-2 [@media(max-height:950px)]:py-2">{book.language || "—"}</td>
+                          <td className="border-r border-[#b1bac0] px-3 py-[15px] text-center align-middle [@media(max-height:950px)]:px-2 [@media(max-height:950px)]:py-2">{book.year || "—"}</td>
+                          <td className="border-r border-[#b1bac0] px-3 py-[15px] text-center align-middle [@media(max-height:950px)]:px-2 [@media(max-height:950px)]:py-2">{book.publication || "—"}</td>
+                          <td className="border-r border-[#b1bac0] px-3 py-[15px] text-center align-middle [@media(max-height:950px)]:px-2 [@media(max-height:950px)]:py-2">{book.issue || "—"}</td>
+                          <td className="px-3 py-[15px] text-center align-middle [@media(max-height:950px)]:px-2 [@media(max-height:950px)]:py-2">{book.edition || "—"}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -316,7 +316,7 @@ export default async function RelatedBooksPage({ params, searchParams }: Related
             </div>
           </section>
 
-          <div className="flex flex-col items-center gap-3 md:pb-6">
+          <div className="flex flex-col items-center gap-3 md:pb-6 [@media(max-height:950px)]:gap-1.5">
             <p className="text-center text-[13px] font-bold leading-none text-black">
               {tBooks("pagination.results", {
                 start: String((result.page - 1) * BOOKS_PAGE_SIZE + 1),

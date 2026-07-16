@@ -266,18 +266,18 @@ export default function BookDetailSecondaryLayout({
   const bookTitle = [book.title, book.subtitle].filter((value) => value.length > 0).join(" — ");
 
   return (
-    <main dir="ltr" className="relative min-h-[100svh] overflow-x-hidden bg-[#e7f2f7] font-[Arial,Helvetica,sans-serif] text-black md:h-screen md:overflow-hidden">
+    <main dir="ltr" className="relative min-h-[100svh] min-h-[100dvh] overflow-x-hidden bg-[#e7f2f7] font-[Arial,Helvetica,sans-serif] text-black md:h-screen md:h-[100dvh] md:overflow-hidden">
       <Image src="/background/background.png" alt="" fill priority sizes="100vw" className="object-cover object-center opacity-95 saturate-[1.08]" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.18),transparent_32%),linear-gradient(180deg,rgba(210,229,242,0.18),rgba(210,229,242,0.08))]" />
 
-      <div className="relative z-10 mx-auto flex min-h-[100svh] w-full max-w-[1120px] flex-col px-4 pb-5 pt-4 md:h-screen md:max-w-none md:px-0 md:pb-0 md:pt-0">
+      <div className="relative z-10 mx-auto flex min-h-[100svh] min-h-[100dvh] w-full max-w-[1120px] flex-col px-4 pb-5 pt-4 md:h-screen md:h-[100dvh] md:max-w-none md:px-0 md:pb-0 md:pt-0">
         <StavnetHeader
           pageName={pageName}
           title={t("header.title")}
           subtitle={t("header.subtitle")}
         />
 
-        <section className="mt-6 flex min-w-0 flex-col gap-3 md:absolute md:left-1/2 md:top-[172px] md:bottom-[190px] md:w-[1200px] md:max-w-[calc(100vw-24px)] md:-translate-x-1/2">
+        <section className="mt-6 flex min-w-0 flex-col gap-3 md:absolute md:left-1/2 md:top-[160px] md:bottom-[100px] md:w-[1200px] md:max-w-[calc(100vw-24px)] md:-translate-x-1/2">
           <div className="flex min-w-0 flex-col gap-3 md:grid md:grid-cols-[230px_minmax(0,1fr)] md:gap-x-[12px]">
             <aside className="min-w-0 md:h-[344px] md:w-[230px]">
               <div className="w-full max-w-[270px] border border-[#b7ab92] bg-[#f3ead4] p-[6px] shadow-[2px_2px_4px_rgba(0,0,0,0.12)] md:h-[344px] md:w-[230px] md:max-w-none">

@@ -106,7 +106,7 @@ export default function DefinitionPageClient() {
           subtitle={t("header.subtitle")}
         />
 
-        <section className="mt-6 flex min-w-0 flex-col gap-4 md:absolute md:left-1/2 md:top-[178px] md:bottom-[190px] md:w-[min(1320px,96vw)] md:-translate-x-1/2">
+        <section className="mt-6 flex min-w-0 flex-col gap-4 md:absolute md:left-1/2 md:top-[178px] md:bottom-[190px] md:w-[min(1320px,96vw)] md:-translate-x-1/2 md:overflow-hidden [@media(max-height:800px)]:top-[160px] [@media(max-height:800px)]:bottom-[120px]">
           <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_260px] md:items-end">
             <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
               <div className="rounded-[8px] border border-[#7aa8b7] bg-[#a7dcee] px-4 py-3 shadow-[3px_3px_6px_rgba(0,0,0,0.12)]">
@@ -126,7 +126,7 @@ export default function DefinitionPageClient() {
             </div>
           </div>
 
-          <section className="overflow-hidden rounded-[8px] border border-[#9aa8b0] bg-[#d8dde2] shadow-[4px_4px_8px_rgba(0,0,0,0.12)]">
+          <section className="min-h-0 overflow-hidden rounded-[8px] border border-[#9aa8b0] bg-[#d8dde2] shadow-[4px_4px_8px_rgba(0,0,0,0.12)] md:flex-1">
             <div className="space-y-3 p-3 md:hidden">
               {sampleRecords.map((record, index) => (
                 <MobileDefinitionCard
@@ -141,8 +141,8 @@ export default function DefinitionPageClient() {
               ))}
             </div>
 
-            <div className="hidden md:block">
-              <div className="overflow-auto">
+            <div className="hidden min-h-0 md:flex md:h-full md:flex-col">
+              <div className="overflow-auto md:min-h-0 md:flex-1">
                 <table className="min-w-[1120px] w-full table-fixed border-collapse text-black">
                   <colgroup>
                     {DEFINITION_COLUMN_WIDTHS.map((width, index) => (

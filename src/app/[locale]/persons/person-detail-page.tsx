@@ -249,19 +249,19 @@ export default function PersonDetailPage({ person }: PersonDetailPageProps) {
   const { bibliographyRows, originalRows, translatedRows } = usePersonBibliography(person.bibliographyRows);
 
   return (
-    <main dir="ltr" className="relative min-h-[100svh] overflow-x-hidden bg-[#e7f2f7] font-[Arial,Helvetica,sans-serif] text-black md:h-screen md:overflow-hidden">
+    <main dir="ltr" className="relative min-h-[100svh] min-h-[100dvh] overflow-x-hidden bg-[#e7f2f7] font-[Arial,Helvetica,sans-serif] text-black md:h-screen md:h-[100dvh] md:overflow-hidden">
       <Image src="/background/background.png" alt="" fill priority sizes="100vw" className="object-cover object-center opacity-95 saturate-[1.08]" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.18),transparent_32%),linear-gradient(180deg,rgba(210,229,242,0.18),rgba(210,229,242,0.08))]" />
 
-      <div className="relative z-10 mx-auto flex min-h-[100svh] w-full max-w-[1120px] flex-col px-4 pb-5 pt-4 md:h-screen md:max-w-none md:px-0 md:pb-0 md:pt-0">
+      <div className="relative z-10 mx-auto flex min-h-[100svh] min-h-[100dvh] w-full max-w-[1120px] flex-col px-4 pb-5 pt-4 md:h-screen md:h-[100dvh] md:max-w-none md:px-0 md:pb-0 md:pt-0">
         <StavnetHeader
           pageName={t("header.cardTitle")}
           title={t("header.title")}
           subtitle={t("header.subtitle")}
         />
 
-        <section className="mt-6 flex min-w-0 flex-col gap-5 md:absolute md:left-1/2 md:top-[172px] md:bottom-[118px] md:w-[1341px] md:max-w-[calc(100vw-24px)] md:-translate-x-1/2 md:box-border md:pl-[221px] md:pr-[35px]">
-          <aside className="hidden md:absolute md:left-0 md:top-[66px] md:flex md:h-[min(660px,calc(100vh-440px))] md:w-[209px] md:flex-col md:items-end md:gap-5">
+        <section className="mt-6 flex min-w-0 flex-col gap-5 md:absolute md:left-1/2 md:top-[160px] md:bottom-[100px] md:w-[1341px] md:max-w-[calc(100vw-24px)] md:-translate-x-1/2 md:box-border md:pl-[221px] md:pr-[35px]">
+          <aside className="hidden md:absolute md:left-0 md:top-[66px] md:flex md:h-[min(660px,calc(100dvh-380px))] md:w-[209px] md:flex-col md:items-end md:gap-5">
             <div className="relative h-[254px] w-[209px] overflow-hidden border border-[#6c99a7] bg-[#d7eef6] shadow-[3px_3px_6px_rgba(0,0,0,0.18)]">
               <Image
                 src={person.imageSrc}
@@ -274,15 +274,15 @@ export default function PersonDetailPage({ person }: PersonDetailPageProps) {
           </aside>
 
           <section className="min-w-0 md:w-full md:max-w-none">
-            <nav className="grid grid-cols-2 gap-2 pb-2 md:shrink-0 md:grid-cols-[108px_repeat(7,minmax(0,1fr))] md:items-end md:gap-[12px] md:pb-0">
+            <nav className="grid grid-cols-2 gap-2 pb-2 md:shrink-0 md:grid-cols-[108px_repeat(7,minmax(0,1fr))] md:items-end md:gap-[12px] md:pb-0 [@media(max-width:1440px)]:gap-[8px]">
               {tabs.map((tabKey) => (
                 <button
                   key={tabKey}
                   type="button"
                   onClick={() => setActiveTab(tabKey)}
                     className={cn(
-                    "min-h-[42px] min-w-0 rounded-t-[8px] border border-[#d1bb48] px-2 py-[6px] text-center text-[12px] font-bold leading-[1.08] shadow-[3px_3px_5px_rgba(0,0,0,0.28)] transition-colors md:min-h-[48px] md:px-4 md:text-[15px]",
-                    activeTab === tabKey ? "bg-[#91d3ea] font-semibold text-black md:min-h-[54px] md:text-[19px] md:font-bold" : "bg-[#ffea56] text-black hover:bg-[#fff16f]",
+                    "min-h-[42px] min-w-0 rounded-t-[8px] border border-[#d1bb48] px-2 py-[6px] text-center text-[12px] font-bold leading-[1.08] shadow-[3px_3px_5px_rgba(0,0,0,0.28)] transition-colors md:min-h-[48px] md:px-4 md:text-[15px] [@media(max-width:1440px)]:min-h-[44px] [@media(max-width:1440px)]:px-2 [@media(max-width:1440px)]:text-[13px]",
+                    activeTab === tabKey ? "bg-[#91d3ea] font-semibold text-black md:min-h-[54px] md:text-[19px] md:font-bold [@media(max-width:1440px)]:min-h-[48px] [@media(max-width:1440px)]:text-[16px]" : "bg-[#ffea56] text-black hover:bg-[#fff16f]",
                   )}
                 >
                   {t(`tabs.${tabKey}`)}
@@ -290,7 +290,7 @@ export default function PersonDetailPage({ person }: PersonDetailPageProps) {
               ))}
             </nav>
 
-            <div className="relative mt-[2px] flex min-h-[660px] flex-col rounded-[8px] border border-[#7aa8b7] bg-[linear-gradient(180deg,#8ecfe8_0%,#a8dbed_100%)] shadow-[4px_4px_8px_rgba(0,0,0,0.18)] md:h-[min(660px,calc(100vh-430px))] md:min-h-0 md:overflow-hidden md:flex-row">
+            <div className="relative mt-[2px] flex min-h-[660px] flex-col rounded-[8px] border border-[#7aa8b7] bg-[linear-gradient(180deg,#8ecfe8_0%,#a8dbed_100%)] shadow-[4px_4px_8px_rgba(0,0,0,0.18)] md:h-[min(660px,calc(100dvh-370px))] md:min-h-0 md:overflow-hidden md:flex-row">
               <aside className="border-b border-[#7aa8b7] px-3 py-4 md:w-[126px] md:border-b-0 md:border-r md:px-4 md:py-5">
                 <p className="text-center text-[18px] font-bold leading-tight text-black md:text-[22px]">{t("side.authorCard")}</p>
               </aside>
@@ -421,7 +421,7 @@ export default function PersonDetailPage({ person }: PersonDetailPageProps) {
             </div>
           </section>
 
-          <aside className="hidden md:absolute md:right-0 md:top-[66px] md:flex md:h-[min(660px,calc(100vh-440px))] md:w-[34px] md:items-center md:justify-center">
+          <aside className="hidden md:absolute md:right-0 md:top-[66px] md:flex md:h-[min(660px,calc(100dvh-380px))] md:w-[34px] md:items-center md:justify-center">
             <div className="flex flex-col items-center justify-center gap-[14px] text-[15px] leading-none text-black">
               <span className="[writing-mode:vertical-rl]">{t("right.personCardsFound")}</span>
               <span className="[writing-mode:vertical-rl] text-[17px] font-bold text-[#ff1d1d]">{person.stats.cardsFound}</span>

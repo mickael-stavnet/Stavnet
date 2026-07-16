@@ -80,7 +80,7 @@ export function StavnetFooter({
         data-stavnet-animate="footer"
         suppressHydrationWarning
           className={cn(
-            "mt-4 flex flex-col gap-3 pb-2 md:absolute md:bottom-[clamp(14px,3vh,40px)] md:left-[5.1vw] md:right-[5.1vw] md:mt-0 md:grid md:grid-cols-[92px_minmax(0,1fr)_92px] md:items-end md:gap-0 md:pb-0",
+            "mt-4 flex flex-col gap-3 pb-2 md:absolute md:bottom-[clamp(14px,3vh,40px)] md:left-[clamp(56px,5.1vw,112px)] md:right-[clamp(56px,5.1vw,112px)] md:mt-0 md:grid md:grid-cols-[92px_minmax(0,1fr)_92px] md:items-end md:gap-0 md:pb-0",
             className,
           )}
         >
@@ -151,7 +151,7 @@ export function StavnetFooter({
         data-stavnet-animate="footer"
         suppressHydrationWarning
       className={cn(
-          "mt-4 grid gap-x-1 gap-y-2 pb-2 md:absolute md:bottom-[clamp(14px,3vh,40px)] md:left-[4.8vw] md:right-[4.8vw] md:mt-0 md:flex md:flex-wrap md:justify-center md:pb-0",
+          "mt-4 grid gap-x-1 gap-y-2 pb-2 md:absolute md:bottom-[clamp(14px,3vh,40px)] md:left-[clamp(56px,4.8vw,112px)] md:right-[clamp(56px,4.8vw,112px)] md:mt-0 md:flex md:flex-wrap md:justify-center md:pb-0",
           compactDesktopGapClass,
           mobileGridClassName ?? "grid-cols-4 sm:grid-cols-4",
           className,
@@ -197,7 +197,7 @@ export function StavnetFooter({
       data-stavnet-animate="footer"
       suppressHydrationWarning
         className={cn(
-        "mt-4 grid gap-x-1 gap-y-2 pb-2 md:absolute md:bottom-[clamp(14px,3vh,40px)] md:left-[4.8vw] md:right-[4.8vw] md:mt-0 md:pb-0",
+        "mt-4 grid gap-x-1 gap-y-2 pb-2 md:absolute md:bottom-[clamp(14px,3vh,40px)] md:left-[clamp(56px,4.8vw,112px)] md:right-[clamp(56px,4.8vw,112px)] md:mt-0 md:pb-0",
         mobileGridClassName ?? "grid-cols-4 sm:grid-cols-4",
         desktopMode === "equal"
           ? `md:flex md:flex-nowrap md:items-end md:justify-center ${compactDesktopGapClass}`

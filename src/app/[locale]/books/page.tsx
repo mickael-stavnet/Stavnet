@@ -23,9 +23,9 @@ import { buildStaticPageMetadata } from "@/lib/site-metadata";
 
 const BOOKS_COLUMN_WIDTHS = ["20%", "18%", "12%", "12%", "11%", "5%", "8%", "7%", "7%"] as const;
 const BOOKS_PAGE_SIZE = 10;
-const BOOKS_TABLE_CONTAINER_CLASS = "bg-[#eaf5f8]/90 md:min-h-[460px] [@media(max-height:950px)]:min-h-[390px]";
+const BOOKS_TABLE_CONTAINER_CLASS = "bg-[#eaf5f8]/90 md:flex md:min-h-0 md:flex-1 md:flex-col";
 const BOOKS_TABLE_HEAD_ROW_CLASS = "bg-[#d7ebf2]/85 text-[12px] uppercase tracking-[0.04em] text-slate-700 [@media(max-height:950px)]:text-[10px]";
-const BOOKS_TABLE_HEAD_CELL_CLASS = "whitespace-nowrap border-r border-slate-300/80 px-4 py-3 text-center font-semibold last:border-r-0 [@media(max-height:950px)]:px-4 [@media(max-height:950px)]:py-1.5";
+const BOOKS_TABLE_HEAD_CELL_CLASS = "border-r border-slate-300/80 px-3 py-3 text-center font-semibold leading-tight last:border-r-0 [@media(max-height:950px)]:px-2 [@media(max-height:950px)]:py-1.5";
 const BOOKS_TABLE_BODY_CLASS = "text-[15px] leading-[1.25] [@media(max-height:950px)]:text-[12px] [@media(max-height:950px)]:leading-[1.1]";
 const BOOKS_TABLE_ROW_CLASS = "h-[42px] text-slate-950 [@media(max-height:950px)]:h-[35px]";
 const BOOKS_TABLE_CELL_CLASS = "border-r border-slate-300/80 px-4 py-3 align-middle last:border-r-0 [@media(max-height:950px)]:px-2 [@media(max-height:950px)]:py-1.5";
@@ -184,7 +184,7 @@ export default async function BooksListPage({ params, searchParams }: BooksPageP
   ];
 
   return (
-    <main dir="ltr" className="relative min-h-[100svh] overflow-x-hidden bg-[#e7f2f7] font-[Arial,Helvetica,sans-serif] text-black md:h-screen md:overflow-hidden [@media(max-height:950px)]:h-auto [@media(max-height:950px)]:overflow-y-auto">
+    <main dir="ltr" className="relative min-h-[100svh] overflow-x-hidden bg-[#e7f2f7] font-[Arial,Helvetica,sans-serif] text-black md:h-screen md:overflow-hidden">
       <Image
         src="/background/background.png"
         alt=""
@@ -195,14 +195,14 @@ export default async function BooksListPage({ params, searchParams }: BooksPageP
       />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.18),transparent_32%),linear-gradient(180deg,rgba(210,229,242,0.18),rgba(210,229,242,0.08))]" />
 
-      <div className="relative z-10 mx-auto flex min-h-[100svh] w-full max-w-[1120px] flex-col px-4 pb-5 pt-0 md:h-screen md:max-w-none md:px-0 md:pb-0 md:pt-0 [@media(max-height:950px)]:h-auto [@media(max-height:950px)]:pb-5">
+      <div className="relative z-10 mx-auto flex min-h-[100svh] w-full max-w-[1120px] flex-col px-4 pb-5 pt-0 md:h-screen md:max-w-none md:px-0 md:pb-0 md:pt-0">
         <StavnetHeader
           pageName={t("header.cardTitle")}
           title={t("header.title")}
           subtitle={t("header.subtitle")}
         />
 
-      <section className="mt-6 min-w-0 flex flex-col gap-4 md:absolute md:left-1/2 md:top-[178px] md:bottom-[190px] md:w-[min(1320px,96vw)] md:-translate-x-1/2 [@media(max-height:950px)]:relative [@media(max-height:950px)]:left-auto [@media(max-height:950px)]:top-auto [@media(max-height:950px)]:bottom-auto [@media(max-height:950px)]:mx-auto [@media(max-height:950px)]:w-[min(1320px,96vw)] [@media(max-height:950px)]:translate-x-0 [@media(max-height:950px)]:gap-2">
+      <section className="mt-6 min-w-0 flex min-h-0 flex-col gap-4 md:absolute md:left-1/2 md:top-[178px] md:bottom-[190px] md:w-[min(1320px,96vw)] md:-translate-x-1/2 [@media(max-height:950px)]:top-[160px] [@media(max-height:950px)]:bottom-[118px] [@media(max-height:950px)]:gap-2">
           <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between md:gap-6 [@media(max-height:950px)]:gap-2">
             <ListNameSearch
               key={selection.searchTerm}
@@ -245,10 +245,10 @@ export default async function BooksListPage({ params, searchParams }: BooksPageP
               )}
             </div>
 
-            <div className="hidden md:block">
+            <div className="hidden md:min-h-0 md:flex-1 md:flex-col">
               {result.items.length > 0 ? (
-                <div className="overflow-x-auto">
-                  <Table className="min-w-[1800px] table-fixed bg-[#eaf5f8]/90 text-slate-950">
+                <div className="min-h-0 flex-1 overflow-auto">
+                  <Table className="w-full min-w-0 table-fixed bg-[#eaf5f8]/90 text-slate-950">
                     <colgroup>
                       {BOOKS_COLUMN_WIDTHS.map((width, index) => (
                         <col key={`${width}-${index}`} style={{ width }} />
@@ -340,7 +340,7 @@ export default async function BooksListPage({ params, searchParams }: BooksPageP
           </div>
         </section>
 
-        <StavnetFooter items={footerItems} desktopMode="compact" className="[@media(max-height:950px)]:relative [@media(max-height:950px)]:bottom-auto [@media(max-height:950px)]:left-auto [@media(max-height:950px)]:right-auto [@media(max-height:950px)]:mt-6" />
+        <StavnetFooter items={footerItems} desktopMode="compact" />
       </div>
     </main>
   );
