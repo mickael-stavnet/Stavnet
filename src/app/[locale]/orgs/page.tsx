@@ -27,17 +27,18 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import { Button } from "@/components/ui/button";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { buildStaticPageMetadata } from "@/lib/site-metadata";
 
 const ORGS_COLUMN_WIDTHS = ["35.45%", "15.51%", "15.95%", "14.48%", "9.16%", "9.45%"] as const;
 const ORGS_PAGE_SIZE = 10;
-const ORGS_TABLE_SHELL_CLASS =
-  "overflow-hidden rounded-[12px] border border-[#8fa0a8] bg-[linear-gradient(180deg,#dfe4e9_0%,#d6dce1_100%)] shadow-[0_10px_24px_rgba(53,78,91,0.12),inset_0_1px_0_rgba(255,255,255,0.55)] md:flex md:min-h-0 md:flex-1 md:flex-col";
-const ORGS_TABLE_HEAD_ROW_CLASS = "border-b border-[#9aa8b0] bg-[#fff68f] text-[10px] uppercase leading-[1.08] tracking-[0.04em] [@media(max-height:950px)]:text-[9px]";
-const ORGS_TABLE_HEAD_CELL_CLASS = "border-r border-[#9aa8b0] px-3 py-[13px] text-center font-semibold [@media(max-height:950px)]:py-[4px]";
-const ORGS_TABLE_BODY_CLASS = "text-[13px] leading-[1.2] [@media(max-height:950px)]:text-[10px] [@media(max-height:950px)]:leading-[1]";
-const ORGS_TABLE_ROW_CLASS = "border-b border-[#b1bac0]/80 bg-[rgba(236,241,244,0.92)] transition-colors odd:bg-[rgba(228,233,237,0.78)] hover:bg-[#eef4f8]";
-const ORGS_TABLE_CELL_CLASS = "border-r border-[#b1bac0]/70 px-3 py-[18px] align-middle [@media(max-height:950px)]:py-[2px]";
+const ORGS_TABLE_CONTAINER_CLASS = "bg-[#eaf5f8]/90 md:min-h-[460px] [@media(max-height:950px)]:min-h-[390px]";
+const ORGS_TABLE_HEAD_ROW_CLASS = "bg-[#d7ebf2]/85 text-[12px] uppercase tracking-[0.04em] text-slate-700 [@media(max-height:950px)]:text-[10px]";
+const ORGS_TABLE_HEAD_CELL_CLASS = "whitespace-normal px-4 py-3 text-left font-semibold [@media(max-height:950px)]:px-2 [@media(max-height:950px)]:py-1.5";
+const ORGS_TABLE_BODY_CLASS = "text-[15px] leading-[1.25] [@media(max-height:950px)]:text-[12px] [@media(max-height:950px)]:leading-[1.1]";
+const ORGS_TABLE_ROW_CLASS = "h-[42px] text-slate-950 [@media(max-height:950px)]:h-[35px]";
+const ORGS_TABLE_CELL_CLASS = "px-4 py-3 align-middle [@media(max-height:950px)]:px-2 [@media(max-height:950px)]:py-1.5";
 
 interface OrgsPageProps {
   params: Promise<{
@@ -177,18 +178,18 @@ export default async function OrganizationsListPage({ params, searchParams }: Or
   } as const;
 
   return (
-    <main dir="ltr" className="relative min-h-[100svh] overflow-x-hidden bg-[#e7f2f7] font-[Arial,Helvetica,sans-serif] text-black md:h-screen md:overflow-hidden">
+    <main dir="ltr" className="relative min-h-[100svh] overflow-x-hidden bg-[#e7f2f7] font-[Arial,Helvetica,sans-serif] text-black md:h-screen md:overflow-hidden [@media(max-height:950px)]:h-auto [@media(max-height:950px)]:overflow-y-auto">
       <Image src="/background/background.png" alt="" fill priority sizes="100vw" className="object-cover object-center opacity-95 saturate-[1.08]" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.18),transparent_32%),linear-gradient(180deg,rgba(210,229,242,0.18),rgba(210,229,242,0.08))]" />
 
-      <div className="relative z-10 mx-auto flex min-h-[100svh] w-full max-w-[1120px] flex-col px-4 pb-5 pt-0 md:h-screen md:max-w-none md:px-0 md:pb-0 md:pt-0">
+      <div className="relative z-10 mx-auto flex min-h-[100svh] w-full max-w-[1120px] flex-col px-4 pb-5 pt-0 md:h-screen md:max-w-none md:px-0 md:pb-0 md:pt-0 [@media(max-height:950px)]:h-auto [@media(max-height:950px)]:pb-5">
         <StavnetHeader
           pageName={t("header.cardTitle")}
           title={t("header.title")}
           subtitle={t("header.subtitle")}
         />
 
-        <section className="mt-6 min-w-0 flex flex-col gap-4 md:absolute md:left-1/2 md:top-[178px] md:bottom-[190px] md:w-[min(1320px,96vw)] md:-translate-x-1/2 [@media(max-height:950px)]:top-[112px] [@media(max-height:950px)]:bottom-[156px]">
+      <section className="mt-6 min-w-0 flex flex-col gap-4 md:absolute md:left-1/2 md:top-[178px] md:bottom-[190px] md:w-[min(1320px,96vw)] md:-translate-x-1/2 [@media(max-height:950px)]:relative [@media(max-height:950px)]:left-auto [@media(max-height:950px)]:top-auto [@media(max-height:950px)]:bottom-auto [@media(max-height:950px)]:mx-auto [@media(max-height:950px)]:w-[min(1320px,96vw)] [@media(max-height:950px)]:translate-x-0 [@media(max-height:950px)]:gap-2">
           <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between md:gap-6 [@media(max-height:950px)]:gap-1.5">
             <div className="flex flex-col gap-3">
               <ListNameSearch
@@ -201,28 +202,13 @@ export default async function OrganizationsListPage({ params, searchParams }: Or
               <div className="flex flex-col gap-2 [@media(max-height:950px)]:gap-1">
                 <p className="text-[13px] font-bold leading-none text-black [@media(max-height:950px)]:text-[12px]">{filterLabels.title}</p>
                 <div className="flex flex-wrap gap-2 [@media(max-height:950px)]:gap-1">
-                    <Link
-                    href={buildOrganizationsPageHref(1, selection.searchTerm, "")}
-                    className={`rounded-[8px] border px-3 py-2 text-[13px] font-bold leading-none shadow-[2px_2px_4px_rgba(0,0,0,0.12)] [@media(max-height:950px)]:px-2 [@media(max-height:950px)]:py-1 [@media(max-height:950px)]:text-[12px] ${
-                      !selection.typeFilter
-                        ? "border-[#7aa8b7] bg-[#91d3ea] text-black"
-                        : "border-[#d1bb48] bg-[#ffea56] text-black hover:bg-[#fff16f]"
-                    }`}
-                  >
-                    {filterLabels.all}
-                  </Link>
+                  <Button asChild variant={!selection.typeFilter ? "default" : "outline"} size="sm">
+                    <Link href={buildOrganizationsPageHref(1, selection.searchTerm, "")}>{filterLabels.all}</Link>
+                  </Button>
                   {ORGANIZATION_FILTER_OPTIONS.map((option) => (
-                      <Link
-                        key={option}
-                        href={buildOrganizationsPageHref(1, selection.searchTerm, option)}
-                        className={`rounded-[8px] border px-3 py-2 text-[13px] font-bold leading-none shadow-[2px_2px_4px_rgba(0,0,0,0.12)] [@media(max-height:950px)]:px-2 [@media(max-height:950px)]:py-1 [@media(max-height:950px)]:text-[12px] ${
-                        selection.typeFilter === option
-                          ? "border-[#7aa8b7] bg-[#91d3ea] text-black"
-                          : "border-[#d1bb48] bg-[#ffea56] text-black hover:bg-[#fff16f]"
-                        }`}
-                    >
-                      {filterLabels[option]}
-                    </Link>
+                    <Button key={option} asChild variant={selection.typeFilter === option ? "default" : "outline"} size="sm">
+                      <Link href={buildOrganizationsPageHref(1, selection.searchTerm, option)}>{filterLabels[option]}</Link>
+                    </Button>
                   ))}
                 </div>
               </div>
@@ -249,7 +235,7 @@ export default async function OrganizationsListPage({ params, searchParams }: Or
             </div>
           </div>
 
-          <section className={ORGS_TABLE_SHELL_CLASS}>
+          <div className={ORGS_TABLE_CONTAINER_CLASS}>
             <div className="space-y-3 p-3 md:hidden">
               {result.items.length > 0 ? (
                 result.items.map((organization) => (
@@ -268,29 +254,29 @@ export default async function OrganizationsListPage({ params, searchParams }: Or
               )}
             </div>
 
-            <div className="hidden md:block md:flex-1 md:min-h-0">
+            <div className="hidden md:block">
               {result.items.length > 0 ? (
-                <div className="overflow-auto md:h-full md:min-h-0">
-                  <table className="min-w-[1100px] table-fixed border-collapse text-black">
+                <div className="overflow-x-auto">
+                  <Table className="min-w-[1100px] table-fixed bg-[#eaf5f8]/90 text-slate-950">
                     <colgroup>
                       {ORGS_COLUMN_WIDTHS.map((width, index) => (
                         <col key={`${width}-${index}`} style={{ width }} />
                       ))}
                     </colgroup>
-                    <thead>
-                      <tr className={ORGS_TABLE_HEAD_ROW_CLASS}>
-                        <th className={`${ORGS_TABLE_HEAD_CELL_CLASS} rounded-tl-[12px]`}>{columnLabels.organizations}</th>
-                        <th className={ORGS_TABLE_HEAD_CELL_CLASS}>{columnLabels.type}</th>
-                        <th className={ORGS_TABLE_HEAD_CELL_CLASS}>{columnLabels.creationDate}</th>
-                        <th className={ORGS_TABLE_HEAD_CELL_CLASS}>{columnLabels.country}</th>
-                        <th className={ORGS_TABLE_HEAD_CELL_CLASS}>{columnLabels.titlesPublished}</th>
-                        <th className={`${ORGS_TABLE_HEAD_CELL_CLASS} rounded-tr-[12px] border-r-0`}>{columnLabels.authorsPublished}</th>
-                      </tr>
-                    </thead>
-                    <tbody className={ORGS_TABLE_BODY_CLASS}>
+                    <TableHeader>
+                      <TableRow className={ORGS_TABLE_HEAD_ROW_CLASS}>
+                        <TableHead className={ORGS_TABLE_HEAD_CELL_CLASS}>{columnLabels.organizations}</TableHead>
+                        <TableHead className={ORGS_TABLE_HEAD_CELL_CLASS}>{columnLabels.type}</TableHead>
+                        <TableHead className={ORGS_TABLE_HEAD_CELL_CLASS}>{columnLabels.creationDate}</TableHead>
+                        <TableHead className={ORGS_TABLE_HEAD_CELL_CLASS}>{columnLabels.country}</TableHead>
+                        <TableHead className={ORGS_TABLE_HEAD_CELL_CLASS}>{columnLabels.titlesPublished}</TableHead>
+                        <TableHead className={ORGS_TABLE_HEAD_CELL_CLASS}>{columnLabels.authorsPublished}</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody className={ORGS_TABLE_BODY_CLASS}>
                       {result.items.map((organization, rowIndex) => (
-                        <tr key={`${organization.name}-${result.page}-${rowIndex}`} className={ORGS_TABLE_ROW_CLASS}>
-                          <td className={ORGS_TABLE_CELL_CLASS}>
+                        <TableRow key={`${organization.name}-${result.page}-${rowIndex}`} className={ORGS_TABLE_ROW_CLASS}>
+                          <TableCell className={ORGS_TABLE_CELL_CLASS}>
                             <Link
                               href={{ pathname: "/orgs/details", query: { name: organization.name } }}
                               className="flex items-center gap-2 text-black hover:underline"
@@ -298,22 +284,22 @@ export default async function OrganizationsListPage({ params, searchParams }: Or
                               <RedMarker />
                               <span className="w-full break-words">{organization.name}</span>
                             </Link>
-                          </td>
-                          <td className={ORGS_TABLE_CELL_CLASS}>{organization.type || "—"}</td>
-                          <td className={ORGS_TABLE_CELL_CLASS}>{organization.creationDate || "—"}</td>
-                          <td className={ORGS_TABLE_CELL_CLASS}>{organization.country || "—"}</td>
-                          <td className={`${ORGS_TABLE_CELL_CLASS} text-center`}>{organization.publishedTitles}</td>
-                          <td className="px-3 py-[18px] text-center align-middle">{organization.publishedAuthors}</td>
-                        </tr>
+                          </TableCell>
+                          <TableCell className={ORGS_TABLE_CELL_CLASS}>{organization.type || "—"}</TableCell>
+                          <TableCell className={ORGS_TABLE_CELL_CLASS}>{organization.creationDate || "—"}</TableCell>
+                          <TableCell className={ORGS_TABLE_CELL_CLASS}>{organization.country || "—"}</TableCell>
+                          <TableCell className={`${ORGS_TABLE_CELL_CLASS} text-center`}>{organization.publishedTitles}</TableCell>
+                          <TableCell className={`${ORGS_TABLE_CELL_CLASS} text-center`}>{organization.publishedAuthors}</TableCell>
+                        </TableRow>
                       ))}
-                    </tbody>
-                  </table>
+                    </TableBody>
+                  </Table>
                 </div>
               ) : (
                 <div className="px-6 py-10 text-center text-[14px] font-bold text-black">{t("search.noResults")}</div>
               )}
             </div>
-          </section>
+          </div>
 
           <div className="flex flex-col items-center gap-3 md:pb-6 [@media(max-height:950px)]:gap-1">
             <p className="text-center text-[13px] font-bold leading-none text-black">
@@ -360,6 +346,7 @@ export default async function OrganizationsListPage({ params, searchParams }: Or
         <StavnetFooter
           items={footerItems}
           desktopMode="compact"
+          className="[@media(max-height:950px)]:relative [@media(max-height:950px)]:bottom-auto [@media(max-height:950px)]:left-auto [@media(max-height:950px)]:right-auto [@media(max-height:950px)]:mt-6"
         />
       </div>
     </main>

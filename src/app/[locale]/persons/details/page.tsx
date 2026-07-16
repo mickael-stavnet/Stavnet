@@ -1,9 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import PersonDetailPage from "../person-detail-page";
-import { isBookRelatedFacet } from "@/lib/book-related";
-import { redirect } from "@/i18n/routing";
-import { getBooksPageByFacet } from "@/lib/data/books";
 import { getDefaultPersonDetail, getPersonDetailByName } from "@/lib/data/persons";
 import { buildPersonPageMetadata } from "@/lib/site-metadata";
 import { logInfo } from "@/lib/server-log";
@@ -63,52 +60,6 @@ export default async function PersonDetailsPage({ params, searchParams }: Person
   });
 
   if (!person) {
-    if (fallbackFacet && trimmedFallbackValue && isBookRelatedFacet(fallbackFacet)) {
-      const relatedBooks = await getBooksPageByFacet(1, fallbackFacet, trimmedFallbackValue);
-
-      if (relatedBooks.total > 0) {
-        logInfo("PERSON_DETAILS_ROUTE_DECISION", {
-          route: "/persons/details",
-          phase: "redirect-related-books",
-          outcome: "redirect_related_books",
-          locale,
-          fallbackFacet,
-          fallbackValue: trimmedFallbackValue,
-          total: relatedBooks.total,
-        });
-        redirect({
-          href: {
-            pathname: "/books/related",
-            query: {
-              facet: fallbackFacet,
-              value: trimmedFallbackValue,
-            },
-          },
-          locale,
-        });
-      }
-    }
-
-    if (trimmedName) {
-      logInfo("PERSON_DETAILS_ROUTE_DECISION", {
-        route: "/persons/details",
-        phase: "redirect-books-search",
-        outcome: "redirect_books_search",
-        locale,
-        name: trimmedName,
-      });
-      redirect({
-        href: {
-          pathname: "/books",
-          query: {
-            page: "1",
-            q: trimmedName,
-          },
-        },
-        locale,
-      });
-    }
-
     logInfo("PERSON_DETAILS_ROUTE_DECISION", {
       route: "/persons/details",
       phase: "not-found",

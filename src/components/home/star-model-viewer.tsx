@@ -9,7 +9,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { getPersonImageEntries, type PersonImageEntry } from "@/lib/person-images";
+import { getPersonImageEntries, resolvePersonDetailName, type PersonImageEntry } from "@/lib/person-images";
 
 const MAX_SHOWCASE_COUNT = 12;
 const DEBUG_STAR_MODEL = process.env.NODE_ENV !== "production";
@@ -126,10 +126,11 @@ function createShowcaseTexture(texture: THREE.Texture): THREE.CanvasTexture {
 
 function buildPersonDetailUrl(personName: string): string {
   const locale = window.location.pathname.split("/").filter(Boolean)[0] || "en";
+  const detailName = resolvePersonDetailName(personName);
   const params = new URLSearchParams({
     fallbackFacet: "authorName",
-    fallbackValue: personName,
-    name: personName,
+    fallbackValue: detailName,
+    name: detailName,
   });
   return `/${locale}/persons/details?${params.toString()}`;
 }
@@ -1017,7 +1018,7 @@ export function StarModelViewer() {
             />
           </TooltipTrigger>
           <TooltipContent side="top" sideOffset={8}>
-            {hoveredAuthor?.name}
+            <span className="text-[20px]">{hoveredAuthor?.name}</span>
           </TooltipContent>
         </div>
       </Tooltip>

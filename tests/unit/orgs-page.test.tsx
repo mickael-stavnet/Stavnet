@@ -157,7 +157,7 @@ describe("OrganizationsListPage", () => {
     expect(getOrganizationsPageByTypeMock).not.toHaveBeenCalled();
 
     const activeFilterLink = screen.getByRole("link", { name: "Editeurs" });
-    expect(activeFilterLink.className).toContain("bg-[#91d3ea]");
+    expect(activeFilterLink.className).toContain("bg-primary");
     expect(screen.getByRole("link", { name: "Précédent" })).toHaveAttribute("href", "?page=1&q=Fay&type=Editeur");
     expect(screen.getByRole("link", { name: "Suivant" })).toHaveAttribute("href", "?page=3&q=Fay&type=Editeur");
   });

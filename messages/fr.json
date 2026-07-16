@@ -758,10 +758,10 @@
       "validate": "Valider"
     },
     "footer": {
-      "back": "Return",
+      "back": "Retour",
       "menu": "Menu",
-      "close": "Close",
-      "help": "Help"
+      "close": "Quitter",
+      "help": "Aide"
     }
   },
   "Errors": {

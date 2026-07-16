@@ -1,6 +1,7 @@
 import Image from "next/image";
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
+import { Checkbox } from "@/components/ui/checkbox";
 import { StavnetFooter } from "@/components/stavnet/footer";
 import { StavnetHeader } from "@/components/stavnet/header";
 import { getBookStatisticsFacetLists } from "@/lib/data/books";
@@ -60,16 +61,19 @@ export async function generateMetadata({ params }: StatisticsPageProps): Promise
   return buildStaticPageMetadata(locale, "statistics", "/statistics");
 }
 
-function EmptyCheckbox() {
+function SelectionCheckbox({ label }: { label: string }) {
   return (
-    <span className="flex h-[14px] w-[14px] shrink-0 items-center justify-center border border-[#9da9ad] bg-[#e6eef3] shadow-[inset_1px_1px_0_rgba(255,255,255,0.8)]" />
+    <Checkbox
+      aria-label={label}
+      className="h-[14px] w-[14px] rounded-none border-[#456f87] bg-[#f7fcff] text-white data-checked:border-[#002b9e] data-checked:bg-[#002b9e]"
+    />
   );
 }
 
 function OptionRow({ label }: { label: string }) {
   return (
-    <label className="flex min-h-[28px] items-center gap-[9px] border-b border-[#bcc6ca]/80 bg-[rgba(235,241,243,0.46)] px-[8px] text-[18px] font-bold leading-none text-black last:border-b-0 [@media(max-height:950px)]:min-h-[25px] [@media(max-height:950px)]:text-[16px]">
-      <EmptyCheckbox />
+    <label className="flex min-h-[28px] items-center gap-[9px] border-b border-[#9fc1ce] bg-[#edf8fb]/90 px-[9px] text-[17px] font-semibold leading-none text-[#132c38] last:border-b-0 [@media(max-height:950px)]:min-h-[20px] [@media(max-height:950px)]:text-[13px]">
+      <SelectionCheckbox label={label} />
       <span>{label}</span>
     </label>
   );
@@ -77,9 +81,9 @@ function OptionRow({ label }: { label: string }) {
 
 function OptionGroup({ title, options, className = "" }: { title: string; options: string[]; className?: string }) {
   return (
-    <section className={`min-w-0 ${className}`}>
-      <h2 className="mb-[6px] text-[20px] font-bold leading-none text-[#0018c9] [@media(max-height:950px)]:text-[18px]">{title}</h2>
-      <div className="flex-1 border border-[#9aa8ad] bg-[rgba(226,235,238,0.48)]">
+    <section className={`min-w-0 overflow-hidden border border-[#6295a9] bg-[#d4edf5] ${className}`}>
+      <h2 className="border-b border-[#6295a9] bg-[#b5e0ee] px-[10px] py-[7px] text-[18px] font-bold leading-none text-[#002b9e] [@media(max-height:950px)]:py-[4px] [@media(max-height:950px)]:text-[14px]">{title}</h2>
+      <div className="flex-1 bg-[#dff2f8]">
         {options.map((option) => (
           <OptionRow key={option} label={option} />
         ))}
@@ -90,12 +94,12 @@ function OptionGroup({ title, options, className = "" }: { title: string; option
 
 function YellowList({ title, items }: { title: string; items: string[] }) {
   return (
-    <section className="min-w-0 border border-[#768a9a] bg-[#ffff86] shadow-[1px_1px_0_rgba(0,0,0,0.28)]">
-      <h2 className="bg-[#0000b8] px-[9px] py-[6px] text-[18px] font-bold leading-none text-white [@media(max-height:950px)]:text-[16px]">{title}</h2>
-      <div className="h-[198px] overflow-y-auto py-[4px] [@media(max-height:950px)]:h-[170px]">
+    <section className="min-w-0 overflow-hidden border border-[#456f87] bg-[#fff58a] shadow-[2px_2px_0_rgba(0,43,112,0.2)]">
+      <h2 className="bg-[#002b9e] px-[10px] py-[7px] text-[18px] font-bold leading-none text-white [@media(max-height:950px)]:py-[4px] [@media(max-height:950px)]:text-[14px]">{title}</h2>
+      <div className="h-[198px] overflow-y-auto bg-[#fffbd1] py-[4px] [@media(max-height:950px)]:h-[128px]">
         {items.map((item) => (
-          <label key={item} className="flex min-h-[26px] items-center gap-[10px] px-[9px] text-[18px] font-bold leading-none text-black [@media(max-height:950px)]:min-h-[23px] [@media(max-height:950px)]:text-[16px]">
-            <EmptyCheckbox />
+          <label key={item} className="flex min-h-[27px] items-center gap-[10px] border-b border-[#ebdf7b] px-[10px] text-[17px] font-semibold leading-none text-[#172330] last:border-b-0 [@media(max-height:950px)]:min-h-[20px] [@media(max-height:950px)]:text-[13px]">
+            <SelectionCheckbox label={item} />
             <span>{item}</span>
           </label>
         ))}
@@ -106,11 +110,11 @@ function YellowList({ title, items }: { title: string; items: string[] }) {
 
 function PeriodPanel({ title, rows }: { title: string; rows: Array<{ label: string; value: string }> }) {
   return (
-    <section className="min-w-0 border border-[#768a9a] bg-[#ffff86] shadow-[1px_1px_0_rgba(0,0,0,0.28)]">
-      <h2 className="bg-[#0000b8] px-[9px] py-[6px] text-[18px] font-bold leading-none text-white [@media(max-height:950px)]:text-[16px]">{title}</h2>
-      <div>
+    <section className="min-w-0 overflow-hidden border border-[#456f87] bg-[#fff58a] shadow-[2px_2px_0_rgba(0,43,112,0.2)]">
+      <h2 className="bg-[#002b9e] px-[10px] py-[7px] text-[18px] font-bold leading-none text-white [@media(max-height:950px)]:py-[4px] [@media(max-height:950px)]:text-[14px]">{title}</h2>
+      <div className="bg-[#fffbd1]">
         {rows.map((row) => (
-          <div key={row.label} className="grid min-h-[28px] grid-cols-[1fr_72px] items-center border-b border-[#e7d765] px-[8px] text-[18px] font-bold leading-none text-black last:border-b-0 [@media(max-height:950px)]:min-h-[24px] [@media(max-height:950px)]:text-[16px]">
+          <div key={row.label} className="grid min-h-[30px] grid-cols-[1fr_72px] items-center border-b border-[#ebdf7b] px-[10px] text-[17px] font-semibold leading-none text-[#172330] last:border-b-0 [@media(max-height:950px)]:min-h-[21px] [@media(max-height:950px)]:text-[13px]">
             <span>{row.label}</span>
             <span className="text-right">{row.value}</span>
           </div>
@@ -168,20 +172,20 @@ export default async function StatisticsPage() {
           subtitleClassName="md:text-[18px]"
         />
 
-        <section className="mt-6 flex min-w-0 flex-col md:absolute md:left-1/2 md:top-[154px] md:bottom-[128px] md:w-[min(1320px,92vw)] md:-translate-x-1/2 md:justify-between md:overflow-hidden [@media(max-height:950px)]:top-[144px] [@media(max-height:950px)]:bottom-[118px]">
-          <div className="text-center">
-            <h1 className="text-[24px] font-bold leading-tight text-black md:text-[26px] [@media(max-height:950px)]:text-[23px]">{t("title")}</h1>
-            <p className="mx-auto mt-[14px] max-w-[1340px] text-left text-[18px] leading-[1.26] text-black [@media(max-height:950px)]:text-[16px]">
+        <section className="mt-6 flex min-w-0 flex-col md:absolute md:left-1/2 md:top-[158px] md:bottom-[116px] md:w-[min(1240px,90vw)] md:-translate-x-1/2 md:overflow-y-auto md:pr-[4px] [@media(max-height:950px)]:top-[146px] [@media(max-height:950px)]:bottom-[108px]">
+          <div className="border-b-2 border-[#002b9e] pb-[12px] text-center [@media(max-height:950px)]:pb-[8px]">
+            <h1 className="text-[24px] font-bold leading-tight text-[#002b9e] md:text-[28px] [@media(max-height:950px)]:text-[21px]">{t("title")}</h1>
+            <p className="mx-auto mt-[9px] max-w-[72ch] text-center text-[17px] leading-[1.3] text-[#173846] [@media(max-height:950px)]:mt-[6px] [@media(max-height:950px)]:text-[14px]">
               {t("description")}
             </p>
           </div>
 
-          <div className="mt-[18px] grid min-h-0 gap-[14px] md:h-[234px] md:grid-cols-[1.06fr_1fr_1.05fr] md:items-stretch md:gap-[18px] [@media(max-height:950px)]:mt-[14px] [@media(max-height:950px)]:h-[208px]">
+          <div className="mt-[18px] grid min-h-[278px] gap-[12px] border border-[#6295a9] bg-[#cce8f1]/85 p-[12px] md:grid-cols-[1.06fr_1fr_1.05fr] md:items-stretch md:gap-[12px] [@media(max-height:950px)]:mt-[12px] [@media(max-height:950px)]:min-h-[212px] [@media(max-height:950px)]:p-[10px]">
             <div className="flex min-w-0 flex-col">
-              <OptionGroup title={groups[0].title} options={groups[0].options} className="flex h-full flex-col" />
+              <OptionGroup title={groups[0].title} options={groups[0].options} className="flex flex-col" />
             </div>
             <div className="flex min-w-0 flex-col">
-              <OptionGroup title={groups[1].title} options={groups[1].options} className="flex h-full flex-col" />
+              <OptionGroup title={groups[1].title} options={groups[1].options} className="flex flex-col" />
             </div>
             <div className="grid min-w-0 grid-rows-[auto_1fr] gap-[6px]">
               <OptionGroup title={groups[2].title} options={groups[2].options} />
@@ -189,7 +193,7 @@ export default async function StatisticsPage() {
             </div>
           </div>
 
-          <div className="mt-[24px] grid gap-[14px] md:grid-cols-[1fr_1fr_1fr_1fr] md:gap-[38px] [@media(max-height:950px)]:mt-[24px]">
+          <div className="mt-[18px] grid gap-[12px] md:grid-cols-[1fr_1fr_1fr_1fr] md:gap-[16px] [@media(max-height:950px)]:mt-[12px]">
             {lists.map((list) => (
               <YellowList key={list.key} title={list.title} items={list.items} />
             ))}
@@ -198,7 +202,7 @@ export default async function StatisticsPage() {
 
           <button
             type="button"
-            className="mt-[20px] h-[27px] shrink-0 border border-[#505050] bg-[linear-gradient(180deg,#f1f1f1_0%,#cfcfcf_100%)] text-[14px] font-normal leading-none text-black shadow-[inset_1px_1px_0_rgba(255,255,255,0.7)] [@media(max-height:950px)]:mt-[16px] [@media(max-height:950px)]:h-[24px] [@media(max-height:950px)]:text-[13px]"
+            className="mt-[18px] h-[34px] shrink-0 border border-[#8f7610] bg-[#ffdf32] text-[16px] font-bold leading-none text-[#002b9e] shadow-[2px_2px_0_rgba(0,43,112,0.22)] transition-colors hover:bg-[#ffec70] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#002b9e] [@media(max-height:950px)]:mt-[12px] [@media(max-height:950px)]:h-[24px] [@media(max-height:950px)]:text-[13px]"
           >
             {t("actions.validate")}
           </button>

@@ -107,24 +107,24 @@ export default function HomePageClient({ showLanguageSwitcher = false }: HomePag
         />
 
         {showLanguageSwitcher ? (
-          <div className="relative z-50 mt-3 flex justify-center md:absolute md:left-[5.2vw] md:top-[164px] md:mt-0 md:block">
+          <div className="relative z-50 mt-20 flex justify-center md:absolute md:left-[5.2vw] md:top-[220px] md:mt-0 md:block">
             <LanguageSwitcher />
           </div>
         ) : null}
 
         <aside
           data-stavnet-animate="cover-description"
-          className="hidden md:absolute md:left-[5.2vw] md:top-[236px] md:z-40 md:block md:min-h-[372px] md:w-[204px] md:p-0 [@media(max-width:1100px)]:md:w-[186px]"
+          className="hidden md:absolute md:left-[calc(5.2vw-30px)] md:top-[340px] md:z-40 md:block md:min-h-[372px] md:w-[244px] md:p-0 [@media(max-width:1100px)]:md:left-[calc(5.2vw-18px)] [@media(max-width:1100px)]:md:w-[220px]"
         >
-          <p className="px-3.5 py-3.5 text-justify font-[Georgia,Times_New_Roman,serif] text-[17px] leading-[1.08] text-black first-letter:float-left first-letter:mr-1 first-letter:text-[46px] first-letter:font-bold first-letter:leading-[0.85] first-letter:text-[#0016a8]">
+          <p className="px-3.5 py-3.5 text-center font-[Georgia,Times_New_Roman,serif] text-[21px] leading-[1.2] text-black">
             {`${tHome("coverDescriptionLine1")} ${tHome("coverDescriptionLine2")} ${tHome("coverDescriptionLine3")}`}
           </p>
         </aside>
 
-        <section data-stavnet-animate="cover-content" className="mt-5 flex flex-1 flex-col md:hidden">
+        <section data-stavnet-animate="cover-content" className="mt-28 flex flex-1 flex-col md:hidden">
           <div className="flex flex-1 flex-col justify-end pb-[232px]">
             <div className="mx-auto w-full max-w-[460px] px-3 py-3">
-              <p className="text-center text-[18px] leading-[1.36] text-black">
+              <p className="mx-auto max-w-[260px] text-center text-[24px] leading-[1.3] text-black">
                 {`${tHome("coverDescriptionLine1")} ${tHome("coverDescriptionLine2")} ${tHome("coverDescriptionLine3")}`}
               </p>
             </div>

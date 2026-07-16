@@ -11,6 +11,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { StavnetFooter } from "@/components/stavnet/footer";
 import { StavnetHeader } from "@/components/stavnet/header";
 import { ListNameSearch } from "@/components/stavnet/list-name-search";
@@ -20,15 +21,14 @@ import { resolveBooksListSelection } from "@/lib/books-search";
 import { isPageWithinLimit, MAX_BOOKS_PAGE } from "@/lib/pagination";
 import { buildStaticPageMetadata } from "@/lib/site-metadata";
 
-const BOOKS_COLUMN_WIDTHS = ["30.48%", "15.24%", "11.60%", "9.44%", "9.44%", "5.90%", "6.10%", "5.90%", "5.90%"] as const;
+const BOOKS_COLUMN_WIDTHS = ["20%", "18%", "12%", "12%", "11%", "5%", "8%", "7%", "7%"] as const;
 const BOOKS_PAGE_SIZE = 10;
-const BOOKS_TABLE_SHELL_CLASS =
-  "overflow-hidden rounded-[12px] border border-[#8fa0a8] bg-[linear-gradient(180deg,#dfe4e9_0%,#d6dce1_100%)] shadow-[0_10px_24px_rgba(53,78,91,0.12),inset_0_1px_0_rgba(255,255,255,0.55)] md:flex md:min-h-0 md:flex-1 md:flex-col";
-const BOOKS_TABLE_HEAD_ROW_CLASS = "border-b border-[#9aa8b0] bg-[#fff68f] text-[10px] uppercase leading-[1.08] tracking-[0.04em] [@media(max-height:950px)]:text-[9px]";
-const BOOKS_TABLE_HEAD_CELL_CLASS = "border-r border-[#9aa8b0] px-3 py-[13px] text-center font-semibold [@media(max-height:950px)]:py-[6px]";
-const BOOKS_TABLE_BODY_CLASS = "text-[13px] leading-[1.2] [@media(max-height:950px)]:text-[11px] [@media(max-height:950px)]:leading-[1]";
-const BOOKS_TABLE_ROW_CLASS = "border-b border-[#b1bac0]/80 bg-[rgba(236,241,244,0.92)] transition-colors odd:bg-[rgba(228,233,237,0.78)] hover:bg-[#eef4f8]";
-const BOOKS_TABLE_CELL_CLASS = "border-r border-[#b1bac0]/70 px-3 py-[18px] align-middle [@media(max-height:950px)]:py-[5px]";
+const BOOKS_TABLE_CONTAINER_CLASS = "bg-[#eaf5f8]/90 md:min-h-[460px] [@media(max-height:950px)]:min-h-[390px]";
+const BOOKS_TABLE_HEAD_ROW_CLASS = "bg-[#d7ebf2]/85 text-[12px] uppercase tracking-[0.04em] text-slate-700 [@media(max-height:950px)]:text-[10px]";
+const BOOKS_TABLE_HEAD_CELL_CLASS = "whitespace-nowrap border-r border-slate-300/80 px-4 py-3 text-center font-semibold last:border-r-0 [@media(max-height:950px)]:px-4 [@media(max-height:950px)]:py-1.5";
+const BOOKS_TABLE_BODY_CLASS = "text-[15px] leading-[1.25] [@media(max-height:950px)]:text-[12px] [@media(max-height:950px)]:leading-[1.1]";
+const BOOKS_TABLE_ROW_CLASS = "h-[42px] text-slate-950 [@media(max-height:950px)]:h-[35px]";
+const BOOKS_TABLE_CELL_CLASS = "border-r border-slate-300/80 px-4 py-3 align-middle last:border-r-0 [@media(max-height:950px)]:px-2 [@media(max-height:950px)]:py-1.5";
 
 interface BooksPageProps {
   params: Promise<{
@@ -184,7 +184,7 @@ export default async function BooksListPage({ params, searchParams }: BooksPageP
   ];
 
   return (
-    <main dir="ltr" className="relative min-h-[100svh] overflow-x-hidden bg-[#e7f2f7] font-[Arial,Helvetica,sans-serif] text-black md:h-screen md:overflow-hidden">
+    <main dir="ltr" className="relative min-h-[100svh] overflow-x-hidden bg-[#e7f2f7] font-[Arial,Helvetica,sans-serif] text-black md:h-screen md:overflow-hidden [@media(max-height:950px)]:h-auto [@media(max-height:950px)]:overflow-y-auto">
       <Image
         src="/background/background.png"
         alt=""
@@ -195,14 +195,14 @@ export default async function BooksListPage({ params, searchParams }: BooksPageP
       />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.18),transparent_32%),linear-gradient(180deg,rgba(210,229,242,0.18),rgba(210,229,242,0.08))]" />
 
-      <div className="relative z-10 mx-auto flex min-h-[100svh] w-full max-w-[1120px] flex-col px-4 pb-5 pt-0 md:h-screen md:max-w-none md:px-0 md:pb-0 md:pt-0">
+      <div className="relative z-10 mx-auto flex min-h-[100svh] w-full max-w-[1120px] flex-col px-4 pb-5 pt-0 md:h-screen md:max-w-none md:px-0 md:pb-0 md:pt-0 [@media(max-height:950px)]:h-auto [@media(max-height:950px)]:pb-5">
         <StavnetHeader
           pageName={t("header.cardTitle")}
           title={t("header.title")}
           subtitle={t("header.subtitle")}
         />
 
-        <section className="mt-6 min-w-0 flex flex-col gap-4 md:absolute md:left-1/2 md:top-[178px] md:bottom-[190px] md:w-[min(1320px,96vw)] md:-translate-x-1/2 [@media(max-height:950px)]:top-[122px] [@media(max-height:950px)]:bottom-[156px]">
+      <section className="mt-6 min-w-0 flex flex-col gap-4 md:absolute md:left-1/2 md:top-[178px] md:bottom-[190px] md:w-[min(1320px,96vw)] md:-translate-x-1/2 [@media(max-height:950px)]:relative [@media(max-height:950px)]:left-auto [@media(max-height:950px)]:top-auto [@media(max-height:950px)]:bottom-auto [@media(max-height:950px)]:mx-auto [@media(max-height:950px)]:w-[min(1320px,96vw)] [@media(max-height:950px)]:translate-x-0 [@media(max-height:950px)]:gap-2">
           <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between md:gap-6 [@media(max-height:950px)]:gap-2">
             <ListNameSearch
               key={selection.searchTerm}
@@ -225,7 +225,7 @@ export default async function BooksListPage({ params, searchParams }: BooksPageP
             </div>
           </div>
 
-          <section className={BOOKS_TABLE_SHELL_CLASS}>
+          <div className={BOOKS_TABLE_CONTAINER_CLASS}>
             <div className="space-y-3 p-3 md:hidden">
               {result.items.length > 0 ? (
                 result.items.map((book) => (
@@ -245,32 +245,32 @@ export default async function BooksListPage({ params, searchParams }: BooksPageP
               )}
             </div>
 
-            <div className="hidden md:block md:flex-1 md:min-h-0">
+            <div className="hidden md:block">
               {result.items.length > 0 ? (
-                <div className="overflow-auto md:h-full md:min-h-0">
-                  <table className="min-w-[1280px] table-fixed border-collapse text-black">
+                <div className="overflow-x-auto">
+                  <Table className="min-w-[1800px] table-fixed bg-[#eaf5f8]/90 text-slate-950">
                     <colgroup>
                       {BOOKS_COLUMN_WIDTHS.map((width, index) => (
                         <col key={`${width}-${index}`} style={{ width }} />
                       ))}
                     </colgroup>
-                    <thead>
-                      <tr className={BOOKS_TABLE_HEAD_ROW_CLASS}>
-                        <th className={`${BOOKS_TABLE_HEAD_CELL_CLASS} rounded-tl-[12px]`}>{t("columns.titles")}</th>
-                        <th className={BOOKS_TABLE_HEAD_CELL_CLASS}>{t("columns.authors")}</th>
-                        <th className={BOOKS_TABLE_HEAD_CELL_CLASS}>{t("columns.publishers")}</th>
-                        <th className={BOOKS_TABLE_HEAD_CELL_CLASS}>{t("columns.languages")}</th>
-                        <th className={BOOKS_TABLE_HEAD_CELL_CLASS}>{t("columns.writingLanguage")}</th>
-                        <th className={BOOKS_TABLE_HEAD_CELL_CLASS}>{t("columns.year")}</th>
-                        <th className={BOOKS_TABLE_HEAD_CELL_CLASS}>{t("columns.publication")}</th>
-                        <th className={BOOKS_TABLE_HEAD_CELL_CLASS}>{t("columns.issue")}</th>
-                        <th className={`${BOOKS_TABLE_HEAD_CELL_CLASS} rounded-tr-[12px] border-r-0`}>{t("columns.edition")}</th>
-                      </tr>
-                    </thead>
-                    <tbody className={BOOKS_TABLE_BODY_CLASS}>
+                    <TableHeader>
+                      <TableRow className={BOOKS_TABLE_HEAD_ROW_CLASS}>
+                        <TableHead className={BOOKS_TABLE_HEAD_CELL_CLASS}>{t("columns.titles")}</TableHead>
+                        <TableHead className={BOOKS_TABLE_HEAD_CELL_CLASS}>{t("columns.authors")}</TableHead>
+                        <TableHead className={BOOKS_TABLE_HEAD_CELL_CLASS}>{t("columns.publishers")}</TableHead>
+                        <TableHead className={BOOKS_TABLE_HEAD_CELL_CLASS}>{t("columns.languages")}</TableHead>
+                        <TableHead className={BOOKS_TABLE_HEAD_CELL_CLASS}>{t("columns.writingLanguage")}</TableHead>
+                        <TableHead className={BOOKS_TABLE_HEAD_CELL_CLASS}>{t("columns.year")}</TableHead>
+                        <TableHead className={BOOKS_TABLE_HEAD_CELL_CLASS}>{t("columns.publication")}</TableHead>
+                        <TableHead className={BOOKS_TABLE_HEAD_CELL_CLASS}>{t("columns.issue")}</TableHead>
+                        <TableHead className={BOOKS_TABLE_HEAD_CELL_CLASS}>{t("columns.edition")}</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody className={BOOKS_TABLE_BODY_CLASS}>
                       {result.items.map((book, rowIndex) => (
-                        <tr key={`${book.id}-${result.page}-${rowIndex}`} className={BOOKS_TABLE_ROW_CLASS}>
-                          <td className={BOOKS_TABLE_CELL_CLASS}>
+                        <TableRow key={`${book.id}-${result.page}-${rowIndex}`} className={BOOKS_TABLE_ROW_CLASS}>
+                          <TableCell className={BOOKS_TABLE_CELL_CLASS}>
                             <Link
                               href={{ pathname: "/books/details", query: { id: book.id } }}
                               className="flex items-center gap-2 text-black hover:underline"
@@ -278,25 +278,25 @@ export default async function BooksListPage({ params, searchParams }: BooksPageP
                               <RedMarker />
                               <span className="w-full break-words">{book.title}</span>
                             </Link>
-                          </td>
-                          <td className={BOOKS_TABLE_CELL_CLASS}>{book.author || "—"}</td>
-                          <td className={BOOKS_TABLE_CELL_CLASS}>{book.publisher || "—"}</td>
-                          <td className={BOOKS_TABLE_CELL_CLASS}>{book.language || "—"}</td>
-                          <td className={BOOKS_TABLE_CELL_CLASS}>{book.writingLanguage || "—"}</td>
-                          <td className={`${BOOKS_TABLE_CELL_CLASS} text-center`}>{book.year || "—"}</td>
-                          <td className={`${BOOKS_TABLE_CELL_CLASS} text-center`}>{book.publication || "—"}</td>
-                          <td className={`${BOOKS_TABLE_CELL_CLASS} text-center`}>{book.issue || "—"}</td>
-                          <td className="px-3 py-[18px] text-center align-middle [@media(max-height:950px)]:py-[5px]">{book.edition || "—"}</td>
-                        </tr>
+                          </TableCell>
+                          <TableCell className={BOOKS_TABLE_CELL_CLASS}>{book.author || "—"}</TableCell>
+                          <TableCell className={BOOKS_TABLE_CELL_CLASS}>{book.publisher || "—"}</TableCell>
+                          <TableCell className={BOOKS_TABLE_CELL_CLASS}>{book.language || "—"}</TableCell>
+                          <TableCell className={BOOKS_TABLE_CELL_CLASS}>{book.writingLanguage || "—"}</TableCell>
+                          <TableCell className={`${BOOKS_TABLE_CELL_CLASS} text-center`}>{book.year || "—"}</TableCell>
+                          <TableCell className={`${BOOKS_TABLE_CELL_CLASS} text-center`}>{book.publication || "—"}</TableCell>
+                          <TableCell className={`${BOOKS_TABLE_CELL_CLASS} text-center`}>{book.issue || "—"}</TableCell>
+                          <TableCell className={`${BOOKS_TABLE_CELL_CLASS} text-center`}>{book.edition || "—"}</TableCell>
+                        </TableRow>
                       ))}
-                    </tbody>
-                  </table>
+                    </TableBody>
+                  </Table>
                 </div>
               ) : (
                 <div className="px-6 py-10 text-center text-[14px] font-bold text-black">{t("search.noResults")}</div>
               )}
             </div>
-          </section>
+          </div>
 
           <div className="flex flex-col items-center gap-3 md:pb-6 [@media(max-height:950px)]:gap-1.5">
             <p className="text-center text-[13px] font-bold leading-none text-black">
@@ -340,7 +340,7 @@ export default async function BooksListPage({ params, searchParams }: BooksPageP
           </div>
         </section>
 
-        <StavnetFooter items={footerItems} desktopMode="compact" />
+        <StavnetFooter items={footerItems} desktopMode="compact" className="[@media(max-height:950px)]:relative [@media(max-height:950px)]:bottom-auto [@media(max-height:950px)]:left-auto [@media(max-height:950px)]:right-auto [@media(max-height:950px)]:mt-6" />
       </div>
     </main>
   );

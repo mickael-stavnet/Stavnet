@@ -62,6 +62,15 @@ const PERSON_IMAGE_BASE_NAMES = [
 const PERSON_IMAGE_FALLBACK_SRC =
   "https://st3.depositphotos.com/9998432/13335/v/450/depositphotos_133352156-stock-illustration-default-placeholder-profile-icon.jpg";
 
+const PERSON_DETAIL_NAME_OVERRIDES = new Map<string, string>([
+  ["Bar-Zohar", "Michel Bar-Zohar"],
+  ["Ben-Ner Yitzhak", "Itzhak Ben-Ner"],
+]);
+
+const PERSON_IMAGE_NAME_OVERRIDES = new Map(
+  Array.from(PERSON_DETAIL_NAME_OVERRIDES, ([portraitName, detailName]) => [detailName, portraitName]),
+);
+
 export type PersonImageEntry = {
   name: string;
   src: string;
@@ -108,14 +117,19 @@ export function getPersonImageEntries(): PersonImageEntry[] {
   }));
 }
 
+export function resolvePersonDetailName(name: string): string {
+  return PERSON_DETAIL_NAME_OVERRIDES.get(name) ?? name;
+}
+
 export function resolvePersonImageSrc(
   name: string,
   alternateName: string,
 ): string {
-  const candidates = [
-    ...createPersonImageCandidates(name),
-    ...createPersonImageCandidates(alternateName),
-  ];
+  const candidates = [name, alternateName].flatMap((value) =>
+    createPersonImageCandidates(value).concat(
+      createPersonImageCandidates(PERSON_IMAGE_NAME_OVERRIDES.get(value) ?? ""),
+    ),
+  );
 
   for (const candidate of candidates) {
     const matchedImage = PERSON_IMAGE_MAP.get(candidate);

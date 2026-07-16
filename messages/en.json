@@ -84,7 +84,7 @@
           "1": "Original titles",
           "2": "Translated titles",
           "3": "Author articles",
-          "4": "Publications about the author",
+          "4": "Author publications",
           "5": "Press reviews",
           "6": "Awards and distinctions",
           "7": "Statistics"
@@ -303,11 +303,51 @@
         "publication": "Publication"
       },
       "publishingRows": [
-        { "status": "O", "language": "Hebrew", "title": "התכשיט", "publisher": "Keter", "year": "1992", "edition": "R", "publication": "E01" },
-        { "status": "T", "language": "German", "title": "", "publisher": "Goldmann", "year": "1997", "edition": "P", "publication": "E01" },
-        { "status": "T", "language": "German", "title": "", "publisher": "Bertelsmann", "year": "1999", "edition": "R", "publication": "E02" },
-        { "status": "T", "language": "French", "title": "Le bijou", "publisher": "Fayard", "year": "1997", "edition": "R", "publication": "E01" },
-        { "status": "T", "language": "French", "title": "Une enquête de Lisie Badikhi", "publisher": "LGF", "year": "1997", "edition": "P", "publication": "E02" }
+        {
+          "status": "O",
+          "language": "Hebrew",
+          "title": "התכשיט",
+          "publisher": "Keter",
+          "year": "1992",
+          "edition": "R",
+          "publication": "E01"
+        },
+        {
+          "status": "T",
+          "language": "German",
+          "title": "",
+          "publisher": "Goldmann",
+          "year": "1997",
+          "edition": "P",
+          "publication": "E01"
+        },
+        {
+          "status": "T",
+          "language": "German",
+          "title": "",
+          "publisher": "Bertelsmann",
+          "year": "1999",
+          "edition": "R",
+          "publication": "E02"
+        },
+        {
+          "status": "T",
+          "language": "French",
+          "title": "Le bijou",
+          "publisher": "Fayard",
+          "year": "1997",
+          "edition": "R",
+          "publication": "E01"
+        },
+        {
+          "status": "T",
+          "language": "French",
+          "title": "Une enquête de Lisie Badikhi",
+          "publisher": "LGF",
+          "year": "1997",
+          "edition": "P",
+          "publication": "E02"
+        }
       ]
     },
     "footer": {
@@ -331,7 +371,7 @@
       "originalTitles": "Original titles",
       "translatedTitles": "Translated titles",
       "authorArticles": "Author articles",
-      "authorPublications": "Publications on the author",
+      "authorPublications": "Author publications",
       "pressCritiques": "Press critiques",
       "awards": "Awards & distinctions",
       "statistics": "Statistics"
@@ -367,7 +407,7 @@
       "originalTitles": "Original titles",
       "translatedTitles": "Translated titles",
       "authorArticles": "Author articles",
-      "authorPublications": "Publications on the author",
+      "authorPublications": "Author publications",
       "pressCritiques": "Press critiques",
       "awards": "Awards and distinctions",
       "statistics": "Statistics"
@@ -765,9 +805,29 @@
     }
   },
   "Errors": {
-    "personDetails": { "title": "Person record error", "message": "An error occurred while loading the person's record. Reload the page to try again.", "return": "Back to people", "retry": "Try again" },
-    "bookDetails": { "title": "Book record error", "message": "An error occurred while loading the book record. Reload the page to try again.", "return": "Back to books", "retry": "Try again" },
-    "organizationDetails": { "title": "Organization record error", "message": "An error occurred while loading the organization record. Reload the page to try again.", "return": "Back to organizations", "retry": "Try again" },
-    "relatedBooks": { "title": "Related books error", "message": "An error occurred while loading related books. Reload the page to try again.", "return": "Back to books", "retry": "Try again" }
+    "personDetails": {
+      "title": "Person record error",
+      "message": "An error occurred while loading the person's record. Reload the page to try again.",
+      "return": "Back to people",
+      "retry": "Try again"
+    },
+    "bookDetails": {
+      "title": "Book record error",
+      "message": "An error occurred while loading the book record. Reload the page to try again.",
+      "return": "Back to books",
+      "retry": "Try again"
+    },
+    "organizationDetails": {
+      "title": "Organization record error",
+      "message": "An error occurred while loading the organization record. Reload the page to try again.",
+      "return": "Back to organizations",
+      "retry": "Try again"
+    },
+    "relatedBooks": {
+      "title": "Related books error",
+      "message": "An error occurred while loading related books. Reload the page to try again.",
+      "return": "Back to books",
+      "retry": "Try again"
+    }
   }
 }

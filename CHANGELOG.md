@@ -188,3 +188,9 @@
 - 10:20 - Rééquilibrage vertical de la fiche personne pour rendre la bibliographie directement lisible sur desktop, avec compaction des champs d’identité, biographie défilante et tableau d’ouvrages densifié sans régression mobile.
 - 10:43 - Refonte du gabarit partagé des pages secondaires d’ouvrages: quatrième de couverture, critiques de presse, disponibilité et parution disposent d’une largeur desktop harmonisée, d’une fiche supérieure plus compacte et de zones de contenu extensibles avec défilement adapté.
 - 10:52 - Correction des intitulés du cartouche central du header dans les six langues: chaque écran de recherche, liste, fiche et définition affiche désormais son titre fonctionnel au lieu du message de bienvenue.
+- 11:46 - Refonte visuelle de la page `/statistics` avec une hiérarchie d’analyse plus lisible, des blocs de critères et listes harmonisés, une action de validation priorisée et un comportement responsive sans débordement horizontal.
+- 11:56 - Activation des filtres de la page `/statistics` avec de véritables cases à cocher shadcn/ui pour les critères, langues et pays, accompagnées d’états sélectionnés visibles et accessibles.
+- 12:09 - Correction de la navigation des auteurs : les portraits de la vitrine ouvrent la fiche personne correspondante, dont Michel Bar-Zohar, et une fiche personne introuvable ne redirige plus vers une liste de livres.
+- 12:14 - Ajout des variantes nominatives de portraits pour diriger Ben-Ner Yitzhak vers la fiche existante d’Itzhak Ben-Ner, sans générer de 404.
+- 12:19 - Réutilisation des portraits de la vitrine 3D sur les fiches personnes malgré les variantes de nom, afin que Michel Bar-Zohar et Itzhak Ben-Ner affichent leur image réelle au lieu du placeholder.
+- 12:29 - Refonte partagée des listes `/books`, `/persons` et `/orgs` avec `Card`, `Table`, `Button`, `Input` et pagination shadcn/ui, en préservant les liens de détail, la recherche serveur et les vues mobiles sans débordement.
