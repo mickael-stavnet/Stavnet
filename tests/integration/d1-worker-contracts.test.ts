@@ -7,7 +7,7 @@ const describeIfD1 = await isD1WorkerAvailable(url, secret) ? describe : describ
 
 describeIfD1("D1 Worker contracts", () => {
   it("protects and exposes the test data layer", async () => {
-    const response = await fetch(`${url}/v1/query`, { method: "POST", headers: { Authorization: `Bearer ${secret}`, "Content-Type": "application/json" }, body: JSON.stringify({ table: "data-books", from: 0, to: 0 }) });
+    const response = await fetch(`${url}/v1/query`, { method: "POST", headers: { Authorization: `Bearer ${secret}`, "Content-Type": "application/json" }, body: JSON.stringify({ table: "data-books", from: 0, to: 0, count: true }) });
     expect(response.ok).toBe(true);
     const payload = await response.json() as { data: unknown[]; count: number };
     expect(payload.data).toHaveLength(1);
