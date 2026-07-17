@@ -1,10 +1,11 @@
 import { beforeAll, describe, expect, it, vi } from "vitest";
+import { isSupabaseEgressRestricted } from "./supabase-availability";
 
 const testUrl = process.env.SUPABASE_TEST_URL;
 const testAnonKey = process.env.SUPABASE_TEST_ANON_KEY;
 
 const hasSupabaseEnv = typeof testUrl === "string" && testUrl.length > 0 && typeof testAnonKey === "string" && testAnonKey.length > 0;
-const describeIfSupabase = hasSupabaseEnv ? describe : describe.skip;
+const describeIfSupabase = hasSupabaseEnv && !(await isSupabaseEgressRestricted(testUrl, testAnonKey)) ? describe : describe.skip;
 
 let getPersonsPage: typeof import("@/lib/data/persons").getPersonsPage;
 let getDefaultPersonDetail: typeof import("@/lib/data/persons").getDefaultPersonDetail;

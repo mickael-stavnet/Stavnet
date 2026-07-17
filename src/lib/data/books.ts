@@ -1400,87 +1400,88 @@ function buildBookListResult(rows: BookRow[], total: number, currentPage: number
   };
 }
 
-export const getBooksPage = cacheData<[number, number?], BookListResult>(
-  ["books-page"],
+function hasIncompleteBookPage(result: BookListResult): boolean {
+  return result.total > 0 && result.page <= result.totalPages && result.items.length === 0;
+}
+
+async function loadBooksPage(
+  page: number,
+  pageSize: number,
+  searchTerm: string,
+  filters: Partial<BookSearchFilters>,
+): Promise<BookListResult> {
+  const currentPage = Math.max(1, page);
+
+  if (currentPage > MAX_BOOKS_PAGE) {
+    return buildBookListResult([], 0, currentPage, pageSize, 0);
+  }
+
+  const rpcResult = await fetchBooksPageRpc(currentPage, pageSize, searchTerm, filters);
+
+  if (rpcResult && !hasIncompleteBookPage(rpcResult)) {
+    return rpcResult;
+  }
+
+  const [{ rows, total }, totals] = await Promise.all([
+    fetchBooksPagePayload(currentPage, pageSize, searchTerm, filters),
+    getBooksDatabaseTotals(),
+  ]);
+
+  return buildBookListResult(rows, total, currentPage, pageSize, totals.databaseContains);
+}
+
+const getBooksPageCached = cacheData<[number, number?], BookListResult>(
+  ["books-page-v2"],
   async (page: number, pageSize = BOOKS_PAGE_SIZE): Promise<BookListResult> => {
-  const currentPage = Math.max(1, page);
-
-  if (currentPage > MAX_BOOKS_PAGE) {
-    return buildBookListResult([], 0, currentPage, pageSize, 0);
-  }
-
-  const rpcResult = await fetchBooksPageRpc(currentPage, pageSize, "", {});
-
-  if (rpcResult) {
-    return rpcResult;
-  }
-
-  const [{ rows, total }, totals] = await Promise.all([
-    fetchBooksPagePayload(currentPage, pageSize),
-    getBooksDatabaseTotals(),
-  ]);
-
-  return buildBookListResult(rows, total, currentPage, pageSize, totals.databaseContains);
+    return loadBooksPage(page, pageSize, "", {});
   },
   { revalidate: 300, tags: ["books"] },
 );
 
-export const getBooksPageByTitle = cacheData<[number, string, number?], BookListResult>(
-  ["books-page-by-title"],
+export async function getBooksPage(page: number, pageSize = BOOKS_PAGE_SIZE): Promise<BookListResult> {
+  const result = await getBooksPageCached(page, pageSize);
+
+  return hasIncompleteBookPage(result) ? loadBooksPage(page, pageSize, "", {}) : result;
+}
+
+const getBooksPageByTitleCached = cacheData<[number, string, number?], BookListResult>(
+  ["books-page-by-title-v2"],
   async (page: number, searchTerm: string, pageSize = BOOKS_PAGE_SIZE): Promise<BookListResult> => {
-  const currentPage = Math.max(1, page);
-
-  if (currentPage > MAX_BOOKS_PAGE) {
-    return buildBookListResult([], 0, currentPage, pageSize, 0);
-  }
-
-  const rpcResult = await fetchBooksPageRpc(currentPage, pageSize, searchTerm, {});
-
-  if (rpcResult) {
-    return rpcResult;
-  }
-
-  const [{ rows, total }, totals] = await Promise.all([
-    fetchBooksPagePayload(currentPage, pageSize, searchTerm),
-    getBooksDatabaseTotals(),
-  ]);
-
-  return buildBookListResult(rows, total, currentPage, pageSize, totals.databaseContains);
+    return loadBooksPage(page, pageSize, searchTerm, {});
   },
   { revalidate: 300, tags: ["books"] },
 );
 
-export const getBooksPageByAdvancedSearch = cacheData<
+export async function getBooksPageByTitle(page: number, searchTerm: string, pageSize = BOOKS_PAGE_SIZE): Promise<BookListResult> {
+  const result = await getBooksPageByTitleCached(page, searchTerm, pageSize);
+
+  return hasIncompleteBookPage(result) ? loadBooksPage(page, pageSize, searchTerm, {}) : result;
+}
+
+const getBooksPageByAdvancedSearchCached = cacheData<
   [number, Partial<BookSearchFilters>, number?],
   BookListResult
 >(
-  ["books-page-by-advanced-search"],
+  ["books-page-by-advanced-search-v2"],
   async (
     page: number,
     filters: Partial<BookSearchFilters>,
     pageSize = BOOKS_PAGE_SIZE,
   ): Promise<BookListResult> => {
-  const currentPage = Math.max(1, page);
-
-  if (currentPage > MAX_BOOKS_PAGE) {
-    return buildBookListResult([], 0, currentPage, pageSize, 0);
-  }
-
-  const rpcResult = await fetchBooksPageRpc(currentPage, pageSize, "", filters);
-
-  if (rpcResult) {
-    return rpcResult;
-  }
-
-  const [{ rows, total }, totals] = await Promise.all([
-    fetchBooksPagePayload(currentPage, pageSize, "", filters),
-    getBooksDatabaseTotals(),
-  ]);
-
-  return buildBookListResult(rows, total, currentPage, pageSize, totals.databaseContains);
+    return loadBooksPage(page, pageSize, "", filters);
   },
   { revalidate: 300, tags: ["books"] },
 );
+
+export async function getBooksPageByAdvancedSearch(
+  page: number,
+  filters: Partial<BookSearchFilters>,
+  pageSize = BOOKS_PAGE_SIZE,
+): Promise<BookListResult> {
+  const result = await getBooksPageByAdvancedSearchCached(page, filters, pageSize);
+
+  return hasIncompleteBookPage(result) ? loadBooksPage(page, pageSize, "", filters) : result;
+}
 
 export const getBooksPageByFacet = cacheData<[number, BookRelatedFacet, string, number?], BookListResult>(
   ["books-page-by-facet"],

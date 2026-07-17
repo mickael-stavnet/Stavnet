@@ -24,6 +24,7 @@
 .DS_Store
 *.pem
 .codex-artifacts/
+audit-screenshots-responsive/
 .pnpm-store/
 __pycache__/
 .supabase/
