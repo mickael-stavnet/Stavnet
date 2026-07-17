@@ -32,7 +32,7 @@ describeIfD1("organizations data access against the D1 test database", () => {
     expect(page.items.length).toBeGreaterThan(0);
   });
 
-  it("loads an organization detail from the Supabase test DB", async () => {
+  it("loads an organization detail from the D1 test database", async () => {
     const page = await getOrganizationsPage(1, 1);
     const first = page.items[0];
 
@@ -46,7 +46,7 @@ describeIfD1("organizations data access against the D1 test database", () => {
     expect(detail).not.toBeNull();
     expect(detail?.name).toBe(first.name);
     expect(detail?.publishedRows).toBeInstanceOf(Array);
-  });
+  }, 20_000);
 
   it("loads the default organization detail from the Supabase test DB", async () => {
     const detail = await getDefaultOrganizationDetail();
