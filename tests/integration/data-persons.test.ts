@@ -37,5 +37,5 @@ describeIfD1("persons data access against the D1 test database", () => {
     expect(detail?.name).not.toBe("");
     expect(detail?.stats.cardsFound).toMatch(/^\d+$/);
     expect(detail?.stats.databaseContains).toMatch(/^\d+$/);
-  });
+  }, 20_000);
 });

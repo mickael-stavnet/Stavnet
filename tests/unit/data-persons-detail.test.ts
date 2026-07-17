@@ -3,8 +3,8 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 const rpcMock = vi.hoisted(() => vi.fn());
 const fromMock = vi.hoisted(() => vi.fn());
 
-vi.mock("@/lib/supabase", () => ({
-  supabase: {
+vi.mock("@/lib/d1-client", () => ({
+  d1Client: {
     rpc: rpcMock,
     from: fromMock,
   },

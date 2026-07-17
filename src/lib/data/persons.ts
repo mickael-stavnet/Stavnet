@@ -1,5 +1,5 @@
 import { cacheData } from "@/lib/data/cache";
-import { supabase } from "@/lib/supabase";
+import { d1Client } from "@/lib/d1-client";
 import { fixEncoding } from "@/lib/encoding";
 import { resolvePersonImageSrc } from "@/lib/person-images";
 import { logError, logInfo, logWarn } from "@/lib/server-log";
@@ -229,7 +229,7 @@ async function fetchAllTableRows(table: "data-person" | "data-books", select: st
 
   while (true) {
     const to = from + batchSize - 1;
-    const { data, error } = await supabase
+    const { data, error } = await d1Client
       .from(table)
       .select(select)
       .range(from, to);
@@ -466,7 +466,7 @@ async function fetchPersonDetailRpcByName(name: string): Promise<{
   status: number;
   statusText: string;
 }> {
-  const { data, error, status, statusText } = await supabase.rpc("get_person_detail_by_name", {
+  const { data, error, status, statusText } = await d1Client.rpc("get_person_detail_by_name", {
     p_name: name,
   });
 
@@ -520,7 +520,7 @@ async function fetchPersonsPagePayload(
     searchTerm: trimmedSearchTerm || null,
   });
 
-  const { data, error, status, statusText } = await supabase.rpc("get_persons_page", {
+  const { data, error, status, statusText } = await d1Client.rpc("get_persons_page", {
     p_page: currentPage,
     p_page_size: pageSize,
     p_search: trimmedSearchTerm.length > 0 ? trimmedSearchTerm : null,
@@ -672,7 +672,7 @@ export const getDefaultPersonDetail = cacheData(
   async (): Promise<PersonDetail | null> => {
     logInfo("PERSONS_RPC_DEFAULT_DETAIL_START", {});
 
-    const { data, error, status, statusText } = await supabase.rpc("get_default_person_detail");
+    const { data, error, status, statusText } = await d1Client.rpc("get_default_person_detail");
 
     if (error) {
       logError("PERSONS_RPC_DEFAULT_DETAIL_ERROR", {
@@ -699,7 +699,7 @@ export const getDefaultPersonDetail = cacheData(
       resolvedName: detail.name,
     });
 
-    return enrichPersonDetailBibliography(detail);
+    return detail;
   },
   { revalidate: 300, tags: ["persons"] },
 );

@@ -12,8 +12,8 @@ describe("D1 Worker client", () => {
     vi.stubGlobal("fetch", fetchMock);
     vi.stubEnv("STAVNET_DATA_WORKER_URL", "https://worker.example");
     vi.stubEnv("STAVNET_DATA_WORKER_SECRET", "worker-secret");
-    const { supabase } = await import("@/lib/supabase");
-    const result = await supabase.from("data-books").select("id", { count: "exact" }).eq("id", 1);
+    const { d1Client } = await import("@/lib/d1-client");
+    const result = await d1Client.from("data-books").select("id", { count: "exact" }).eq("id", 1);
     expect(result.data).toEqual([{ id: 1 }]);
     expect(result.count).toBe(1);
     expect(fetchMock).toHaveBeenCalledWith("https://worker.example/v1/query", expect.objectContaining({ headers: expect.objectContaining({ Authorization: "Bearer worker-secret" }) }));
@@ -22,8 +22,8 @@ describe("D1 Worker client", () => {
   it("reports a missing Worker URL clearly", async () => {
     vi.stubEnv("STAVNET_DATA_WORKER_URL", "");
     vi.stubEnv("STAVNET_DATA_WORKER_SECRET", "worker-secret");
-    const { supabase } = await import("@/lib/supabase");
-    const result = await supabase.rpc("get_books_page", {});
+    const { d1Client } = await import("@/lib/d1-client");
+    const result = await d1Client.rpc("get_books_page", {});
     expect(result.error?.message).toContain("STAVNET_DATA_WORKER_URL");
   });
 });

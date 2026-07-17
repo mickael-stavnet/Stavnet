@@ -6,8 +6,8 @@ const logErrorMock = vi.hoisted(() => vi.fn());
 const logInfoMock = vi.hoisted(() => vi.fn());
 const logWarnMock = vi.hoisted(() => vi.fn());
 
-vi.mock("@/lib/supabase", () => ({
-  supabase: {
+vi.mock("@/lib/d1-client", () => ({
+  d1Client: {
     rpc: rpcMock,
     from: fromMock,
   },

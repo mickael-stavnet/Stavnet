@@ -1,5 +1,5 @@
 import { cacheData } from "@/lib/data/cache";
-import { supabase } from "@/lib/supabase";
+import { d1Client } from "@/lib/d1-client";
 import { fixEncoding } from "@/lib/encoding";
 import { logError, logInfo, logWarn } from "@/lib/server-log";
 
@@ -146,7 +146,7 @@ async function fetchAllOrganizationTableRows(
 
   while (true) {
     const to = from + batchSize - 1;
-    const { data, error } = await supabase
+    const { data, error } = await d1Client
       .from(table)
       .select(select)
       .range(from, to);
@@ -169,7 +169,7 @@ async function fetchAllOrganizationTableRows(
 }
 
 async function getOrganizationsDatabaseTotal(): Promise<number> {
-  const { count, error } = await supabase
+  const { count, error } = await d1Client
     .from("data-organism")
     .select("*", { count: "exact", head: true });
 
@@ -298,7 +298,7 @@ async function fetchOrganizationsPagePayload(
     searchTerm: trimmedSearchTerm || null,
   });
 
-  const { data, error, status, statusText } = await supabase.rpc("get_organizations_page", {
+  const { data, error, status, statusText } = await d1Client.rpc("get_organizations_page", {
     p_page: currentPage,
     p_page_size: pageSize,
     p_search: trimmedSearchTerm.length > 0 ? trimmedSearchTerm : null,
@@ -472,7 +472,7 @@ export const getOrganizationDetailByName = cacheData(
       name: trimmedName,
     });
 
-    const { data, error, status, statusText } = await supabase.rpc("get_organization_detail_by_name", {
+    const { data, error, status, statusText } = await d1Client.rpc("get_organization_detail_by_name", {
       p_name: trimmedName,
     });
 
@@ -504,7 +504,7 @@ export const getOrganizationDetailByName = cacheData(
       resolvedName: detail.name,
     });
 
-    return enrichOrganizationPublishedRows(detail);
+    return detail;
   },
   { revalidate: 300, tags: ["orgs"] },
 );
@@ -514,7 +514,7 @@ export const getDefaultOrganizationDetail = cacheData(
   async (): Promise<OrganizationDetail | null> => {
     logInfo("ORGS_RPC_DEFAULT_DETAIL_START", {});
 
-    const { data, error, status, statusText } = await supabase.rpc("get_default_organization_detail");
+    const { data, error, status, statusText } = await d1Client.rpc("get_default_organization_detail");
 
     if (error) {
       logError("ORGS_RPC_DEFAULT_DETAIL_ERROR", {
@@ -541,7 +541,7 @@ export const getDefaultOrganizationDetail = cacheData(
       resolvedName: detail.name,
     });
 
-    return enrichOrganizationPublishedRows(detail);
+    return detail;
   },
   { revalidate: 300, tags: ["orgs"] },
 );

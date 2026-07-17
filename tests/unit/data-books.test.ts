@@ -4,8 +4,8 @@ const rpcMock = vi.hoisted(() => vi.fn());
 const selectMock = vi.hoisted(() => vi.fn());
 const fromMock = vi.hoisted(() => vi.fn(() => ({ select: selectMock })));
 
-vi.mock("@/lib/supabase", () => ({
-  supabase: {
+vi.mock("@/lib/d1-client", () => ({
+  d1Client: {
     rpc: rpcMock,
     from: fromMock,
   },
