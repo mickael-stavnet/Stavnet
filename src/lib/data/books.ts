@@ -1047,23 +1047,9 @@ async function fetchBooksPageRpc(
 const getBooksDatabaseTotals = cacheData(
   ["books-database-totals"],
   async (): Promise<{ cardsFound: number; databaseContains: number }> => {
-  const [validResult, databaseResult] = await Promise.all([
-    d1Client.from("data-books").select("id", { count: "exact", head: true }).not("Titre", "is", null).neq("Titre", "").neq("Titre", "NULL"),
-    d1Client.from("data-books").select("id", { count: "exact", head: true }),
-  ]);
-
-  if (validResult.error) {
-    throw new Error(validResult.error.message);
-  }
-
-  if (databaseResult.error) {
-    throw new Error(databaseResult.error.message);
-  }
-
-  return {
-    cardsFound: validResult.count ?? 0,
-    databaseContains: databaseResult.count ?? 0,
-  };
+  const { data, error } = await d1Client.rpc<{ cardsFound?: unknown; databaseContains?: unknown }>("get_books_totals");
+  if (error) throw new Error(error.message);
+  return { cardsFound: readNumber(data?.cardsFound), databaseContains: readNumber(data?.databaseContains) };
   },
   { revalidate: 300, tags: ["books"] },
 );
@@ -1203,25 +1189,14 @@ async function getPublishingRows(row: BookRow): Promise<BookPublishingRow[]> {
   const transcriptionTitle = readText(row["Titre. Transcription"]);
   const title = readText(row["Titre"]);
 
-  let query = d1Client.from("data-books").select(BOOK_PUBLISHING_SELECT);
-
-  if (originalTitle) {
-    query = query.filter('"Titre. Original"', "eq", originalTitle);
-  } else if (englishTitle) {
-    query = query.filter('"Titre. Anglais"', "eq", englishTitle);
-  } else if (transcriptionTitle) {
-    query = query.filter('"Titre. Transcription"', "eq", transcriptionTitle);
-  } else {
-    query = query.filter('"Titre"', "eq", title);
-  }
-
-  const { data, error } = await query.order('"Année"', { ascending: true }).order("id", { ascending: true });
+  const workTitle = originalTitle || englishTitle || transcriptionTitle || title;
+  const { data, error } = await d1Client.rpc<BookRow[]>("get_book_publishing", { p_work_title: workTitle });
 
   if (error) {
     throw new Error(error.message);
   }
 
-  const relatedRows = ((data as unknown as BookRow[] | null) ?? []).filter((relatedRow) => {
+  const relatedRows = ((data as BookRow[] | null) ?? []).filter((relatedRow) => {
     const relatedSignatures = buildWorkSignature(relatedRow);
     return signatures.some((signature) => relatedSignatures.includes(signature));
   });

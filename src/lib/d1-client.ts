@@ -31,7 +31,7 @@ class Query<T extends Record<string, unknown>> implements PromiseLike<DataClient
   maybeSingle(): Promise<DataClientResult<T | null>> { return this.executeSingle(); }
   single(): Promise<DataClientResult<T>> { return this.executeSingle() as Promise<DataClientResult<T>>; }
   then<TResult1 = DataClientResult<T[]>, TResult2 = never>(onfulfilled?: ((value: DataClientResult<T[]>) => TResult1 | PromiseLike<TResult1>) | null, onrejected?: ((reason: unknown) => TResult2 | PromiseLike<TResult2>) | null): Promise<TResult1 | TResult2> { return this.execute().then(onfulfilled, onrejected); }
-  private async execute(): Promise<DataClientResult<T[]>> { const result = await request<{ data: T[]; count: number }>("/v1/query", { table: this.table, columns: this.columns, filters: this.filters, order: this.orders, from: this.from, to: this.to, head: this.head }); return { data: result.data?.data ?? null, error: result.error, count: this.wantsCount ? result.data?.count ?? null : null, status: result.status, statusText: result.statusText }; }
+  private async execute(): Promise<DataClientResult<T[]>> { const result = await request<{ data: T[]; count: number }>("/v1/query", { table: this.table, columns: this.columns, filters: this.filters, order: this.orders, from: this.from, to: this.to, head: this.head, count: this.wantsCount }); return { data: result.data?.data ?? null, error: result.error, count: this.wantsCount ? result.data?.count ?? null : null, status: result.status, statusText: result.statusText }; }
   private async executeSingle(): Promise<DataClientResult<T | null>> { const result = await this.execute(); return { ...result, data: result.data?.[0] ?? null }; }
 }
 
