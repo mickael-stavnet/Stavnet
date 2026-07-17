@@ -31,6 +31,7 @@ type OrganizationDetailRpc = {
   type?: unknown;
   creationDate?: unknown;
   country?: unknown;
+  publishedRows?: OrganizationDetail["publishedRows"] | null;
   publishedStats?: {
     titles?: unknown;
     authors?: unknown;
@@ -191,7 +192,7 @@ function mapOrganizationDetail(detail: OrganizationDetailRpc): OrganizationDetai
     type: readText(detail.type),
     creationDate: readText(detail.creationDate),
     country: readText(detail.country),
-    publishedRows: [],
+    publishedRows: Array.isArray(detail.publishedRows) ? detail.publishedRows : [],
     publishedStats: {
       titles: readCount(detail.publishedStats?.titles),
       authors: readCount(detail.publishedStats?.authors),

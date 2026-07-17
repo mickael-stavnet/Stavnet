@@ -33,7 +33,7 @@ import { buildStaticPageMetadata } from "@/lib/site-metadata";
 
 const ORGS_COLUMN_WIDTHS = ["35.45%", "15.51%", "15.95%", "14.48%", "9.16%", "9.45%"] as const;
 const ORGS_PAGE_SIZE = 10;
-const ORGS_TABLE_CONTAINER_CLASS = "bg-[#eaf5f8]/90 md:flex md:min-h-0 md:flex-1 md:flex-col";
+const ORGS_TABLE_CONTAINER_CLASS = "min-h-[430px] bg-[#eaf5f8]/90 md:block md:min-h-0 md:flex-1";
 const ORGS_TABLE_HEAD_ROW_CLASS = "bg-[#d7ebf2]/85 text-[12px] uppercase tracking-[0.04em] text-slate-700 [@media(max-height:950px)]:text-[10px]";
 const ORGS_TABLE_HEAD_CELL_CLASS = "whitespace-normal px-4 py-3 text-left font-semibold [@media(max-height:950px)]:px-2 [@media(max-height:950px)]:py-1.5";
 const ORGS_TABLE_BODY_CLASS = "text-[15px] leading-[1.25] [@media(max-height:950px)]:text-[12px] [@media(max-height:950px)]:leading-[1.1]";
@@ -254,7 +254,7 @@ export default async function OrganizationsListPage({ params, searchParams }: Or
               )}
             </div>
 
-            <div className="hidden md:min-h-0 md:flex-1 md:flex-col">
+            <div className="hidden md:block md:h-full md:overflow-auto">
               {result.items.length > 0 ? (
                 <div className="min-h-0 flex-1 overflow-auto">
                   <Table className="min-w-[1100px] table-fixed bg-[#eaf5f8]/90 text-slate-950">

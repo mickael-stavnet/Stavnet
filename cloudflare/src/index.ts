@@ -20,6 +20,7 @@ interface Env {
 type Filter = { field: string; operator: "eq" | "neq" | "is"; value: unknown };
 type QueryPayload = {
   table?: string;
+  columns?: string;
   filters?: Filter[];
   order?: { field: string; ascending: boolean }[];
   from?: number;
@@ -60,6 +61,17 @@ function parsePayload(value: string): Record<string, unknown> {
   } catch {
     return {};
   }
+}
+
+function selectColumns(row: Record<string, unknown>, columns: string | undefined): Record<string, unknown> {
+  if (!columns || columns === "*") return row;
+  const selected: Record<string, unknown> = {};
+  for (const rawColumn of columns.split(",")) {
+    const column = rawColumn.trim().replaceAll('"', "");
+    if (column && column in row) selected[column] = row[column];
+  }
+  if ("id" in row && !("id" in selected)) selected.id = row.id;
+  return selected;
 }
 
 function fieldExpression(field: string, usesPayload: boolean): { expression: string; parameter?: string } | null {
@@ -106,7 +118,7 @@ async function queryRows(db: D1Database, payload: QueryPayload): Promise<{ data:
   const from = Math.max(0, Number.isFinite(payload.from) ? Math.floor(payload.from ?? 0) : 0);
   const to = Math.max(from, Number.isFinite(payload.to) ? Math.floor(payload.to ?? from + 999) : from + 999);
   const rows: D1Result<Record<string, unknown>> = payload.head ? { results: [] } : await db.prepare(`SELECT * FROM ${definition.table}${whereClause} ORDER BY ${order.join(", ")} LIMIT ? OFFSET ?`).bind(...values, ...orderValues, to - from + 1, from).all<Record<string, unknown>>();
-  const data = rows.results.map((row) => definition.payload ? { id: row.id, ...parsePayload(String(row.payload ?? "{}")) } : row);
+  const data = rows.results.map((row) => selectColumns(definition.payload ? { id: row.id, ...parsePayload(String(row.payload ?? "{}")) } : row, payload.columns));
   return { data, count: Number(countResult.results[0]?.count ?? 0) };
 }
 
@@ -149,15 +161,15 @@ async function rpc(db: D1Database, name: string, args: Record<string, unknown>):
     if (name === "get_persons_page") {
       const search = String(args.p_search ?? "").toLocaleLowerCase();
       const items = people.map((row) => ({
-        name: text(row, "Prénom Nom", "Prenom Nom", "Auteur Original"), type: text(row, "Type"), language: text(row, "Langue", "Code Langue"),
-        originalTitles: text(row, "Nb. Contributions Auteurs"), translatedTitles: text(row, "Nb. Contributions Titres"), translationLanguages: text(row, "Nb. Langues Traduction"), awards: text(row, "Nb. Prix"), regularReissues: text(row, "Nb. Rééditions"), pocketReissues: text(row, "Nb. Rééditions Poche"), publicationCountries: text(row, "Nb. Pays Publication"),
+        name: text(row, "Prénom Nom", "Prenom Nom", "Auteur Original"), type: text(row, "Type Personne", "Type"), language: text(row, "Langue Écriture", "Langue", "Code Langue"),
+        originalTitles: text(row, "Nb. Titres Originaux", "Nb. Contributions Auteurs"), translatedTitles: text(row, "Nb. Titres Traduits", "Nb. Contributions Titres"), translationLanguages: text(row, "Nb. Langues Traduction"), awards: text(row, "Nb. Prix Distinctions", "Nb. Prix"), regularReissues: text(row, "Nb. Rééditions Régulières", "Nb. Rééditions"), pocketReissues: text(row, "Nb. Rééditions Poche"), publicationCountries: text(row, "Nb. Pays Publication"),
       })).filter((item) => item.name && (!search || item.name.toLocaleLowerCase().includes(search))).sort((left, right) => left.name.localeCompare(right.name));
       return paginate(items, args.p_page, args.p_page_size);
     }
     const requested = name === "get_default_person_detail" ? "" : String(args.p_name ?? "").toLocaleLowerCase();
     const row = people.find((entry) => !requested || [text(entry, "Prénom Nom", "Prenom Nom"), text(entry, "Nom Prénom", "Nom Prenom"), text(entry, "Auteur Original")].some((value) => value.toLocaleLowerCase() === requested)) ?? (name === "get_default_person_detail" ? people.find((entry) => text(entry, "Prénom Nom", "Prenom Nom")) : undefined);
     if (!row) return null;
-    return { name: text(row, "Prénom Nom", "Prenom Nom", "Auteur Original"), alternateName: text(row, "Nom Prénom", "Nom Prenom"), type: text(row, "Type"), language: text(row, "Langue", "Code Langue"), birthInfo: text(row, "Date Naissance"), deathInfo: text(row, "Date Décès", "Date Deces"), residence: text(row, "Lieu Résidence", "Lieu Residence"), professionalActivity: text(row, "Activité Professionnelle", "Activite Professionnelle"), biography: text(row, "Biographie"), bibliographyStats: { originalTitles: text(row, "Nb. Contributions Auteurs"), translations: text(row, "Nb. Contributions Titres"), publicationLanguages: text(row, "Nb. Langues Traduction") }, bibliographyRows: [], stats: { cardsFound: text(row, "Nb. Fiches Trouvées", "Nb. Fiches Trouvees"), databaseContains: text(row, "Nb. Fiches Base") } };
+    return { name: text(row, "Prénom Nom", "Prenom Nom", "Auteur Original"), alternateName: text(row, "Nom Prénom", "Nom Prenom"), type: text(row, "Type Personne", "Type"), language: text(row, "Langue Écriture", "Langue", "Code Langue"), birthInfo: text(row, "Date de Naissance", "Date Naissance"), deathInfo: text(row, "Date de Décès", "Date Décès", "Date Deces"), residence: text(row, "Pays de Résidence", "Lieu Résidence", "Lieu Residence"), professionalActivity: text(row, "Activité Professionnelle", "Activite Professionnelle"), biography: text(row, "Biographie"), bibliographyStats: { originalTitles: text(row, "Nb. Titres Originaux", "Nb. Contributions Auteurs"), translations: text(row, "Nb. Titres Traduits", "Nb. Contributions Titres"), publicationLanguages: text(row, "Nb. Langues Traduction") }, bibliographyRows: [], stats: { cardsFound: text(row, "Nb. Fiches Trouvées", "Nb. Fiches Trouvees"), databaseContains: text(row, "Nb. Fiches Base") } };
   }
   if (name === "get_organizations_page" || name === "get_organization_detail_by_name" || name === "get_default_organization_detail") {
     const organizations = (await queryRows(db, { table: "data-organism", from: 0, to: 2000 })).data;
@@ -169,7 +181,25 @@ async function rpc(db: D1Database, name: string, args: Record<string, unknown>):
     const requested = name === "get_default_organization_detail" ? "" : String(args.p_name ?? "").toLocaleLowerCase();
     const row = organizations.find((entry) => !requested || text(entry, "Organisme").toLocaleLowerCase() === requested) ?? (name === "get_default_organization_detail" ? organizations.find((entry) => text(entry, "Organisme")) : undefined);
     if (!row) return null;
-    return { name: text(row, "Organisme"), type: text(row, "Type"), creationDate: text(row, "Date_Creation"), country: text(row, "Pays"), publishedTitles: text(row, "Nb_Titres"), publishedAuthors: text(row, "Nb_Auteurs"), publishedRows: [] };
+    const organizationName = text(row, "Organisme");
+    const names = new Set([organizationName.toLocaleLowerCase()]);
+    const books = await db.prepare("SELECT payload FROM books").all<{ payload: string }>();
+    const seen = new Set<string>();
+    const publishedRows = books.results.flatMap((entry) => {
+      const book = parsePayload(entry.payload);
+      const publishers = [text(book, "Éditeur"), text(book, "Éditeur. 1. Nom"), text(book, "Éditeur. 2. Nom")];
+      if (!publishers.some((publisher) => names.has(publisher.toLocaleLowerCase()))) return [];
+      const title = text(book, "Titre");
+      const author = [text(book, "Auteur. 1. Prénom"), text(book, "Auteur. 1. Nom")].filter(Boolean).join(" ");
+      const year = text(book, "Année");
+      const key = `${title}|${author}|${year}`.toLocaleLowerCase();
+      if (!title || seen.has(key)) return [];
+      seen.add(key);
+      return [{ title, author, year }];
+    });
+    const publishedTitles = text(row, "Nb_Titres") || String(publishedRows.length);
+    const publishedAuthors = text(row, "Nb_Auteurs");
+    return { name: organizationName, synonym: organizationName, type: text(row, "Type"), creationDate: text(row, "Date_Creation"), country: text(row, "Pays"), publishedStats: { titles: publishedTitles, authors: publishedAuthors }, stats: { cardsFound: publishedTitles, databaseContains: String(organizations.length) }, publishedRows };
   }
   throw new Error("Unknown RPC");
 }
