@@ -1,0 +1,24 @@
+{
+  "name": "stavnet-data",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-07-17",
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "stavnet-production",
+      "database_id": "2548d3b0-0a81-4255-83b2-c284bf333038"
+    }
+  ],
+  "env": {
+    "test": {
+      "name": "stavnet-data-test",
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_name": "stavnet-tests",
+          "database_id": "ab01e1e5-7296-45bc-9684-bcbaa6042f5d"
+        }
+      ]
+    }
+  }
+}

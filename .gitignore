@@ -26,6 +26,7 @@
 .codex-artifacts/
 audit-screenshots-responsive/
 .pnpm-store/
+cloudflare/.generated/
 __pycache__/
 .supabase/
 public/images/books-cover/FINDER.DAT

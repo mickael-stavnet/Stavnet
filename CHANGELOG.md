@@ -195,3 +195,7 @@
 - 12:19 - Réutilisation des portraits de la vitrine 3D sur les fiches personnes malgré les variantes de nom, afin que Michel Bar-Zohar et Itzhak Ben-Ner affichent leur image réelle au lieu du placeholder.
 - 12:29 - Refonte partagée des listes `/books`, `/persons` et `/orgs` avec `Card`, `Table`, `Button`, `Input` et pagination shadcn/ui, en préservant les liens de détail, la recherche serveur et les vues mobiles sans débordement.
 - 15:58 - Refonte responsive desktop transversale des écrans STAVNET : gabarits compacts pour 1366×768, listes et tableaux à défilement local, fiches personnes/organismes/livres et sous-fiches livres contenues entre header et footer, onglets et marges partagées bornés, puis validation visuelle de 18 routes sans débordement horizontal.
+
+# 17-07-2026
+
+- 11:05 - Migration majeure de la couche de données Supabase vers Cloudflare D1 : création des bases production et tests, Worker privé authentifié, import idempotent des CSV sources (livres, personnes, organismes et bibliographies), adaptation des contrats applicatifs et des tests d’intégration D1, puis validation par build Next.js.

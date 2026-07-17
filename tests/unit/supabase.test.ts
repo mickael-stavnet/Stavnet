@@ -1,45 +1,29 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-const createClientMock = vi.hoisted(() => vi.fn());
-
-vi.mock("@supabase/supabase-js", () => ({
-  createClient: createClientMock,
-}));
-
-describe("supabase bootstrap", () => {
+describe("D1 Worker client", () => {
   beforeEach(() => {
-    createClientMock.mockReset();
     vi.unstubAllEnvs();
+    vi.unstubAllGlobals();
     vi.resetModules();
   });
 
-  it("creates the client with required environment variables on first access", async () => {
-    const rpcMock = vi.fn();
-    const fromMock = vi.fn();
-
-    createClientMock.mockReturnValue({
-      rpc: rpcMock,
-      from: fromMock,
-    } as never);
-
-    vi.stubEnv("NEXT_PUBLIC_SUPABASE_URL", "https://example.supabase.co");
-    vi.stubEnv("NEXT_PUBLIC_SUPABASE_ANON_KEY", "anon-key");
-
+  it("sends a protected query to the Worker", async () => {
+    const fetchMock = vi.fn().mockResolvedValue(new Response(JSON.stringify({ data: [{ id: 1 }], count: 1 }), { status: 200 }));
+    vi.stubGlobal("fetch", fetchMock);
+    vi.stubEnv("STAVNET_DATA_WORKER_URL", "https://worker.example");
+    vi.stubEnv("STAVNET_DATA_WORKER_SECRET", "worker-secret");
     const { supabase } = await import("@/lib/supabase");
-
-    const result = supabase.rpc("get_books", {});
-
-    expect(createClientMock).toHaveBeenCalledWith("https://example.supabase.co", "anon-key");
-    expect(rpcMock).toHaveBeenCalledWith("get_books", {});
-    expect(result).toBeUndefined();
+    const result = await supabase.from("data-books").select("id", { count: "exact" }).eq("id", 1);
+    expect(result.data).toEqual([{ id: 1 }]);
+    expect(result.count).toBe(1);
+    expect(fetchMock).toHaveBeenCalledWith("https://worker.example/v1/query", expect.objectContaining({ headers: expect.objectContaining({ Authorization: "Bearer worker-secret" }) }));
   });
 
-  it("throws a clear error when a required env variable is missing on access", async () => {
-    vi.stubEnv("NEXT_PUBLIC_SUPABASE_URL", "");
-    vi.stubEnv("NEXT_PUBLIC_SUPABASE_ANON_KEY", "anon-key");
-
+  it("reports a missing Worker URL clearly", async () => {
+    vi.stubEnv("STAVNET_DATA_WORKER_URL", "");
+    vi.stubEnv("STAVNET_DATA_WORKER_SECRET", "worker-secret");
     const { supabase } = await import("@/lib/supabase");
-
-    expect(() => supabase.rpc).toThrow("Missing required environment variable: NEXT_PUBLIC_SUPABASE_URL");
+    const result = await supabase.rpc("get_books_page", {});
+    expect(result.error?.message).toContain("STAVNET_DATA_WORKER_URL");
   });
 });

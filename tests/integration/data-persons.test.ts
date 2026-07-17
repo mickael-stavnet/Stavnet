@@ -1,19 +1,18 @@
 import { beforeAll, describe, expect, it, vi } from "vitest";
-import { isSupabaseEgressRestricted } from "./supabase-availability";
+import { isD1WorkerAvailable } from "./d1-worker-availability";
 
-const testUrl = process.env.SUPABASE_TEST_URL;
-const testAnonKey = process.env.SUPABASE_TEST_ANON_KEY;
+const testUrl = process.env.STAVNET_DATA_TEST_WORKER_URL;
+const testSecret = process.env.STAVNET_DATA_TEST_WORKER_SECRET;
 
-const hasSupabaseEnv = typeof testUrl === "string" && testUrl.length > 0 && typeof testAnonKey === "string" && testAnonKey.length > 0;
-const describeIfSupabase = hasSupabaseEnv && !(await isSupabaseEgressRestricted(testUrl, testAnonKey)) ? describe : describe.skip;
+const describeIfD1 = await isD1WorkerAvailable(testUrl, testSecret) ? describe : describe.skip;
 
 let getPersonsPage: typeof import("@/lib/data/persons").getPersonsPage;
 let getDefaultPersonDetail: typeof import("@/lib/data/persons").getDefaultPersonDetail;
 
-describeIfSupabase("persons data access against the test database", () => {
+describeIfD1("persons data access against the D1 test database", () => {
   beforeAll(async () => {
-    vi.stubEnv("NEXT_PUBLIC_SUPABASE_URL", testUrl as string);
-    vi.stubEnv("NEXT_PUBLIC_SUPABASE_ANON_KEY", testAnonKey as string);
+    vi.stubEnv("STAVNET_DATA_WORKER_URL", testUrl as string);
+    vi.stubEnv("STAVNET_DATA_WORKER_SECRET", testSecret as string);
     vi.resetModules();
 
     const persons = await import("@/lib/data/persons");
@@ -21,7 +20,7 @@ describeIfSupabase("persons data access against the test database", () => {
     getDefaultPersonDetail = persons.getDefaultPersonDetail;
   });
 
-  it("loads the persons page from Supabase", async () => {
+  it("loads the persons page from D1", async () => {
     const page = await getPersonsPage(1, 5);
 
     expect(page.page).toBe(1);
@@ -31,7 +30,7 @@ describeIfSupabase("persons data access against the test database", () => {
     expect(page.items.length).toBeGreaterThan(0);
   });
 
-  it("loads the default person detail from the Supabase test DB", async () => {
+  it("loads the default person detail from D1", async () => {
     const detail = await getDefaultPersonDetail();
 
     expect(detail).not.toBeNull();
