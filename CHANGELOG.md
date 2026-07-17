@@ -200,3 +200,4 @@
 
 - 11:05 - Migration majeure de la couche de données Supabase vers Cloudflare D1 : création des bases production et tests, Worker privé authentifié, import idempotent des CSV sources (livres, personnes, organismes et bibliographies), adaptation des contrats applicatifs et des tests d’intégration D1, puis validation par build Next.js.
 - 12:12 - Stabilisation des parcours D1 `books`, `persons` et `orgs` : tableaux desktop à hauteur visible, projections Worker limitées aux colonnes demandées et fiches organismes enrichies avec leurs titres publiés.
+- 12:30 - Correction du parcours D1 des ouvrages liés : filtres SQLite compatibles avec les clés CSV, endpoint dédié à toutes les facettes et validation locale des listes, fiches et sous-pages `books`, `persons` et `orgs`.

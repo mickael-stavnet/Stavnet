@@ -81,7 +81,7 @@ function fieldExpression(field: string, usesPayload: boolean): { expression: str
   if (!usesPayload || field.length === 0 || field.length > 160) {
     return null;
   }
-  return { expression: "json_extract(payload, ?)", parameter: `$.${field}` };
+  return { expression: "json_extract(payload, ?)", parameter: `$.${JSON.stringify(field)}` };
 }
 
 async function queryRows(db: D1Database, payload: QueryPayload): Promise<{ data: Record<string, unknown>[]; count: number }> {
@@ -130,6 +130,37 @@ function text(row: Record<string, unknown>, ...fields: string[]): string {
   return "";
 }
 
+function normalize(value: string): string {
+  return value.trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLocaleLowerCase();
+}
+
+function personName(row: Record<string, unknown>, prefix: string, index: number): string {
+  return [text(row, `${prefix}. ${index}. Prénom`), text(row, `${prefix}. ${index}. Nom`)].filter(Boolean).join(" ");
+}
+
+function matchesFacet(row: Record<string, unknown>, facet: string, value: string): boolean {
+  const expected = normalize(value);
+  if (!expected) return false;
+  const has = (values: string[]): boolean => values.some((entry) => normalize(entry) === expected);
+  const authors = [1, 2, 3];
+  const contributors = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+  if (facet === "authorName") return has(authors.map((index) => personName(row, "Auteur", index)));
+  if (facet === "translationLanguage") return has([text(row, "Langue")]);
+  if (facet === "authorType") return has(authors.map((index) => text(row, `Auteur. ${index}. Type`)));
+  if (facet === "authorWritingLanguage") return has(authors.map((index) => text(row, `Auteur. ${index}. Langue`)));
+  if (facet === "contributorName") return has(contributors.map((index) => personName(row, "Contrib", index)));
+  if (facet === "contributorType") return has(contributors.map((index) => text(row, `Contrib. ${index}. Genre/Langue`)));
+  if (facet === "contributorLanguage") return has(contributors.map((index) => text(row, `Contrib. ${index}. Langue Traduite`)));
+  if (facet === "publisherName") return has([text(row, "Éditeur"), text(row, "Éditeur. 1. Nom"), text(row, "Éditeur. 2. Nom")]);
+  if (facet === "publisherCountry") return has([text(row, "Pays. Éditeur"), text(row, "Éditeur. 1. Pays"), text(row, "Éditeur. 2. Pays")]);
+  if (facet === "category") return has([text(row, "Catégorie. 1"), text(row, "Catégorie. 2")]);
+  if (facet === "subject") return has([text(row, "Thème. 1"), text(row, "Thème. 2")]);
+  if (facet === "genre") return has([text(row, "Genre"), text(row, "Genre. 1"), text(row, "Genre. 2")]);
+  if (facet === "targetAudience") return has([text(row, "Rubrique")]);
+  return false;
+}
+
 function paginate<T>(items: T[], pageValue: unknown, pageSizeValue: unknown): { items: T[]; totalCount: number; databaseTotal: number } {
   const page = Math.max(1, Number(pageValue) || 1);
   const pageSize = Math.max(1, Number(pageSizeValue) || 20);
@@ -155,7 +186,16 @@ async function rpc(db: D1Database, name: string, args: Record<string, unknown>):
     });
     return { items, totalCount: Number(count.results[0]?.count ?? 0), databaseTotal: 4998 };
   }
-  if (name === "get_books_page_by_facet") throw new Error("Could not find the function public." + name);
+  if (name === "get_books_page_by_facet") {
+    const facet = String(args.p_facet ?? "");
+    const value = String(args.p_value ?? "");
+    const page = Math.max(1, Number(args.p_page) || 1);
+    const pageSize = Math.max(1, Number(args.p_page_size) || 20);
+    const books = await db.prepare("SELECT id, payload FROM books WHERE title <> '' AND title <> 'NULL'").all<{ id: number; payload: string }>();
+    const items = books.results.map((entry) => ({ id: entry.id, row: parsePayload(entry.payload) })).filter((entry) => matchesFacet(entry.row, facet, value)).sort((left, right) => text(left.row, "Titre").localeCompare(text(right.row, "Titre"), "fr", { sensitivity: "base" }) || left.id - right.id);
+    const paged = items.slice((page - 1) * pageSize, page * pageSize).map((entry) => ({ id: entry.id, title: text(entry.row, "Titre"), author: personName(entry.row, "Auteur", 1), publisher: text(entry.row, "Éditeur. 1. Nom", "Éditeur"), language: text(entry.row, "Langue"), year: text(entry.row, "Année"), publicationCode: text(entry.row, "Année. Pages. Dimensions") }));
+    return { items: paged, totalCount: items.length, databaseTotal: 4998 };
+  }
   if (name === "get_persons_page" || name === "get_person_detail_by_name" || name === "get_default_person_detail") {
     const people = (await queryRows(db, { table: "data-person", from: 0, to: 2000 })).data;
     if (name === "get_persons_page") {

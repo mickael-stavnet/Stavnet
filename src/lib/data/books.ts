@@ -1484,7 +1484,7 @@ export async function getBooksPageByAdvancedSearch(
 }
 
 export const getBooksPageByFacet = cacheData<[number, BookRelatedFacet, string, number?], BookListResult>(
-  ["books-page-by-facet"],
+  ["books-page-by-facet-v2"],
   async (
     page: number,
     facet: BookRelatedFacet,
