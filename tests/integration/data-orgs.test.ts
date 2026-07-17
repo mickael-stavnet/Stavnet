@@ -48,12 +48,12 @@ describeIfD1("organizations data access against the D1 test database", () => {
     expect(detail?.publishedRows).toBeInstanceOf(Array);
   }, 20_000);
 
-  it("loads the default organization detail from the Supabase test DB", async () => {
+  it("loads the default organization detail from the D1 test database", async () => {
     const detail = await getDefaultOrganizationDetail();
 
     expect(detail).not.toBeNull();
     expect(detail?.name).not.toBe("");
     expect(detail?.stats.cardsFound).toMatch(/^\d+$/);
     expect(detail?.stats.databaseContains).toMatch(/^\d+$/);
-  });
+  }, 20_000);
 });
