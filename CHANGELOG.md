@@ -202,3 +202,4 @@
 - 12:12 - Stabilisation des parcours D1 `books`, `persons` et `orgs` : tableaux desktop à hauteur visible, projections Worker limitées aux colonnes demandées et fiches organismes enrichies avec leurs titres publiés.
 - 12:30 - Correction du parcours D1 des ouvrages liés : filtres SQLite compatibles avec les clés CSV, endpoint dédié à toutes les facettes et validation locale des listes, fiches et sous-pages `books`, `persons` et `orgs`.
 - 15:45 - Optimisation structurelle de D1 : facettes, éditeurs et titres d’œuvre indexés à l’import, compteurs matérialisés, listes paginées côté SQL et environnement local séparé de la production.
+- 16:27 - Correction du proxy i18n pour intercepter aussi les routes non localisées, afin que `/books` et ses sous-pages soient redirigées vers leur variante avec locale au lieu de renvoyer une 404.
