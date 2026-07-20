@@ -4,9 +4,9 @@ import type { BookRelatedFacet } from "@/lib/book-related";
 import { fixEncoding } from "@/lib/encoding";
 import { logError, logInfo, logWarn } from "@/lib/server-log";
 import { MAX_BOOKS_PAGE } from "@/lib/pagination";
-import { supabase } from "@/lib/supabase";
+import { d1Client } from "@/lib/d1-client";
 
-export const BOOKS_PAGE_SIZE = 13;
+export const BOOKS_PAGE_SIZE = 10;
 
 const BOOK_LIST_SELECT = [
   "id",
@@ -816,7 +816,7 @@ function matchesBookRelatedFacet(row: BookRow, facet: BookRelatedFacet, normaliz
 const getOrganizationCountryMap = cacheData(
   ["books-organization-country-map"],
   async (): Promise<Map<string, string>> => {
-  const { data, error } = await supabase.from("data-organism").select('"Organisme","Pays"');
+  const { data, error } = await d1Client.from("data-organism").select('"Organisme","Pays"');
 
   if (error) {
     throw new Error(error.message);
@@ -912,7 +912,7 @@ function buildPublishingStats(rows: BookPublishingRow[]): BookPublishingStat[] {
 }
 
 async function getBookPressReviews(bookId: string): Promise<BookPressReviewRow[]> {
-  const { data, error } = await supabase
+  const { data, error } = await d1Client
     .from("book_press_reviews")
     .select("id,author_name,source_name,source_date,excerpt,position")
     .eq("book_id", bookId)
@@ -1007,7 +1007,7 @@ async function fetchBooksPageRpc(
   searchTerm: string,
   filters: Partial<BookSearchFilters>,
 ): Promise<BookListResult | null> {
-  const { data, error } = await supabase.rpc("get_books_page", {
+  const { data, error } = await d1Client.rpc("get_books_page", {
     p_page: page,
     p_page_size: pageSize,
     p_search: searchTerm.trim() || null,
@@ -1047,23 +1047,9 @@ async function fetchBooksPageRpc(
 const getBooksDatabaseTotals = cacheData(
   ["books-database-totals"],
   async (): Promise<{ cardsFound: number; databaseContains: number }> => {
-  const [validResult, databaseResult] = await Promise.all([
-    supabase.from("data-books").select("id", { count: "exact", head: true }).not("Titre", "is", null).neq("Titre", "").neq("Titre", "NULL"),
-    supabase.from("data-books").select("id", { count: "exact", head: true }),
-  ]);
-
-  if (validResult.error) {
-    throw new Error(validResult.error.message);
-  }
-
-  if (databaseResult.error) {
-    throw new Error(databaseResult.error.message);
-  }
-
-  return {
-    cardsFound: validResult.count ?? 0,
-    databaseContains: databaseResult.count ?? 0,
-  };
+  const { data, error } = await d1Client.rpc<{ cardsFound?: unknown; databaseContains?: unknown }>("get_books_totals");
+  if (error) throw new Error(error.message);
+  return { cardsFound: readNumber(data?.cardsFound), databaseContains: readNumber(data?.databaseContains) };
   },
   { revalidate: 300, tags: ["books"] },
 );
@@ -1076,7 +1062,7 @@ export const getBookStatisticsFacetLists = cacheData(
   let from = 0;
 
   while (true) {
-    const { data, error } = await supabase
+    const { data, error } = await d1Client
       .from("data-books")
       .select('"Langue","Catégorie. 1","Année","Pays. Éditeur","Éditeur. 1. Pays","Éditeur. 2. Pays"')
       .range(from, from + batchSize - 1);
@@ -1141,7 +1127,7 @@ export const getBookStatisticsFacetLists = cacheData(
     },
   };
   },
-  { revalidate: 300, tags: ["books"] },
+  { revalidate: 86400, tags: ["books"] },
 );
 
 function mapBookDetail(
@@ -1203,25 +1189,14 @@ async function getPublishingRows(row: BookRow): Promise<BookPublishingRow[]> {
   const transcriptionTitle = readText(row["Titre. Transcription"]);
   const title = readText(row["Titre"]);
 
-  let query = supabase.from("data-books").select(BOOK_PUBLISHING_SELECT);
-
-  if (originalTitle) {
-    query = query.filter('"Titre. Original"', "eq", originalTitle);
-  } else if (englishTitle) {
-    query = query.filter('"Titre. Anglais"', "eq", englishTitle);
-  } else if (transcriptionTitle) {
-    query = query.filter('"Titre. Transcription"', "eq", transcriptionTitle);
-  } else {
-    query = query.filter('"Titre"', "eq", title);
-  }
-
-  const { data, error } = await query.order('"Année"', { ascending: true }).order("id", { ascending: true });
+  const workTitle = originalTitle || englishTitle || transcriptionTitle || title;
+  const { data, error } = await d1Client.rpc<BookRow[]>("get_book_publishing", { p_work_title: workTitle });
 
   if (error) {
     throw new Error(error.message);
   }
 
-  const relatedRows = ((data as unknown as BookRow[] | null) ?? []).filter((relatedRow) => {
+  const relatedRows = ((data as BookRow[] | null) ?? []).filter((relatedRow) => {
     const relatedSignatures = buildWorkSignature(relatedRow);
     return signatures.some((signature) => relatedSignatures.includes(signature));
   });
@@ -1247,7 +1222,7 @@ async function fetchBooksPagePayload(page: number, pageSize: number, searchTerm?
     filters: hasBookSearchFilters(filters) ? filters : null,
   });
 
-  const query = supabase
+  const query = d1Client
     .from("data-books")
     .select(BOOK_LIST_SELECT, { count: "exact" })
     .not("Titre", "is", null)
@@ -1339,7 +1314,7 @@ async function fetchBooksPageByFacetFallback(
   });
 
   while (true) {
-    const { data, error, status, statusText } = await supabase
+    const { data, error, status, statusText } = await d1Client
       .from("data-books")
       .select(BOOK_RELATED_FALLBACK_SELECT)
       .not("Titre", "is", null)
@@ -1484,7 +1459,7 @@ export async function getBooksPageByAdvancedSearch(
 }
 
 export const getBooksPageByFacet = cacheData<[number, BookRelatedFacet, string, number?], BookListResult>(
-  ["books-page-by-facet"],
+  ["books-page-by-facet-v2"],
   async (
     page: number,
     facet: BookRelatedFacet,
@@ -1506,7 +1481,7 @@ export const getBooksPageByFacet = cacheData<[number, BookRelatedFacet, string, 
     value: trimmedValue || null,
   });
 
-  const { data, error, status, statusText } = await supabase.rpc("get_books_page_by_facet", {
+  const { data, error, status, statusText } = await d1Client.rpc("get_books_page_by_facet", {
     p_page: currentPage,
     p_page_size: pageSize,
     p_facet: facet,
@@ -1568,10 +1543,9 @@ export const resolveBookByExactTitle = cacheData(
     return { kind: "none" };
   }
 
-  const normalizedTitle = normalizeBookFacetValue(trimmedTitle);
-  const { data, error, status, statusText } = await supabase
-    .from("data-books")
-    .select('id,"Titre"');
+  const { data, error, status, statusText } = await d1Client.rpc<unknown[]>("get_book_ids_by_exact_title", {
+    p_title: trimmedTitle,
+  });
 
   if (error) {
     logError("BOOK_TITLE_RESOLUTION_ERROR", {
@@ -1584,12 +1558,8 @@ export const resolveBookByExactTitle = cacheData(
   }
 
   const matchingIds = (Array.isArray(data) ? data : [])
-    .map((row) => ({
-      id: readId((row as BookRow).id),
-      title: readText((row as BookRow)["Titre"]),
-    }))
-    .filter((row) => row.id.length > 0 && normalizeBookFacetValue(row.title) === normalizedTitle)
-    .map((row) => row.id);
+    .map(readId)
+    .filter((id) => id.length > 0);
 
   const uniqueIds = [...new Set(matchingIds)];
 
@@ -1621,7 +1591,7 @@ export const getBookDetailById = cacheData(
   });
 
   const [rowResult, totals, organizationCountryMap] = await Promise.all([
-    supabase
+    d1Client
       .from("data-books")
       .select(BOOK_DETAIL_SELECT)
       .eq("id", trimmedId)
@@ -1678,7 +1648,7 @@ export const getDefaultBookDetail = cacheData(
   logInfo("BOOK_DEFAULT_DETAIL_START", {});
 
   const [rowResult, totals, organizationCountryMap] = await Promise.all([
-    supabase
+    d1Client
       .from("data-books")
       .select(BOOK_DETAIL_SELECT)
       .not("Titre", "is", null)

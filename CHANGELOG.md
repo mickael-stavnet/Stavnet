@@ -195,3 +195,16 @@
 - 12:19 - Réutilisation des portraits de la vitrine 3D sur les fiches personnes malgré les variantes de nom, afin que Michel Bar-Zohar et Itzhak Ben-Ner affichent leur image réelle au lieu du placeholder.
 - 12:29 - Refonte partagée des listes `/books`, `/persons` et `/orgs` avec `Card`, `Table`, `Button`, `Input` et pagination shadcn/ui, en préservant les liens de détail, la recherche serveur et les vues mobiles sans débordement.
 - 15:58 - Refonte responsive desktop transversale des écrans STAVNET : gabarits compacts pour 1366×768, listes et tableaux à défilement local, fiches personnes/organismes/livres et sous-fiches livres contenues entre header et footer, onglets et marges partagées bornés, puis validation visuelle de 18 routes sans débordement horizontal.
+
+# 17-07-2026
+
+- 11:05 - Migration majeure de la couche de données Supabase vers Cloudflare D1 : création des bases production et tests, Worker privé authentifié, import idempotent des CSV sources (livres, personnes, organismes et bibliographies), adaptation des contrats applicatifs et des tests d’intégration D1, puis validation par build Next.js.
+- 12:12 - Stabilisation des parcours D1 `books`, `persons` et `orgs` : tableaux desktop à hauteur visible, projections Worker limitées aux colonnes demandées et fiches organismes enrichies avec leurs titres publiés.
+- 12:30 - Correction du parcours D1 des ouvrages liés : filtres SQLite compatibles avec les clés CSV, endpoint dédié à toutes les facettes et validation locale des listes, fiches et sous-pages `books`, `persons` et `orgs`.
+- 15:45 - Optimisation structurelle de D1 : facettes, éditeurs et titres d’œuvre indexés à l’import, compteurs matérialisés, listes paginées côté SQL et environnement local séparé de la production.
+- 16:27 - Correction du proxy i18n pour intercepter aussi les routes non localisées, afin que `/books` et ses sous-pages soient redirigées vers leur variante avec locale au lieu de renvoyer une 404.
+
+# 20-07-2026
+
+- 09:38 - Réduction majeure des lectures D1 en remplaçant les scans complets des tables livres, personnes et organismes par des requêtes Worker ciblées, indexées et paginées pour les fiches personnes et les filtres d’organismes, puis déploiement en production du Worker et de l’application.
+- 09:57 - Optimisation des listes de livres D1 : pagination fixée à dix résultats, projection SQL dédiée et indexée évitant la lecture et le décodage du JSON complet des livres, avec import CSV maintenu compatible et déploiement production/tests.

@@ -242,7 +242,7 @@ export default async function RelatedBooksPage({ params, searchParams }: Related
             </div>
           </div>
 
-          <section className="overflow-hidden rounded-[8px] border border-[#9aa8b0] bg-[#d8dde2] shadow-[4px_4px_8px_rgba(0,0,0,0.12)] md:flex md:min-h-0 md:flex-1 md:flex-col">
+          <section className="overflow-hidden rounded-[8px] border border-[#9aa8b0] bg-[#d8dde2] shadow-[4px_4px_8px_rgba(0,0,0,0.12)] md:block md:min-h-0 md:flex-1">
             <div className="space-y-3 p-3 md:hidden">
               {result.items.length > 0 ? (
                 result.items.map((book) => (
@@ -263,9 +263,9 @@ export default async function RelatedBooksPage({ params, searchParams }: Related
               )}
             </div>
 
-            <div className="hidden md:min-h-0 md:flex-1 md:flex-col">
+            <div className="hidden md:block md:h-full md:overflow-auto">
               {result.items.length > 0 ? (
-                <div className="min-h-0 flex-1 overflow-auto">
+                <div>
                   <table className="min-w-[1160px] table-fixed border-collapse text-black">
                     <colgroup>
                       {BOOKS_COLUMN_WIDTHS.map((width, index) => (

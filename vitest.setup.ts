@@ -1,6 +1,8 @@
-import "dotenv/config";
+import { config } from "dotenv";
 import "@testing-library/jest-dom/vitest";
 import { vi } from "vitest";
+
+config({ path: ".env.local" });
 
 vi.mock("server-only", () => ({}));
 

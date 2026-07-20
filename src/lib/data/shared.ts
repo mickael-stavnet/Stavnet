@@ -1,5 +1,5 @@
 import { fixEncoding } from "@/lib/encoding";
-import { supabase } from "@/lib/supabase";
+import { d1Client } from "@/lib/d1-client";
 
 export type DataRow = Record<string, unknown>;
 
@@ -57,7 +57,7 @@ export async function fetchAllRows(
 
   while (true) {
     const to = from + batchSize - 1;
-    const { data, error } = await supabase
+    const { data, error } = await d1Client
       .from(table)
       .select(select)
       .range(from, to);

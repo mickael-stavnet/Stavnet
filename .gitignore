@@ -26,6 +26,8 @@
 .codex-artifacts/
 audit-screenshots-responsive/
 .pnpm-store/
+cloudflare/.generated/
+cloudflare/.wrangler/
 __pycache__/
 .supabase/
 public/images/books-cover/FINDER.DAT
@@ -39,6 +41,7 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+cloudflare/.dev.vars
 
 # vercel
 .vercel

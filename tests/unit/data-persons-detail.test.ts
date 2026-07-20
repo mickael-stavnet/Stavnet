@@ -3,8 +3,8 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 const rpcMock = vi.hoisted(() => vi.fn());
 const fromMock = vi.hoisted(() => vi.fn());
 
-vi.mock("@/lib/supabase", () => ({
-  supabase: {
+vi.mock("@/lib/d1-client", () => ({
+  d1Client: {
     rpc: rpcMock,
     from: fromMock,
   },
@@ -85,21 +85,8 @@ describe("person detail name resolution", () => {
     });
   });
 
-  it("falls back to an accent-insensitive table match when the rpc misses", async () => {
-    rpcMock
-      .mockResolvedValueOnce({
-        data: null,
-        error: null,
-        status: 200,
-        statusText: "OK",
-      })
-      .mockResolvedValueOnce({
-        data: null,
-        error: null,
-        status: 200,
-        statusText: "OK",
-      })
-      .mockResolvedValueOnce({
+  it("laisse le Worker résoudre une variante accentuée", async () => {
+    rpcMock.mockResolvedValueOnce({
         data: {
           name: "Mickaël Pariente",
           alternateName: "Pariente Mickael",
@@ -126,30 +113,11 @@ describe("person detail name resolution", () => {
         statusText: "OK",
       });
 
-    fromMock.mockImplementation((table: string) => ({
-      select: () => ({
-        range: vi.fn().mockResolvedValue({
-          data: table === "data-person"
-            ? [
-                {
-                  "Prénom Nom": "Mickaël Pariente",
-                  "Nom Prénom": "Pariente Mickael",
-                  "Auteur Original": "",
-                },
-              ]
-            : [],
-          error: null,
-          status: 200,
-          statusText: "OK",
-        }),
-      }),
-    }));
-
     const detail = await getPersonDetailByName("Mickaél Parienté");
 
     expect(detail?.name).toBe("Mickaël Pariente");
-    expect(rpcMock).toHaveBeenNthCalledWith(3, "get_person_detail_by_name", {
-      p_name: "Mickaël Pariente",
+    expect(rpcMock).toHaveBeenCalledWith("get_person_detail_by_name", {
+      p_name: "Mickaél Parienté",
     });
   });
 });
