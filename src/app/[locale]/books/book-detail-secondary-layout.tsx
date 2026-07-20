@@ -6,6 +6,15 @@ import { useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/routing";
 import { StavnetFooter } from "@/components/stavnet/footer";
 import { StavnetHeader } from "@/components/stavnet/header";
+import {
+  type DetailLinkHref,
+  buildOrganizationDetailHref,
+  buildOrganizationsByCountryHref,
+  buildPersonDetailHref,
+  buildPersonsByLanguageHref,
+  buildPersonsByTypeHref,
+} from "@/lib/detail-links";
+import type { BookRelatedFacet } from "@/lib/book-related";
 import type { BookDetail } from "@/lib/data/books";
 
 interface BookDetailSecondaryLayoutProps {
@@ -15,30 +24,7 @@ interface BookDetailSecondaryLayoutProps {
   children: ReactNode;
 }
 
-type BookDetailLinkHref =
-  | {
-      pathname: "/books/related";
-      query: {
-        facet: string;
-        value: string;
-      };
-    }
-  | {
-      pathname: "/persons/details";
-      query: {
-        name: string;
-        fallbackFacet: string;
-        fallbackValue: string;
-      };
-    }
-  | {
-      pathname: "/orgs/details";
-      query: {
-        name: string;
-        fallbackFacet: string;
-        fallbackValue: string;
-      };
-    };
+type BookDetailLinkHref = DetailLinkHref;
 
 function RedMarker() {
   return <span className="inline-block h-[10px] w-[10px] rounded-full border-2 border-[#ff1d1d]" />;
@@ -162,48 +148,32 @@ function ClickableValue({ href, value }: { href: BookDetailLinkHref; value: stri
   );
 }
 
-function buildRelatedHref(facet: string, value: string) {
-  return {
-    pathname: "/books/related" as const,
-    query: {
-      facet,
-      value,
-    },
-  };
+function buildPersonHref(name: string, fallbackFacet: BookRelatedFacet): DetailLinkHref {
+  return buildPersonDetailHref(name, fallbackFacet);
 }
 
-function buildPersonHref(name: string, fallbackFacet: string) {
-  return {
-    pathname: "/persons/details" as const,
-    query: {
-      name,
-      fallbackFacet,
-      fallbackValue: name,
-    },
-  };
+function buildOrganizationHref(name: string, fallbackFacet: BookRelatedFacet): DetailLinkHref {
+  return buildOrganizationDetailHref(name, fallbackFacet);
 }
 
-function buildOrganizationHref(name: string, fallbackFacet: string) {
-  return {
-    pathname: "/orgs/details" as const,
-    query: {
-      name,
-      fallbackFacet,
-      fallbackValue: name,
-    },
-  };
-}
-
-function renderFacetValue(value: string, facet: string): ReactNode {
-  return value ? <ClickableValue href={buildRelatedHref(facet, value)} value={value} /> : "—";
-}
-
-function renderPersonValue(value: string, fallbackFacet: string): ReactNode {
+function renderPersonValue(value: string, fallbackFacet: BookRelatedFacet): ReactNode {
   return value ? <ClickableValue href={buildPersonHref(value, fallbackFacet)} value={value} /> : "—";
 }
 
-function renderOrganizationValue(value: string, fallbackFacet: string): ReactNode {
+function renderOrganizationValue(value: string, fallbackFacet: BookRelatedFacet): ReactNode {
   return value ? <ClickableValue href={buildOrganizationHref(value, fallbackFacet)} value={value} /> : "—";
+}
+
+function renderPersonTypeValue(value: string, fallbackFacet: "authorType" | "contributorType"): ReactNode {
+  return value ? <ClickableValue href={buildPersonsByTypeHref(value, fallbackFacet)} value={value} /> : "—";
+}
+
+function renderPersonLanguageValue(value: string, fallbackFacet: "authorWritingLanguage" | "contributorLanguage"): ReactNode {
+  return value ? <ClickableValue href={buildPersonsByLanguageHref(value, fallbackFacet)} value={value} /> : "—";
+}
+
+function renderOrganizationCountryValue(value: string): ReactNode {
+  return value ? <ClickableValue href={buildOrganizationsByCountryHref(value, "publisherCountry")} value={value} /> : "—";
 }
 
 export default function BookDetailSecondaryLayout({
@@ -224,7 +194,7 @@ export default function BookDetailSecondaryLayout({
     {
       key: "help",
       icon: "/icons/icons-nav/help.png",
-      href: pagePath,
+      href: `${pagePath}?id=${book.id}` as const,
       label: t("footer.help"),
       onClick: (event: MouseEvent) => {
         event.preventDefault();
@@ -234,7 +204,7 @@ export default function BookDetailSecondaryLayout({
     {
       key: "move",
       icon: "/icons/icons-nav/next.png",
-      href: pagePath,
+      href: `${pagePath}?id=${book.id}` as const,
       label: t("footer.move"),
       onClick: (event: MouseEvent) => {
         event.preventDefault();
@@ -245,21 +215,21 @@ export default function BookDetailSecondaryLayout({
   const authorsRows = book.authors.length > 0
     ? book.authors.map((row) => [
         renderPersonValue(row.name, "authorName"),
-        renderFacetValue(row.type, "authorType"),
-        renderFacetValue(row.language, "authorWritingLanguage"),
+        renderPersonTypeValue(row.type, "authorType"),
+        renderPersonLanguageValue(row.language, "authorWritingLanguage"),
       ])
     : [["", "", ""]];
   const contributorsRows = book.contributors.length > 0
     ? book.contributors.map((row) => [
         renderPersonValue(row.name, "contributorName"),
-        renderFacetValue(row.type, "contributorType"),
-        renderFacetValue(row.language, "contributorLanguage"),
+        renderPersonTypeValue(row.type, "contributorType"),
+        renderPersonLanguageValue(row.language, "contributorLanguage"),
       ])
     : [["", "", ""]];
   const publishersRows = book.publishers.length > 0
     ? book.publishers.map((row) => [
         renderOrganizationValue(row.name, "publisherName"),
-        renderFacetValue(row.country, "publisherCountry"),
+        renderOrganizationCountryValue(row.country),
         row.isbn || "—",
       ])
     : [["", "", ""]];

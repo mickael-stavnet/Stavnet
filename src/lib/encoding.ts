@@ -12,7 +12,6 @@ export function fixEncoding(text: string | null | number | undefined): string {
       .replace(/pr.s/g, "près")
       .replace(/d.c.s/g, "décès")
       .replace(/prs/g, "près")
-      .replace(/dcs/g, "décès")
-      .replace(/N/g, "Né");
+      .replace(/dcs/g, "décès");
   }
 }

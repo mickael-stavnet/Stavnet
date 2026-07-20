@@ -10,6 +10,7 @@ describe("orgs search helpers", () => {
       pageNumber: 2,
       searchTerm: "Fayard",
       typeFilter: "Editeur",
+      countryFilter: "",
       categoryFilter: "Editeur",
       mode: "category",
     });
@@ -20,6 +21,7 @@ describe("orgs search helpers", () => {
       pageNumber: 1,
       searchTerm: "",
       typeFilter: "Diffuseur",
+      countryFilter: "",
       categoryFilter: "",
       mode: "type",
     });
@@ -30,6 +32,7 @@ describe("orgs search helpers", () => {
       pageNumber: 1,
       searchTerm: "Gallimard",
       typeFilter: "",
+      countryFilter: "",
       categoryFilter: "",
       mode: "name",
     });
@@ -37,5 +40,17 @@ describe("orgs search helpers", () => {
 
   it("preserves type and search params in pagination hrefs", () => {
     expect(buildOrganizationsPageHref(3, "Fayard", "Editeur")).toBe("?page=3&q=Fayard&type=Editeur");
+  });
+
+  it("resolves and preserves a publisher-country filter", () => {
+    expect(resolveOrganizationsListSelection({ page: "2", country: "Pays-Bas" })).toEqual({
+      pageNumber: 2,
+      searchTerm: "",
+      typeFilter: "",
+      countryFilter: "Pays-Bas",
+      categoryFilter: "",
+      mode: "country",
+    });
+    expect(buildOrganizationsPageHref(3, "", "", "Pays-Bas")).toBe("?page=3&country=Pays-Bas");
   });
 });

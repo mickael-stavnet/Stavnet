@@ -20,6 +20,7 @@ vi.mock("@/lib/server-log", () => ({
 }));
 
 import {
+  getOrganizationsPageByCountry,
   getOrganizationsPageByCategory,
   getOrganizationsPageByType,
   ORGS_PAGE_SIZE,
@@ -65,6 +66,7 @@ describe("organizations data access", () => {
       p_search: null,
       p_type: null,
       p_category: null,
+      p_country: null,
     });
   });
 
@@ -84,7 +86,7 @@ describe("organizations data access", () => {
         publishedAuthors: "8",
       },
     ]);
-    expect(rpcMock).toHaveBeenCalledWith("get_organizations_page", { p_page: 1, p_page_size: 13, p_search: "gall", p_type: "editeur", p_category: null });
+    expect(rpcMock).toHaveBeenCalledWith("get_organizations_page", { p_page: 1, p_page_size: 13, p_search: "gall", p_type: "editeur", p_category: null, p_country: null });
   });
 
   it("filters editor organizations by category", async () => {
@@ -93,7 +95,16 @@ describe("organizations data access", () => {
     const result = await getOrganizationsPageByCategory(1, "Editeur");
 
     expect(result.items.map((item) => item.name)).toEqual(["Gallimard"]);
-    expect(rpcMock).toHaveBeenCalledWith("get_organizations_page", { p_page: 1, p_page_size: ORGS_PAGE_SIZE, p_search: null, p_type: null, p_category: "Editeur" });
+    expect(rpcMock).toHaveBeenCalledWith("get_organizations_page", { p_page: 1, p_page_size: ORGS_PAGE_SIZE, p_search: null, p_type: null, p_category: "Editeur", p_country: null });
+  });
+
+  it("filters organizations by exact publisher country", async () => {
+    rpcMock.mockResolvedValueOnce({ data: { items: [{ name: "Meulenhoff", type: "Editeur", creationDate: "", country: "Pays-Bas", publishedTitles: "12", publishedAuthors: "4" }], totalCount: 1, databaseTotal: 3 }, error: null, status: 200, statusText: "OK" });
+
+    const result = await getOrganizationsPageByCountry(1, " Pays-Bas ", " meul ", 10);
+
+    expect(result.items.map((item) => item.name)).toEqual(["Meulenhoff"]);
+    expect(rpcMock).toHaveBeenCalledWith("get_organizations_page", { p_page: 1, p_page_size: 10, p_search: "meul", p_type: null, p_category: null, p_country: "Pays-Bas" });
   });
 
   it("filters library organizations out of other organizations", async () => {

@@ -9,7 +9,7 @@ import { StavnetHeader } from "@/components/stavnet/header";
 import {
   ClickableDetailValue,
   buildBookTitleResolverHref,
-  buildRelatedBooksHref,
+  buildPersonsByLanguageHref,
 } from "@/lib/detail-links";
 import { cn } from "@/lib/utils";
 import type { PersonDetail } from "@/lib/data/persons";
@@ -322,7 +322,7 @@ export default function PersonDetailPage({ person }: PersonDetailPageProps) {
                             <FilledBox
                               value={
                                 person.language
-                                  ? <ClickableDetailValue href={buildRelatedBooksHref("authorWritingLanguage", person.language)} value={person.language} />
+                                  ? <ClickableDetailValue href={buildPersonsByLanguageHref(person.language)} value={person.language} />
                                   : person.residence || person.type || "—"
                               }
                               className="border-x-0 border-b-0 md:min-h-[36px] md:text-[15px]"

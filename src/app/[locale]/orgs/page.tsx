@@ -9,6 +9,8 @@ import { Link } from "@/i18n/routing";
 import {
   getOrganizationsPage,
   getOrganizationsPageByCategory,
+  getOrganizationsPageByCountry,
+  getOrganizationsPageByFilters,
   getOrganizationsPageByName,
   getOrganizationsPageByType,
 } from "@/lib/data/orgs";
@@ -30,6 +32,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { buildStaticPageMetadata } from "@/lib/site-metadata";
+import { isBookRelatedFacet } from "@/lib/book-related";
 
 const ORGS_COLUMN_WIDTHS = ["35.45%", "15.51%", "15.95%", "14.48%", "9.16%", "9.45%"] as const;
 const ORGS_PAGE_SIZE = 10;
@@ -48,6 +51,8 @@ interface OrgsPageProps {
     page?: string;
     q?: string;
     type?: string;
+    country?: string;
+    fallbackFacet?: string;
   }>;
 }
 
@@ -116,8 +121,9 @@ function MobileOrganizationCard({
 }
 
 export default async function OrganizationsListPage({ params, searchParams }: OrgsPageProps) {
-  const [{ locale }, { page, q, type }, t] = await Promise.all([params, searchParams, getTranslations("Orgs")]);
-  const selection = resolveOrganizationsListSelection({ page, q, type });
+  const [{ locale }, { page, q, type, country, fallbackFacet: fallbackFacetParam }, t] = await Promise.all([params, searchParams, getTranslations("Orgs")]);
+  const selection = resolveOrganizationsListSelection({ page, q, type, country });
+  const fallbackFacet = isBookRelatedFacet(fallbackFacetParam ?? "") ? fallbackFacetParam : null;
 
   if (!isPageWithinLimit(selection.pageNumber, MAX_ORGANIZATIONS_PAGE)) {
     redirect({
@@ -129,7 +135,13 @@ export default async function OrganizationsListPage({ params, searchParams }: Or
     });
   }
 
-  const result = selection.mode === "category"
+  const result = selection.typeFilter && selection.countryFilter
+    ? await getOrganizationsPageByFilters(
+        selection.pageNumber,
+        { searchTerm: selection.searchTerm, type: selection.typeFilter, country: selection.countryFilter },
+        ORGS_PAGE_SIZE,
+      )
+    : selection.mode === "category"
     ? await getOrganizationsPageByCategory(
         selection.pageNumber,
         selection.categoryFilter as (typeof ORGANIZATION_FILTER_OPTIONS)[number],
@@ -138,9 +150,23 @@ export default async function OrganizationsListPage({ params, searchParams }: Or
       )
     : selection.mode === "type"
       ? await getOrganizationsPageByType(selection.pageNumber, selection.typeFilter, selection.searchTerm, ORGS_PAGE_SIZE)
+      : selection.mode === "country"
+        ? await getOrganizationsPageByCountry(selection.pageNumber, selection.countryFilter, selection.searchTerm, ORGS_PAGE_SIZE)
       : selection.mode === "name"
         ? await getOrganizationsPageByName(selection.pageNumber, selection.searchTerm, ORGS_PAGE_SIZE)
         : await getOrganizationsPage(selection.pageNumber, ORGS_PAGE_SIZE);
+  if (fallbackFacet && selection.countryFilter && result.total === 0) {
+    redirect({
+      href: {
+        pathname: "/books/related",
+        query: {
+          facet: fallbackFacet,
+          value: selection.countryFilter,
+        },
+      },
+      locale,
+    });
+  }
   if (selection.mode !== "basic" && result.total === 1 && result.items[0]) {
     redirect({
       href: {
@@ -203,21 +229,21 @@ export default async function OrganizationsListPage({ params, searchParams }: Or
                 <p className="text-[13px] font-bold leading-none text-black [@media(max-height:950px)]:text-[12px]">{filterLabels.title}</p>
                 <div className="flex flex-wrap gap-2 [@media(max-height:950px)]:gap-1">
                   <Button asChild variant={!selection.typeFilter ? "default" : "outline"} size="sm">
-                    <Link href={buildOrganizationsPageHref(1, selection.searchTerm, "")}>{filterLabels.all}</Link>
+                    <Link href={buildOrganizationsPageHref(1, selection.searchTerm, "", selection.countryFilter)}>{filterLabels.all}</Link>
                   </Button>
                   {ORGANIZATION_FILTER_OPTIONS.map((option) => (
                     <Button key={option} asChild variant={selection.typeFilter === option ? "default" : "outline"} size="sm">
-                      <Link href={buildOrganizationsPageHref(1, selection.searchTerm, option)}>{filterLabels[option]}</Link>
+                      <Link href={buildOrganizationsPageHref(1, selection.searchTerm, option, selection.countryFilter)}>{filterLabels[option]}</Link>
                     </Button>
                   ))}
                 </div>
               </div>
             </div>
-            {selection.typeFilter ? (
+            {selection.typeFilter || selection.countryFilter ? (
               <div className="rounded-[8px] border border-[#7aa8b7] bg-[#a7dcee] px-4 py-3 shadow-[3px_3px_6px_rgba(0,0,0,0.12)] [@media(max-height:950px)]:px-3 [@media(max-height:950px)]:py-2">
-                <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#07384a] [@media(max-height:950px)]:text-[10px]">{columnLabels.type}</p>
+                <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#07384a] [@media(max-height:950px)]:text-[10px]">{selection.countryFilter ? columnLabels.country : columnLabels.type}</p>
                 <p className="mt-2 text-[18px] font-bold leading-tight text-black [@media(max-height:950px)]:mt-1 [@media(max-height:950px)]:text-[15px]">
-                  {selection.categoryFilter ? filterLabels[selection.categoryFilter as keyof typeof filterLabels] : selection.typeFilter}
+                  {selection.countryFilter || (selection.categoryFilter ? filterLabels[selection.categoryFilter as keyof typeof filterLabels] : selection.typeFilter)}
                 </p>
               </div>
             ) : null}
@@ -313,7 +339,7 @@ export default async function OrganizationsListPage({ params, searchParams }: Or
               <PaginationContent className="flex-wrap justify-center">
                 <PaginationItem>
                     <PaginationPrevious
-                    href={buildOrganizationsPageHref(result.page - 1, selection.searchTerm, selection.typeFilter)}
+                    href={buildOrganizationsPageHref(result.page - 1, selection.searchTerm, selection.typeFilter, selection.countryFilter)}
                     text={t("pagination.previous")}
                     className={result.page === 1 ? "pointer-events-none opacity-50" : ""}
                   />
@@ -321,7 +347,7 @@ export default async function OrganizationsListPage({ params, searchParams }: Or
                 {paginationItems.map((item) =>
                   typeof item === "number" ? (
                     <PaginationItem key={item}>
-                      <PaginationLink href={buildOrganizationsPageHref(item, selection.searchTerm, selection.typeFilter)} isActive={item === result.page}>
+                      <PaginationLink href={buildOrganizationsPageHref(item, selection.searchTerm, selection.typeFilter, selection.countryFilter)} isActive={item === result.page}>
                         {item}
                       </PaginationLink>
                     </PaginationItem>
@@ -333,7 +359,7 @@ export default async function OrganizationsListPage({ params, searchParams }: Or
                 )}
                 <PaginationItem>
                   <PaginationNext
-                    href={buildOrganizationsPageHref(result.page + 1, selection.searchTerm, selection.typeFilter)}
+                    href={buildOrganizationsPageHref(result.page + 1, selection.searchTerm, selection.typeFilter, selection.countryFilter)}
                     text={t("pagination.next")}
                     className={result.page === result.totalPages ? "pointer-events-none opacity-50" : ""}
                   />

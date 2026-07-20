@@ -120,4 +120,37 @@ describe("person detail name resolution", () => {
       p_name: "Mickaél Parienté",
     });
   });
+
+  it("résout un nom inversé dont les prénoms composés sont séparés dans le lien", async () => {
+    rpcMock
+      .mockResolvedValueOnce({ data: null, error: null, status: 200, statusText: "OK" })
+      .mockResolvedValueOnce({ data: null, error: null, status: 200, statusText: "OK" })
+      .mockResolvedValueOnce({ data: null, error: null, status: 200, statusText: "OK" })
+      .mockResolvedValueOnce({
+        data: {
+          name: "Haïm-Nahman Bialik",
+          alternateName: "Bialik Haïm-Nahman",
+          type: "Auteur",
+          language: "Hébreu",
+          birthInfo: "",
+          deathInfo: "",
+          residence: "",
+          professionalActivity: "",
+          biography: "",
+          bibliographyStats: { originalTitles: "0", translations: "0", publicationLanguages: "0" },
+          bibliographyRows: [],
+          stats: { cardsFound: "1", databaseContains: "1231" },
+        },
+        error: null,
+        status: 200,
+        statusText: "OK",
+      });
+
+    const detail = await getPersonDetailByName("Bialik Haïm Nahman");
+
+    expect(detail?.name).toBe("Haïm-Nahman Bialik");
+    expect(rpcMock).toHaveBeenNthCalledWith(4, "get_person_detail_by_name", {
+      p_name: "Haïm-Nahman Bialik",
+    });
+  });
 });

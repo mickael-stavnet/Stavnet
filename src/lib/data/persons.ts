@@ -148,7 +148,9 @@ function buildPersonNameCandidates(value: string): string[] {
 
   const words = trimmedValue.split(/\s+/).filter(Boolean);
   const reversedValue = words.length > 1 ? words.slice().reverse().join(" ") : "";
-  const candidates = [trimmedValue, reversedValue].filter(Boolean);
+  const rotatedValue = words.length > 1 ? [...words.slice(1), words[0]].join(" ") : "";
+  const hyphenatedRotatedValue = words.length > 2 ? `${words.slice(1).join("-")} ${words[0]}` : "";
+  const candidates = [trimmedValue, reversedValue, rotatedValue, hyphenatedRotatedValue].filter(Boolean);
 
   return candidates.filter((candidate, index) => candidates.indexOf(candidate) === index);
 }
@@ -284,20 +286,28 @@ async function fetchPersonsPagePayload(
   page: number,
   pageSize: number,
   searchTerm?: string,
+  type?: string,
+  language?: string,
 ): Promise<PersonPageRpc> {
   const currentPage = Math.max(1, page);
   const trimmedSearchTerm = searchTerm?.trim() ?? "";
+  const trimmedType = type?.trim() ?? "";
+  const trimmedLanguage = language?.trim() ?? "";
 
   logInfo("PERSONS_RPC_PAGE_START", {
     page: currentPage,
     pageSize,
     searchTerm: trimmedSearchTerm || null,
+    type: trimmedType || null,
+    language: trimmedLanguage || null,
   });
 
   const { data, error, status, statusText } = await d1Client.rpc("get_persons_page", {
     p_page: currentPage,
     p_page_size: pageSize,
     p_search: trimmedSearchTerm.length > 0 ? trimmedSearchTerm : null,
+    p_type: trimmedType || null,
+    p_language: trimmedLanguage || null,
   });
 
   if (error) {
@@ -305,6 +315,8 @@ async function fetchPersonsPagePayload(
       page: currentPage,
       pageSize,
       searchTerm: trimmedSearchTerm || null,
+      type: trimmedType || null,
+      language: trimmedLanguage || null,
       status,
       statusText,
       error,
@@ -316,6 +328,8 @@ async function fetchPersonsPagePayload(
     page: currentPage,
     pageSize,
     searchTerm: trimmedSearchTerm || null,
+    type: trimmedType || null,
+    language: trimmedLanguage || null,
     status,
     statusText,
     itemCount: Array.isArray((data as PersonPageRpc)?.items) ? (data as PersonPageRpc)?.items?.length ?? 0 : 0,
@@ -341,6 +355,20 @@ export const getPersonsPageByName = cacheData(
   async (page: number, searchTerm: string, pageSize: number = PERSONS_PAGE_SIZE): Promise<PersonListResult> => {
     const currentPage = Math.max(1, page);
     const payload = await fetchPersonsPagePayload(currentPage, pageSize, searchTerm);
+    return buildPersonListResult(payload, currentPage, pageSize);
+  },
+  { revalidate: 60, tags: ["persons"] },
+);
+
+export const getPersonsPageByFilters = cacheData(
+  ["persons-page-by-filters"],
+  async (
+    page: number,
+    filters: { searchTerm?: string; type?: string; language?: string },
+    pageSize: number = PERSONS_PAGE_SIZE,
+  ): Promise<PersonListResult> => {
+    const currentPage = Math.max(1, page);
+    const payload = await fetchPersonsPagePayload(currentPage, pageSize, filters.searchTerm, filters.type, filters.language);
     return buildPersonListResult(payload, currentPage, pageSize);
   },
   { revalidate: 60, tags: ["persons"] },

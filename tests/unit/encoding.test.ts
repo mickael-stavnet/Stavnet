@@ -12,4 +12,8 @@ describe("fixEncoding", () => {
     expect(fixEncoding(`Ma.ariv\uD800`)).toContain("Ma'ariv");
     expect(fixEncoding(`L.Age d.Homme\uD800`)).toContain("L'Âge d'Homme");
   });
+
+  it("preserves valid words that contain the letter N", () => {
+    expect(fixEncoding("Néerlandais")).toBe("Néerlandais");
+  });
 });

@@ -103,11 +103,11 @@ describe("PersonDetailPage", () => {
     cleanup();
   });
 
-  it("renders the writing language link on the default tab", () => {
+  it("renders the writing language link as a persons filter", () => {
     render(<PersonDetailPage person={createPersonDetail()} />);
 
     const languageLink = screen.getByRole("link", { name: "Hébreu" });
-    expect(languageLink).toHaveAttribute("href", "/books/related?facet=authorWritingLanguage&value=H%C3%A9breu");
+    expect(languageLink).toHaveAttribute("href", "/persons?page=1&language=H%C3%A9breu&fallbackFacet=authorWritingLanguage");
   });
 
   it("shows only original titles in the original titles tab", () => {

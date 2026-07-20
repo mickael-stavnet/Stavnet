@@ -6,7 +6,7 @@ import { StavnetFooter } from "@/components/stavnet/footer";
 import { StavnetHeader } from "@/components/stavnet/header";
 import { ListNameSearch } from "@/components/stavnet/list-name-search";
 import { Link } from "@/i18n/routing";
-import { getPersonsPage, getPersonsPageByName } from "@/lib/data/persons";
+import { getPersonsPage, getPersonsPageByFilters, getPersonsPageByName } from "@/lib/data/persons";
 import {
   Pagination,
   PaginationContent,
@@ -19,6 +19,7 @@ import {
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { buildStaticPageMetadata } from "@/lib/site-metadata";
 import { isPageWithinLimit, MAX_PERSONS_PAGE } from "@/lib/pagination";
+import { isBookRelatedFacet } from "@/lib/book-related";
 
 const PERSONS_COLUMN_WIDTHS =
   ["24.35%", "13.92%", "13.42%", "7.16%", "7.75%", "8.15%", "7.95%", "8.15%", "7.95%", "9.15%"] as const;
@@ -37,6 +38,9 @@ interface PersonsPageProps {
   searchParams: Promise<{
     page?: string;
     q?: string;
+    type?: string;
+    language?: string;
+    fallbackFacet?: string;
   }>;
 }
 
@@ -49,11 +53,17 @@ function RedMarker() {
   return <span className="inline-block h-[9px] w-[9px] shrink-0 rounded-full border-[1.5px] border-[#ff1d1d]" />;
 }
 
-function buildPageHref(page: number, searchTerm: string): string {
+function buildPageHref(page: number, searchTerm: string, typeFilter: string, languageFilter: string): string {
   const params = new URLSearchParams();
   params.set("page", String(page <= 1 ? 1 : page));
   if (searchTerm.trim()) {
     params.set("q", searchTerm);
+  }
+  if (typeFilter.trim()) {
+    params.set("type", typeFilter);
+  }
+  if (languageFilter.trim()) {
+    params.set("language", languageFilter);
   }
   return `?${params.toString()}`;
 }
@@ -114,9 +124,12 @@ function MobilePersonCard({
 }
 
 export default async function PersonsListPage({ params, searchParams }: PersonsPageProps) {
-  const [{ locale }, { page, q }, t] = await Promise.all([params, searchParams, getTranslations("Persons")]);
+  const [{ locale }, { page, q, type, language, fallbackFacet: fallbackFacetParam }, t] = await Promise.all([params, searchParams, getTranslations("Persons")]);
   const currentPage = Number.parseInt(page ?? "1", 10);
   const searchTerm = (q ?? "").trim();
+  const typeFilter = (type ?? "").trim();
+  const languageFilter = (language ?? "").trim();
+  const fallbackFacet = isBookRelatedFacet(fallbackFacetParam ?? "") ? fallbackFacetParam : null;
   const pageNumber = Number.isFinite(currentPage) && currentPage > 0 ? currentPage : 1;
 
   if (!isPageWithinLimit(pageNumber, MAX_PERSONS_PAGE)) {
@@ -129,10 +142,24 @@ export default async function PersonsListPage({ params, searchParams }: PersonsP
     });
   }
 
-  const result = searchTerm
-    ? await getPersonsPageByName(pageNumber, searchTerm, PERSONS_PAGE_SIZE)
-    : await getPersonsPage(pageNumber, PERSONS_PAGE_SIZE);
-  if (searchTerm && result.total === 1 && result.items[0]) {
+  const result = typeFilter || languageFilter
+    ? await getPersonsPageByFilters(pageNumber, { searchTerm, type: typeFilter, language: languageFilter }, PERSONS_PAGE_SIZE)
+    : searchTerm
+      ? await getPersonsPageByName(pageNumber, searchTerm, PERSONS_PAGE_SIZE)
+      : await getPersonsPage(pageNumber, PERSONS_PAGE_SIZE);
+  if (fallbackFacet && (typeFilter || languageFilter) && result.total === 0) {
+    redirect({
+      href: {
+        pathname: "/books/related",
+        query: {
+          facet: fallbackFacet,
+          value: typeFilter || languageFilter,
+        },
+      },
+      locale,
+    });
+  }
+  if ((searchTerm || typeFilter || languageFilter) && result.total === 1 && result.items[0]) {
     redirect({
       href: {
         pathname: "/persons/details",
@@ -181,6 +208,16 @@ export default async function PersonsListPage({ params, searchParams }: PersonsP
               initialValue={searchTerm}
               resetLabel={t("search.reset")}
             />
+            {typeFilter || languageFilter ? (
+              <div className="rounded-[8px] border border-[#7aa8b7] bg-[#a7dcee] px-4 py-3 shadow-[3px_3px_6px_rgba(0,0,0,0.12)] [@media(max-height:950px)]:px-3 [@media(max-height:950px)]:py-2">
+                <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#07384a] [@media(max-height:950px)]:text-[10px]">
+                  {typeFilter ? t("columns.type") : t("columns.language")}
+                </p>
+                <p className="mt-2 text-[18px] font-bold leading-tight text-black [@media(max-height:950px)]:mt-1 [@media(max-height:950px)]:text-[15px]">
+                  {typeFilter || languageFilter}
+                </p>
+              </div>
+            ) : null}
             <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end sm:justify-end sm:gap-6 [@media(max-height:950px)]:gap-2">
               <div className="flex items-center gap-3 text-[18px] leading-none text-black [@media(max-height:950px)]:gap-2 [@media(max-height:950px)]:text-[15px]">
                 <span>{t("stats.cardsFound")}</span>
@@ -281,7 +318,7 @@ export default async function PersonsListPage({ params, searchParams }: PersonsP
               <PaginationContent className="flex-wrap justify-center">
                 <PaginationItem>
                   <PaginationPrevious
-                    href={buildPageHref(result.page - 1, searchTerm)}
+                    href={buildPageHref(result.page - 1, searchTerm, typeFilter, languageFilter)}
                     text={t("pagination.previous")}
                     className={result.page === 1 ? "pointer-events-none opacity-50" : ""}
                   />
@@ -289,7 +326,7 @@ export default async function PersonsListPage({ params, searchParams }: PersonsP
                 {paginationItems.map((item) =>
                   typeof item === "number" ? (
                     <PaginationItem key={item}>
-                      <PaginationLink href={buildPageHref(item, searchTerm)} isActive={item === result.page}>
+                      <PaginationLink href={buildPageHref(item, searchTerm, typeFilter, languageFilter)} isActive={item === result.page}>
                         {item}
                       </PaginationLink>
                     </PaginationItem>
@@ -301,7 +338,7 @@ export default async function PersonsListPage({ params, searchParams }: PersonsP
                 )}
                 <PaginationItem>
                   <PaginationNext
-                    href={buildPageHref(result.page + 1, searchTerm)}
+                    href={buildPageHref(result.page + 1, searchTerm, typeFilter, languageFilter)}
                     text={t("pagination.next")}
                     className={result.page === result.totalPages ? "pointer-events-none opacity-50" : ""}
                   />

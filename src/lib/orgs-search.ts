@@ -6,17 +6,19 @@ export interface OrganizationsSearchParams {
   page?: string;
   q?: string;
   type?: string;
+  country?: string;
 }
 
 export interface OrganizationsListSelection {
   pageNumber: number;
   searchTerm: string;
   typeFilter: string;
+  countryFilter: string;
   categoryFilter: OrganizationCategoryValue | "";
-  mode: "basic" | "name" | "type" | "category";
+  mode: "basic" | "name" | "type" | "country" | "category";
 }
 
-export function buildOrganizationsPageHref(page: number, searchTerm: string, typeFilter: string): string {
+export function buildOrganizationsPageHref(page: number, searchTerm: string, typeFilter: string, countryFilter: string = ""): string {
   const params = new URLSearchParams();
   params.set("page", String(page <= 1 ? 1 : page));
   if (searchTerm.trim()) {
@@ -25,6 +27,9 @@ export function buildOrganizationsPageHref(page: number, searchTerm: string, typ
   if (typeFilter.trim()) {
     params.set("type", typeFilter);
   }
+  if (countryFilter.trim()) {
+    params.set("country", countryFilter);
+  }
   return `?${params.toString()}`;
 }
 
@@ -32,16 +37,20 @@ export function resolveOrganizationsListSelection({
   page,
   q,
   type,
+  country,
 }: OrganizationsSearchParams): OrganizationsListSelection {
   const currentPage = Number.parseInt(page ?? "1", 10);
   const searchTerm = (q ?? "").trim();
   const typeFilter = (type ?? "").trim();
+  const countryFilter = (country ?? "").trim();
   const categoryFilter = ORGANIZATION_FILTER_OPTIONS.find((value) => value === typeFilter) ?? "";
   const pageNumber = Number.isFinite(currentPage) && currentPage > 0 ? currentPage : 1;
   const mode: OrganizationsListSelection["mode"] = categoryFilter
     ? "category"
     : typeFilter
       ? "type"
+      : countryFilter
+        ? "country"
       : searchTerm
         ? "name"
         : "basic";
@@ -50,6 +59,7 @@ export function resolveOrganizationsListSelection({
     pageNumber,
     searchTerm,
     typeFilter,
+    countryFilter,
     categoryFilter,
     mode,
   };

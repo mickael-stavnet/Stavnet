@@ -16,6 +16,28 @@ export type DetailLinkHref =
       };
     }
   | {
+      pathname: "/persons";
+      query:
+        | {
+            page: "1";
+            type: string;
+            fallbackFacet: BookRelatedFacet;
+          }
+        | {
+            page: "1";
+            language: string;
+            fallbackFacet: BookRelatedFacet;
+          };
+    }
+  | {
+      pathname: "/orgs";
+      query: {
+        page: "1";
+        country: string;
+        fallbackFacet: BookRelatedFacet;
+      };
+    }
+  | {
       pathname: "/persons/details";
       query: {
         name: string;
@@ -47,6 +69,39 @@ export function buildBookTitleResolverHref(title: string): DetailLinkHref {
     pathname: "/books/by-title",
     query: {
       title,
+    },
+  };
+}
+
+export function buildPersonsByTypeHref(type: string, fallbackFacet: BookRelatedFacet = "authorType"): DetailLinkHref {
+  return {
+    pathname: "/persons",
+    query: {
+      page: "1",
+      type,
+      fallbackFacet,
+    },
+  };
+}
+
+export function buildPersonsByLanguageHref(language: string, fallbackFacet: BookRelatedFacet = "authorWritingLanguage"): DetailLinkHref {
+  return {
+    pathname: "/persons",
+    query: {
+      page: "1",
+      language,
+      fallbackFacet,
+    },
+  };
+}
+
+export function buildOrganizationsByCountryHref(country: string, fallbackFacet: BookRelatedFacet = "publisherCountry"): DetailLinkHref {
+  return {
+    pathname: "/orgs",
+    query: {
+      page: "1",
+      country,
+      fallbackFacet,
     },
   };
 }

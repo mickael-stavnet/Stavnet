@@ -8,7 +8,7 @@ import { StavnetFooter } from "@/components/stavnet/footer";
 import { StavnetHeader } from "@/components/stavnet/header";
 import { Link } from "@/i18n/routing";
 import type { OrganizationDetail } from "@/lib/data/orgs";
-import { ClickableDetailValue, buildBookTitleResolverHref, buildRelatedBooksHref } from "@/lib/detail-links";
+import { ClickableDetailValue, buildBookTitleResolverHref, buildOrganizationsByCountryHref } from "@/lib/detail-links";
 
 type OrganizationTab =
   | "editorCard"
@@ -291,7 +291,7 @@ export default function OrganizationsDetailPage({
                             <FilledCell
                               value={
                                 organization.country
-                                  ? <ClickableDetailValue href={buildRelatedBooksHref("publisherCountry", organization.country)} value={organization.country} />
+                                  ? <ClickableDetailValue href={buildOrganizationsByCountryHref(organization.country)} value={organization.country} />
                                   : "—"
                               }
                               className="border-b-0"

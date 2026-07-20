@@ -5,6 +5,8 @@ import { useSearchParams } from "next/navigation";
 import { usePathname, useRouter } from "@/i18n/routing";
 import { Input } from "@/components/ui/input";
 
+export const LIST_NAME_SEARCH_DEBOUNCE_MS = 900;
+
 interface ListNameSearchProps {
   label: string;
   placeholder: string;
@@ -74,7 +76,7 @@ export function ListNameSearch({ label, placeholder, initialValue, resetLabel }:
 
     const timeoutId = window.setTimeout(() => {
       applySearch();
-    }, 450);
+    }, LIST_NAME_SEARCH_DEBOUNCE_MS);
 
     return () => {
       window.clearTimeout(timeoutId);

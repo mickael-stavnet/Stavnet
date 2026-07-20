@@ -106,7 +106,10 @@ function publisherStatements(bookId, record) {
 
 function workTitleStatements(bookId, record) {
   const values = ["Titre. Original", "Titre. Anglais", "Titre. Transcription", "Titre"].map((field) => first(record, [field])).filter(Boolean);
-  return [...new Set(values)].map((value) => `INSERT OR IGNORE INTO book_work_titles (book_id, value) VALUES (${bookId}, ${sql(normalize(value))});`);
+  return [...new Set(values)].flatMap((value) => [
+    `INSERT OR IGNORE INTO book_work_titles (book_id, value) VALUES (${bookId}, ${sql(normalize(value))});`,
+    `INSERT INTO book_titles_search (book_id, value) VALUES (${bookId}, ${sql(normalize(value))});`,
+  ]);
 }
 
 function bookListItemStatement(bookId, record, title, isValid) {
@@ -135,7 +138,7 @@ if (books.length !== 4998) throw new Error(`Expected 4998 books, received ${book
 if (people.length !== 1231) throw new Error(`Expected 1231 people, received ${people.length}`);
 if (organizations.length < 1200) throw new Error(`Expected at least 1200 organizations, received ${organizations.length}`);
 
-const statements = ["PRAGMA foreign_keys = ON;", "DELETE FROM books_search;", "DELETE FROM book_list_items;", "DELETE FROM book_facets;", "DELETE FROM book_publishers;", "DELETE FROM book_work_titles;", "DELETE FROM app_stats;", "DELETE FROM book_press_reviews;", "DELETE FROM book_bibliographies;", "DELETE FROM books;", "DELETE FROM people;", "DELETE FROM organizations;"];
+const statements = ["PRAGMA foreign_keys = ON;", "DELETE FROM books_search;", "DELETE FROM book_titles_search;", "DELETE FROM book_list_items;", "DELETE FROM book_facets;", "DELETE FROM book_publishers;", "DELETE FROM book_work_titles;", "DELETE FROM app_stats;", "DELETE FROM book_press_reviews;", "DELETE FROM book_bibliographies;", "DELETE FROM books;", "DELETE FROM people;", "DELETE FROM organizations;"];
 let bibliographyId = 1;
 let validBooks = 0;
 for (const [index, record] of books.entries()) {

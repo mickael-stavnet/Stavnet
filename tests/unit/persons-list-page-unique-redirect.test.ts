@@ -7,6 +7,7 @@ const redirectMock = vi.hoisted(() =>
   }),
 );
 const getPersonsPageByNameMock = vi.hoisted(() => vi.fn());
+const getPersonsPageByFiltersMock = vi.hoisted(() => vi.fn());
 const getPersonsPageMock = vi.hoisted(() => vi.fn());
 const getTranslationsMock = vi.hoisted(() => vi.fn());
 
@@ -23,6 +24,7 @@ vi.mock("@/lib/data/persons", () => ({
   PERSONS_PAGE_SIZE: 10,
   getPersonsPage: getPersonsPageMock,
   getPersonsPageByName: getPersonsPageByNameMock,
+  getPersonsPageByFilters: getPersonsPageByFiltersMock,
 }));
 
 vi.mock("@/lib/site-metadata", () => ({
@@ -61,6 +63,7 @@ describe("PersonsListPage", () => {
   beforeEach(() => {
     redirectMock.mockClear();
     getPersonsPageByNameMock.mockReset();
+    getPersonsPageByFiltersMock.mockReset();
     getPersonsPageMock.mockReset();
     getTranslationsMock.mockReset();
     getTranslationsMock.mockImplementation(async () => (key: string) => key);
@@ -92,6 +95,39 @@ describe("PersonsListPage", () => {
         pathname: "/persons/details",
         query: {
           name: "Ada Aharoni",
+        },
+      },
+      locale: "fr",
+    });
+  });
+
+  it("falls back to the matching books when an entity filter has no result", async () => {
+    getPersonsPageByFiltersMock.mockResolvedValueOnce({
+      items: [],
+      page: 1,
+      pageSize: 10,
+      total: 0,
+      totalPages: 0,
+      databaseTotal: 0,
+    });
+
+    await expect(
+      PersonsListPage({
+        params: Promise.resolve({ locale: "fr" }),
+        searchParams: Promise.resolve({
+          page: "1",
+          type: "Illustrateur",
+          fallbackFacet: "authorType",
+        }),
+      }),
+    ).rejects.toBe(redirectError);
+
+    expect(redirectMock).toHaveBeenCalledWith({
+      href: {
+        pathname: "/books/related",
+        query: {
+          facet: "authorType",
+          value: "Illustrateur",
         },
       },
       locale: "fr",

@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { cleanup, fireEvent, render, screen } from "@testing-library/react";
-import { ListNameSearch } from "@/components/stavnet/list-name-search";
+import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { LIST_NAME_SEARCH_DEBOUNCE_MS, ListNameSearch } from "@/components/stavnet/list-name-search";
 
 const routerMock = vi.hoisted(() => ({
   replace: vi.fn(),
@@ -18,6 +18,7 @@ vi.mock("@/i18n/routing", () => ({
 
 describe("ListNameSearch", () => {
   afterEach(() => {
+    vi.useRealTimers();
     cleanup();
   });
 
@@ -55,5 +56,30 @@ describe("ListNameSearch", () => {
     fireEvent.click(screen.getAllByRole("button", { name: "Reset" })[0]);
 
     expect(routerMock.replace).toHaveBeenCalledWith("/fr/books?page=1");
+  });
+
+  it("waits 900 milliseconds after the last keystroke before searching", () => {
+    vi.useFakeTimers();
+
+    render(
+      <ListNameSearch
+        label="Search"
+        placeholder="Search books"
+        initialValue="old"
+        resetLabel="Reset"
+      />,
+    );
+
+    fireEvent.change(screen.getByLabelText("Search"), { target: { value: "new title" } });
+
+    act(() => {
+      vi.advanceTimersByTime(LIST_NAME_SEARCH_DEBOUNCE_MS - 1);
+    });
+    expect(routerMock.replace).not.toHaveBeenCalled();
+
+    act(() => {
+      vi.advanceTimersByTime(1);
+    });
+    expect(routerMock.replace).toHaveBeenCalledWith("/fr/books?page=1&q=new+title");
   });
 });

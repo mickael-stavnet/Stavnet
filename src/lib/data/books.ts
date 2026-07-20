@@ -1420,7 +1420,7 @@ export async function getBooksPage(page: number, pageSize = BOOKS_PAGE_SIZE): Pr
 }
 
 const getBooksPageByTitleCached = cacheData<[number, string, number?], BookListResult>(
-  ["books-page-by-title-v2"],
+  ["books-page-by-title-v3"],
   async (page: number, searchTerm: string, pageSize = BOOKS_PAGE_SIZE): Promise<BookListResult> => {
     return loadBooksPage(page, pageSize, searchTerm, {});
   },
@@ -1459,7 +1459,7 @@ export async function getBooksPageByAdvancedSearch(
 }
 
 export const getBooksPageByFacet = cacheData<[number, BookRelatedFacet, string, number?], BookListResult>(
-  ["books-page-by-facet-v2"],
+  ["books-page-by-facet-v4"],
   async (
     page: number,
     facet: BookRelatedFacet,
@@ -1577,7 +1577,7 @@ export const resolveBookByExactTitle = cacheData(
 );
 
 export const getBookDetailById = cacheData(
-  ["books-detail-by-id"],
+  ["books-detail-by-id-v2"],
   async (id: string): Promise<BookDetail | null> => {
   const trimmedId = id.trim();
 

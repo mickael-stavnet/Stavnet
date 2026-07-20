@@ -13,10 +13,15 @@ interface StavnetFooterItem {
     | "/home"
     | "/menu"
     | "/books/details"
+    | `/books/details?${string}`
     | "/books/details/back-cover"
+    | `/books/details/back-cover?${string}`
     | "/books/details/availability"
+    | `/books/details/availability?${string}`
     | "/books/details/publishing"
+    | `/books/details/publishing?${string}`
     | "/books/details/press-critiques"
+    | `/books/details/press-critiques?${string}`
     | "/definition"
     | "/orgs"
     | "/orgs/details"

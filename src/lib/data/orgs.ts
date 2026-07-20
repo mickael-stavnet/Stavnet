@@ -291,14 +291,17 @@ async function fetchOrganizationsPagePayload(
   searchTerm?: string,
   type?: string,
   category?: OrganizationCategoryValue,
+  country?: string,
 ): Promise<OrganizationPageRpc> {
   const currentPage = Math.max(1, page);
   const trimmedSearchTerm = searchTerm?.trim() ?? "";
+  const trimmedCountry = country?.trim() ?? "";
 
   logInfo("ORGS_RPC_PAGE_START", {
     page: currentPage,
     pageSize,
     searchTerm: trimmedSearchTerm || null,
+    country: trimmedCountry || null,
   });
 
   const { data, error, status, statusText } = await d1Client.rpc("get_organizations_page", {
@@ -307,6 +310,7 @@ async function fetchOrganizationsPagePayload(
     p_search: trimmedSearchTerm.length > 0 ? trimmedSearchTerm : null,
     p_type: type?.trim() || null,
     p_category: category ?? null,
+    p_country: trimmedCountry || null,
   });
 
   if (error) {
@@ -314,6 +318,7 @@ async function fetchOrganizationsPagePayload(
       page: currentPage,
       pageSize,
       searchTerm: trimmedSearchTerm || null,
+      country: trimmedCountry || null,
       status,
       statusText,
       error,
@@ -325,6 +330,7 @@ async function fetchOrganizationsPagePayload(
     page: currentPage,
     pageSize,
     searchTerm: trimmedSearchTerm || null,
+    country: trimmedCountry || null,
     status,
     statusText,
     itemCount: Array.isArray((data as OrganizationPageRpc)?.items)
@@ -379,6 +385,36 @@ export const getOrganizationsPageByCategory = cacheData(
   async (page: number, category: OrganizationCategoryValue, searchTerm: string = "", pageSize: number = ORGS_PAGE_SIZE): Promise<OrganizationListResult> => {
     const currentPage = Math.max(1, page);
     const payload = await fetchOrganizationsPagePayload(currentPage, pageSize, searchTerm, undefined, category);
+    return buildOrganizationsListResult(payload, currentPage, pageSize);
+  },
+  { revalidate: 60, tags: ["orgs"] },
+);
+
+export const getOrganizationsPageByCountry = cacheData(
+  ["organizations-page-by-country"],
+  async (page: number, country: string, searchTerm: string = "", pageSize: number = ORGS_PAGE_SIZE): Promise<OrganizationListResult> => {
+    const currentPage = Math.max(1, page);
+    const trimmedCountry = country.trim();
+
+    if (!trimmedCountry) {
+      return getOrganizationsPage(currentPage, pageSize);
+    }
+
+    const payload = await fetchOrganizationsPagePayload(currentPage, pageSize, searchTerm, undefined, undefined, trimmedCountry);
+    return buildOrganizationsListResult(payload, currentPage, pageSize);
+  },
+  { revalidate: 60, tags: ["orgs"] },
+);
+
+export const getOrganizationsPageByFilters = cacheData(
+  ["organizations-page-by-filters"],
+  async (
+    page: number,
+    filters: { searchTerm?: string; type?: string; country?: string },
+    pageSize: number = ORGS_PAGE_SIZE,
+  ): Promise<OrganizationListResult> => {
+    const currentPage = Math.max(1, page);
+    const payload = await fetchOrganizationsPagePayload(currentPage, pageSize, filters.searchTerm, filters.type, undefined, filters.country);
     return buildOrganizationsListResult(payload, currentPage, pageSize);
   },
   { revalidate: 60, tags: ["orgs"] },

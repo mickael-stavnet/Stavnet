@@ -11,7 +11,10 @@ import type { BookRelatedFacet } from "@/lib/book-related";
 import type { BookAuthorRow, BookContributorRow, BookDetail, BookPublisherRow } from "@/lib/data/books";
 import {
   ClickableDetailValue,
+  buildOrganizationsByCountryHref,
   buildOrganizationDetailHref,
+  buildPersonsByLanguageHref,
+  buildPersonsByTypeHref,
   buildPersonDetailHref,
   buildRelatedBooksHref,
 } from "@/lib/detail-links";
@@ -199,26 +202,38 @@ function renderOrganizationValue(value: string, fallbackFacet: "publisherName"):
   return value ? <ClickableDetailValue href={buildOrganizationDetailHref(value, fallbackFacet)} value={value} /> : "—";
 }
 
+function renderPersonTypeValue(value: string, fallbackFacet: "authorType" | "contributorType"): ReactNode {
+  return value ? <ClickableDetailValue href={buildPersonsByTypeHref(value, fallbackFacet)} value={value} /> : "—";
+}
+
+function renderPersonLanguageValue(value: string, fallbackFacet: "authorWritingLanguage" | "contributorLanguage"): ReactNode {
+  return value ? <ClickableDetailValue href={buildPersonsByLanguageHref(value, fallbackFacet)} value={value} /> : "—";
+}
+
+function renderOrganizationCountryValue(value: string): ReactNode {
+  return value ? <ClickableDetailValue href={buildOrganizationsByCountryHref(value, "publisherCountry")} value={value} /> : "—";
+}
+
 function buildAuthorRows(rows: BookAuthorRow[]): ReactNode[][] {
   return rows.map((row) => [
     renderPersonValue(row.name, "authorName"),
-    renderFacetValue(row.type, "authorType"),
-    renderFacetValue(row.language, "authorWritingLanguage"),
+    renderPersonTypeValue(row.type, "authorType"),
+    renderPersonLanguageValue(row.language, "authorWritingLanguage"),
   ]);
 }
 
 function buildContributorRows(rows: BookContributorRow[]): ReactNode[][] {
   return rows.map((row) => [
     renderPersonValue(row.name, "contributorName"),
-    renderFacetValue(row.type, "contributorType"),
-    renderFacetValue(row.language, "contributorLanguage"),
+    renderPersonTypeValue(row.type, "contributorType"),
+    renderPersonLanguageValue(row.language, "contributorLanguage"),
   ]);
 }
 
 function buildPublisherRows(rows: BookPublisherRow[]): ReactNode[][] {
   return rows.map((row) => [
     renderOrganizationValue(row.name, "publisherName"),
-    renderFacetValue(row.country, "publisherCountry"),
+    renderOrganizationCountryValue(row.country),
     row.isbn || "—",
   ]);
 }
@@ -251,7 +266,7 @@ export default function BookDetailPage({ book }: BookDetailPageProps) {
     {
       key: "help",
       icon: "/icons/icons-nav/help.png",
-      href: "/books/details" as const,
+      href: `/books/details?id=${book.id}` as const,
       label: t("footer.help"),
       onClick: (event: MouseEvent) => {
         event.preventDefault();
@@ -261,7 +276,7 @@ export default function BookDetailPage({ book }: BookDetailPageProps) {
     {
       key: "move",
       icon: "/icons/icons-nav/next.png",
-      href: "/books/details" as const,
+      href: `/books/details?id=${book.id}` as const,
       label: t("footer.move"),
       onClick: (event: MouseEvent) => {
         event.preventDefault();

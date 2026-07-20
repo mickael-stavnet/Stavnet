@@ -109,11 +109,11 @@ describe("OrganizationsDetailPage", () => {
     cleanup();
   });
 
-  it("renders the publisher country as a related books link", () => {
+  it("renders the publisher country as an organizations filter link", () => {
     render(<OrganizationsDetailPage organization={createOrganizationDetail()} />);
 
     const countryLink = screen.getByRole("link", { name: "France" });
-    expect(countryLink).toHaveAttribute("href", "/books/related?facet=publisherCountry&value=France");
+    expect(countryLink).toHaveAttribute("href", "/orgs?page=1&country=France&fallbackFacet=publisherCountry");
   });
 
   it("renders the organization group link to the orgs list filter", () => {

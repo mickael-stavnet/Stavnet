@@ -35,8 +35,11 @@ vi.mock("@/i18n/routing", () => ({
 import {
   ClickableDetailValue,
   buildBookTitleResolverHref,
+  buildOrganizationsByCountryHref,
   buildOrganizationDetailHref,
+  buildPersonsByLanguageHref,
   buildPersonDetailHref,
+  buildPersonsByTypeHref,
   buildRelatedBooksHref,
 } from "@/lib/detail-links";
 
@@ -57,6 +60,21 @@ describe("detail links helpers", () => {
       query: {
         title: "Original Book",
       },
+    });
+  });
+
+  it("builds entity-list filters for person attributes and publisher countries", () => {
+    expect(buildPersonsByTypeHref("Auteur")).toEqual({
+      pathname: "/persons",
+      query: { page: "1", type: "Auteur", fallbackFacet: "authorType" },
+    });
+    expect(buildPersonsByLanguageHref("Hébreu")).toEqual({
+      pathname: "/persons",
+      query: { page: "1", language: "Hébreu", fallbackFacet: "authorWritingLanguage" },
+    });
+    expect(buildOrganizationsByCountryHref("Pays-Bas")).toEqual({
+      pathname: "/orgs",
+      query: { page: "1", country: "Pays-Bas", fallbackFacet: "publisherCountry" },
     });
   });
 
