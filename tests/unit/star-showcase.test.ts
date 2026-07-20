@@ -6,17 +6,31 @@ describe("star showcase selection", () => {
   it("keeps only known image-backed authors and removes duplicates", () => {
     expect(
       normalizeShowcaseNames([
-        "Agnon Shamuel Joseph",
-        "Agnon Shamuel Joseph",
+        "Ami Bouganim",
+        "Ami Bouganim",
         "Unknown Author",
         42,
       ]),
-    ).toEqual(["Agnon Shamuel Joseph"]);
+    ).toEqual(["Ami Bouganim"]);
   });
 
   it("maps persisted names back to local portrait entries", () => {
-    expect(entriesFromNames(["Keret Edgar"])).toEqual([
-      { name: "Keret Edgar", src: "/images/persons/Keret Edgar.jpg" },
+    expect(entriesFromNames(["Ami Bouganim"])).toEqual([
+      {
+        name: "Ami Bouganim",
+        src: "/images/star-showcase/ami-bouganim.jpg",
+        detailName: "Ami Bouganim",
+      },
+    ]);
+  });
+
+  it("keeps portraits without a person page in the showcase without a detail link", () => {
+    expect(entriesFromNames(["Alec Borenstein"])).toEqual([
+      {
+        name: "Alec Borenstein",
+        src: "/images/star-showcase/alec-borenstein.jpg",
+        detailName: null,
+      },
     ]);
   });
 

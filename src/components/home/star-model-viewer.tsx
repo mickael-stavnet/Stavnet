@@ -9,7 +9,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { getPersonImageEntries, resolvePersonDetailName, type PersonImageEntry } from "@/lib/person-images";
+import { getPersonImageEntries, type PersonImageEntry } from "@/lib/person-images";
 
 const MAX_SHOWCASE_COUNT = 12;
 const DEBUG_STAR_MODEL = process.env.NODE_ENV !== "production";
@@ -126,11 +126,10 @@ function createShowcaseTexture(texture: THREE.Texture): THREE.CanvasTexture {
 
 function buildPersonDetailUrl(personName: string): string {
   const locale = window.location.pathname.split("/").filter(Boolean)[0] || "en";
-  const detailName = resolvePersonDetailName(personName);
   const params = new URLSearchParams({
     fallbackFacet: "authorName",
-    fallbackValue: detailName,
-    name: detailName,
+    fallbackValue: personName,
+    name: personName,
   });
   return `/${locale}/persons/details?${params.toString()}`;
 }
@@ -756,8 +755,8 @@ export function StarModelViewer() {
           panelMesh.quaternion.copy(point.orientation);
           panelMesh.renderOrder = 30 + pointIndex;
           panelMesh.userData.personName = textureEntries[pointIndex]?.name;
-          panelMesh.userData.personHref = textureEntries[pointIndex]
-            ? buildPersonDetailUrl(textureEntries[pointIndex].name)
+          panelMesh.userData.personHref = textureEntries[pointIndex]?.detailName
+            ? buildPersonDetailUrl(textureEntries[pointIndex].detailName)
             : "";
           modelGroup.add(panelMesh);
           showcasePanels.push(panelMesh);

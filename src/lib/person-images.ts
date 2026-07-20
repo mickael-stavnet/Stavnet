@@ -74,7 +74,22 @@ const PERSON_IMAGE_NAME_OVERRIDES = new Map(
 export type PersonImageEntry = {
   name: string;
   src: string;
+  detailName: string | null;
 };
+
+const STAR_SHOWCASE_ENTRIES: readonly PersonImageEntry[] = [
+  { name: "Miron C. Izakson", src: "/images/star-showcase/miron-c-izakson.jpg", detailName: "Miron C. Izakson" },
+  { name: "Ami Bouganim", src: "/images/star-showcase/ami-bouganim.jpg", detailName: "Ami Bouganim" },
+  { name: "Alec Borenstein", src: "/images/star-showcase/alec-borenstein.jpg", detailName: null },
+  { name: "Mickaël Parienté", src: "/images/star-showcase/mickael-pariente.jpg", detailName: "Mickaël Parienté" },
+  { name: "Zeruya Shalev", src: "/images/star-showcase/zeruya-shalev.jpg", detailName: "Zeruya Shalev" },
+  { name: "Shulamit Lapid", src: "/images/star-showcase/shulamit-lapid.jpg", detailName: "Shulamit Lapid" },
+  { name: "Ronny Someck", src: "/images/star-showcase/ronny-someck.jpg", detailName: "Ronny Someck" },
+  { name: "Josh=Yehoshua Shachar", src: "/images/star-showcase/josh-yehoshua-shachar.png", detailName: null },
+  { name: "Castel-Blum Orly", src: "/images/star-showcase/castel-blum-orly.jpg", detailName: null },
+  { name: "Dorit Orgad", src: "/images/star-showcase/dorit-orgad.jpg", detailName: "Dorit Orgad" },
+  { name: "Yehuda Lancry", src: "/images/star-showcase/yehuda-lancry.jpg", detailName: null },
+];
 
 function normalizePersonImageKey(value: string): string {
   return value
@@ -111,10 +126,7 @@ export function getPersonImageSources(): string[] {
 }
 
 export function getPersonImageEntries(): PersonImageEntry[] {
-  return PERSON_IMAGE_BASE_NAMES.map((baseName) => ({
-    name: baseName.trim(),
-    src: `/images/persons/${baseName}.jpg`,
-  }));
+  return [...STAR_SHOWCASE_ENTRIES];
 }
 
 export function resolvePersonDetailName(name: string): string {
