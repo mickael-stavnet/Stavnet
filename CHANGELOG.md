@@ -214,3 +214,4 @@
 - 13:52 - Correction de la recherche de titres D1 avec index trigramme couvrant les titres originaux, anglais et transcrits, et renforcement de la résolution des noms de personnes inversés ou composés afin de rétablir les parcours `Sarah` et `Bialik Haïm Nahman`.
 - 14:31 - Réparation des relations bibliographiques D1 des 55 ouvrages ajoutés après l’import initial : leurs auteurs sont de nouveau indexés, dont les trois fiches `Sarah` de Mickaël Parienté.
 - 14:49 - Remplacement majeur de la sélection du modèle 3D d’accueil par les onze portraits fournis, exclusion de la photo défaillante de Haïm Beer et désactivation des liens pour les auteurs sans fiche personne D1.
+- 15:26 - Réintégration des onze portraits importés dans le catalogue partagé `public/images/persons`, afin que l’administration puisse sélectionner l’ensemble des soixante-dix auteurs disponibles.

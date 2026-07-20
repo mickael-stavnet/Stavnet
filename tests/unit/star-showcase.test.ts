@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { entriesFromNames, normalizeShowcaseNames } from "@/lib/star-showcase";
-import { resolvePersonDetailName, resolvePersonImageSrc } from "@/lib/person-images";
+import { getPersonImageEntries, resolvePersonDetailName, resolvePersonImageSrc } from "@/lib/person-images";
 
 describe("star showcase selection", () => {
   it("keeps only known image-backed authors and removes duplicates", () => {
@@ -18,7 +18,7 @@ describe("star showcase selection", () => {
     expect(entriesFromNames(["Ami Bouganim"])).toEqual([
       {
         name: "Ami Bouganim",
-        src: "/images/star-showcase/ami-bouganim.jpg",
+        src: "/images/persons/ami-bouganim.jpg",
         detailName: "Ami Bouganim",
       },
     ]);
@@ -28,10 +28,19 @@ describe("star showcase selection", () => {
     expect(entriesFromNames(["Alec Borenstein"])).toEqual([
       {
         name: "Alec Borenstein",
-        src: "/images/star-showcase/alec-borenstein.jpg",
+        src: "/images/persons/alec-borenstein.jpg",
         detailName: null,
       },
     ]);
+  });
+
+  it("keeps the existing portrait catalog available alongside imported portraits", () => {
+    expect(getPersonImageEntries()).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ name: "Agnon Shamuel Joseph", src: "/images/persons/Agnon Shamuel Joseph.jpg" }),
+        expect.objectContaining({ name: "Ami Bouganim", src: "/images/persons/ami-bouganim.jpg" }),
+      ]),
+    );
   });
 
   it("returns an empty selection for an empty or invalid configuration", () => {

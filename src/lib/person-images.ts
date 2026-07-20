@@ -77,18 +77,18 @@ export type PersonImageEntry = {
   detailName: string | null;
 };
 
-const STAR_SHOWCASE_ENTRIES: readonly PersonImageEntry[] = [
-  { name: "Miron C. Izakson", src: "/images/star-showcase/miron-c-izakson.jpg", detailName: "Miron C. Izakson" },
-  { name: "Ami Bouganim", src: "/images/star-showcase/ami-bouganim.jpg", detailName: "Ami Bouganim" },
-  { name: "Alec Borenstein", src: "/images/star-showcase/alec-borenstein.jpg", detailName: null },
-  { name: "Mickaël Parienté", src: "/images/star-showcase/mickael-pariente.jpg", detailName: "Mickaël Parienté" },
-  { name: "Zeruya Shalev", src: "/images/star-showcase/zeruya-shalev.jpg", detailName: "Zeruya Shalev" },
-  { name: "Shulamit Lapid", src: "/images/star-showcase/shulamit-lapid.jpg", detailName: "Shulamit Lapid" },
-  { name: "Ronny Someck", src: "/images/star-showcase/ronny-someck.jpg", detailName: "Ronny Someck" },
-  { name: "Josh=Yehoshua Shachar", src: "/images/star-showcase/josh-yehoshua-shachar.png", detailName: null },
-  { name: "Castel-Blum Orly", src: "/images/star-showcase/castel-blum-orly.jpg", detailName: null },
-  { name: "Dorit Orgad", src: "/images/star-showcase/dorit-orgad.jpg", detailName: "Dorit Orgad" },
-  { name: "Yehuda Lancry", src: "/images/star-showcase/yehuda-lancry.jpg", detailName: null },
+const ADDITIONAL_PERSON_IMAGE_ENTRIES: readonly PersonImageEntry[] = [
+  { name: "Miron C. Izakson", src: "/images/persons/miron-c-izakson.jpg", detailName: "Miron C. Izakson" },
+  { name: "Ami Bouganim", src: "/images/persons/ami-bouganim.jpg", detailName: "Ami Bouganim" },
+  { name: "Alec Borenstein", src: "/images/persons/alec-borenstein.jpg", detailName: null },
+  { name: "Mickaël Parienté", src: "/images/persons/mickael-pariente.jpg", detailName: "Mickaël Parienté" },
+  { name: "Zeruya Shalev", src: "/images/persons/zeruya-shalev.jpg", detailName: "Zeruya Shalev" },
+  { name: "Shulamit Lapid", src: "/images/persons/shulamit-lapid.jpg", detailName: "Shulamit Lapid" },
+  { name: "Ronny Someck", src: "/images/persons/ronny-someck.jpg", detailName: "Ronny Someck" },
+  { name: "Josh=Yehoshua Shachar", src: "/images/persons/josh-yehoshua-shachar.png", detailName: null },
+  { name: "Castel-Blum Orly", src: "/images/persons/castel-blum-orly.jpg", detailName: null },
+  { name: "Dorit Orgad", src: "/images/persons/dorit-orgad.jpg", detailName: "Dorit Orgad" },
+  { name: "Yehuda Lancry", src: "/images/persons/yehuda-lancry.jpg", detailName: null },
 ];
 
 function normalizePersonImageKey(value: string): string {
@@ -114,11 +114,18 @@ function createPersonImageCandidates(value: string): string[] {
 }
 
 const PERSON_IMAGE_MAP = new Map(
-  PERSON_IMAGE_BASE_NAMES.flatMap((baseName) =>
-    createPersonImageCandidates(baseName).map(
-      (candidate) => [candidate, `/images/persons/${baseName}.jpg`] as const,
+  [
+    ...PERSON_IMAGE_BASE_NAMES.flatMap((baseName) =>
+      createPersonImageCandidates(baseName).map(
+        (candidate) => [candidate, `/images/persons/${baseName}.jpg`] as const,
+      ),
     ),
-  ),
+    ...ADDITIONAL_PERSON_IMAGE_ENTRIES.flatMap((entry) =>
+      createPersonImageCandidates(entry.name).map(
+        (candidate) => [candidate, entry.src] as const,
+      ),
+    ),
+  ],
 );
 
 export function getPersonImageSources(): string[] {
@@ -126,7 +133,14 @@ export function getPersonImageSources(): string[] {
 }
 
 export function getPersonImageEntries(): PersonImageEntry[] {
-  return [...STAR_SHOWCASE_ENTRIES];
+  return [
+    ...PERSON_IMAGE_BASE_NAMES.map((baseName) => ({
+      name: baseName.trim(),
+      src: `/images/persons/${baseName}.jpg`,
+      detailName: resolvePersonDetailName(baseName.trim()),
+    })),
+    ...ADDITIONAL_PERSON_IMAGE_ENTRIES,
+  ];
 }
 
 export function resolvePersonDetailName(name: string): string {
