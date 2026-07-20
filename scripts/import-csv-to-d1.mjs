@@ -109,6 +109,13 @@ function workTitleStatements(bookId, record) {
   return [...new Set(values)].map((value) => `INSERT OR IGNORE INTO book_work_titles (book_id, value) VALUES (${bookId}, ${sql(normalize(value))});`);
 }
 
+function bookListItemStatement(bookId, record, title, isValid) {
+  const author = [first(record, ["Auteur. 1. Nom"]), first(record, ["Auteur. 1. Prénom"])].filter(Boolean).join(" ");
+  const publisher = first(record, ["Éditeur. 1. Nom", "Éditeur"]);
+  const writingLanguage = first(record, ["Auteur. 1. Langue", "Auteur. 2. Langue", "Auteur. 3. Langue"]);
+  return `INSERT INTO book_list_items (book_id, title, sort_year, author, publisher, language, writing_language, publication_year, publication_code, is_valid) VALUES (${bookId}, ${sql(title)}, ${numberOrNull(record["Année"])}, ${sql(author)}, ${sql(publisher)}, ${sql(first(record, ["Langue"]))}, ${sql(writingLanguage)}, ${sql(first(record, ["Année"]))}, ${sql(first(record, ["Année. Pages. Dimensions"]))}, ${isValid});`;
+}
+
 function bibliographyStatements(bookId, record, startId) {
   const statements = [];
   let identifier = startId;
@@ -128,7 +135,7 @@ if (books.length !== 4998) throw new Error(`Expected 4998 books, received ${book
 if (people.length !== 1231) throw new Error(`Expected 1231 people, received ${people.length}`);
 if (organizations.length < 1200) throw new Error(`Expected at least 1200 organizations, received ${organizations.length}`);
 
-const statements = ["PRAGMA foreign_keys = ON;", "DELETE FROM books_search;", "DELETE FROM book_facets;", "DELETE FROM book_publishers;", "DELETE FROM book_work_titles;", "DELETE FROM app_stats;", "DELETE FROM book_press_reviews;", "DELETE FROM book_bibliographies;", "DELETE FROM books;", "DELETE FROM people;", "DELETE FROM organizations;"];
+const statements = ["PRAGMA foreign_keys = ON;", "DELETE FROM books_search;", "DELETE FROM book_list_items;", "DELETE FROM book_facets;", "DELETE FROM book_publishers;", "DELETE FROM book_work_titles;", "DELETE FROM app_stats;", "DELETE FROM book_press_reviews;", "DELETE FROM book_bibliographies;", "DELETE FROM books;", "DELETE FROM people;", "DELETE FROM organizations;"];
 let bibliographyId = 1;
 let validBooks = 0;
 for (const [index, record] of books.entries()) {
@@ -139,6 +146,7 @@ for (const [index, record] of books.entries()) {
   const searchText = Object.values(record).filter((value) => typeof value === "string" && value.trim()).join(" ");
   statements.push(`INSERT INTO books (id, title, sort_year, search_text, payload, is_valid) VALUES (${id}, ${sql(title)}, ${numberOrNull(record["Année"])}, ${sql(searchText)}, ${sql(JSON.stringify(payload))}, ${isValid});`);
   statements.push(`INSERT INTO books_search (rowid, title, search_text) VALUES (${id}, ${sql(title)}, ${sql(searchText)});`);
+  statements.push(bookListItemStatement(id, record, title, isValid));
   addFacetStatements(statements, id, record, title);
   statements.push(...publisherStatements(id, record));
   statements.push(...workTitleStatements(id, record));

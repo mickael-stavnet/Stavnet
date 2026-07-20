@@ -6,7 +6,7 @@ import { logError, logInfo, logWarn } from "@/lib/server-log";
 import { MAX_BOOKS_PAGE } from "@/lib/pagination";
 import { d1Client } from "@/lib/d1-client";
 
-export const BOOKS_PAGE_SIZE = 13;
+export const BOOKS_PAGE_SIZE = 10;
 
 const BOOK_LIST_SELECT = [
   "id",
@@ -1127,7 +1127,7 @@ export const getBookStatisticsFacetLists = cacheData(
     },
   };
   },
-  { revalidate: 300, tags: ["books"] },
+  { revalidate: 86400, tags: ["books"] },
 );
 
 function mapBookDetail(
@@ -1543,10 +1543,9 @@ export const resolveBookByExactTitle = cacheData(
     return { kind: "none" };
   }
 
-  const normalizedTitle = normalizeBookFacetValue(trimmedTitle);
-  const { data, error, status, statusText } = await d1Client
-    .from("data-books")
-    .select('id,"Titre"');
+  const { data, error, status, statusText } = await d1Client.rpc<unknown[]>("get_book_ids_by_exact_title", {
+    p_title: trimmedTitle,
+  });
 
   if (error) {
     logError("BOOK_TITLE_RESOLUTION_ERROR", {
@@ -1559,12 +1558,8 @@ export const resolveBookByExactTitle = cacheData(
   }
 
   const matchingIds = (Array.isArray(data) ? data : [])
-    .map((row) => ({
-      id: readId((row as BookRow).id),
-      title: readText((row as BookRow)["Titre"]),
-    }))
-    .filter((row) => row.id.length > 0 && normalizeBookFacetValue(row.title) === normalizedTitle)
-    .map((row) => row.id);
+    .map(readId)
+    .filter((id) => id.length > 0);
 
   const uniqueIds = [...new Set(matchingIds)];
 

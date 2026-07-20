@@ -55,9 +55,6 @@ type PersonPageRpc = {
   databaseTotal?: unknown;
 } | null;
 
-type PersonSourceRow = Record<string, unknown>;
-type PersonBookSourceRow = Record<string, unknown>;
-
 export interface PersonListItem {
   name: string;
   type: string;
@@ -156,13 +153,6 @@ function buildPersonNameCandidates(value: string): string[] {
   return candidates.filter((candidate, index) => candidates.indexOf(candidate) === index);
 }
 
-function dedupePersonCandidates(values: string[]): string[] {
-  return values
-    .map((value) => readText(value))
-    .filter(Boolean)
-    .filter((value, index, array) => array.indexOf(value) === index);
-}
-
 function readNumber(value: unknown): number {
   if (typeof value === "number") {
     return Number.isFinite(value) ? value : 0;
@@ -197,90 +187,6 @@ function mapBibliographyRow(row: PersonBibliographyRowRpc): PersonBibliographyRo
     year: readText(row.year),
     issue: readText(row.issue),
   };
-}
-
-function readSourceField(row: PersonSourceRow, candidates: string[]): string {
-  for (const candidate of candidates) {
-    if (candidate in row) {
-      return readText(row[candidate]);
-    }
-  }
-
-  return "";
-}
-
-function mapSourceBibliographyRow(row: PersonSourceRow): PersonBibliographyRow {
-  return {
-    type: readSourceField(row, ["Type Contribution", "Type Contribution. 1", "Type Contribution 1"]),
-    language: readSourceField(row, ["Langue Traduction", "Langue Traduite", "Langue de Traduction"]),
-    title: readSourceField(row, ["Titre"]),
-    year: readSourceField(row, ["Année Publication", "Annee Publication"]),
-    issue: readSourceField(row, ["Cote Livre", "Côte Livre"]),
-  };
-}
-
-function joinName(firstName: string, lastName: string): string {
-  return [firstName, lastName].filter((value) => value.length > 0).join(" ");
-}
-
-async function fetchAllTableRows(table: "data-person" | "data-books", select: string, batchSize = 1000): Promise<Record<string, unknown>[]> {
-  const rows: Record<string, unknown>[] = [];
-  let from = 0;
-
-  while (true) {
-    const to = from + batchSize - 1;
-    const { data, error } = await d1Client
-      .from(table)
-      .select(select)
-      .range(from, to);
-
-    if (error) {
-      throw new Error(error.message);
-    }
-
-    const batch = Array.isArray(data) ? (data as unknown as Record<string, unknown>[]) : [];
-    rows.push(...batch);
-
-    if (batch.length < batchSize) {
-      break;
-    }
-
-    from += batchSize;
-  }
-
-  return rows;
-}
-
-function mergeBibliographyRows(rows: PersonBibliographyRow[]): PersonBibliographyRow[] {
-  const byKey = new Map<string, PersonBibliographyRow>();
-
-  for (const row of rows) {
-    if (!Object.values(row).some((value) => value.length > 0)) {
-      continue;
-    }
-
-    const key = [row.type, row.language, row.title, row.year]
-      .map((value) => normalizePersonValue(value))
-      .join("|");
-    const current = byKey.get(key);
-
-    if (!current) {
-      byKey.set(key, row);
-      continue;
-    }
-
-    const nextRow = {
-      type: current.type || row.type,
-      language: current.language || row.language,
-      title: current.title || row.title,
-      year: current.year || row.year,
-      issue: current.issue || row.issue,
-    };
-
-    byKey.set(key, nextRow);
-  }
-
-  return Array.from(byKey.values());
 }
 
 function mapPersonDetail(detail: PersonDetailRpc): PersonDetail | null {
@@ -320,145 +226,13 @@ function mapPersonDetail(detail: PersonDetailRpc): PersonDetail | null {
   };
 }
 
-async function fetchPersonBibliographyRows(name: string, alternateName: string, writingLanguage: string): Promise<PersonBibliographyRow[]> {
-  const normalizedNames = [name, alternateName]
-    .map((value) => normalizePersonValue(value))
-    .filter((value, index, array) => value.length > 0 && array.indexOf(value) === index);
-
-  if (normalizedNames.length === 0) {
-    return [];
-  }
-
-  logInfo("DEBUG_LOG_INFINITE_FETCH", {
-    route: "/persons/details",
-    phase: "bibliography-scan-start",
-    name,
-    alternateName: alternateName || null,
-    writingLanguage: writingLanguage || null,
-  });
-
-  const [personData, bookData] = await Promise.all([
-    fetchAllTableRows("data-person", "*"),
-    fetchAllTableRows(
-      "data-books",
-      'id,"Titre","Langue","Année","Auteur. 1. Prénom","Auteur. 1. Nom","Auteur. 2. Prénom","Auteur. 2. Nom","Auteur. 3. Prénom","Auteur. 3. Nom"',
-    ),
-  ]);
-
-  const personRows = personData
-    .filter((row) => {
-      const sourceRow = row as PersonSourceRow;
-      const primaryName = readSourceField(sourceRow, ["Prénom Nom", "Prenom Nom"]);
-      const alternatePersonName = readSourceField(sourceRow, ["Nom Prénom", "Nom Prenom"]);
-      const originalAuthor = readSourceField(sourceRow, ["Auteur Original"]);
-
-      return [primaryName, alternatePersonName, originalAuthor].some((value) => normalizedNames.includes(normalizePersonValue(value)));
-    })
-    .map((row) => mapSourceBibliographyRow(row as PersonSourceRow));
-
-  const bookRows = bookData
-    .filter((row) => {
-      const sourceRow = row as PersonBookSourceRow;
-      const authorNames = [
-        joinName(readSourceField(sourceRow, ["Auteur. 1. Prénom"]), readSourceField(sourceRow, ["Auteur. 1. Nom"])),
-        joinName(readSourceField(sourceRow, ["Auteur. 2. Prénom"]), readSourceField(sourceRow, ["Auteur. 2. Nom"])),
-        joinName(readSourceField(sourceRow, ["Auteur. 3. Prénom"]), readSourceField(sourceRow, ["Auteur. 3. Nom"])),
-      ];
-
-      return authorNames.some((value) => normalizedNames.includes(normalizePersonValue(value)));
-    })
-    .map((row) => {
-      const sourceRow = row as PersonBookSourceRow;
-
-      return {
-        type: normalizePersonValue(readSourceField(sourceRow, ["Langue"])) === normalizePersonValue(writingLanguage) ? "Original" : "Traduction",
-        language: readSourceField(sourceRow, ["Langue"]),
-        title: readSourceField(sourceRow, ["Titre"]),
-        year: readSourceField(sourceRow, ["Année"]),
-        issue: "",
-      };
-    });
-
-  const mergedRows = mergeBibliographyRows([...personRows, ...bookRows]);
-
-  logInfo("DEBUG_LOG_INFINITE_FETCH", {
-    route: "/persons/details",
-    phase: "bibliography-scan-result",
-    name,
-    alternateName: alternateName || null,
-    writingLanguage: writingLanguage || null,
-    personRows: personRows.length,
-    bookRows: bookRows.length,
-    mergedRows: mergedRows.length,
-  });
-
-  return mergedRows;
-}
-
 async function enrichPersonDetailBibliography(detail: PersonDetail): Promise<PersonDetail> {
-  const bibliographyRows = await fetchPersonBibliographyRows(detail.name, detail.alternateName, detail.language);
-
-  if (bibliographyRows.length <= detail.bibliographyRows.length) {
-    logInfo("DEBUG_LOG_INFINITE_FETCH", {
-      route: "/persons/details",
-      phase: "bibliography-no-enrichment",
-      name: detail.name,
-      existingRows: detail.bibliographyRows.length,
-      candidateRows: bibliographyRows.length,
-    });
-    return detail;
-  }
-
-  logInfo("DEBUG_LOG_INFINITE_FETCH", {
-    route: "/persons/details",
-    phase: "bibliography-enriched",
-    name: detail.name,
-    existingRows: detail.bibliographyRows.length,
-    candidateRows: bibliographyRows.length,
-  });
-
-  return {
-    ...detail,
-    bibliographyRows,
-  };
+  return detail;
 }
 
 async function findFallbackPersonNameCandidates(name: string): Promise<string[]> {
-  const normalizedTarget = normalizeLoosePersonValue(name);
-
-  if (!normalizedTarget) {
-    return [];
-  }
-
-  const personData = await fetchAllTableRows("data-person", "*");
-  const fallbackMatches = personData.flatMap((row) => {
-    const sourceRow = row as PersonSourceRow;
-    const candidateEntries = [
-      { source: "first-last", value: readSourceField(sourceRow, ["Prénom Nom", "Prenom Nom"]) },
-      { source: "last-first", value: readSourceField(sourceRow, ["Nom Prénom", "Nom Prenom"]) },
-      { source: "original-author", value: readSourceField(sourceRow, ["Auteur Original"]) },
-    ].filter((entry) => entry.value.length > 0);
-    const matchedEntries = candidateEntries.filter((entry) => normalizeLoosePersonValue(entry.value) === normalizedTarget);
-
-    if (matchedEntries.length === 0) {
-      return [];
-    }
-
-    return matchedEntries;
-  });
-
-  const fallbackCandidates = dedupePersonCandidates(fallbackMatches.map((entry) => entry.value));
-
-  logInfo("PERSONS_RPC_DETAIL_FALLBACK_SCAN", {
-    name,
-    normalizedTarget,
-    scannedRows: personData.length,
-    matchedRows: fallbackMatches.length,
-    matchedSources: fallbackMatches.map((entry) => entry.source),
-    fallbackCandidates,
-  });
-
-  return fallbackCandidates;
+  void name;
+  return [];
 }
 
 async function fetchPersonDetailRpcByName(name: string): Promise<{

@@ -89,11 +89,8 @@ describe("books data access", () => {
   });
 
   it("resolves a unique exact title to a book id", async () => {
-    selectMock.mockResolvedValueOnce({
-      data: [
-        { id: "41", Titre: "Unique Title" },
-        { id: "42", Titre: "Another Title" },
-      ],
+    rpcMock.mockResolvedValueOnce({
+      data: [41],
       error: null,
       status: 200,
       statusText: "OK",
@@ -103,16 +100,14 @@ describe("books data access", () => {
       kind: "unique",
       id: "41",
     });
-    expect(fromMock).toHaveBeenCalledWith("data-books");
-    expect(selectMock).toHaveBeenCalledWith('id,"Titre"');
+    expect(rpcMock).toHaveBeenCalledWith("get_book_ids_by_exact_title", {
+      p_title: "unique title",
+    });
   });
 
   it("returns multiple when the exact title matches several books", async () => {
-    selectMock.mockResolvedValueOnce({
-      data: [
-        { id: "51", Titre: "Shared Title" },
-        { id: "52", Titre: "shared title" },
-      ],
+    rpcMock.mockResolvedValueOnce({
+      data: [51, 52],
       error: null,
       status: 200,
       statusText: "OK",
@@ -124,8 +119,8 @@ describe("books data access", () => {
   });
 
   it("returns none when no exact title matches", async () => {
-    selectMock.mockResolvedValueOnce({
-      data: [{ id: "61", Titre: "Different Title" }],
+    rpcMock.mockResolvedValueOnce({
+      data: [],
       error: null,
       status: 200,
       statusText: "OK",

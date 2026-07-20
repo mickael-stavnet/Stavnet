@@ -203,3 +203,8 @@
 - 12:30 - Correction du parcours D1 des ouvrages liés : filtres SQLite compatibles avec les clés CSV, endpoint dédié à toutes les facettes et validation locale des listes, fiches et sous-pages `books`, `persons` et `orgs`.
 - 15:45 - Optimisation structurelle de D1 : facettes, éditeurs et titres d’œuvre indexés à l’import, compteurs matérialisés, listes paginées côté SQL et environnement local séparé de la production.
 - 16:27 - Correction du proxy i18n pour intercepter aussi les routes non localisées, afin que `/books` et ses sous-pages soient redirigées vers leur variante avec locale au lieu de renvoyer une 404.
+
+# 20-07-2026
+
+- 09:38 - Réduction majeure des lectures D1 en remplaçant les scans complets des tables livres, personnes et organismes par des requêtes Worker ciblées, indexées et paginées pour les fiches personnes et les filtres d’organismes, puis déploiement en production du Worker et de l’application.
+- 09:57 - Optimisation des listes de livres D1 : pagination fixée à dix résultats, projection SQL dédiée et indexée évitant la lecture et le décodage du JSON complet des livres, avec import CSV maintenu compatible et déploiement production/tests.
