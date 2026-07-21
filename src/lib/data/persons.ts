@@ -3,6 +3,7 @@ import { d1Client } from "@/lib/d1-client";
 import { fixEncoding } from "@/lib/encoding";
 import { resolvePersonImageSrc } from "@/lib/person-images";
 import { logError, logInfo, logWarn } from "@/lib/server-log";
+import { buildDetailStatistics, type DetailStatistics } from "@/lib/detail-statistics";
 
 export const PERSONS_PAGE_SIZE = 13;
 
@@ -93,6 +94,7 @@ export interface PersonDetail {
     publicationLanguages: string;
   };
   bibliographyRows: PersonBibliographyRow[];
+  statistics: DetailStatistics;
   stats: {
     cardsFound: string;
     databaseContains: string;
@@ -221,6 +223,7 @@ function mapPersonDetail(detail: PersonDetailRpc): PersonDetail | null {
       publicationLanguages: readCount(detail.bibliographyStats?.publicationLanguages),
     },
     bibliographyRows,
+    statistics: buildDetailStatistics(bibliographyRows.map((item) => ({ year: item.year, primary: item.type.toLocaleLowerCase().includes("orig"), language: item.language, role: item.type }))),
     stats: {
       cardsFound: readCount(detail.stats?.cardsFound),
       databaseContains: readCount(detail.stats?.databaseContains),
