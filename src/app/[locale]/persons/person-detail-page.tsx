@@ -301,7 +301,7 @@ export default function PersonDetailPage({ person }: PersonDetailPageProps) {
 
               <div className="min-w-0 flex-1 px-[12px] py-[12px] md:min-h-0 md:overflow-y-auto md:px-[16px] md:py-[16px]">
                 {activeTab === "authorCard" ? (
-                  <div className="grid h-full grid-rows-[auto_auto_minmax(0,1fr)] gap-y-[14px] md:gap-y-[8px]">
+                  <div className="grid h-full grid-rows-[auto_auto_minmax(0,1fr)] gap-y-[14px] md:grid-rows-[auto_minmax(0,1fr)_auto] md:gap-y-[8px]">
                     <div className="grid gap-[10px] md:gap-[8px] lg:grid-cols-[2.1fr_0.98fr]">
                       <section className="border border-[#7aa8b7] bg-[#a7dcee]">
                         <LabelCell label={t("fields.person")} className="md:py-[4px]" />
@@ -347,9 +347,9 @@ export default function PersonDetailPage({ person }: PersonDetailPageProps) {
                       </section>
                     </div>
 
-                    <section className="border border-[#7aa8b7] bg-[#a7dcee]">
+                    <section className="border border-[#7aa8b7] bg-[#a7dcee] md:flex md:min-h-0 md:flex-col">
                       <LabelCell label={t("fields.biography")} className="md:py-[4px]" />
-                      <div className="max-h-[154px] overflow-auto px-3 py-3 text-[13px] leading-[1.45] text-black md:h-[76px] md:max-h-none md:py-2 md:text-[15px] md:leading-[1.4]">
+                      <div className="max-h-[154px] overflow-auto px-3 py-3 text-[13px] leading-[1.45] text-black md:min-h-0 md:flex-1 md:py-2 md:text-[15px] md:leading-[1.4]">
                         {person.biography || "—"}
                       </div>
                     </section>
@@ -398,6 +398,7 @@ export default function PersonDetailPage({ person }: PersonDetailPageProps) {
                       <DesktopBibliographyTable
                         rows={bibliographyRows}
                         labels={mobileBibliographyLabels}
+                        className="md:h-[160px] md:flex-none"
                       />
                     </section>
                   </div>
