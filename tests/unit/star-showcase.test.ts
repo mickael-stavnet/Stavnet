@@ -49,8 +49,10 @@ describe("star showcase selection", () => {
   });
 
   it("resolves portrait aliases to their author detail record", () => {
+    expect(resolvePersonDetailName("Appelfeld Aharon")).toBe("Aharon Appelfeld");
     expect(resolvePersonDetailName("Bar-Zohar")).toBe("Michel Bar-Zohar");
     expect(resolvePersonDetailName("Ben-Ner Yitzhak")).toBe("Itzhak Ben-Ner");
+    expect(resolvePersonDetailName("Hameiri Israel")).toBe("Israel Hameiri");
     expect(resolvePersonImageSrc("Michel Bar-Zohar", "Bar-Zohar Michel")).toBe("/images/persons/Bar-Zohar.jpg");
     expect(resolvePersonImageSrc("Itzhak Ben-Ner", "Ben-Ner Itzhak")).toBe("/images/persons/Ben-Ner Yitzhak.jpg");
   });

@@ -247,6 +247,10 @@ export default function PersonDetailPage({ person }: PersonDetailPageProps) {
     faconnage: t("bibliography.columns.faconnage"),
   };
   const { bibliographyRows, originalRows, translatedRows } = usePersonBibliography(person.bibliographyRows);
+  const bibliographyCount = String(bibliographyRows.length);
+  const originalTitlesCount = String(originalRows.length);
+  const translationsCount = String(translatedRows.length);
+  const publicationLanguagesCount = String(new Set(translatedRows.map((row) => row.language.trim()).filter(Boolean)).size);
 
   return (
     <main dir="ltr" className="relative min-h-[100svh] min-h-[100dvh] overflow-x-hidden bg-[#e7f2f7] font-[Arial,Helvetica,sans-serif] text-black md:h-screen md:h-[100dvh] md:overflow-hidden">
@@ -308,8 +312,8 @@ export default function PersonDetailPage({ person }: PersonDetailPageProps) {
                             <FilledBox value={person.birthInfo} className="border-x-0 border-b md:min-h-[36px] md:border-b-0" />
                           </div>
                           <div>
-                            <LabelCell label={t("fields.death")} className="md:py-[4px]" />
-                            <FilledBox value={person.deathInfo} className="border-x-0 md:min-h-[36px]" />
+                            {person.deathInfo.trim() ? <LabelCell label={t("fields.death")} className="md:py-[4px]" /> : null}
+                            <FilledBox value={person.deathInfo.trim() ? person.deathInfo : "\u00a0"} className="border-x-0 md:min-h-[36px]" />
                           </div>
                         </div>
                         <div className="grid md:grid-cols-[1.6fr_1fr]">
@@ -354,32 +358,35 @@ export default function PersonDetailPage({ person }: PersonDetailPageProps) {
                       <div className="grid gap-2 sm:grid-cols-3 md:hidden">
                         <div className="rounded-[8px] border border-[#7aa8b7] bg-[#b2e0ef] px-3 py-2">
                           <p className="text-[11px] font-bold uppercase leading-none text-[#07384a]">{t("bibliography.originalTitles")}</p>
-                          <p className="mt-2 text-[22px] font-bold leading-none text-[#ff1d1d]">{person.bibliographyStats.originalTitles}</p>
+                          <p className="mt-2 text-[22px] font-bold leading-none text-[#ff1d1d]">{originalTitlesCount}</p>
                         </div>
                         <div className="rounded-[8px] border border-[#7aa8b7] bg-[#b2e0ef] px-3 py-2">
                           <p className="text-[11px] font-bold uppercase leading-none text-[#07384a]">{t("bibliography.translations")}</p>
-                          <p className="mt-2 text-[22px] font-bold leading-none text-[#ff1d1d]">{person.bibliographyStats.translations}</p>
+                          <p className="mt-2 text-[22px] font-bold leading-none text-[#ff1d1d]">{translationsCount}</p>
                         </div>
                         <div className="rounded-[8px] border border-[#7aa8b7] bg-[#b2e0ef] px-3 py-2 sm:col-span-1">
                           <p className="text-[11px] font-bold uppercase leading-none text-[#07384a]">{t("bibliography.publicationLanguages")}</p>
-                          <p className="mt-2 text-[22px] font-bold leading-none text-[#ff1d1d]">{person.bibliographyStats.publicationLanguages}</p>
+                          <p className="mt-2 text-[22px] font-bold leading-none text-[#ff1d1d]">{publicationLanguagesCount}</p>
                         </div>
                       </div>
 
                       <div className="hidden flex-wrap items-center gap-x-6 gap-y-2 px-1 pt-1 text-[18px] font-bold leading-none text-black md:flex">
                         <span className="inline-flex items-center gap-x-2">
                           <span>{t("bibliography.title")} :</span>
-                          <span className="text-[#ff1d1d]">{person.bibliographyStats.originalTitles}</span>
+                          <span className="text-[#ff1d1d]">{bibliographyCount}</span>
                         </span>
                         <span className="inline-flex items-center gap-x-2">
                           <span>{t("bibliography.originalTitles")}</span>
-                          <span className="text-[#ff1d1d]">{person.bibliographyStats.translations}</span>
+                          <span className="text-[#ff1d1d]">{originalTitlesCount}</span>
                         </span>
                         <span className="inline-flex items-center gap-x-2">
                           <span>{t("bibliography.translations")}</span>
-                          <span className="text-[#ff1d1d]">{person.bibliographyStats.publicationLanguages}</span>
+                          <span className="text-[#ff1d1d]">{translationsCount}</span>
                         </span>
-                        <span>{t("bibliography.publicationLanguages")}</span>
+                        <span className="inline-flex items-center gap-x-2">
+                          <span>{t("bibliography.publicationLanguages")}</span>
+                          <span className="text-[#ff1d1d]">{publicationLanguagesCount}</span>
+                        </span>
                       </div>
 
                       <div className="space-y-3 md:hidden">

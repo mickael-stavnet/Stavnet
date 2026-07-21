@@ -375,7 +375,7 @@ export const getPersonsPageByFilters = cacheData(
 );
 
 export const getPersonDetailByName = cacheData(
-  ["persons-detail-by-name-v4-disabled-cache-null"],
+  ["persons-detail-by-name-v6-bibliography-calculated-stats"],
   async (name: string): Promise<PersonDetail | null> => {
     const trimmedName = name.trim();
     const normalizedName = normalizePersonValue(trimmedName);

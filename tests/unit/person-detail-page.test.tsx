@@ -110,6 +110,18 @@ describe("PersonDetailPage", () => {
     expect(languageLink).toHaveAttribute("href", "/persons?page=1&language=H%C3%A9breu&fallbackFacet=authorWritingLanguage");
   });
 
+  it("hides the death label when the death information is empty", () => {
+    render(<PersonDetailPage person={createPersonDetail()} />);
+
+    expect(screen.queryByText("Date et lieu de décès")).not.toBeInTheDocument();
+  });
+
+  it("shows the death label when the death information is present", () => {
+    render(<PersonDetailPage person={createPersonDetail({ deathInfo: "Tel Aviv, 2001" })} />);
+
+    expect(screen.getByText("Date et lieu de décès")).toBeInTheDocument();
+  });
+
   it("shows only original titles in the original titles tab", () => {
     render(<PersonDetailPage person={createPersonDetail()} />);
 

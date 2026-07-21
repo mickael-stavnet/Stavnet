@@ -136,8 +136,30 @@ function text(row: Record<string, unknown>, ...fields: string[]): string {
   return "";
 }
 
+function personWritingLanguage(row: Record<string, unknown>): string {
+  return text(row, "Langue Écriture", "Langue Ecriture", "Langue �criture", "Langue ï¿½criture", "Langue Ã‰criture", "Langue", "Code Langue");
+}
+
 function normalize(value: string): string {
   return value.trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLocaleLowerCase();
+}
+
+function personNameTokens(value: string): string[] {
+  return normalize(value).replace(/[^a-z0-9]+/g, " ").trim().split(/\s+/).filter(Boolean);
+}
+
+function isAuthorNameVariant(value: string, personName: string): boolean {
+  const authorTokens = personNameTokens(value);
+  const personTokens = personNameTokens(personName);
+  const surname = personTokens.at(-1);
+  const givenNames = personTokens.slice(0, -1);
+
+  return Boolean(
+    surname
+      && givenNames.length > 0
+      && authorTokens.includes(surname)
+      && givenNames.every((givenName) => authorTokens.some((authorToken) => authorToken.startsWith(givenName[0] ?? ""))),
+  );
 }
 
 function bibliographyRow(row: Record<string, unknown>): Record<string, string> {
@@ -152,7 +174,7 @@ function personWhere(type: string, language: string, search: string): { sql: str
   const clauses: string[] = [];
   const values: string[] = [];
   if (type) { clauses.push("COALESCE(json_extract(payload, '$.\"Type Personne\"'), json_extract(payload, '$.Type'), '') = ?"); values.push(type); }
-  if (language) { clauses.push("COALESCE(json_extract(payload, '$.\"Langue Écriture\"'), json_extract(payload, '$.Langue'), json_extract(payload, '$.\"Code Langue\"'), '') = ?"); values.push(language); }
+  if (language) { clauses.push("COALESCE(json_extract(payload, '$.\"Langue Écriture\"'), json_extract(payload, '$.\"Langue Ecriture\"'), json_extract(payload, '$.\"Langue �criture\"'), json_extract(payload, '$.\"Langue ï¿½criture\"'), json_extract(payload, '$.\"Langue Ã‰criture\"'), json_extract(payload, '$.Langue'), json_extract(payload, '$.\"Code Langue\"'), '') = ?"); values.push(language); }
   if (search) { clauses.push("normalized_name LIKE ?"); values.push(`%${search}%`); }
   return { sql: clauses.length ? ` WHERE ${clauses.join(" AND ")}` : "", values };
 }
@@ -235,7 +257,7 @@ async function rpc(db: D1Database, name: string, args: Record<string, unknown>):
       const total = (type || language || search) ? await db.prepare(`SELECT COUNT(*) AS count FROM people${where.sql}`).bind(...where.values).all<{ count: number }>() : null;
       const people = await db.prepare(`SELECT payload FROM people${where.sql} ORDER BY name LIMIT ? OFFSET ?`).bind(...where.values, pageSize, (page - 1) * pageSize).all<{ payload: string }>();
       const items = people.results.map((entry) => parsePayload(entry.payload)).map((row) => ({
-        name: text(row, "Prénom Nom", "Prenom Nom", "Auteur Original"), type: text(row, "Type Personne", "Type"), language: text(row, "Langue Écriture", "Langue", "Code Langue"),
+        name: text(row, "Prénom Nom", "Prenom Nom", "Auteur Original"), type: text(row, "Type Personne", "Type"), language: personWritingLanguage(row),
         originalTitles: text(row, "Nb. Titres Originaux", "Nb. Contributions Auteurs"), translatedTitles: text(row, "Nb. Titres Traduits", "Nb. Contributions Titres"), translationLanguages: text(row, "Nb. Langues Traduction"), awards: text(row, "Nb. Prix Distinctions", "Nb. Prix"), regularReissues: text(row, "Nb. Rééditions Régulières", "Nb. Rééditions"), pocketReissues: text(row, "Nb. Rééditions Poche"), publicationCountries: text(row, "Nb. Pays Publication"),
       }));
       return { items, totalCount: total ? Number(total.results[0]?.count ?? 0) : await stat(db, "people_total"), databaseTotal: await stat(db, "people_total") };
@@ -250,11 +272,20 @@ async function rpc(db: D1Database, name: string, args: Record<string, unknown>):
     const personRows = requested ? await db.prepare("SELECT payload FROM people WHERE normalized_name = ?").bind(requested).all<{ payload: string }>() : person;
     const bibliographyRows = personRows.results.map((entry) => bibliographyRow(parsePayload(entry.payload))).filter((entry) => Object.values(entry).some(Boolean));
     if (names.length) {
-      const placeholders = names.map(() => "?").join(", ");
-      const books = await db.prepare(`SELECT books.payload FROM book_facets JOIN books ON books.id = book_facets.book_id WHERE book_facets.facet = 'authorName' AND book_facets.value IN (${placeholders}) ORDER BY books.sort_year DESC, books.id`).bind(...names).all<{ payload: string }>();
-      for (const entry of books.results) { const book = parsePayload(entry.payload); bibliographyRows.push({ type: normalize(text(book, "Langue")) === normalize(text(row, "Langue Écriture", "Langue", "Code Langue")) ? "Original" : "Traduction", language: text(book, "Langue"), title: text(book, "Titre"), year: text(book, "Année"), issue: "" }); }
+      const surname = personNameTokens(primaryName).at(-1);
+      const authorNameVariants = surname
+        ? await db.prepare("SELECT DISTINCT value FROM book_facets WHERE facet = 'authorName' AND value LIKE ?").bind(`%${surname}%`).all<{ value: string }>()
+        : { results: [] as { value: string }[] };
+      const relatedNames = [...names, ...authorNameVariants.results.map((entry) => entry.value).filter((value) => isAuthorNameVariant(value, primaryName))]
+        .filter((value, index, values) => values.indexOf(value) === index);
+      const placeholders = relatedNames.map(() => "?").join(", ");
+      const books = await db.prepare(`SELECT DISTINCT books.id, books.payload FROM book_facets JOIN books ON books.id = book_facets.book_id WHERE book_facets.facet = 'authorName' AND book_facets.value IN (${placeholders}) ORDER BY books.sort_year DESC, books.id`).bind(...relatedNames).all<{ id: number; payload: string }>();
+      for (const entry of books.results) { const book = parsePayload(entry.payload); bibliographyRows.push({ type: normalize(text(book, "Langue")) === normalize(personWritingLanguage(row)) ? "Original" : "Traduction", language: text(book, "Langue"), title: text(book, "Titre"), year: text(book, "Année"), issue: "" }); }
     }
-    return { name: primaryName, alternateName, type: text(row, "Type Personne", "Type"), language: text(row, "Langue Écriture", "Langue", "Code Langue"), birthInfo: text(row, "Date de Naissance", "Date Naissance"), deathInfo: text(row, "Date de Décès", "Date Décès", "Date Deces"), residence: text(row, "Pays de Résidence", "Lieu Résidence", "Lieu Residence"), professionalActivity: text(row, "Activité Professionnelle", "Activite Professionnelle"), biography: text(row, "Biographie"), bibliographyStats: { originalTitles: text(row, "Nb. Titres Originaux", "Nb. Contributions Auteurs"), translations: text(row, "Nb. Titres Traduits", "Nb. Contributions Titres"), publicationLanguages: text(row, "Nb. Langues Traduction") }, bibliographyRows, stats: { cardsFound: text(row, "Nb. Fiches Trouvées", "Nb. Fiches Trouvees"), databaseContains: text(row, "Nb. Fiches Base") } };
+    const originalTitles = bibliographyRows.filter((entry) => normalize(entry.type) === "original").length;
+    const translations = bibliographyRows.filter((entry) => normalize(entry.type) === "traduction");
+    const publicationLanguages = new Set(translations.map((entry) => normalize(entry.language)).filter(Boolean)).size;
+    return { name: primaryName, alternateName, type: text(row, "Type Personne", "Type"), language: personWritingLanguage(row), birthInfo: text(row, "Date de Naissance", "Date Naissance"), deathInfo: text(row, "Date de Décès", "Date Décès", "Date Deces"), residence: text(row, "Pays de Résidence", "Lieu Résidence", "Lieu Residence"), professionalActivity: text(row, "Activité Professionnelle", "Activite Professionnelle"), biography: text(row, "Biographie"), bibliographyStats: { originalTitles: String(originalTitles), translations: String(translations.length), publicationLanguages: String(publicationLanguages) }, bibliographyRows, stats: { cardsFound: text(row, "Nb. Fiches Trouvées", "Nb. Fiches Trouvees"), databaseContains: text(row, "Nb. Fiches Base") } };
   }
   if (name === "get_organizations_page" || name === "get_organization_detail_by_name" || name === "get_default_organization_detail") {
     if (name === "get_organizations_page") {

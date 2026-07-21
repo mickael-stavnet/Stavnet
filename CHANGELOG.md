@@ -215,3 +215,10 @@
 - 14:31 - Réparation des relations bibliographiques D1 des 55 ouvrages ajoutés après l’import initial : leurs auteurs sont de nouveau indexés, dont les trois fiches `Sarah` de Mickaël Parienté.
 - 14:49 - Remplacement majeur de la sélection du modèle 3D d’accueil par les onze portraits fournis, exclusion de la photo défaillante de Haïm Beer et désactivation des liens pour les auteurs sans fiche personne D1.
 - 15:26 - Réintégration des onze portraits importés dans le catalogue partagé `public/images/persons`, afin que l’administration puisse sélectionner l’ensemble des soixante-dix auteurs disponibles.
+
+# 21-07-2026
+
+- 09:27 - Correction des fiches personnes ajoutées : la langue d’écriture est désormais lue depuis son libellé, y compris lorsque la clé CSV est encodée de façon historique, au lieu d’afficher le code technique `L`.
+- 09:55 - Correction de la récupération des bibliographies des fiches personnes pour associer aussi les variantes orthographiques de prénoms, comme `Abraham` et `Avraham` Yehoshua, sans mélanger les homonymes.
+- 10:07 - Correction des compteurs de bibliographie des fiches personnes : titres originaux, traductions et langues de publication sont désormais calculés depuis les ouvrages réellement affichés.
+- 15:50 - Raccordement des portraits de l’étoile aux fiches auteurs D1 avec gestion des variantes de noms, et remplacement de Hameiri Israel par Aharon Appelfeld dans la sélection affichée.

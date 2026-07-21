@@ -63,8 +63,10 @@ const PERSON_IMAGE_FALLBACK_SRC =
   "https://st3.depositphotos.com/9998432/13335/v/450/depositphotos_133352156-stock-illustration-default-placeholder-profile-icon.jpg";
 
 const PERSON_DETAIL_NAME_OVERRIDES = new Map<string, string>([
+  ["Appelfeld Aharon", "Aharon Appelfeld"],
   ["Bar-Zohar", "Michel Bar-Zohar"],
   ["Ben-Ner Yitzhak", "Itzhak Ben-Ner"],
+  ["Hameiri Israel", "Israel Hameiri"],
 ]);
 
 const PERSON_IMAGE_NAME_OVERRIDES = new Map(
@@ -86,7 +88,7 @@ const ADDITIONAL_PERSON_IMAGE_ENTRIES: readonly PersonImageEntry[] = [
   { name: "Shulamit Lapid", src: "/images/persons/shulamit-lapid.jpg", detailName: "Shulamit Lapid" },
   { name: "Ronny Someck", src: "/images/persons/ronny-someck.jpg", detailName: "Ronny Someck" },
   { name: "Josh=Yehoshua Shachar", src: "/images/persons/josh-yehoshua-shachar.png", detailName: null },
-  { name: "Castel-Blum Orly", src: "/images/persons/castel-blum-orly.jpg", detailName: null },
+  { name: "Castel-Blum Orly", src: "/images/persons/castel-blum-orly.jpg", detailName: "Orly Castel-Bloom" },
   { name: "Dorit Orgad", src: "/images/persons/dorit-orgad.jpg", detailName: "Dorit Orgad" },
   { name: "Yehuda Lancry", src: "/images/persons/yehuda-lancry.jpg", detailName: null },
 ];

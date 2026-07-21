@@ -8,7 +8,7 @@ SELECT
     WHEN 'Lancry Yehuda' THEN 'yehuda lancry'
     WHEN 'Miron C. Izakson' THEN 'miron c. izakson'
     WHEN 'Parienté Mickaël' THEN 'mickael pariente'
-    WHEN 'Shachar Josh=Yehoshua' THEN 'josh=yehoshua shachar'
+    WHEN 'Shachar Josh Yehoshua' THEN 'josh yehoshua shachar'
   END,
   lower(title)
 FROM book_list_items
@@ -19,5 +19,5 @@ WHERE book_id BETWEEN 4999 AND 5053
     'Lancry Yehuda',
     'Miron C. Izakson',
     'Parienté Mickaël',
-    'Shachar Josh=Yehoshua'
+    'Shachar Josh Yehoshua'
   );
