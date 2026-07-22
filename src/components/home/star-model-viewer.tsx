@@ -962,7 +962,7 @@ export function StarModelViewer() {
 
     const render = () => {
       frameId = window.requestAnimationFrame(render);
-      modelGroup.rotation.y += 0.00085;
+      modelGroup.rotation.y += 0.001124125;
       renderer.render(scene, camera);
     };
     render();

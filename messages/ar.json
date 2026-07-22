@@ -174,7 +174,7 @@
   },
   "BookDetailsPage": {
     "header": {
-      "cardTitle": "بطاقة الكتاب",
+      "cardTitle": "كتاب",
       "title": "الأدب الإسرائيلي",
       "subtitle": "قاعدة بيانات ببليوغرافية وبيوغرافية"
     },
@@ -322,7 +322,7 @@
   },
   "PersonFilePage": {
     "header": {
-      "cardTitle": "بطاقة الشخص",
+      "cardTitle": "شخص",
       "title": "الأدب الإسرائيلي",
       "subtitle": "قاعدة بيانات ببليوغرافية وبيوغرافية"
     },
@@ -388,7 +388,7 @@
   },
   "OrganizationFilePage": {
     "header": {
-      "cardTitle": "بطاقة المؤسسة",
+      "cardTitle": "منظمة",
       "title": "الأدب الإسرائيلي",
       "subtitle": "قاعدة بيانات ببليوغرافية وسيرية"
     },

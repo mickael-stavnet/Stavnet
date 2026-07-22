@@ -174,7 +174,7 @@
   },
   "BookDetailsPage": {
     "header": {
-      "cardTitle": "כרטיס ספר",
+      "cardTitle": "ספר",
       "title": "ספרות ישראלית",
       "subtitle": "מאגר ביבליוגרפי וביוגרפי"
     },
@@ -322,7 +322,7 @@
   },
   "PersonFilePage": {
     "header": {
-      "cardTitle": "כרטיס אדם",
+      "cardTitle": "אדם",
       "title": "ספרות ישראלית",
       "subtitle": "מאגר ביבליוגרפי וביוגרפי"
     },
@@ -388,7 +388,7 @@
   },
   "OrganizationFilePage": {
     "header": {
-      "cardTitle": "כרטיס ארגון",
+      "cardTitle": "ארגון",
       "title": "ספרות ישראלית",
       "subtitle": "מאגר ביבליוגרפי וביוגרפי"
     },

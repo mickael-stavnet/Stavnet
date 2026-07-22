@@ -174,7 +174,7 @@
   },
   "BookDetailsPage": {
     "header": {
-      "cardTitle": "Fiche d'ouvrage",
+      "cardTitle": "Livre",
       "title": "Littérature israélienne",
       "subtitle": "Base de données bibliographiques et biographiques"
     },
@@ -322,7 +322,7 @@
   },
   "PersonFilePage": {
     "header": {
-      "cardTitle": "Fiche personne",
+      "cardTitle": "Personne",
       "title": "Littérature israélienne",
       "subtitle": "Base de données bibliographiques et biographiques"
     },
@@ -388,7 +388,7 @@
   },
   "OrganizationFilePage": {
     "header": {
-      "cardTitle": "Fiche organisme",
+      "cardTitle": "Organisme",
       "title": "Littérature israélienne",
       "subtitle": "Base de données bibliographiques et biographiques"
     },

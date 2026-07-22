@@ -174,7 +174,7 @@
   },
   "BookDetailsPage": {
     "header": {
-      "cardTitle": "Book record",
+      "cardTitle": "Book",
       "title": "Israeli literature",
       "subtitle": "Bibliography and Biography Database"
     },
@@ -362,7 +362,7 @@
   },
   "PersonFilePage": {
     "header": {
-      "cardTitle": "Person record",
+      "cardTitle": "Person",
       "title": "Israeli literature",
       "subtitle": "Bibliographic and biographical database"
     },
@@ -428,7 +428,7 @@
   },
   "OrganizationFilePage": {
     "header": {
-      "cardTitle": "Organization record",
+      "cardTitle": "Organization",
       "title": "Israeli literature",
       "subtitle": "Bibliographic and biographical database"
     },

@@ -314,8 +314,8 @@ export default function PersonDetailPage({ person }: PersonDetailPageProps) {
                             <FilledBox value={person.birthInfo} className="border-x-0 border-b md:min-h-[36px] md:border-b-0" />
                           </div>
                           <div>
-                            {person.deathInfo.trim() ? <LabelCell label={t("fields.death")} className="md:py-[4px]" /> : null}
-                            <FilledBox value={person.deathInfo.trim() ? person.deathInfo : "\u00a0"} className="border-x-0 md:min-h-[36px]" />
+                            <LabelCell label={person.deathInfo.trim() ? t("fields.death") : ""} className="md:h-[22px] md:py-0" />
+                            <FilledBox value={person.deathInfo.trim() ? person.deathInfo : "\u00a0"} className="md:min-h-[36px]" />
                           </div>
                         </div>
                         <div className="grid md:grid-cols-[1.6fr_1fr]">

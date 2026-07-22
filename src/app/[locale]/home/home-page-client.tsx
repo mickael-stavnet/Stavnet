@@ -116,7 +116,7 @@ export default function HomePageClient({ showLanguageSwitcher = false }: HomePag
           data-stavnet-animate="cover-description"
           className="hidden md:absolute md:left-[calc(5.2vw-30px)] md:top-[340px] md:z-40 md:block md:min-h-[372px] md:w-[290px] md:p-0 [@media(max-width:1100px)]:md:left-[calc(5.2vw-18px)] [@media(max-width:1100px)]:md:w-[260px] [@media(max-height:800px)]:top-[292px] [@media(max-height:800px)]:min-h-0"
         >
-          <p className="px-3.5 py-3.5 text-center font-[Georgia,Times_New_Roman,serif] text-[26.25px] leading-[1.08] text-black [@media(max-height:800px)]:px-2 [@media(max-height:800px)]:py-2 [@media(max-height:800px)]:text-[22.5px] [@media(max-height:800px)]:leading-[1.02]">
+          <p className="px-3.5 py-3.5 text-center font-[Georgia,Times_New_Roman,serif] text-[26.25px] leading-[1.36] text-black [@media(max-height:800px)]:px-2 [@media(max-height:800px)]:py-0 [@media(max-height:800px)]:text-[22.5px] [@media(max-height:800px)]:leading-[1.36]">
             {`${tHome("coverDescriptionLine1")} ${tHome("coverDescriptionLine2")} ${tHome("coverDescriptionLine3")}`}
           </p>
         </aside>
@@ -124,7 +124,7 @@ export default function HomePageClient({ showLanguageSwitcher = false }: HomePag
         <section data-stavnet-animate="cover-content" className="mt-28 flex flex-1 flex-col md:hidden">
           <div className="flex flex-1 flex-col justify-end pb-[232px]">
             <div className="mx-auto w-full max-w-[460px] px-3 py-3">
-              <p className="mx-auto max-w-[260px] text-center text-[24px] leading-[1.3] text-black">
+              <p className="mx-auto max-w-[260px] text-center text-[24px] leading-[1.58] text-black">
                 {`${tHome("coverDescriptionLine1")} ${tHome("coverDescriptionLine2")} ${tHome("coverDescriptionLine3")}`}
               </p>
             </div>
