@@ -169,6 +169,33 @@ const BOOK_DETAIL_SELECT = [
   '"Biblio. 4. Ville"',
 ].join(",");
 
+const STAVNET_BOOK_COVER_BY_ID: Record<string, string> = {
+  "5022": "/images/books-cover/Reflexions sur la peinture.jpg",
+  "5029": "/images/books-cover/Sarah - Allemand.jpg",
+  "5030": "/images/books-cover/Sarah - Espagnol.jpg",
+  "5031": "/images/books-cover/Sarah - Anglais.jpg",
+  "5032": "/images/books-cover/Sarah - Français.jpg",
+  "5033": "/images/books-cover/L Autre Parnasse - Allemand.jpg",
+  "5034": "/images/books-cover/L Autre Parnasse - Français.jpg",
+  "5035": "/images/books-cover/L Autre Parnasse - Anglais.jpg",
+  "5036": "/images/books-cover/L Autre Parnasse - Hébreu.jpg",
+  "5037": "/images/books-cover/Sarah - Hébreu.jpg",
+  "5038": "/images/books-cover/A l Ombre des Murailles - Hébreu.jpg",
+  "5039": "/images/books-cover/A l Ombre des Murailles - Hébreu.jpg",
+  "5040": "/images/books-cover/A l ombre des Murailles - Anglais.jpg",
+  "5041": "/images/books-cover/A l ombre des Murailles - Français.jpg",
+  "5042": "/images/books-cover/A l ombre des Murailles - Espagnol.jpg",
+  "5043": "/images/books-cover/Israel - Français.jpg",
+  "5044": "/images/books-cover/Israel - Allemand.jpg",
+  "5045": "/images/books-cover/Israel - Anglais.jpg",
+  "5046": "/images/books-cover/Grandpa s longing.jpg",
+  "5047": "/images/books-cover/Papi se languit.jpg",
+  "5048": "/images/books-cover/Futhermore.jpg",
+  "5049": "/images/books-cover/Aliza with child - Anglais.webp",
+  "5050": "/images/books-cover/Le Candidat.jpeg",
+  "5051": "/images/books-cover/Nadav.jpg",
+};
+
 const BOOK_PUBLISHING_SELECT = [
   "id",
   '"Titre"',
@@ -1158,7 +1185,7 @@ function mapBookDetail(
 
   return {
     id,
-    imageSrc: resolveBookCoverSrc(
+    imageSrc: STAVNET_BOOK_COVER_BY_ID[id] ?? resolveBookCoverSrc(
       `${titleWithoutSubtitle} ${language}`,
       `${title} ${language}`,
       `${titleEnglish} ${language}`,
@@ -1605,7 +1632,7 @@ export const resolveBookByExactTitle = cacheData(
 );
 
 export const getBookDetailById = cacheData(
-  ["books-detail-by-id-v4"],
+  ["books-detail-by-id-v5"],
   async (id: string): Promise<BookDetail | null> => {
   const trimmedId = id.trim();
 
@@ -1660,7 +1687,6 @@ export const getBookDetailById = cacheData(
 
   logInfo("BOOK_DETAIL_RESULT", {
     id: trimmedId,
-    imageSrc: detail.imageSrc,
     status,
     statusText,
     resolvedTitle: detail.title,
