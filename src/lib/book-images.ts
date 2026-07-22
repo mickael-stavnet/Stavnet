@@ -80,7 +80,7 @@ function readBookCoverEntries(): BookImageEntry[] {
   const imageEntries: BookImageEntry[] = [];
 
   for (const entry of entries) {
-    if (!entry.isFile() || !/\.(jpg|jpeg)$/i.test(entry.name)) {
+    if (!entry.isFile() || !/\.(jpg|jpeg|webp)$/i.test(entry.name)) {
       continue;
     }
 

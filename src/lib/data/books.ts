@@ -1147,10 +1147,20 @@ function mapBookDetail(
   const titleEnglish = readText(row["Titre. Anglais"]);
   const titleOriginal = readText(row["Titre. Original"]);
   const titleTranscription = readText(row["Titre. Transcription"]);
+  const language = readText(row["Langue"]);
 
   return {
     id,
-    imageSrc: resolveBookCoverSrc(title, titleEnglish, titleOriginal),
+    imageSrc: resolveBookCoverSrc(
+      `${title} ${language}`,
+      `${titleEnglish} ${language}`,
+      `${titleOriginal} ${language}`,
+      `${titleTranscription} ${language}`,
+      title,
+      titleEnglish,
+      titleOriginal,
+      titleTranscription,
+    ),
     title,
     titleEnglish,
     titleOriginal,
@@ -1159,7 +1169,7 @@ function mapBookDetail(
     subtitleEnglish: readText(row["Sous-titre. Anglais"]),
     subtitleOriginal: readText(row["Sous-titre. Original"]),
     subtitleTranscription: readText(row["Sous-titre. Transcription"]),
-    language: readText(row["Langue"]),
+    language,
     summary: readText(row["Résumé"]),
     tableOfContents: readText(row["Sommaire"]),
     backCover: readText(row["Quatrième. Couverture"]),
