@@ -804,6 +804,9 @@
       "help": "Help"
     }
   },
+  "Statistics": {
+    "year": "Year", "decade": "Decade", "month": "Month", "monthlyUnavailable": "Available data does not support a monthly view.", "noData": "There is not enough data to display this chart.", "timeline": "Activity over time", "primary": "Originals", "secondary": "Translations", "languages": "Publication languages", "countries": "Publication countries", "roles": "Roles and contributions"
+  },
   "Errors": {
     "personDetails": {
       "title": "Person record error",

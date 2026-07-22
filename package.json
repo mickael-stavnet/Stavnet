@@ -6,6 +6,7 @@
     "dev": "next dev",
     "dev:worker": "npx --yes wrangler@4.26.1 dev --local --config cloudflare/wrangler.jsonc",
     "dev:worker:production-db": "npx --yes wrangler@4.26.1 dev --remote --config cloudflare/wrangler.jsonc",
+    "dev:production-db": "node scripts/dev-production-db.mjs",
     "build": "next build",
     "start": "next start",
     "test:runner": "node --import ./script/vite-win-realpath.mjs ./node_modules/vitest/vitest.mjs",

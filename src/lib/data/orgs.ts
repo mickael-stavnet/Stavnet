@@ -2,6 +2,7 @@ import { cacheData } from "@/lib/data/cache";
 import { d1Client } from "@/lib/d1-client";
 import { fixEncoding } from "@/lib/encoding";
 import { logError, logInfo, logWarn } from "@/lib/server-log";
+import { buildDetailStatistics, type DetailStatistics } from "@/lib/detail-statistics";
 
 export const ORGS_PAGE_SIZE = 13;
 export const ORGANIZATION_CATEGORY_VALUES = ["Editeur", "Bibliothèque", "AutreOrganisme"] as const;
@@ -61,7 +62,11 @@ export interface OrganizationDetail {
     title: string;
     author: string;
     year: string;
+    language: string;
+    country: string;
+    role: string;
   }[];
+  statistics: DetailStatistics;
   publishedStats: {
     titles: string;
     authors: string;
@@ -193,6 +198,7 @@ function mapOrganizationDetail(detail: OrganizationDetailRpc): OrganizationDetai
     creationDate: readText(detail.creationDate),
     country: readText(detail.country),
     publishedRows: Array.isArray(detail.publishedRows) ? detail.publishedRows : [],
+    statistics: buildOrganizationStatistics(Array.isArray(detail.publishedRows) ? detail.publishedRows : []),
     publishedStats: {
       titles: readCount(detail.publishedStats?.titles),
       authors: readCount(detail.publishedStats?.authors),
@@ -202,6 +208,13 @@ function mapOrganizationDetail(detail: OrganizationDetailRpc): OrganizationDetai
       databaseContains: readCount(detail.stats?.databaseContains),
     },
   };
+}
+
+function buildOrganizationStatistics(rows: OrganizationDetail["publishedRows"]): DetailStatistics {
+  return buildDetailStatistics(rows.flatMap((item) => [
+    { year: item.year, primary: true, language: item.language, country: item.country, role: item.role },
+    ...(item.author ? [{ year: item.year, primary: false }] : []),
+  ]));
 }
 
 async function fetchOrganizationPublishedRows(name: string, synonym: string): Promise<OrganizationDetail["publishedRows"]> {
@@ -215,7 +228,7 @@ async function fetchOrganizationPublishedRows(name: string, synonym: string): Pr
 
   const data = await fetchAllOrganizationTableRows(
     "data-books",
-    'id,"Titre","Année","Auteur. 1. Prénom","Auteur. 1. Nom","Éditeur","Éditeur. 1. Nom","Éditeur. 2. Nom"',
+    'id,"Titre","Année","Langue","Pays. Éditeur","Éditeur. 1. Pays","Auteur. 1. Prénom","Auteur. 1. Nom","Auteur. 1. Type","Éditeur","Éditeur. 1. Nom","Éditeur. 2. Nom"',
   );
 
   const rows = data
@@ -239,6 +252,9 @@ async function fetchOrganizationPublishedRows(name: string, synonym: string): Pr
           readSourceField(sourceRow, ["Auteur. 1. Nom"]),
         ),
         year: readSourceField(sourceRow, ["Année"]),
+        language: readSourceField(sourceRow, ["Langue"]),
+        country: readSourceField(sourceRow, ["Éditeur. 1. Pays", "Pays. Éditeur"]),
+        role: readSourceField(sourceRow, ["Auteur. 1. Type"]),
       };
     })
     .filter((row) => row.title.length > 0);
@@ -263,6 +279,7 @@ async function enrichOrganizationPublishedRows(detail: OrganizationDetail): Prom
   return {
     ...detail,
     publishedRows,
+    statistics: buildOrganizationStatistics(publishedRows),
   };
 }
 
@@ -466,7 +483,7 @@ export const getOrganizationDetailByName = cacheData(
       resolvedName: detail.name,
     });
 
-    return detail;
+    return enrichOrganizationPublishedRows(detail);
   },
   { revalidate: 300, tags: ["orgs"] },
 );
@@ -503,7 +520,7 @@ export const getDefaultOrganizationDetail = cacheData(
       resolvedName: detail.name,
     });
 
-    return detail;
+    return enrichOrganizationPublishedRows(detail);
   },
   { revalidate: 300, tags: ["orgs"] },
 );

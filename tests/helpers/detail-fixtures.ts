@@ -1,5 +1,6 @@
 import type { OrganizationDetail } from "@/lib/data/orgs";
 import type { PersonDetail } from "@/lib/data/persons";
+import { buildDetailStatistics } from "@/lib/detail-statistics";
 
 export function createPersonDetail(overrides: Partial<PersonDetail> = {}): PersonDetail {
   return {
@@ -48,6 +49,7 @@ export function createPersonDetail(overrides: Partial<PersonDetail> = {}): Perso
         issue: "00008-T-L06-R-E02",
       },
     ],
+    statistics: buildDetailStatistics([]),
     stats: {
       cardsFound: "697",
       databaseContains: "1231",
@@ -68,13 +70,20 @@ export function createOrganizationDetail(overrides: Partial<OrganizationDetail> 
         title: "La Liste",
         author: "Michel Bar-Zohar",
         year: "1976",
+        language: "Français",
+        country: "France",
+        role: "Auteur",
       },
       {
         title: "Le Complot",
         author: "Michel Bar-Zohar",
         year: "1980",
+        language: "Français",
+        country: "France",
+        role: "Auteur",
       },
     ],
+    statistics: buildDetailStatistics([]),
     publishedStats: {
       titles: "24",
       authors: "5",
