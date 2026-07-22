@@ -764,6 +764,9 @@
       "help": "Ayuda"
     }
   },
+  "Statistics": {
+    "year": "Año", "decade": "Década", "month": "Mes", "monthlyUnavailable": "Los datos disponibles no permiten una vista mensual.", "noData": "No hay datos suficientes para mostrar este gráfico.", "timeline": "Evolución", "primary": "Originales", "secondary": "Traducciones", "languages": "Idiomas de publicación", "countries": "Países de publicación", "roles": "Roles y contribuciones"
+  },
   "Errors": {
     "personDetails": { "title": "Error en la ficha de persona", "message": "Se produjo un error al cargar la ficha de la persona. Recarga la página para volver a intentarlo.", "return": "Volver a las personas", "retry": "Reintentar" },
     "bookDetails": { "title": "Error en la ficha del libro", "message": "Se produjo un error al cargar la ficha del libro. Recarga la página para volver a intentarlo.", "return": "Volver a los libros", "retry": "Reintentar" },

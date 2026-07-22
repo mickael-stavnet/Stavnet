@@ -6,6 +6,7 @@ import { useState } from "react";
 import type { ReactNode } from "react";
 import { StavnetFooter } from "@/components/stavnet/footer";
 import { StavnetHeader } from "@/components/stavnet/header";
+import { DetailStatisticsPanel } from "@/components/stavnet/detail-statistics-panel";
 import {
   ClickableDetailValue,
   buildBookTitleResolverHref,
@@ -218,6 +219,7 @@ function BlankTabPanel({ title, rows = 3 }: { title: string; rows?: number }) {
 
 export default function PersonDetailPage({ person }: PersonDetailPageProps) {
   const t = useTranslations("PersonFilePage");
+  const statisticsT = useTranslations("Statistics");
   const tabs: TabKey[] = [
     "authorCard",
     "originalTitles",
@@ -247,9 +249,9 @@ export default function PersonDetailPage({ person }: PersonDetailPageProps) {
     faconnage: t("bibliography.columns.faconnage"),
   };
   const { bibliographyRows, originalRows, translatedRows } = usePersonBibliography(person.bibliographyRows);
-  const bibliographyCount = String(bibliographyRows.length);
   const originalTitlesCount = String(originalRows.length);
   const translationsCount = String(translatedRows.length);
+  const bibliographyCount = String(originalRows.length + translatedRows.length);
   const publicationLanguagesCount = String(new Set(translatedRows.map((row) => row.language.trim()).filter(Boolean)).size);
 
   return (
@@ -424,7 +426,7 @@ export default function PersonDetailPage({ person }: PersonDetailPageProps) {
                 {activeTab === "authorPublications" ? <BlankTabPanel title={t("content.authorPublications")} rows={3} /> : null}
                 {activeTab === "pressCritiques" ? <BlankTabPanel title={t("content.pressCritiques")} rows={3} /> : null}
                 {activeTab === "awards" ? <BlankTabPanel title={t("content.awards")} rows={3} /> : null}
-                {activeTab === "statistics" ? <BlankTabPanel title={t("content.statistics")} rows={3} /> : null}
+                {activeTab === "statistics" ? <DetailStatisticsPanel statistics={person.statistics} labels={{ title: t("content.statistics"), year: statisticsT("year"), decade: statisticsT("decade"), month: statisticsT("month"), monthlyUnavailable: statisticsT("monthlyUnavailable"), noData: statisticsT("noData"), timeline: statisticsT("timeline"), primary: statisticsT("primary"), secondary: statisticsT("secondary"), languages: statisticsT("languages"), countries: statisticsT("countries"), roles: statisticsT("roles") }} /> : null}
               </div>
             </div>
           </section>

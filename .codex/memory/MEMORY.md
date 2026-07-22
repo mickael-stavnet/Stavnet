@@ -55,6 +55,7 @@
 - Supabase client is installed.
 - The project has an `AGENTS.md` rule stating that this is not the usual Next.js and that relevant docs in `node_modules/next/dist/docs/` must be read before writing Next.js code.
 - `GEMINI.md` is a source of project rules and conventions.
+- To start the local development environment with the production D1 database, use `pnpm run dev:production-db`. It starts both the local Worker and Next.js; stop both with `Ctrl+C`.
 
 ## Rules To Remember
 

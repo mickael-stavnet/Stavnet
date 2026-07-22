@@ -7,6 +7,7 @@ import { useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/routing";
 import { StavnetFooter } from "@/components/stavnet/footer";
 import { StavnetHeader } from "@/components/stavnet/header";
+import { DetailStatisticsPanel } from "@/components/stavnet/detail-statistics-panel";
 import type { BookRelatedFacet } from "@/lib/book-related";
 import type { BookAuthorRow, BookContributorRow, BookDetail, BookPublisherRow } from "@/lib/data/books";
 import {
@@ -244,6 +245,7 @@ function buildFacetCardValues(values: string[], facet: BookDetailFacet): ReactNo
 
 export default function BookDetailPage({ book }: BookDetailPageProps) {
   const t = useTranslations("BookDetailsPage");
+  const statisticsT = useTranslations("Statistics");
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<BookTab>("bookCard");
   const hasMissingCover = book.imageSrc === "/images/books-cover/book-cover-placeholder.png";
@@ -490,17 +492,7 @@ export default function BookDetailPage({ book }: BookDetailPageProps) {
                 {activeTab === "pressCritiques" ? <BlankContent title={t("content.pressCritiques")} rows={3} /> : null}
                 {activeTab === "availability" ? <BlankContent title={t("content.availability")} rows={2} /> : null}
                 {activeTab === "publishing" ? <BlankContent title={t("content.publishing")} rows={2} /> : null}
-                {activeTab === "statistics" ? (
-                  <div className="space-y-[14px]">
-                    <BlankContent title={t("content.statistics")} rows={2} />
-                    <div className="grid gap-[10px] sm:grid-cols-2 md:grid-cols-4">
-                      <MiniCard title={t("tables.category")} values={buildFacetCardValues(book.category, "category")} />
-                      <MiniCard title={t("tables.gender")} values={buildFacetCardValues(book.genre, "genre")} />
-                      <MiniCard title={t("tables.subject")} values={buildFacetCardValues(book.subject, "subject")} />
-                      <MiniCard title={t("tables.targetAudience")} values={buildFacetCardValues(book.targetAudience, "targetAudience")} />
-                    </div>
-                  </div>
-                ) : null}
+                {activeTab === "statistics" ? <DetailStatisticsPanel statistics={book.statistics} labels={{ title: t("content.statistics"), year: statisticsT("year"), decade: statisticsT("decade"), month: statisticsT("month"), monthlyUnavailable: statisticsT("monthlyUnavailable"), noData: statisticsT("noData"), timeline: statisticsT("timeline"), primary: statisticsT("primary"), secondary: statisticsT("secondary"), languages: statisticsT("languages"), countries: statisticsT("countries"), roles: statisticsT("roles") }} /> : null}
               </div>
             </div>
           </section>

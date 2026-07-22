@@ -6,6 +6,7 @@ import { useState } from "react";
 import type { ReactNode } from "react";
 import { StavnetFooter } from "@/components/stavnet/footer";
 import { StavnetHeader } from "@/components/stavnet/header";
+import { DetailStatisticsPanel } from "@/components/stavnet/detail-statistics-panel";
 import { Link } from "@/i18n/routing";
 import type { OrganizationDetail } from "@/lib/data/orgs";
 import { ClickableDetailValue, buildBookTitleResolverHref, buildOrganizationsByCountryHref } from "@/lib/detail-links";
@@ -93,6 +94,7 @@ export default function OrganizationsDetailPage({
   organization,
 }: OrganizationDetailPageProps) {
   const t = useTranslations("OrganizationFilePage");
+  const statisticsT = useTranslations("Statistics");
   const tabs: OrganizationTab[] = [
     "editorCard",
     "diffuser",
@@ -433,9 +435,7 @@ export default function OrganizationsDetailPage({
                 {activeTab === "literaryPrizes" ? (
                   <BlankTabPanel title={t("content.literaryPrizes")} rows={4} />
                 ) : null}
-                {activeTab === "statistics" ? (
-                  <BlankTabPanel title={t("content.statistics")} rows={4} />
-                ) : null}
+                {activeTab === "statistics" ? <DetailStatisticsPanel statistics={organization.statistics} labels={{ title: t("content.statistics"), year: statisticsT("year"), decade: statisticsT("decade"), month: statisticsT("month"), monthlyUnavailable: statisticsT("monthlyUnavailable"), noData: statisticsT("noData"), timeline: statisticsT("timeline"), primary: t("published.titlesCount"), secondary: t("published.authorsCount"), languages: statisticsT("languages"), countries: statisticsT("countries"), roles: statisticsT("roles") }} /> : null}
               </div>
             </div>
           </section>

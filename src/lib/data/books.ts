@@ -3,6 +3,7 @@ import { resolveBookCoverSrc } from "@/lib/book-images";
 import type { BookRelatedFacet } from "@/lib/book-related";
 import { fixEncoding } from "@/lib/encoding";
 import { logError, logInfo, logWarn } from "@/lib/server-log";
+import { buildDetailStatistics, type DetailStatistics } from "@/lib/detail-statistics";
 import { MAX_BOOKS_PAGE } from "@/lib/pagination";
 import { d1Client } from "@/lib/d1-client";
 
@@ -373,6 +374,7 @@ export interface BookDetail {
   subject: string[];
   genre: string[];
   targetAudience: string[];
+  statistics: DetailStatistics;
   stats: {
     cardsFound: string;
     databaseContains: string;
@@ -1185,6 +1187,12 @@ function mapBookDetail(
     subject: readList([row["Thème. 1"], row["Thème. 2"]]),
     genre: readList([row["Genre"], row["Genre. 1"], row["Genre. 2"]]),
     targetAudience: readList([row["Rubrique"]]),
+    statistics: buildDetailStatistics([
+      ...publishing.map((item) => ({ year: item.year, primary: item.status === "O", language: item.language, role: item.status === "O" ? "original" : "translation" })),
+      ...buildPublishers(row).map((item) => ({ year: readText(row["Année"]), country: item.country })),
+      ...buildAuthors(row).map((item) => ({ year: readText(row["Année"]), role: item.type })),
+      ...buildContributors(row).map((item) => ({ year: readText(row["Année"]), role: item.type })),
+    ]),
     stats: {
       cardsFound: String(totals.cardsFound),
       databaseContains: String(totals.databaseContains),

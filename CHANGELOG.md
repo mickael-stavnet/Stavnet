@@ -221,4 +221,12 @@
 - 09:27 - Correction des fiches personnes ajoutées : la langue d’écriture est désormais lue depuis son libellé, y compris lorsque la clé CSV est encodée de façon historique, au lieu d’afficher le code technique `L`.
 - 09:55 - Correction de la récupération des bibliographies des fiches personnes pour associer aussi les variantes orthographiques de prénoms, comme `Abraham` et `Avraham` Yehoshua, sans mélanger les homonymes.
 - 10:07 - Correction des compteurs de bibliographie des fiches personnes : titres originaux, traductions et langues de publication sont désormais calculés depuis les ouvrages réellement affichés.
+- 14:54 - Remplacement des onglets Statistiques des fiches livres, personnes et organismes par un tableau de bord interactif Recharts/shadcn-ui, avec séries temporelles, répartitions métier, sélecteurs Année/Décennie/Mois, états de données insuffisantes et traductions RTL dans les six locales.
 - 15:50 - Raccordement des portraits de l’étoile aux fiches auteurs D1 avec gestion des variantes de noms, et remplacement de Hameiri Israel par Aharon Appelfeld dans la sélection affichée.
+
+# 22-07-2026
+
+- 11:18 - Enrichissement de la base D1 de production avec les neuf colonnes complémentaires des CSV livres, ajout des sept notices manquantes, correction des deux années `20222` et synchronisation des projections ainsi que des compteurs de livres.
+- 11:24 - Classement des bibliographies personnes à partir de `CodePublication` (`O` original, `T` traduction, original par défaut), total calculé comme leur somme, et ajout de l’hébreu comme langue d’écriture d’Aharon Appelfeld.
+- 11:38 - Consolidation des fiches personnes D1 : 491 doublons sont archivés sans suppression, 699 fiches canoniques restent publiques, les snapshots des variantes sont préservés dans les payloads et le Worker exclut désormais les archives des listes et détails.
+- 12:12 - Consolidation des organismes D1 : correction traçable des encodages et des trois éditeurs contaminés par un saut de ligne, archivage de neuf variantes validées, prise en charge des alias et recalcul des compteurs publics depuis les relations livres.
