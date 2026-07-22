@@ -136,6 +136,13 @@ function text(row: Record<string, unknown>, ...fields: string[]): string {
   return "";
 }
 
+function organizationAliasNames(row: Record<string, unknown>): string[] {
+  const quality = row.dataQuality;
+  if (typeof quality !== "object" || quality === null || Array.isArray(quality) || !("aliasNormalizedNames" in quality)) return [];
+  const aliases = quality.aliasNormalizedNames;
+  return Array.isArray(aliases) && aliases.every((entry) => typeof entry === "string") ? aliases.map(normalize) : [];
+}
+
 function personWritingLanguage(row: Record<string, unknown>): string {
   return text(row, "Langue Écriture", "Langue Ecriture", "Langue �criture", "Langue ï¿½criture", "Langue Ã‰criture", "Langue", "Code Langue");
 }
@@ -162,8 +169,12 @@ function isAuthorNameVariant(value: string, personName: string): boolean {
   );
 }
 
+function bibliographyTypeFromPublicationCode(value: string): "Original" | "Traduction" {
+  return normalize(value) === "t" ? "Traduction" : "Original";
+}
+
 function bibliographyRow(row: Record<string, unknown>): Record<string, string> {
-  return { type: text(row, "Type Contribution", "Type Contribution. 1", "Type Contribution 1"), language: text(row, "Langue Traduction", "Langue Traduite", "Langue de Traduction"), title: text(row, "Titre"), year: text(row, "Année Publication", "Annee Publication"), issue: text(row, "Cote Livre", "Côte Livre") };
+  return { type: bibliographyTypeFromPublicationCode(text(row, "CodePublication")), language: text(row, "Langue Traduction", "Langue Traduite", "Langue de Traduction"), title: text(row, "Titre"), year: text(row, "Année Publication", "Annee Publication"), issue: text(row, "Cote Livre", "Côte Livre") };
 }
 
 function bookListItem(row: { book_id: number; title: string; author: string; publisher: string; language: string; writing_language: string; publication_year: string; publication_code: string }): Record<string, unknown> {
@@ -171,7 +182,7 @@ function bookListItem(row: { book_id: number; title: string; author: string; pub
 }
 
 function personWhere(type: string, language: string, search: string): { sql: string; values: string[] } {
-  const clauses: string[] = [];
+  const clauses: string[] = ["COALESCE(json_extract(payload, '$.dataQuality.status'), 'canonical') <> 'archived'"];
   const values: string[] = [];
   if (type) { clauses.push("COALESCE(json_extract(payload, '$.\"Type Personne\"'), json_extract(payload, '$.Type'), '') = ?"); values.push(type); }
   if (language) { clauses.push("COALESCE(json_extract(payload, '$.\"Langue Écriture\"'), json_extract(payload, '$.\"Langue Ecriture\"'), json_extract(payload, '$.\"Langue �criture\"'), json_extract(payload, '$.\"Langue ï¿½criture\"'), json_extract(payload, '$.\"Langue Ã‰criture\"'), json_extract(payload, '$.Langue'), json_extract(payload, '$.\"Code Langue\"'), '') = ?"); values.push(language); }
@@ -180,7 +191,7 @@ function personWhere(type: string, language: string, search: string): { sql: str
 }
 
 function organizationWhere(type: string, category: string, country: string, search: string): { sql: string; values: string[] } {
-  const clauses: string[] = [];
+  const clauses: string[] = ["COALESCE(json_extract(payload, '$.dataQuality.status'), 'canonical') <> 'archived'"];
   const values: string[] = [];
   if (type) { clauses.push("json_extract(payload, '$.Type') = ?"); values.push(type); }
   if (category === "Editeur") { clauses.push("json_extract(payload, '$.Type') = 'Editeur'"); }
@@ -254,23 +265,22 @@ async function rpc(db: D1Database, name: string, args: Record<string, unknown>):
       const page = Math.max(1, Number(args.p_page) || 1);
       const pageSize = Math.max(1, Number(args.p_page_size) || 20);
       const where = personWhere(type, language, search);
-      const total = (type || language || search) ? await db.prepare(`SELECT COUNT(*) AS count FROM people${where.sql}`).bind(...where.values).all<{ count: number }>() : null;
+      const total = await db.prepare(`SELECT COUNT(*) AS count FROM people${where.sql}`).bind(...where.values).all<{ count: number }>();
       const people = await db.prepare(`SELECT payload FROM people${where.sql} ORDER BY name LIMIT ? OFFSET ?`).bind(...where.values, pageSize, (page - 1) * pageSize).all<{ payload: string }>();
       const items = people.results.map((entry) => parsePayload(entry.payload)).map((row) => ({
         name: text(row, "Prénom Nom", "Prenom Nom", "Auteur Original"), type: text(row, "Type Personne", "Type"), language: personWritingLanguage(row),
         originalTitles: text(row, "Nb. Titres Originaux", "Nb. Contributions Auteurs"), translatedTitles: text(row, "Nb. Titres Traduits", "Nb. Contributions Titres"), translationLanguages: text(row, "Nb. Langues Traduction"), awards: text(row, "Nb. Prix Distinctions", "Nb. Prix"), regularReissues: text(row, "Nb. Rééditions Régulières", "Nb. Rééditions"), pocketReissues: text(row, "Nb. Rééditions Poche"), publicationCountries: text(row, "Nb. Pays Publication"),
       }));
-      return { items, totalCount: total ? Number(total.results[0]?.count ?? 0) : await stat(db, "people_total"), databaseTotal: await stat(db, "people_total") };
+      return { items, totalCount: Number(total.results[0]?.count ?? 0), databaseTotal: await stat(db, "people_total") };
     }
     const requested = normalize(String(args.p_name ?? ""));
-    const person = await db.prepare(`SELECT payload FROM people${requested ? " WHERE normalized_name = ?" : ""} ORDER BY name LIMIT 1`).bind(...(requested ? [requested] : [])).all<{ payload: string }>();
+    const person = await db.prepare(`SELECT payload FROM people WHERE COALESCE(json_extract(payload, '$.dataQuality.status'), 'canonical') <> 'archived'${requested ? " AND normalized_name = ?" : ""} ORDER BY name LIMIT 1`).bind(...(requested ? [requested] : [])).all<{ payload: string }>();
     const row = person.results[0] ? parsePayload(person.results[0].payload) : undefined;
     if (!row) return null;
     const primaryName = text(row, "Prénom Nom", "Prenom Nom", "Auteur Original");
     const alternateName = text(row, "Nom Prénom", "Nom Prenom");
     const names = [primaryName, alternateName].map(normalize).filter((value, index, values) => value && values.indexOf(value) === index);
-    const personRows = requested ? await db.prepare("SELECT payload FROM people WHERE normalized_name = ?").bind(requested).all<{ payload: string }>() : person;
-    const bibliographyRows = personRows.results.map((entry) => bibliographyRow(parsePayload(entry.payload))).filter((entry) => Object.values(entry).some(Boolean));
+    const bibliographyRows: Record<string, string>[] = [];
     if (names.length) {
       const surname = personNameTokens(primaryName).at(-1);
       const authorNameVariants = surname
@@ -280,12 +290,12 @@ async function rpc(db: D1Database, name: string, args: Record<string, unknown>):
         .filter((value, index, values) => values.indexOf(value) === index);
       const placeholders = relatedNames.map(() => "?").join(", ");
       const books = await db.prepare(`SELECT DISTINCT books.id, books.payload FROM book_facets JOIN books ON books.id = book_facets.book_id WHERE book_facets.facet = 'authorName' AND book_facets.value IN (${placeholders}) ORDER BY books.sort_year DESC, books.id`).bind(...relatedNames).all<{ id: number; payload: string }>();
-      for (const entry of books.results) { const book = parsePayload(entry.payload); bibliographyRows.push({ type: normalize(text(book, "Langue")) === normalize(personWritingLanguage(row)) ? "Original" : "Traduction", language: text(book, "Langue"), title: text(book, "Titre"), year: text(book, "Année"), issue: "" }); }
+      for (const entry of books.results) { const book = parsePayload(entry.payload); bibliographyRows.push({ type: bibliographyTypeFromPublicationCode(text(book, "CodePublication")), language: text(book, "Langue"), title: text(book, "Titre"), year: text(book, "Année"), issue: "" }); }
     }
     const originalTitles = bibliographyRows.filter((entry) => normalize(entry.type) === "original").length;
     const translations = bibliographyRows.filter((entry) => normalize(entry.type) === "traduction");
     const publicationLanguages = new Set(translations.map((entry) => normalize(entry.language)).filter(Boolean)).size;
-    return { name: primaryName, alternateName, type: text(row, "Type Personne", "Type"), language: personWritingLanguage(row), birthInfo: text(row, "Date de Naissance", "Date Naissance"), deathInfo: text(row, "Date de Décès", "Date Décès", "Date Deces"), residence: text(row, "Pays de Résidence", "Lieu Résidence", "Lieu Residence"), professionalActivity: text(row, "Activité Professionnelle", "Activite Professionnelle"), biography: text(row, "Biographie"), bibliographyStats: { originalTitles: String(originalTitles), translations: String(translations.length), publicationLanguages: String(publicationLanguages) }, bibliographyRows, stats: { cardsFound: text(row, "Nb. Fiches Trouvées", "Nb. Fiches Trouvees"), databaseContains: text(row, "Nb. Fiches Base") } };
+    return { name: primaryName, alternateName, type: text(row, "Type Personne", "Type"), language: personWritingLanguage(row), birthInfo: text(row, "Date de Naissance", "Date Naissance"), deathInfo: text(row, "Date de Décès", "Date Décès", "Date Deces"), residence: text(row, "Pays de Résidence", "Lieu Résidence", "Lieu Residence"), professionalActivity: text(row, "Activité Professionnelle", "Activite Professionnelle"), biography: text(row, "Biographie"), bibliographyStats: { originalTitles: String(originalTitles), translations: String(translations.length), publicationLanguages: String(publicationLanguages) }, bibliographyRows, stats: { cardsFound: String(bibliographyRows.length), databaseContains: String(await stat(db, "people_total")) } };
   }
   if (name === "get_organizations_page" || name === "get_organization_detail_by_name" || name === "get_default_organization_detail") {
     if (name === "get_organizations_page") {
@@ -296,23 +306,30 @@ async function rpc(db: D1Database, name: string, args: Record<string, unknown>):
       const page = Math.max(1, Number(args.p_page) || 1);
       const pageSize = Math.max(1, Number(args.p_page_size) || 20);
       const where = organizationWhere(type, category, country, search);
-      const total = (type || category || country || search) ? await db.prepare(`SELECT COUNT(*) AS count FROM organizations${where.sql}`).bind(...where.values).all<{ count: number }>() : null;
+      const total = await db.prepare(`SELECT COUNT(*) AS count FROM organizations${where.sql}`).bind(...where.values).all<{ count: number }>();
       const organizations = await db.prepare(`SELECT payload FROM organizations${where.sql} ORDER BY name LIMIT ? OFFSET ?`).bind(...where.values, pageSize, (page - 1) * pageSize).all<{ payload: string }>();
-      const items = organizations.results.map((entry) => parsePayload(entry.payload)).map((row) => ({ name: text(row, "Organisme"), type: text(row, "Type"), creationDate: text(row, "Date_Creation"), country: text(row, "Pays"), publishedTitles: text(row, "Nb_Titres"), publishedAuthors: text(row, "Nb_Auteurs") }));
-      return { items, totalCount: total ? Number(total.results[0]?.count ?? 0) : await stat(db, "organizations_total"), databaseTotal: await stat(db, "organizations_total") };
+      const items = await Promise.all(organizations.results.map(async (entry) => {
+        const row = parsePayload(entry.payload);
+        const aliases = organizationAliasNames(row);
+        const names = [...new Set([normalize(text(row, "Organisme")), ...aliases].filter(Boolean))];
+        const placeholders = names.map(() => "?").join(", ");
+        const counts = names.length > 0 ? await db.prepare(`SELECT COUNT(DISTINCT book_id) AS titles, (SELECT COUNT(DISTINCT value) FROM book_facets WHERE facet = 'authorName' AND book_id IN (SELECT book_id FROM book_publishers WHERE normalized_name IN (${placeholders}))) AS authors FROM book_publishers WHERE normalized_name IN (${placeholders})`).bind(...names, ...names).all<{ titles: number; authors: number }>() : { results: [] as { titles: number; authors: number }[] };
+        return { name: text(row, "Organisme"), type: text(row, "Type"), creationDate: text(row, "Date_Creation"), country: text(row, "Pays"), publishedTitles: String(counts.results[0]?.titles ?? 0), publishedAuthors: String(counts.results[0]?.authors ?? 0) };
+      }));
+      return { items, totalCount: Number(total.results[0]?.count ?? 0), databaseTotal: await stat(db, "organizations_total") };
     }
     const requested = normalize(String(args.p_name ?? ""));
-    const organization = await db.prepare(`SELECT payload FROM organizations${requested ? " WHERE normalized_name = ?" : ""} ORDER BY name LIMIT 1`).bind(...(requested ? [requested] : [])).all<{ payload: string }>();
+    const organization = await db.prepare(`SELECT payload FROM organizations${requested ? " WHERE normalized_name = ? AND COALESCE(json_extract(payload, '$.dataQuality.status'), 'canonical') <> 'archived'" : " WHERE COALESCE(json_extract(payload, '$.dataQuality.status'), 'canonical') <> 'archived'"} ORDER BY name LIMIT 1`).bind(...(requested ? [requested] : [])).all<{ payload: string }>();
     const row = organization.results[0] ? parsePayload(organization.results[0].payload) : undefined;
     if (!row) return null;
     const organizationName = text(row, "Organisme");
-    const names = new Set([organizationName.toLocaleLowerCase()]);
-    const books = await db.prepare("SELECT books.payload FROM book_publishers JOIN books ON books.id = book_publishers.book_id WHERE book_publishers.normalized_name = ? ORDER BY books.sort_year DESC, books.id ASC").bind(normalize(organizationName)).all<{ payload: string }>();
+    const aliases = organizationAliasNames(row);
+    const names = [...new Set([normalize(organizationName), ...aliases].filter(Boolean))];
+    const placeholders = names.map(() => "?").join(", ");
+    const books = names.length > 0 ? await db.prepare(`SELECT DISTINCT books.id, books.payload FROM book_publishers JOIN books ON books.id = book_publishers.book_id WHERE book_publishers.normalized_name IN (${placeholders}) ORDER BY books.sort_year DESC, books.id ASC`).bind(...names).all<{ id: number; payload: string }>() : { results: [] as { id: number; payload: string }[] };
     const seen = new Set<string>();
     const publishedRows = books.results.flatMap((entry) => {
       const book = parsePayload(entry.payload);
-      const publishers = [text(book, "Éditeur"), text(book, "Éditeur. 1. Nom"), text(book, "Éditeur. 2. Nom")];
-      if (!publishers.some((publisher) => names.has(publisher.toLocaleLowerCase()))) return [];
       const title = text(book, "Titre");
       const author = [text(book, "Auteur. 1. Prénom"), text(book, "Auteur. 1. Nom")].filter(Boolean).join(" ");
       const year = text(book, "Année");
@@ -321,8 +338,9 @@ async function rpc(db: D1Database, name: string, args: Record<string, unknown>):
       seen.add(key);
       return [{ title, author, year }];
     });
-    const publishedTitles = text(row, "Nb_Titres") || String(publishedRows.length);
-    const publishedAuthors = text(row, "Nb_Auteurs");
+    const publishedTitles = String(books.results.length);
+    const authorCount = names.length > 0 ? await db.prepare(`SELECT COUNT(DISTINCT value) AS authors FROM book_facets WHERE facet = 'authorName' AND book_id IN (SELECT book_id FROM book_publishers WHERE normalized_name IN (${placeholders}))`).bind(...names).all<{ authors: number }>() : { results: [] as { authors: number }[] };
+    const publishedAuthors = String(authorCount.results[0]?.authors ?? 0);
     return { name: organizationName, synonym: organizationName, type: text(row, "Type"), creationDate: text(row, "Date_Creation"), country: text(row, "Pays"), publishedStats: { titles: publishedTitles, authors: publishedAuthors }, stats: { cardsFound: publishedTitles, databaseContains: String(await stat(db, "organizations_total")) }, publishedRows };
   }
   throw new Error("Unknown RPC");

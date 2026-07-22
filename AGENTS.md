@@ -23,3 +23,4 @@ This version has breaking changes — APIs, conventions, and file structure may 
 - After screenshot-based layout edits, verify that the resulting composition satisfies the user’s stated spatial relationship in the screenshot itself, not only in the DOM structure or through approximate code assumptions.
 - The app must support French, English, Hebrew, Arabic, German, and Spanish through i18n.
 - Hebrew and Arabic require proper RTL support.
+- When a development server is needed, the agent may use `pnpm run dev:production-db` to start Next.js and the local Worker together with the production D1 database. Stop both processes with `Ctrl+C` when finished.

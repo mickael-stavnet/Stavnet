@@ -249,9 +249,9 @@ export default function PersonDetailPage({ person }: PersonDetailPageProps) {
     faconnage: t("bibliography.columns.faconnage"),
   };
   const { bibliographyRows, originalRows, translatedRows } = usePersonBibliography(person.bibliographyRows);
-  const bibliographyCount = String(bibliographyRows.length);
   const originalTitlesCount = String(originalRows.length);
   const translationsCount = String(translatedRows.length);
+  const bibliographyCount = String(originalRows.length + translatedRows.length);
   const publicationLanguagesCount = String(new Set(translatedRows.map((row) => row.language.trim()).filter(Boolean)).size);
 
   return (
