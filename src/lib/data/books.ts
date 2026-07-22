@@ -1149,15 +1149,25 @@ function mapBookDetail(
   const titleEnglish = readText(row["Titre. Anglais"]);
   const titleOriginal = readText(row["Titre. Original"]);
   const titleTranscription = readText(row["Titre. Transcription"]);
+  const subtitle = readText(row["Sous-titre"]);
+  const subtitleEnglish = readText(row["Sous-titre. Anglais"]);
+  const subtitleOriginal = readText(row["Sous-titre. Original"]);
+  const subtitleTranscription = readText(row["Sous-titre. Transcription"]);
   const language = readText(row["Langue"]);
+  const titleWithoutSubtitle = title.split(/[—–]/)[0]?.trim() ?? title;
 
   return {
     id,
     imageSrc: resolveBookCoverSrc(
+      `${titleWithoutSubtitle} ${language}`,
       `${title} ${language}`,
       `${titleEnglish} ${language}`,
       `${titleOriginal} ${language}`,
       `${titleTranscription} ${language}`,
+      `${title} ${subtitle}`,
+      `${titleEnglish} ${subtitleEnglish}`,
+      `${titleOriginal} ${subtitleOriginal}`,
+      `${titleTranscription} ${subtitleTranscription}`,
       title,
       titleEnglish,
       titleOriginal,
@@ -1167,10 +1177,10 @@ function mapBookDetail(
     titleEnglish,
     titleOriginal,
     titleTranscription,
-    subtitle: readText(row["Sous-titre"]),
-    subtitleEnglish: readText(row["Sous-titre. Anglais"]),
-    subtitleOriginal: readText(row["Sous-titre. Original"]),
-    subtitleTranscription: readText(row["Sous-titre. Transcription"]),
+    subtitle,
+    subtitleEnglish,
+    subtitleOriginal,
+    subtitleTranscription,
     language,
     summary: readText(row["Résumé"]),
     tableOfContents: readText(row["Sommaire"]),
@@ -1595,7 +1605,7 @@ export const resolveBookByExactTitle = cacheData(
 );
 
 export const getBookDetailById = cacheData(
-  ["books-detail-by-id-v2"],
+  ["books-detail-by-id-v4"],
   async (id: string): Promise<BookDetail | null> => {
   const trimmedId = id.trim();
 
@@ -1650,6 +1660,7 @@ export const getBookDetailById = cacheData(
 
   logInfo("BOOK_DETAIL_RESULT", {
     id: trimmedId,
+    imageSrc: detail.imageSrc,
     status,
     statusText,
     resolvedTitle: detail.title,

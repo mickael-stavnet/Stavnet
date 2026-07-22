@@ -44,8 +44,9 @@ function createBookImageVariants(value: string): string[] {
   const cleaned = cleanupBookImageLabel(trimmed);
   const colonFree = cleaned.split(/[:;\/]/)[0]?.trim() ?? "";
   const commaFree = cleaned.split(",")[0]?.trim() ?? "";
+  const subtitleFree = cleaned.split(/\s+[—–-]\s+/)[0]?.trim() ?? "";
 
-  for (const variant of [trimmed, cleaned, colonFree, commaFree]) {
+  for (const variant of [trimmed, cleaned, colonFree, commaFree, subtitleFree]) {
     if (variant) {
       variants.add(variant);
     }
@@ -94,12 +95,10 @@ function readBookCoverEntries(): BookImageEntry[] {
   return imageEntries;
 }
 
-const BOOK_COVER_ENTRIES = readBookCoverEntries();
-
 const BOOK_COVER_EXACT_MAP = new Map<string, string>();
 const BOOK_COVER_COMPACT_MAP = new Map<string, string>();
 
-for (const entry of BOOK_COVER_ENTRIES) {
+for (const entry of readBookCoverEntries()) {
   BOOK_COVER_EXACT_MAP.set(entry.key, entry.src);
   BOOK_COVER_COMPACT_MAP.set(entry.compact, entry.src);
 }

@@ -248,7 +248,8 @@ export default function BookDetailPage({ book }: BookDetailPageProps) {
   const statisticsT = useTranslations("Statistics");
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<BookTab>("bookCard");
-  const hasMissingCover = book.imageSrc === "/images/books-cover/book-cover-placeholder.png";
+  const imageSrc = book.title === "Sarah" && book.subtitle === "Geburt unter X" ? "/images/books-cover/Sarah - Allemand.jpg" : book.imageSrc;
+  const hasMissingCover = imageSrc === "/images/books-cover/book-cover-placeholder.png";
   const tabs: BookTab[] = [
     "bookCard",
     "backCover",
@@ -318,7 +319,7 @@ export default function BookDetailPage({ book }: BookDetailPageProps) {
                 </div>
               ) : (
                 <Image
-                  src={book.imageSrc}
+                  src={imageSrc}
                   alt={book.title}
                   width={258}
                   height={387}

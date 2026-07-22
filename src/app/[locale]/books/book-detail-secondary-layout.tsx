@@ -184,7 +184,8 @@ export default function BookDetailSecondaryLayout({
 }: BookDetailSecondaryLayoutProps) {
   const t = useTranslations("BookDetailsPage");
   const router = useRouter();
-  const hasMissingCover = book.imageSrc === "/images/books-cover/book-cover-placeholder.png";
+  const imageSrc = book.title === "Sarah" && book.subtitle === "Geburt unter X" ? "/images/books-cover/Sarah - Allemand.jpg" : book.imageSrc;
+  const hasMissingCover = imageSrc === "/images/books-cover/book-cover-placeholder.png";
   const footerItems = [
     { key: "back", icon: "/icons/icons-nav/back.png", href: "/home" as const, label: t("footer.back") },
     { key: "menu", icon: "/icons/icons-nav/menu.png", href: "/menu" as const, label: t("footer.menu") },
@@ -256,7 +257,7 @@ export default function BookDetailSecondaryLayout({
                     {t("noCoverAvailable")}
                   </div>
                 ) : (
-                  <Image src={book.imageSrc} alt={book.title} width={258} height={387} priority className="h-auto w-full object-cover md:h-full md:w-full" />
+                  <Image src={imageSrc} alt={book.title} width={258} height={387} priority className="h-auto w-full object-cover md:h-full md:w-full" />
                 )}
               </div>
             </aside>
