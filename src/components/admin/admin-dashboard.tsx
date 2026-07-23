@@ -5,10 +5,14 @@ import Link from "next/link";
 import { type FormEvent, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import {
+  Archive,
+  BookOpen,
+  Building2,
   Check,
   ChevronsUpDown,
   Eye,
   Home,
+  History,
   KeyRound,
   Loader2,
   LockKeyhole,
@@ -152,16 +156,17 @@ function LoginScreen({ onAuthenticated }: { onAuthenticated: () => void }) {
   }
 
   return (
-    <main className="flex min-h-svh items-center justify-center bg-background p-6">
-      <Card className="w-full max-w-sm">
-        <CardHeader>
-          <CardTitle>Administration</CardTitle>
-          <CardDescription>Connectez-vous pour gérer les contenus administrables.</CardDescription>
+    <main className="flex min-h-svh items-center justify-center bg-muted/30 p-6 sm:p-10">
+      <Card className="w-full max-w-md border-border/80 shadow-sm">
+        <CardHeader className="gap-3 px-7 pt-8 sm:px-9">
+          <p className="text-sm font-semibold tracking-wide text-primary">STAVNET · ESPACE SÉCURISÉ</p>
+          <CardTitle className="text-3xl tracking-tight">Administration</CardTitle>
+          <CardDescription className="text-base leading-relaxed">Connectez-vous pour gérer les contenus administrables.</CardDescription>
         </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="admin-password">Mot de passe</Label>
+        <CardContent className="px-7 pb-8 sm:px-9">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="space-y-3">
+              <Label className="text-base" htmlFor="admin-password">Mot de passe</Label>
               <Input
                 id="admin-password"
                 type="password"
@@ -169,14 +174,15 @@ function LoginScreen({ onAuthenticated }: { onAuthenticated: () => void }) {
                 value={password}
                 onChange={(event) => setPassword(event.target.value)}
                 required
+                className="h-12 text-lg"
               />
               {error ? (
-                <p className="text-sm text-destructive" role="alert">
+                <p className="text-base text-destructive" role="alert">
                   {error}
                 </p>
               ) : null}
             </div>
-            <Button type="submit" disabled={isSubmitting} className="w-full">
+            <Button type="submit" disabled={isSubmitting} className="h-12 w-full text-base">
               {isSubmitting ? <Loader2 className="size-4 animate-spin" /> : <KeyRound className="size-4" />}
               {isSubmitting ? "Vérification" : "Se connecter"}
             </Button>
@@ -486,7 +492,7 @@ function AdminShell({ onLogout }: { onLogout: () => void }) {
   return (
     <TooltipProvider>
       <SidebarProvider>
-        <Sidebar collapsible="icon">
+        <Sidebar collapsible="icon" className="[--sidebar-width:18rem]">
           <SidebarHeader>
             <SidebarMenu>
               <SidebarMenuItem>
@@ -506,6 +512,36 @@ function AdminShell({ onLogout }: { onLogout: () => void }) {
                     <SidebarMenuButton isActive tooltip="Vitrine des auteurs">
                       <Sparkles className="size-4" />
                       <span>Vitrine des auteurs</span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton asChild tooltip="Livres">
+                      <Link href="/admin/books"><BookOpen className="size-4" /><span>Livres</span></Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton asChild tooltip="Personnes">
+                      <Link href="/admin/persons"><Users className="size-4" /><span>Personnes</span></Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton asChild tooltip="Organisations">
+                      <Link href="/admin/organizations"><Building2 className="size-4" /><span>Organisations</span></Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton asChild tooltip="Recherche globale">
+                      <Link href="/admin/search"><Search className="size-4" /><span>Recherche globale</span></Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton asChild tooltip="Corbeille">
+                      <Link href="/admin/trash"><Archive className="size-4" /><span>Corbeille</span></Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton asChild tooltip="Historique">
+                      <Link href="/admin/logs"><History className="size-4" /><span>Historique</span></Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 </SidebarMenu>
@@ -533,13 +569,13 @@ function AdminShell({ onLogout }: { onLogout: () => void }) {
         </Sidebar>
 
         <SidebarInset className="min-w-0 overflow-x-hidden">
-          <header className="flex h-12 shrink-0 items-center gap-2 border-b px-4">
+          <header className="flex h-16 shrink-0 items-center gap-3 border-b px-6">
             <SidebarTrigger />
             <Separator orientation="vertical" className="h-4" />
             <div className="flex min-w-0 flex-1 items-center justify-between gap-4">
               <div className="flex min-w-0 items-center gap-2">
                 <ChevronsUpDown className="size-4 text-muted-foreground" />
-                <p className="truncate text-sm font-medium">Vitrine des auteurs</p>
+                <p className="truncate text-base font-semibold">Vitrine des auteurs</p>
               </div>
               <Button asChild variant="ghost">
                 <Link href="/en">
@@ -550,42 +586,42 @@ function AdminShell({ onLogout }: { onLogout: () => void }) {
             </div>
           </header>
 
-          <main className="flex min-w-0 flex-1 flex-col gap-6 p-6">
-            <div className="grid min-w-0 gap-4 md:grid-cols-2 xl:grid-cols-4">
+          <main className="flex min-w-0 flex-1 flex-col gap-8 p-6 lg:p-10">
+            <div className="grid min-w-0 gap-5 md:grid-cols-2 xl:grid-cols-4">
               <Card className="min-w-0">
                 <CardHeader>
                   <CardDescription>Portraits sélectionnés</CardDescription>
-                  <CardTitle>{selectedNames.size}</CardTitle>
+                  <CardTitle className="text-3xl">{selectedNames.size}</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-sm text-muted-foreground">Maximum {MAX_SHOWCASE_COUNT} auteurs.</p>
+                  <p className="text-base text-muted-foreground">Maximum {MAX_SHOWCASE_COUNT} auteurs.</p>
                 </CardContent>
               </Card>
               <Card className="min-w-0">
                 <CardHeader>
                   <CardDescription>Auteurs disponibles</CardDescription>
-                  <CardTitle>{entries.length}</CardTitle>
+                  <CardTitle className="text-3xl">{entries.length}</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-sm text-muted-foreground">Images trouvées dans le dossier public.</p>
+                  <p className="text-base text-muted-foreground">Images trouvées dans le dossier public.</p>
                 </CardContent>
               </Card>
               <Card className="min-w-0">
                 <CardHeader>
                   <CardDescription>Places restantes</CardDescription>
-                  <CardTitle>{remainingSlots}</CardTitle>
+                  <CardTitle className="text-3xl">{remainingSlots}</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-sm text-muted-foreground">Capacité de l’étoile 3D.</p>
+                  <p className="text-base text-muted-foreground">Capacité de l’étoile 3D.</p>
                 </CardContent>
               </Card>
               <Card className="min-w-0">
                 <CardHeader>
                   <CardDescription>État</CardDescription>
-                  <CardTitle>{hasChanges ? "Modifié" : "À jour"}</CardTitle>
+                  <CardTitle className="text-3xl">{hasChanges ? "Modifié" : "À jour"}</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-sm text-muted-foreground">{hasChanges ? "Sauvegarde requise." : "Sélection synchronisée."}</p>
+                  <p className="text-base text-muted-foreground">{hasChanges ? "Sauvegarde requise." : "Sélection synchronisée."}</p>
                 </CardContent>
               </Card>
             </div>

@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="fr" className="h-full antialiased">
-      <body className="min-h-full bg-white font-sans text-foreground">
+      <body className="admin-interface min-h-full bg-white font-sans text-foreground">
         {children}
         <Toaster position="bottom-right" />
       </body>

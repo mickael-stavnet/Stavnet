@@ -1181,11 +1181,12 @@ function mapBookDetail(
   const subtitleOriginal = readText(row["Sous-titre. Original"]);
   const subtitleTranscription = readText(row["Sous-titre. Transcription"]);
   const language = readText(row["Langue"]);
+  const uploadedImageSrc = readText(row["Image. URL"]);
   const titleWithoutSubtitle = title.split(/[—–]/)[0]?.trim() ?? title;
 
   return {
     id,
-    imageSrc: STAVNET_BOOK_COVER_BY_ID[id] ?? resolveBookCoverSrc(
+    imageSrc: uploadedImageSrc || (STAVNET_BOOK_COVER_BY_ID[id] ?? resolveBookCoverSrc(
       `${titleWithoutSubtitle} ${language}`,
       `${title} ${language}`,
       `${titleEnglish} ${language}`,
@@ -1199,7 +1200,7 @@ function mapBookDetail(
       titleEnglish,
       titleOriginal,
       titleTranscription,
-    ),
+    )),
     title,
     titleEnglish,
     titleOriginal,

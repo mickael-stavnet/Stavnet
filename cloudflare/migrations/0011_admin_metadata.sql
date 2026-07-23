@@ -1,0 +1,18 @@
+ALTER TABLE books ADD COLUMN created_by TEXT NOT NULL DEFAULT 'admin';
+ALTER TABLE books ADD COLUMN updated_by TEXT NOT NULL DEFAULT 'admin';
+ALTER TABLE books ADD COLUMN archived_by TEXT;
+ALTER TABLE books ADD COLUMN image_original_name TEXT;
+ALTER TABLE books ADD COLUMN image_content_type TEXT;
+ALTER TABLE books ADD COLUMN image_updated_at TEXT;
+ALTER TABLE people ADD COLUMN created_by TEXT NOT NULL DEFAULT 'admin';
+ALTER TABLE people ADD COLUMN updated_by TEXT NOT NULL DEFAULT 'admin';
+ALTER TABLE people ADD COLUMN archived_by TEXT;
+ALTER TABLE people ADD COLUMN image_original_name TEXT;
+ALTER TABLE people ADD COLUMN image_content_type TEXT;
+ALTER TABLE people ADD COLUMN image_updated_at TEXT;
+ALTER TABLE organizations ADD COLUMN created_by TEXT NOT NULL DEFAULT 'admin';
+ALTER TABLE organizations ADD COLUMN updated_by TEXT NOT NULL DEFAULT 'admin';
+ALTER TABLE organizations ADD COLUMN archived_by TEXT;
+ALTER TABLE organizations ADD COLUMN image_original_name TEXT;
+ALTER TABLE organizations ADD COLUMN image_content_type TEXT;
+ALTER TABLE organizations ADD COLUMN image_updated_at TEXT;

@@ -31,6 +31,7 @@ type PersonBibliographyRowRpc = {
 type PersonDetailRpc = {
   name?: unknown;
   alternateName?: unknown;
+  imageSrc?: unknown;
   type?: unknown;
   language?: unknown;
   birthInfo?: unknown;
@@ -209,7 +210,7 @@ function mapPersonDetail(detail: PersonDetailRpc): PersonDetail | null {
   return {
     name,
     alternateName,
-    imageSrc: resolvePersonImageSrc(name, alternateName),
+    imageSrc: readText(detail.imageSrc) || resolvePersonImageSrc(name, alternateName),
     type: readText(detail.type),
     language: readText(detail.language),
     birthInfo: readText(detail.birthInfo),

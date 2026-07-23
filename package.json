@@ -5,7 +5,11 @@
   "scripts": {
     "dev": "next dev",
     "dev:worker": "npx --yes wrangler@4.26.1 dev --local --config cloudflare/wrangler.jsonc",
+    "dev:worker:local-db": "npx --yes wrangler@4.26.1 dev --local --persist-to cloudflare/.wrangler/local-db --config cloudflare/wrangler.jsonc",
     "dev:worker:production-db": "npx --yes wrangler@4.26.1 dev --remote --config cloudflare/wrangler.jsonc",
+    "db:local:sync": "node scripts/sync-local-db.mjs",
+    "db:local:inspect": "node scripts/inspect-local-db.mjs",
+    "dev:local-db": "node scripts/dev-local-db.mjs",
     "dev:production-db": "node scripts/dev-production-db.mjs",
     "build": "next build",
     "start": "next start",
@@ -20,6 +24,7 @@
   },
   "dependencies": {
     "@types/three": "^0.181.0",
+    "@vercel/blob": "^2.6.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",

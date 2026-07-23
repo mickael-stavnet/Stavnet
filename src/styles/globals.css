@@ -134,3 +134,18 @@
     @apply font-sans;
     }
 }
+
+body.admin-interface,
+body.admin-interface * {
+  font-family: var(--font-sans);
+  font-size: 0.7rem;
+  font-style: normal;
+  line-height: 1.5;
+}
+
+body.admin-interface h1,
+body.admin-interface h2,
+body.admin-interface [data-slot="card-title"] {
+  font-size: 1.3125rem;
+  line-height: 1.2;
+}

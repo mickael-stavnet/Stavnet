@@ -16,6 +16,11 @@ const nextConfig: NextConfig = {
         hostname: "st3.depositphotos.com",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "*.public.blob.vercel-storage.com",
+        pathname: "/**",
+      },
     ],
   },
 };

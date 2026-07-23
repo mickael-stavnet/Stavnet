@@ -28,6 +28,7 @@ audit-screenshots-responsive/
 .pnpm-store/
 cloudflare/.generated/
 cloudflare/.wrangler/
+cloudflare/.local-db/
 __pycache__/
 .supabase/
 public/images/books-cover/FINDER.DAT

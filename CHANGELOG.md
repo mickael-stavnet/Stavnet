@@ -230,3 +230,14 @@
 - 11:24 - Classement des bibliographies personnes à partir de `CodePublication` (`O` original, `T` traduction, original par défaut), total calculé comme leur somme, et ajout de l’hébreu comme langue d’écriture d’Aharon Appelfeld.
 - 11:38 - Consolidation des fiches personnes D1 : 491 doublons sont archivés sans suppression, 699 fiches canoniques restent publiques, les snapshots des variantes sont préservés dans les payloads et le Worker exclut désormais les archives des listes et détails.
 - 12:12 - Consolidation des organismes D1 : correction traçable des encodages et des trois éditeurs contaminés par un saut de ligne, archivage de neuf variantes validées, prise en charge des alias et recalcul des compteurs publics depuis les relations livres.
+
+# 23-07-2026
+
+- 12:34 - Ajout d’un environnement D1/SQLite local cloné depuis `stavnet-production` : export des tables applicatives, reconstruction des index FTS5 via Docker et nouvelles commandes de synchronisation, d’inspection et de développement local.
+- 12:55 - Correction de l’environnement `dev:local-db` : Next.js reçoit désormais le secret de `cloudflare/.dev.vars` utilisé par le Worker local, rétablissant les listes D1 locales et les routes après redémarrage.
+- 14:00 - Mise en place du socle CRUD administrateur D1 : routes protégées pour les livres, personnes et organisations, listes et fiches d’édition dédiées, corbeille, journal d’audit et migration de métadonnées d’archivage.
+- 14:28 - Fiabilisation de `dev:local-db` : contrôle du port 3000 avant de lancer Wrangler et arrêt attendu des sous-processus, évitant tout Worker local orphelin lors d’un conflit de port.
+- 14:58 - Les formulaires de création administratifs chargent désormais tous les champs effectivement présents dans D1 pour les livres, personnes et organisations, afin de permettre une saisie complète dès la première fiche.
+- 15:03 - Unification du shell administrateur : les listes, fiches, créations, recherche, corbeille et historique utilisent maintenant la même sidebar repliable, le même header et les mêmes actions de navigation que le dashboard `/admin`.
+- 15:20 - Remplacement du stockage média Cloudflare R2 par le Blob Store public Vercel `stavnet-media`, avec téléversement admin protégé, références persistées dans D1 et configuration d’images distantes Next.js.
+- 16:10 - Refonte ergonomique du parcours administrateur : écran de connexion plus lisible, navigation élargie, listes aérées, cibles d’action agrandies et hiérarchie typographique renforcée pour une consultation confortable.
