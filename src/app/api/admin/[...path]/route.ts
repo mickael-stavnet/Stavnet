@@ -20,6 +20,17 @@ function bookImageSrc(item: Record<string, unknown>): string | null {
   return cover === "/images/books-cover/book-cover-placeholder.png" ? null : cover;
 }
 
+function itemImageSrc(item: Record<string, unknown>, entityType: string): string | null {
+  if (entityType === "books") return bookImageSrc(item);
+  const payload = typeof item.payload === "object" && item.payload !== null ? item.payload as Record<string, unknown> : {};
+  return readText(item.imageKey) || readText(payload["Image. URL"]) || null;
+}
+
+function withImageSources(value: unknown, entityType: string): unknown {
+  if (typeof value !== "object" || value === null || !("items" in value) || !Array.isArray(value.items)) return value;
+  return { ...value, items: value.items.map((item) => { if (typeof item !== "object" || item === null) return item; const record = item as Record<string, unknown>; return { ...record, imageSrc: itemImageSrc(record, entityType) }; }) };
+}
+
 async function proxy(request: NextRequest, context: { params: Promise<{ path: string[] }> }): Promise<Response> {
   if (!hasAdminSession(request)) {
     return NextResponse.json({ error: "Admin authentication required" }, { status: 401 });
@@ -35,10 +46,12 @@ async function proxy(request: NextRequest, context: { params: Promise<{ path: st
       revalidatePath(`/${locale}/search`);
     });
   }
-  if (request.method !== "GET" || path.length !== 1 || !["books", "persons", "organizations"].includes(path[0] ?? "") || !response.ok) return response;
+  if (request.method !== "GET" || path.length !== 1 || !response.ok) return response;
   const payload: unknown = await response.json().catch(() => null);
-  if (typeof payload !== "object" || payload === null || !("items" in payload) || !Array.isArray(payload.items)) return NextResponse.json(payload, { status: response.status });
-  return NextResponse.json({ ...payload, items: payload.items.map((item) => { if (typeof item !== "object" || item === null) return item; const record = item as Record<string, unknown>; const imageSrc = path[0] === "books" ? bookImageSrc(record) : readText(record.imageKey) || readText(typeof record.payload === "object" && record.payload !== null ? (record.payload as Record<string, unknown>)["Image. URL"] : null) || null; return { ...record, imageSrc }; }) }, { status: response.status });
+  if (["books", "persons", "organizations"].includes(path[0] ?? "")) return NextResponse.json(withImageSources(payload, path[0] ?? ""), { status: response.status });
+  if (path[0] !== "search" || typeof payload !== "object" || payload === null) return NextResponse.json(payload, { status: response.status });
+  const results = payload as Record<string, unknown>;
+  return NextResponse.json({ ...results, books: withImageSources(results.books, "books"), persons: withImageSources(results.persons, "persons"), organizations: withImageSources(results.organizations, "organizations") }, { status: response.status });
 }
 
 export const GET = proxy;

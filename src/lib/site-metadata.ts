@@ -15,6 +15,7 @@ type StaticPageKey =
   | "relatedBooks";
 type BookPageKey =
   | "bookRecord"
+  | "tableOfContents"
   | "backCover"
   | "pressCritiques"
   | "availability"
@@ -33,6 +34,7 @@ type LocaleMetadataDictionary = {
   };
   descriptions: {
     bookRecord: (title?: string) => string;
+    tableOfContents: (title?: string) => string;
     backCover: (title?: string) => string;
     pressCritiques: (title?: string) => string;
     availability: (title?: string) => string;
@@ -102,6 +104,7 @@ const localeMetadata: Record<AppLocale, LocaleMetadataDictionary> = {
     dynamic: {
       bookPages: {
         bookRecord: "Book Record",
+        tableOfContents: "Table of Contents",
         backCover: "Back Cover",
         pressCritiques: "Press Critiques",
         availability: "Availability",
@@ -115,6 +118,10 @@ const localeMetadata: Record<AppLocale, LocaleMetadataDictionary> = {
         title
           ? `Detailed bibliographic record for ${title}, including authors, publishers, availability and publication data in Israeli Literature.`
           : "Detailed bibliographic record including authors, publishers, availability and publication data in Israeli Literature.",
+      tableOfContents: (title) =>
+        title
+          ? `Table of contents and collective-work details for ${title} in Israeli Literature.`
+          : "Table of contents and collective-work details in Israeli Literature.",
       backCover: (title) =>
         title
           ? `Back cover text, summary context and linked information for ${title} in Israeli Literature.`
@@ -203,6 +210,7 @@ const localeMetadata: Record<AppLocale, LocaleMetadataDictionary> = {
     dynamic: {
       bookPages: {
         bookRecord: "Fiche livre",
+        tableOfContents: "Table des matières",
         backCover: "Quatrième de couverture",
         pressCritiques: "Critiques de presse",
         availability: "Disponibilité",
@@ -216,6 +224,10 @@ const localeMetadata: Record<AppLocale, LocaleMetadataDictionary> = {
         title
           ? `Notice bibliographique détaillée pour ${title}, avec auteurs, éditeurs, disponibilité et données de publication dans Israeli Literature.`
           : "Notice bibliographique détaillée avec auteurs, éditeurs, disponibilité et données de publication dans Israeli Literature.",
+      tableOfContents: (title) =>
+        title
+          ? `Table des matières et informations d’ouvrage collectif pour ${title} dans Israeli Literature.`
+          : "Table des matières et informations d’ouvrage collectif dans Israeli Literature.",
       backCover: (title) =>
         title
           ? `Texte de quatrième de couverture, contexte de résumé et informations liées pour ${title} dans Israeli Literature.`
@@ -304,6 +316,7 @@ const localeMetadata: Record<AppLocale, LocaleMetadataDictionary> = {
     dynamic: {
       bookPages: {
         bookRecord: "Ficha del libro",
+        tableOfContents: "Índice",
         backCover: "Contracubierta",
         pressCritiques: "Críticas de prensa",
         availability: "Disponibilidad",
@@ -317,6 +330,10 @@ const localeMetadata: Record<AppLocale, LocaleMetadataDictionary> = {
         title
           ? `Ficha bibliográfica detallada de ${title}, con autores, editoriales, disponibilidad y datos de publicación en Israeli Literature.`
           : "Ficha bibliográfica detallada con autores, editoriales, disponibilidad y datos de publicación en Israeli Literature.",
+      tableOfContents: (title) =>
+        title
+          ? `Índice e información de obra colectiva de ${title} en Israeli Literature.`
+          : "Índice e información de obras colectivas en Israeli Literature.",
       backCover: (title) =>
         title
           ? `Texto de contracubierta, contexto del resumen e información vinculada de ${title} en Israeli Literature.`
@@ -405,6 +422,7 @@ const localeMetadata: Record<AppLocale, LocaleMetadataDictionary> = {
     dynamic: {
       bookPages: {
         bookRecord: "Buchdatensatz",
+        tableOfContents: "Inhaltsverzeichnis",
         backCover: "Rückseite",
         pressCritiques: "Pressestimmen",
         availability: "Verfügbarkeit",
@@ -418,6 +436,10 @@ const localeMetadata: Record<AppLocale, LocaleMetadataDictionary> = {
         title
           ? `Detaillierter bibliografischer Datensatz zu ${title} mit Autorinnen und Autoren, Verlagen, Verfügbarkeit und Publikationsdaten in Israeli Literature.`
           : "Detaillierter bibliografischer Datensatz mit Autorinnen und Autoren, Verlagen, Verfügbarkeit und Publikationsdaten in Israeli Literature.",
+      tableOfContents: (title) =>
+        title
+          ? `Inhaltsverzeichnis und Angaben zum Sammelwerk ${title} in Israeli Literature.`
+          : "Inhaltsverzeichnis und Angaben zu Sammelwerken in Israeli Literature.",
       backCover: (title) =>
         title
           ? `Rückseitentext, Zusammenfassungskontext und verknüpfte Informationen zu ${title} in Israeli Literature.`
@@ -506,6 +528,7 @@ const localeMetadata: Record<AppLocale, LocaleMetadataDictionary> = {
     dynamic: {
       bookPages: {
         bookRecord: "רשומת ספר",
+        tableOfContents: "תוכן העניינים",
         backCover: "כריכה אחורית",
         pressCritiques: "ביקורות עיתונות",
         availability: "זמינות",
@@ -519,6 +542,10 @@ const localeMetadata: Record<AppLocale, LocaleMetadataDictionary> = {
         title
           ? `רשומה ביבליוגרפית מפורטת עבור ${title}, כולל מחברים, מו"לים, זמינות ונתוני פרסום ב-Israeli Literature.`
           : "רשומה ביבליוגרפית מפורטת הכוללת מחברים, מו\"לים, זמינות ונתוני פרסום ב-Israeli Literature.",
+      tableOfContents: (title) =>
+        title
+          ? `תוכן העניינים ופרטי יצירה קולקטיבית עבור ${title} ב-Israeli Literature.`
+          : "תוכן העניינים ופרטי יצירות קולקטיביות ב-Israeli Literature.",
       backCover: (title) =>
         title
           ? `טקסט הכריכה האחורית, הקשר התקציר ומידע מקושר עבור ${title} ב-Israeli Literature.`
@@ -607,6 +634,7 @@ const localeMetadata: Record<AppLocale, LocaleMetadataDictionary> = {
     dynamic: {
       bookPages: {
         bookRecord: "سجل الكتاب",
+        tableOfContents: "جدول المحتويات",
         backCover: "الغلاف الخلفي",
         pressCritiques: "مراجعات الصحافة",
         availability: "التوفّر",
@@ -620,6 +648,10 @@ const localeMetadata: Record<AppLocale, LocaleMetadataDictionary> = {
         title
           ? `سجل ببليوغرافي مفصل لكتاب ${title} يتضمن المؤلفين والناشرين والتوفّر وبيانات النشر في Israeli Literature.`
           : "سجل ببليوغرافي مفصل يتضمن المؤلفين والناشرين والتوفّر وبيانات النشر في Israeli Literature.",
+      tableOfContents: (title) =>
+        title
+          ? `جدول المحتويات ومعلومات العمل الجماعي لكتاب ${title} في Israeli Literature.`
+          : "جدول المحتويات ومعلومات الأعمال الجماعية في Israeli Literature.",
       backCover: (title) =>
         title
           ? `نص الغلاف الخلفي وسياق الملخص والمعلومات المرتبطة بكتاب ${title} في Israeli Literature.`

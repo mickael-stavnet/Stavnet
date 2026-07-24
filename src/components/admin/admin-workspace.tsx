@@ -49,6 +49,11 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import {
+  InputGroup,
+  InputGroupInput,
+  InputGroupTextarea,
+} from "@/components/ui/input-group";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -82,8 +87,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Textarea } from "@/components/ui/textarea";
 import { TooltipProvider } from "@/components/ui/tooltip";
+
+const COLLECTIVE_BOOK_FIELD = "Ouvrage collectif";
 
 const labels: Record<AdminEntityType, string> = {
   books: "Livres",
@@ -214,34 +220,111 @@ function readable(key: string): string {
 }
 
 function fieldSection(entityType: AdminEntityType, field: string): string {
-  const value = field.toLocaleLowerCase();
+  const value = field
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLocaleLowerCase();
   if (entityType === "books") {
-    if (/(résumé|sommaire|quatrième|contenu|description)/.test(value))
+    if (/(resume|sommaire|quatrieme|contenu|description)/.test(value))
       return "Contenu";
+    if (/(biblio|cote|source)/.test(value)) return "Bibliographies et références";
+    if (/(organisme)/.test(value)) return "Organisations liées";
+    if (/(code|poids)/.test(value)) return "Références techniques";
     if (
-      /(éditeur|édition|collection|prix|reliure|pages|dimension|isbn|publication|ville|pays)/.test(
+      /(editeur|edition|collection|prix|reliure|pages|dimension|isbn|publication|ville|pays)/.test(
         value,
       )
     )
       return "Publication";
-    if (/(auteur|contributeur|traducteur|illustrateur|préfacier)/.test(value))
+    if (
+      /(auteur|contrib|traducteur|illustrateur|prefacier|postfacier|adaptateur|directeur)/.test(
+        value,
+      )
+    )
       return "Auteurs et contributeurs";
-    if (/(titre|langue|année|genre|catégorie|thème|rubrique)/.test(value))
+    if (/(titre|langue|annee|genre|categorie|theme|rubrique)/.test(value))
       return "Identification";
   }
   if (entityType === "persons") {
     if (
-      /(biographie|naissance|décès|résidence|activité|profession)/.test(value)
+      /(biographie|naissance|deces|residence|activite|profession)/.test(value)
     )
       return "Informations biographiques";
-    if (/(langue|littér)/.test(value)) return "Informations littéraires";
-    if (/(prénom|nom|type|alternatif)/.test(value)) return "Identité";
+    if (/(annee publication|cote livre)/.test(value) || value.startsWith("nb"))
+      return "Publications et statistiques";
+    if (/(langue|litter|auteur original|titre)/.test(value))
+      return "Informations littéraires";
+    if (/(prenom|nom|type|alternatif)/.test(value)) return "Identité";
   }
   if (entityType === "organizations") {
-    if (/(organisme|nom|synonyme|type|pays|ville|création)/.test(value))
+    if (value.startsWith("nb") || /statistique/.test(value))
+      return "Statistiques";
+    if (/(organisme|nom|synonyme|type|pays|ville|creation)/.test(value))
       return "Identité";
   }
   return "Autres informations importées";
+}
+
+const creationSectionOrder: Record<AdminEntityType, string[]> = {
+  books: [
+    "Identification",
+    "Publication",
+    "Auteurs et contributeurs",
+    "Contenu",
+    "Bibliographies et références",
+    "Organisations liées",
+    "Références techniques",
+    "Autres informations importées",
+  ],
+  persons: [
+    "Identité",
+    "Informations biographiques",
+    "Informations littéraires",
+    "Publications et statistiques",
+    "Autres informations importées",
+  ],
+  organizations: ["Identité", "Statistiques", "Autres informations importées"],
+};
+
+function isLongFormField(field: string, value: unknown): boolean {
+  return (
+    String(value ?? "").length > 150 ||
+    /(résumé|sommaire|quatrième|contenu|description|biographie)/i.test(field)
+  );
+}
+
+function AdminPayloadField({
+  field,
+  value,
+  onChange,
+}: {
+  field: string;
+  value: unknown;
+  onChange: (value: string) => void;
+}) {
+  const multiline = isLongFormField(field, value);
+  return (
+    <div className={multiline ? "md:col-span-2" : ""}>
+      <Label className="mb-2 block text-sm" htmlFor={field}>
+        {readable(field)}
+      </Label>
+      <InputGroup className={multiline ? "min-h-28" : "min-h-11"}>
+        {multiline ? (
+          <InputGroupTextarea
+            id={field}
+            value={String(value ?? "")}
+            onChange={(event) => onChange(event.target.value)}
+          />
+        ) : (
+          <InputGroupInput
+            id={field}
+            value={String(value ?? "")}
+            onChange={(event) => onChange(event.target.value)}
+          />
+        )}
+      </InputGroup>
+    </div>
+  );
 }
 
 function AdminSidebar({
@@ -525,6 +608,26 @@ export function AdminEntityList({
                 )}
               </div>
               <div className="flex flex-wrap items-end gap-x-5 gap-y-4">
+              {entityType === "books" && (
+                <div className="w-64 shrink-0 space-y-2">
+                  <Label className="text-sm font-medium" htmlFor="book-author-filter">
+                    Auteur
+                  </Label>
+                  <div className="relative">
+                    <Search className="pointer-events-none absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+                    <Input
+                      id="book-author-filter"
+                      className="h-8 pl-8 text-xs"
+                      value={filters.author ?? ""}
+                      onChange={(event) => {
+                        setPage(1);
+                        setFilters((current) => ({ ...current, author: event.target.value }));
+                      }}
+                      placeholder="Nom de l’auteur"
+                    />
+                  </div>
+                </div>
+              )}
               {filterDefinitions.map((filter) => (
                 <fieldset key={filter.key} className="shrink-0 space-y-2">
                   <legend className="text-sm font-medium">{filter.label}</legend>
@@ -873,7 +976,9 @@ export function AdminEntityEditor({
   const router = useRouter();
   const isNew = id === "new";
   const [record, setRecord] = useState<AdminRecord | null>(null);
-  const [payload, setPayload] = useState<Record<string, unknown>>({});
+  const [payload, setPayload] = useState<Record<string, unknown>>(() =>
+    entityType === "books" ? { [COLLECTIVE_BOOK_FIELD]: false } : {},
+  );
   const [imageKey, setImageKey] = useState<string | null>(null);
   const [personLinks, setPersonLinks] = useState<EntityLink[]>([]);
   const [organizationLinks, setOrganizationLinks] = useState<EntityLink[]>([]);
@@ -949,6 +1054,7 @@ export function AdminEntityEditor({
         key !== "id" &&
         key !== "dataQuality" &&
         key !== "Image. URL" &&
+        key !== COLLECTIVE_BOOK_FIELD &&
         (typeof value !== "object" || value === null),
     );
     if (!isNew)
@@ -1079,6 +1185,16 @@ export function AdminEntityEditor({
     }
   }
   const relatedBooks = record?.linkedBooks ?? [];
+  const fieldGroups = creationSectionOrder[entityType]
+    .map((section) => ({
+      section,
+      fields: fields.filter(([field]) => fieldSection(entityType, field) === section),
+    }))
+    .filter(
+      (group) =>
+        group.fields.length > 0 ||
+        (entityType === "books" && group.section === "Identification"),
+    );
   return (
     <Frame
       title={
@@ -1164,50 +1280,79 @@ export function AdminEntityEditor({
         </Card>
         <Card>
           <CardHeader>
-            <CardTitle>Informations</CardTitle>
+            <CardTitle>
+              {isNew ? "Informations de la fiche" : "Informations"}
+            </CardTitle>
             <CardDescription>
-              Les champs vides sont conservés pour être complétés plus tard.
+              {isNew
+                ? "Complétez les informations par famille, dans l’ordre qui vous convient."
+                : "Les champs vides sont conservés pour être complétés plus tard."}
             </CardDescription>
           </CardHeader>
-          <CardContent className="grid gap-5 md:grid-cols-2">
-            {fields.length || isNew ? (
-              (fields.length ? fields : initialFields).map(([field, value]) => (
-                <div
-                  key={field}
-                  className={
-                    String(value ?? "").length > 150 ? "md:col-span-2" : ""
-                  }
+          <CardContent className="space-y-6">
+            {fieldGroups.length ? (
+              fieldGroups.map((group) => (
+                <section
+                  key={group.section}
+                  className="border-b border-border/70 pb-6 last:border-b-0 last:pb-0"
                 >
-                  <Label className="mb-2 block text-sm" htmlFor={field}>
-                    {readable(field)}
-                  </Label>
-                  {String(value ?? "").length > 150 ? (
-                    <Textarea
-                      id={field}
-                      value={String(value ?? "")}
-                      onChange={(event) =>
-                        setPayload((current) => ({
-                          ...current,
-                          [field]: event.target.value,
-                        }))
-                      }
-                    />
-                  ) : (
-                    <Input
-                      id={field}
-                      value={String(value ?? "")}
-                      onChange={(event) =>
-                        setPayload((current) => ({
-                          ...current,
-                          [field]: event.target.value,
-                        }))
-                      }
-                    />
-                  )}
-                </div>
+                  <h2 className="text-base font-semibold">{group.section}</h2>
+                  <div className="mt-4 grid gap-x-5 gap-y-4 md:grid-cols-2">
+                    {entityType === "books" &&
+                      group.section === "Identification" && (
+                        <div className="space-y-2 md:col-span-2">
+                          <Label className="block text-sm" htmlFor="ouvrage-collectif">
+                            Ouvrage collectif
+                          </Label>
+                          <Select
+                            value={
+                              payload[COLLECTIVE_BOOK_FIELD] === true ||
+                              payload[COLLECTIVE_BOOK_FIELD] === "true" ||
+                              payload[COLLECTIVE_BOOK_FIELD] === "Oui"
+                                ? "yes"
+                                : "no"
+                            }
+                            onValueChange={(value) =>
+                              setPayload((current) => ({
+                                ...current,
+                                [COLLECTIVE_BOOK_FIELD]: value === "yes",
+                              }))
+                            }
+                          >
+                            <SelectTrigger
+                              id="ouvrage-collectif"
+                              className="min-h-11 max-w-xs"
+                            >
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="yes">Oui</SelectItem>
+                              <SelectItem value="no">Non</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <p className="text-sm text-muted-foreground">
+                            Indique si le livre réunit des textes de plusieurs auteurs.
+                          </p>
+                        </div>
+                      )}
+                    {group.fields.map(([field, value]) => (
+                      <AdminPayloadField
+                        key={field}
+                        field={field}
+                        value={value}
+                        onChange={(nextValue) =>
+                          setPayload((current) => ({
+                            ...current,
+                            [field]: nextValue,
+                          }))
+                        }
+                      />
+                    ))}
+                  </div>
+                </section>
               ))
             ) : (
-              <Skeleton className="h-64 md:col-span-2" />
+              <Skeleton className="h-64" />
             )}
           </CardContent>
         </Card>
@@ -1553,12 +1698,23 @@ export function AdminSearchPage() {
                 {results[type]?.items.length ? (
                   results[type]?.items.map((item) => (
                     <Link
-                      className="flex items-center justify-between border-b py-2 last:border-0 hover:text-primary"
+                      className="flex min-h-16 items-center justify-between gap-4 border-b py-3 last:border-0 hover:text-primary"
                       key={item.id}
                       href={`/admin/${type}/${item.id}`}
                     >
-                      <span>{item.label}</span>
-                      <span className="text-sm text-muted-foreground">
+                      <span className="flex min-w-0 items-center gap-3">
+                        {item.imageSrc ? (
+                          <Image
+                            src={item.imageSrc}
+                            alt=""
+                            width={type === "books" ? 32 : 40}
+                            height={type === "books" ? 48 : 40}
+                            className={type === "books" ? "h-12 w-8 shrink-0 rounded-md border object-cover" : "size-10 shrink-0 rounded-md border object-cover"}
+                          />
+                        ) : null}
+                        <span className="truncate">{item.label}</span>
+                      </span>
+                      <span className="shrink-0 text-right text-sm text-muted-foreground">
                         {item.secondary}
                       </span>
                     </Link>

@@ -20,7 +20,7 @@ import type { BookDetail } from "@/lib/data/books";
 interface BookDetailSecondaryLayoutProps {
   book: BookDetail;
   pageName: string;
-  pagePath: "/books/details/back-cover" | "/books/details/press-critiques" | "/books/details/availability" | "/books/details/publishing";
+  pagePath: "/books/details/back-cover" | "/books/details/table-of-contents" | "/books/details/press-critiques" | "/books/details/availability" | "/books/details/publishing";
   children: ReactNode;
 }
 

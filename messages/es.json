@@ -213,6 +213,10 @@
       "publishing": "Publicación",
       "statistics": "Estadísticas"
     },
+    "tableOfContents": {
+      "collectiveOnly": "Esta vista está reservada para obras colectivas.",
+      "empty": "Aún no se ha indicado ninguna entrada del índice."
+    },
     "tables": {
       "authors": "Autores, coautores, editores: nombre, apellido",
       "authorType": "Autor",

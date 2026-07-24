@@ -213,6 +213,10 @@
       "publishing": "Parution",
       "statistics": "Statistiques"
     },
+    "tableOfContents": {
+      "collectiveOnly": "Cette vue est réservée aux ouvrages collectifs.",
+      "empty": "Aucune entrée de table des matières n’est encore renseignée."
+    },
     "tables": {
       "authors": "Auteurs, co-auteurs, éditeurs : prénom, nom",
       "authorType": "Auteur",

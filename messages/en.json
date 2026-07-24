@@ -213,6 +213,10 @@
       "publishing": "Publishing",
       "statistics": "Statistics"
     },
+    "tableOfContents": {
+      "collectiveOnly": "This view is reserved for collective works.",
+      "empty": "No table of contents entry has been provided yet."
+    },
     "tables": {
       "authors": "Authors, co-authors, editors: first name, last name",
       "authorType": "Author",

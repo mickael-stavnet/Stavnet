@@ -213,6 +213,10 @@
       "publishing": "Veröffentlichung",
       "statistics": "Statistiken"
     },
+    "tableOfContents": {
+      "collectiveOnly": "Diese Ansicht ist Sammelwerken vorbehalten.",
+      "empty": "Es ist noch kein Inhaltsverzeichniseintrag vorhanden."
+    },
     "tables": {
       "authors": "Autoren, Mitautoren, Herausgeber: Vorname, Nachname",
       "authorType": "Autor",

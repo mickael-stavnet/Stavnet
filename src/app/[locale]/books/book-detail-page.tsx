@@ -356,6 +356,14 @@ export default function BookDetailPage({ book }: BookDetailPageProps) {
                   );
                 }
 
+                if (tabKey === "tableOfContents") {
+                  return (
+                    <Link key={tabKey} href={{ pathname: "/books/details/table-of-contents", query: { id: book.id } }} className={tabClassName}>
+                      {t(`tabs.${tabKey}`)}
+                    </Link>
+                  );
+                }
+
                 if (tabKey === "pressCritiques") {
                   return (
                     <Link key={tabKey} href={{ pathname: "/books/details/press-critiques", query: { id: book.id } }} className={tabClassName}>
@@ -487,7 +495,6 @@ export default function BookDetailPage({ book }: BookDetailPageProps) {
                 ) : null}
 
                 {activeTab === "backCover" ? <TextPanel title={t("content.backCover")} value={book.backCover} /> : null}
-                {activeTab === "tableOfContents" ? <TextPanel title={t("content.tableOfContents")} value={book.tableOfContents} /> : null}
                 {activeTab === "extracts" ? <BlankContent title={t("content.extracts")} rows={3} /> : null}
                 {activeTab === "pressCritiques" ? <BlankContent title={t("content.pressCritiques")} rows={3} /> : null}
                 {activeTab === "availability" ? <BlankContent title={t("content.availability")} rows={2} /> : null}

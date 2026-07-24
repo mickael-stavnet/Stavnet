@@ -97,8 +97,9 @@ function readBookCoverEntries(): BookImageEntry[] {
 
 const BOOK_COVER_EXACT_MAP = new Map<string, string>();
 const BOOK_COVER_COMPACT_MAP = new Map<string, string>();
+const BOOK_COVER_ENTRIES = readBookCoverEntries();
 
-for (const entry of readBookCoverEntries()) {
+for (const entry of BOOK_COVER_ENTRIES) {
   BOOK_COVER_EXACT_MAP.set(entry.key, entry.src);
   BOOK_COVER_COMPACT_MAP.set(entry.compact, entry.src);
 }
@@ -139,6 +140,14 @@ export function resolveBookCoverSrc(...values: string[]): string {
 
     if (exactMatch) {
       return exactMatch;
+    }
+
+    const partialMatch = BOOK_COVER_ENTRIES.find(
+      (entry) => entry.key.length >= 16 && candidate.key.startsWith(`${entry.key}-`),
+    );
+
+    if (partialMatch) {
+      return partialMatch.src;
     }
   }
 

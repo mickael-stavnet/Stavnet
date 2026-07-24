@@ -21,14 +21,14 @@ import { resolveBooksListSelection } from "@/lib/books-search";
 import { isPageWithinLimit, MAX_BOOKS_PAGE } from "@/lib/pagination";
 import { buildStaticPageMetadata } from "@/lib/site-metadata";
 
-const BOOKS_COLUMN_WIDTHS = ["20%", "18%", "12%", "12%", "11%", "5%", "8%", "7%", "7%"] as const;
+const BOOKS_COLUMN_WIDTHS = ["20%", "18%", "12%", "12%", "11%", "6%", "7%", "7%", "7%"] as const;
 const BOOKS_PAGE_SIZE = 10;
 const BOOKS_TABLE_CONTAINER_CLASS = "min-h-[430px] bg-[#eaf5f8]/90 md:block md:min-h-0 md:flex-1";
 const BOOKS_TABLE_HEAD_ROW_CLASS = "bg-[#d7ebf2]/85 text-[12px] uppercase tracking-[0.04em] text-slate-700 [@media(max-height:950px)]:text-[10px]";
-const BOOKS_TABLE_HEAD_CELL_CLASS = "border-r border-slate-300/80 px-3 py-3 text-center font-semibold leading-tight last:border-r-0 [@media(max-height:950px)]:px-2 [@media(max-height:950px)]:py-1.5";
+const BOOKS_TABLE_HEAD_CELL_CLASS = "border-r border-slate-300/80 px-3 py-3 text-center font-semibold leading-tight whitespace-normal break-words last:border-r-0 [@media(max-height:950px)]:px-2 [@media(max-height:950px)]:py-1.5";
 const BOOKS_TABLE_BODY_CLASS = "text-[15px] leading-[1.25] [@media(max-height:950px)]:text-[12px] [@media(max-height:950px)]:leading-[1.1]";
 const BOOKS_TABLE_ROW_CLASS = "h-[42px] text-slate-950 [@media(max-height:950px)]:h-[35px]";
-const BOOKS_TABLE_CELL_CLASS = "border-r border-slate-300/80 px-4 py-3 align-middle last:border-r-0 [@media(max-height:950px)]:px-2 [@media(max-height:950px)]:py-1.5";
+const BOOKS_TABLE_CELL_CLASS = "border-r border-slate-300/80 px-4 py-3 align-middle whitespace-normal break-words last:border-r-0 [@media(max-height:950px)]:px-2 [@media(max-height:950px)]:py-1.5";
 
 interface BooksPageProps {
   params: Promise<{
@@ -276,7 +276,7 @@ export default async function BooksListPage({ params, searchParams }: BooksPageP
                               className="flex items-center gap-2 text-black hover:underline"
                             >
                               <RedMarker />
-                              <span className="w-full break-words">{book.title}</span>
+                              <span className="min-w-0 break-words">{book.title}</span>
                             </Link>
                           </TableCell>
                           <TableCell className={BOOKS_TABLE_CELL_CLASS}>{book.author || "—"}</TableCell>

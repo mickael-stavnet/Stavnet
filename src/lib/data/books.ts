@@ -54,6 +54,7 @@ const BOOK_LIST_SELECT = [
   '"Thème. 1"',
   '"Thème. 2"',
   '"Résumé"',
+  '"Ouvrage collectif"',
 ].join(",");
 
 const BOOK_DETAIL_SELECT = [
@@ -94,6 +95,7 @@ const BOOK_DETAIL_SELECT = [
   '"Thème. 1"',
   '"Thème. 2"',
   '"Résumé"',
+  '"Ouvrage collectif"',
   '"Sommaire"',
   '"Quatrième. Couverture"',
   '"Auteur. 1. Langue"',
@@ -387,6 +389,7 @@ export interface BookDetail {
   subtitleTranscription: string;
   language: string;
   summary: string;
+  isCollective: boolean;
   tableOfContents: string;
   backCover: string;
   yearPages: string;
@@ -451,6 +454,10 @@ function readText(value: unknown): string {
 
   const text = fixEncoding(String(value)).trim();
   return text.toUpperCase() === "NULL" ? "" : text;
+}
+
+function readBoolean(value: unknown): boolean {
+  return value === true || ["1", "true", "oui"].includes(readText(value).toLocaleLowerCase());
 }
 
 function readNumber(value: unknown): number {
@@ -1211,6 +1218,7 @@ function mapBookDetail(
     subtitleTranscription,
     language,
     summary: readText(row["Résumé"]),
+    isCollective: readBoolean(row["Ouvrage collectif"]),
     tableOfContents: readText(row["Sommaire"]),
     backCover: readText(row["Quatrième. Couverture"]),
     yearPages: buildYearPages(row),
@@ -1633,7 +1641,7 @@ export const resolveBookByExactTitle = cacheData(
 );
 
 export const getBookDetailById = cacheData(
-  ["books-detail-by-id-v5"],
+  ["books-detail-by-id-v7"],
   async (id: string): Promise<BookDetail | null> => {
   const trimmedId = id.trim();
 

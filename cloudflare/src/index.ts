@@ -334,14 +334,45 @@ async function rpc(db: D1Database, name: string, args: Record<string, unknown>):
       const where = organizationWhere(type, category, country, search);
       const total = await db.prepare(`SELECT COUNT(*) AS count FROM organizations${where.sql}`).bind(...where.values).all<{ count: number }>();
       const organizations = await db.prepare(`SELECT payload FROM organizations${where.sql} ORDER BY name LIMIT ? OFFSET ?`).bind(...where.values, pageSize, (page - 1) * pageSize).all<{ payload: string }>();
-      const items = await Promise.all(organizations.results.map(async (entry) => {
+      const pageOrganizations = organizations.results.map((entry) => {
         const row = parsePayload(entry.payload);
         const aliases = organizationAliasNames(row);
         const names = [...new Set([normalize(text(row, "Organisme")), ...aliases].filter(Boolean))];
-        const placeholders = names.map(() => "?").join(", ");
-        const counts = names.length > 0 ? await db.prepare(`SELECT COUNT(DISTINCT book_id) AS titles, (SELECT COUNT(DISTINCT value) FROM book_facets WHERE facet = 'authorName' AND book_id IN (SELECT book_id FROM book_publishers WHERE normalized_name IN (${placeholders}))) AS authors FROM book_publishers WHERE normalized_name IN (${placeholders})`).bind(...names, ...names).all<{ titles: number; authors: number }>() : { results: [] as { titles: number; authors: number }[] };
-        return { name: text(row, "Organisme"), type: text(row, "Type"), creationDate: text(row, "Date_Creation"), country: text(row, "Pays"), publishedTitles: String(counts.results[0]?.titles ?? 0), publishedAuthors: String(counts.results[0]?.authors ?? 0) };
-      }));
+        return { row, names, bookIds: new Set<number>(), authorNames: new Set<string>() };
+      });
+      const organizationIndexesByName = new Map<string, number[]>();
+      for (const [index, organization] of pageOrganizations.entries()) {
+        for (const organizationName of organization.names) {
+          const indexes = organizationIndexesByName.get(organizationName) ?? [];
+          indexes.push(index);
+          organizationIndexesByName.set(organizationName, indexes);
+        }
+      }
+      const organizationNames = [...organizationIndexesByName.keys()];
+      const namePlaceholders = organizationNames.map(() => "?").join(", ");
+      const publisherRows = organizationNames.length > 0
+        ? await db.prepare(`SELECT book_id, normalized_name FROM book_publishers WHERE normalized_name IN (${namePlaceholders})`).bind(...organizationNames).all<{ book_id: number; normalized_name: string }>()
+        : { results: [] as { book_id: number; normalized_name: string }[] };
+      const organizationIndexesByBookId = new Map<number, Set<number>>();
+      for (const publisher of publisherRows.results) {
+        for (const organizationIndex of organizationIndexesByName.get(publisher.normalized_name) ?? []) {
+          pageOrganizations[organizationIndex]?.bookIds.add(publisher.book_id);
+          const indexes = organizationIndexesByBookId.get(publisher.book_id) ?? new Set<number>();
+          indexes.add(organizationIndex);
+          organizationIndexesByBookId.set(publisher.book_id, indexes);
+        }
+      }
+      const bookIds = [...organizationIndexesByBookId.keys()];
+      const bookPlaceholders = bookIds.map(() => "?").join(", ");
+      const authorRows = bookIds.length > 0
+        ? await db.prepare(`SELECT book_id, value FROM book_facets WHERE facet = 'authorName' AND book_id IN (${bookPlaceholders})`).bind(...bookIds).all<{ book_id: number; value: string }>()
+        : { results: [] as { book_id: number; value: string }[] };
+      for (const author of authorRows.results) {
+        for (const organizationIndex of organizationIndexesByBookId.get(author.book_id) ?? []) {
+          pageOrganizations[organizationIndex]?.authorNames.add(author.value);
+        }
+      }
+      const items = pageOrganizations.map((organization) => ({ name: text(organization.row, "Organisme"), type: text(organization.row, "Type"), creationDate: text(organization.row, "Date_Creation"), country: text(organization.row, "Pays"), publishedTitles: String(organization.bookIds.size), publishedAuthors: String(organization.authorNames.size) }));
       return { items, totalCount: Number(total.results[0]?.count ?? 0), databaseTotal: await stat(db, "organizations_total") };
     }
     const requested = normalize(String(args.p_name ?? ""));
@@ -365,8 +396,10 @@ async function rpc(db: D1Database, name: string, args: Record<string, unknown>):
       return [{ title, author, year }];
     });
     const publishedTitles = String(books.results.length);
-    const authorCount = names.length > 0 ? await db.prepare(`SELECT COUNT(DISTINCT value) AS authors FROM book_facets WHERE facet = 'authorName' AND book_id IN (SELECT book_id FROM book_publishers WHERE normalized_name IN (${placeholders}))`).bind(...names).all<{ authors: number }>() : { results: [] as { authors: number }[] };
-    const publishedAuthors = String(authorCount.results[0]?.authors ?? 0);
+    const bookIds = books.results.map((entry) => entry.id);
+    const bookPlaceholders = bookIds.map(() => "?").join(", ");
+    const authorRows = bookIds.length > 0 ? await db.prepare(`SELECT value FROM book_facets WHERE facet = 'authorName' AND book_id IN (${bookPlaceholders})`).bind(...bookIds).all<{ value: string }>() : { results: [] as { value: string }[] };
+    const publishedAuthors = String(new Set(authorRows.results.map((entry) => entry.value)).size);
     return { name: organizationName, synonym: organizationName, type: text(row, "Type"), creationDate: text(row, "Date_Creation"), country: text(row, "Pays"), publishedStats: { titles: publishedTitles, authors: publishedAuthors }, stats: { cardsFound: publishedTitles, databaseContains: String(await stat(db, "organizations_total")) }, publishedRows };
   }
   throw new Error("Unknown RPC");
@@ -419,11 +452,14 @@ async function adminList(db: D1Database, entityType: AdminEntityType, params: UR
   const clauses = [statusClause];
   const values: unknown[] = [];
   if (search) { clauses.push(`${searchColumn} LIKE ?`); values.push(`%${search}%`); }
+  const author = entityType === "books" ? normalize(params.get("author") ?? "") : "";
+  if (author) { clauses.push("id IN (SELECT book_id FROM book_facets WHERE facet = 'authorName' AND value LIKE ?)"); values.push(`%${author}%`); }
   const filterField = entityType === "books" ? { language: "Langue", year: "Année", category: "Catégorie. 1", genre: "Genre", topic: "Thème. 1" } : entityType === "persons" ? { type: "Type Personne", language: "Langue Écriture" } : { type: "Type", country: "Pays" };
   Object.entries(filterField).forEach(([parameter, field]) => { const value = params.get(parameter)?.trim(); if (value) { clauses.push("json_extract(payload, ?) = ?"); values.push(`$.\"${field.replaceAll("\"", "\\\"")}\"`, value); } });
   const where = clauses.join(" AND ");
   const count = await db.prepare(`SELECT COUNT(*) AS count FROM ${definition.table} WHERE ${where}`).bind(...values).all<{ count: number }>();
-  const rows = await db.prepare(`SELECT id, payload, created_at, updated_at, archived_at, version, image_key FROM ${definition.table} WHERE ${where} ORDER BY updated_at DESC, id DESC LIMIT ? OFFSET ?`).bind(...values, pageSize, (page - 1) * pageSize).all<{ id: number; payload: string; created_at: string; updated_at: string; archived_at: string | null; version: number; image_key: string | null }>();
+  const orderColumn = entityType === "books" ? "title" : "name";
+  const rows = await db.prepare(`SELECT id, payload, created_at, updated_at, archived_at, version, image_key FROM ${definition.table} WHERE ${where} ORDER BY ${orderColumn} COLLATE NOCASE ASC, id ASC LIMIT ? OFFSET ?`).bind(...values, pageSize, (page - 1) * pageSize).all<{ id: number; payload: string; created_at: string; updated_at: string; archived_at: string | null; version: number; image_key: string | null }>();
   const total = Number(count.results[0]?.count ?? 0);
   return {
     items: rows.results.map((row) => {

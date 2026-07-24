@@ -22,6 +22,8 @@ interface StavnetFooterItem {
     | `/books/details/publishing?${string}`
     | "/books/details/press-critiques"
     | `/books/details/press-critiques?${string}`
+    | "/books/details/table-of-contents"
+    | `/books/details/table-of-contents?${string}`
     | "/definition"
     | "/orgs"
     | "/orgs/details"

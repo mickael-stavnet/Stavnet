@@ -247,3 +247,11 @@
 
 - 09:21 - Refonte des filtres administratifs en groupes de choix rapides shadcn, fondés sur les valeurs réelles de D1 et dotés d’états accessibles ainsi que d’une réinitialisation explicite.
 - 09:32 - Ajustement de la barre de filtres Livres sur une ligne unique : Langue, Genre et Thème remplacent le filtre Année, avec les thèmes D1 exploitables et toast de confirmation vérifié.
+- 10:04 - Identification versionnée des 21 anthologies comme ouvrages collectifs dans D1 local et production, avec ajout d’un sélecteur Oui/Non dédié dans l’éditeur administrateur des livres.
+- 10:26 - Création de la page Table des matières des fiches livres, réservée aux ouvrages collectifs et construite sur la fiche secondaire avec les métadonnées bibliographiques et une grille prête à recevoir les entrées documentées.
+- 10:53 - Optimisation des statistiques organismes D1 : suppression du calcul auteur N+1, regroupement des compteurs par page et index dédié aux facettes auteurs par livre.
+- 11:10 - Tri alphabétique stable A→Z des listes administratives de livres, personnes et organisations, y compris après recherche, filtre ou changement de page.
+- 11:14 - Ajout de miniatures médias dans les résultats de recherche globale administrateur, pour identifier plus rapidement les livres, personnes et organisations disposant d’une image.
+- 11:31 - Ajout d’un filtre auteur textuel dans la liste administrative des livres, combinable aux filtres de langue, genre et thème sur l’ensemble de la pagination.
+- 11:45 - Refonte des pages de création administratives : tous les champs D1 des livres, personnes et organisations sont désormais structurés par familles d’informations dans des groupes de champs lisibles.
+- 11:51 - Uniformisation des fiches administratives d’édition avec les formulaires de création : sections par famille, séparateurs sobres et suppression des cartes imbriquées pour alléger la lecture.
