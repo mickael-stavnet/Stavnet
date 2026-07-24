@@ -5,6 +5,9 @@ import { Toaster } from "@/components/ui/sonner";
 export const metadata: Metadata = {
   title: "Administration | STAVNET",
   description: "Gestion des auteurs affiches sur la vitrine 3D.",
+  icons: {
+    icon: "/icons/logo/icon-stavnet.jpg",
+  },
 };
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {

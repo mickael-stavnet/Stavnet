@@ -241,3 +241,9 @@
 - 15:03 - Unification du shell administrateur : les listes, fiches, créations, recherche, corbeille et historique utilisent maintenant la même sidebar repliable, le même header et les mêmes actions de navigation que le dashboard `/admin`.
 - 15:20 - Remplacement du stockage média Cloudflare R2 par le Blob Store public Vercel `stavnet-media`, avec téléversement admin protégé, références persistées dans D1 et configuration d’images distantes Next.js.
 - 16:10 - Refonte ergonomique du parcours administrateur : écran de connexion plus lisible, navigation élargie, listes aérées, cibles d’action agrandies et hiérarchie typographique renforcée pour une consultation confortable.
+- 16:11 - Enrichissement des outils administratifs : filtres serveur sur les listes, miniatures cohérentes pour les trois types de fiches, journal d’audit filtrable/paginé, création contextuelle d’une personne ou d’un organisme depuis un livre et invalidation des pages publiques après mutation.
+
+# 24-07-2026
+
+- 09:21 - Refonte des filtres administratifs en groupes de choix rapides shadcn, fondés sur les valeurs réelles de D1 et dotés d’états accessibles ainsi que d’une réinitialisation explicite.
+- 09:32 - Ajustement de la barre de filtres Livres sur une ligne unique : Langue, Genre et Thème remplacent le filtre Année, avec les thèmes D1 exploitables et toast de confirmation vérifié.

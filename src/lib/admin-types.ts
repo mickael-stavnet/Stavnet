@@ -36,6 +36,8 @@ export interface AdminLogEntry {
   entityId: number;
   entityLabel: string;
   summary: string;
+  beforeJson?: string | null;
+  afterJson?: string | null;
 }
 
 export function isAdminEntityType(value: string): value is AdminEntityType {

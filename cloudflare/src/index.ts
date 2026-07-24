@@ -416,10 +416,14 @@ async function adminList(db: D1Database, entityType: AdminEntityType, params: UR
     ? status === "archived" ? "archived_at IS NOT NULL" : "is_valid = 1 AND archived_at IS NULL"
     : status === "archived" ? "archived_at IS NOT NULL" : "archived_at IS NULL";
   const searchColumn = entityType === "books" ? "search_text" : "normalized_name";
-  const searchClause = search ? ` AND ${searchColumn} LIKE ?` : "";
-  const values: unknown[] = search ? [`%${search}%`] : [];
-  const count = await db.prepare(`SELECT COUNT(*) AS count FROM ${definition.table} WHERE ${statusClause}${searchClause}`).bind(...values).all<{ count: number }>();
-  const rows = await db.prepare(`SELECT id, payload, created_at, updated_at, archived_at, version, image_key FROM ${definition.table} WHERE ${statusClause}${searchClause} ORDER BY updated_at DESC, id DESC LIMIT ? OFFSET ?`).bind(...values, pageSize, (page - 1) * pageSize).all<{ id: number; payload: string; created_at: string; updated_at: string; archived_at: string | null; version: number; image_key: string | null }>();
+  const clauses = [statusClause];
+  const values: unknown[] = [];
+  if (search) { clauses.push(`${searchColumn} LIKE ?`); values.push(`%${search}%`); }
+  const filterField = entityType === "books" ? { language: "Langue", year: "Année", category: "Catégorie. 1", genre: "Genre", topic: "Thème. 1" } : entityType === "persons" ? { type: "Type Personne", language: "Langue Écriture" } : { type: "Type", country: "Pays" };
+  Object.entries(filterField).forEach(([parameter, field]) => { const value = params.get(parameter)?.trim(); if (value) { clauses.push("json_extract(payload, ?) = ?"); values.push(`$.\"${field.replaceAll("\"", "\\\"")}\"`, value); } });
+  const where = clauses.join(" AND ");
+  const count = await db.prepare(`SELECT COUNT(*) AS count FROM ${definition.table} WHERE ${where}`).bind(...values).all<{ count: number }>();
+  const rows = await db.prepare(`SELECT id, payload, created_at, updated_at, archived_at, version, image_key FROM ${definition.table} WHERE ${where} ORDER BY updated_at DESC, id DESC LIMIT ? OFFSET ?`).bind(...values, pageSize, (page - 1) * pageSize).all<{ id: number; payload: string; created_at: string; updated_at: string; archived_at: string | null; version: number; image_key: string | null }>();
   const total = Number(count.results[0]?.count ?? 0);
   return {
     items: rows.results.map((row) => {
@@ -628,8 +632,23 @@ const worker = {
     if (url.pathname === "/v1/admin/logs" && request.method === "GET") {
       const page = Math.max(1, Number(url.searchParams.get("page") ?? "1") || 1);
       const pageSize = 25;
-      const result = await env.DB.prepare("SELECT id, occurred_at AS occurredAt, action, entity_type AS entityType, entity_id AS entityId, entity_label AS entityLabel, summary FROM admin_audit_logs ORDER BY occurred_at DESC LIMIT ? OFFSET ?").bind(pageSize, (page - 1) * pageSize).all<Record<string, unknown>>();
-      return response({ items: result.results, page, pageSize });
+      const clauses: string[] = [];
+      const values: unknown[] = [];
+      const action = url.searchParams.get("action")?.trim();
+      const entityType = url.searchParams.get("entityType")?.trim();
+      const query = url.searchParams.get("q")?.trim();
+      const from = url.searchParams.get("from")?.trim();
+      const to = url.searchParams.get("to")?.trim();
+      if (action) { clauses.push("action = ?"); values.push(action); }
+      if (entityType && adminEntityType(entityType)) { clauses.push("entity_type = ?"); values.push(entityType); }
+      if (query) { clauses.push("(entity_label LIKE ? OR summary LIKE ?)"); values.push(`%${query}%`, `%${query}%`); }
+      if (from) { clauses.push("occurred_at >= ?"); values.push(`${from}T00:00:00.000Z`); }
+      if (to) { clauses.push("occurred_at <= ?"); values.push(`${to}T23:59:59.999Z`); }
+      const where = clauses.length ? `WHERE ${clauses.join(" AND ")}` : "";
+      const count = await env.DB.prepare(`SELECT COUNT(*) AS count FROM admin_audit_logs ${where}`).bind(...values).all<{ count: number }>();
+      const result = await env.DB.prepare(`SELECT id, occurred_at AS occurredAt, action, entity_type AS entityType, entity_id AS entityId, entity_label AS entityLabel, summary, before_json AS beforeJson, after_json AS afterJson FROM admin_audit_logs ${where} ORDER BY occurred_at DESC LIMIT ? OFFSET ?`).bind(...values, pageSize, (page - 1) * pageSize).all<Record<string, unknown>>();
+      const total = Number(count.results[0]?.count ?? 0);
+      return response({ items: result.results, page, pageSize, total, totalPages: Math.max(1, Math.ceil(total / pageSize)) });
     }
     if (url.pathname === "/v1/admin/trash" && request.method === "GET") {
       const [books, persons, organizations] = await Promise.all([
