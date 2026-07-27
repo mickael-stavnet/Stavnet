@@ -801,6 +801,9 @@
     "actions": {
       "validate": "Validate"
     },
+    "comparison": {
+      "books": "Books", "persons": "People", "organizations": "Organizations", "search": "Search", "selected": "Selection", "maximum": "Maximum 5 items", "dashboard": "Comparison dashboard", "timeline": "Timeline", "table": "Comparison", "primary": "Primary value", "secondary": "Secondary value", "index": "Index / 100", "noData": "Not enough data to display this chart.", "languages": "Publication languages", "countries": "Publication countries", "roles": "Roles and contributions"
+    },
     "footer": {
       "back": "Return",
       "menu": "Menu",

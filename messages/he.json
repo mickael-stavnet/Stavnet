@@ -761,6 +761,9 @@
     "actions": {
       "validate": "אישור"
     },
+    "comparison": {
+      "books": "ספרים", "persons": "אנשים", "organizations": "ארגונים", "search": "חיפוש", "selected": "בחירה", "maximum": "עד 5 פריטים", "dashboard": "לוח השוואה", "timeline": "ציר זמן", "table": "השוואה", "primary": "ערך ראשי", "secondary": "ערך משני", "index": "מדד / 100", "noData": "אין די נתונים להצגת תרשים זה.", "languages": "שפות פרסום", "countries": "מדינות פרסום", "roles": "תפקידים ותרומות"
+    },
     "footer": {
       "back": "חזרה",
       "menu": "תפריט",

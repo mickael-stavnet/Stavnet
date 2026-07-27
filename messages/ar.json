@@ -761,6 +761,9 @@
     "actions": {
       "validate": "تأكيد"
     },
+    "comparison": {
+      "books": "الكتب", "persons": "الأشخاص", "organizations": "المنظمات", "search": "بحث", "selected": "الاختيار", "maximum": "خمسة عناصر كحد أقصى", "dashboard": "لوحة المقارنة", "timeline": "التطور الزمني", "table": "المقارنة", "primary": "القيمة الرئيسية", "secondary": "القيمة الثانوية", "index": "مؤشر / 100", "noData": "لا توجد بيانات كافية لعرض هذا الرسم البياني.", "languages": "لغات النشر", "countries": "بلدان النشر", "roles": "الأدوار والمساهمات"
+    },
     "footer": {
       "back": "عودة",
       "menu": "القائمة",

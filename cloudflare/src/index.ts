@@ -322,7 +322,24 @@ async function rpc(db: D1Database, name: string, args: Record<string, unknown>):
         .filter((value, index, values) => values.indexOf(value) === index);
       const placeholders = relatedNames.map(() => "?").join(", ");
       const books = await db.prepare(`SELECT DISTINCT books.id, books.payload FROM book_facets JOIN books ON books.id = book_facets.book_id WHERE book_facets.facet = 'authorName' AND book_facets.value IN (${placeholders}) ORDER BY books.sort_year DESC, books.id`).bind(...relatedNames).all<{ id: number; payload: string }>();
-      for (const entry of books.results) { const book = parsePayload(entry.payload); bibliographyRows.push({ type: bibliographyTypeFromPublicationCode(text(book, "CodePublication")), language: text(book, "Langue"), title: text(book, "Titre"), year: text(book, "Année"), issue: "" }); }
+      for (const entry of books.results) {
+        const book = parsePayload(entry.payload);
+        const matchedAuthor = [1, 2, 3]
+          .map((position) => ({
+            name: normalize([text(book, `Auteur. ${position}. Prénom`), text(book, `Auteur. ${position}. Nom`)].filter(Boolean).join(" ")),
+            role: text(book, `Auteur. ${position}. Type`),
+          }))
+          .find((author) => relatedNames.includes(author.name));
+        bibliographyRows.push({
+          type: bibliographyTypeFromPublicationCode(text(book, "CodePublication")),
+          language: text(book, "Langue"),
+          title: text(book, "Titre"),
+          year: text(book, "Année"),
+          issue: "",
+          country: text(book, "Éditeur. 1. Pays", "Pays. Éditeur"),
+          role: matchedAuthor?.role ?? "",
+        });
+      }
     }
     const originalTitles = bibliographyRows.filter((entry) => normalize(entry.type) === "original").length;
     const translations = bibliographyRows.filter((entry) => normalize(entry.type) === "traduction");

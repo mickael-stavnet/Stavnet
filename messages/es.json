@@ -761,6 +761,9 @@
     "actions": {
       "validate": "Validar"
     },
+    "comparison": {
+      "books": "Libros", "persons": "Personas", "organizations": "Organizaciones", "search": "Buscar", "selected": "Selección", "maximum": "Máximo 5 elementos", "dashboard": "Panel comparativo", "timeline": "Evolución", "table": "Comparación", "primary": "Valor principal", "secondary": "Valor secundario", "index": "Índice / 100", "noData": "No hay datos suficientes para mostrar este gráfico.", "languages": "Idiomas de publicación", "countries": "Países de publicación", "roles": "Roles y contribuciones"
+    },
     "footer": {
       "back": "Volver",
       "menu": "Menú",

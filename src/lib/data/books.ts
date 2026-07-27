@@ -362,6 +362,11 @@ export interface BookPublishingRow {
   year: string;
   edition: string;
   publication: string;
+  countries: string[];
+  authorRoles: string[];
+  authorLanguages: string[];
+  contributorRoles: string[];
+  contributorLanguages: string[];
 }
 
 export interface BookPublishingStat {
@@ -915,6 +920,9 @@ function buildPublishingRows(rows: BookRow[]): BookPublishingRow[] {
     .map((row) => {
       const code = parseBookReferenceCode(readText(row["Catégorie. 1"]));
       const status = code.status || (readText(row["Titre. Original"]) ? "O" : "T");
+      const publishers = buildPublishers(row);
+      const authors = buildAuthors(row);
+      const contributors = buildContributors(row);
       const title =
         status === "O"
           ? readText(row["Titre. Original"]) || readText(row["Titre"])
@@ -928,6 +936,11 @@ function buildPublishingRows(rows: BookRow[]): BookPublishingRow[] {
         year: readText(row["Année"]),
         edition: code.edition,
         publication: code.publication,
+        countries: [...new Set(publishers.map((item) => item.country).filter(Boolean))],
+        authorRoles: [...new Set(authors.map((item) => item.type).filter(Boolean))],
+        authorLanguages: [...new Set(authors.map((item) => item.language).filter(Boolean))],
+        contributorRoles: [...new Set(contributors.map((item) => item.type).filter(Boolean))],
+        contributorLanguages: [...new Set(contributors.map((item) => item.language).filter(Boolean))],
       };
     })
     .filter((row) => Object.values(row).some((value) => value.length > 0))
@@ -1278,12 +1291,14 @@ function mapBookDetail(
     subject: readList([row["Thème. 1"], row["Thème. 2"]]),
     genre: readList([row["Genre"], row["Genre. 1"], row["Genre. 2"]]),
     targetAudience: readList([row["Rubrique"]]),
-    statistics: buildDetailStatistics([
-      ...publishing.map((item) => ({ year: item.year, primary: item.status === "O", language: item.language, role: item.status === "O" ? "original" : "translation" })),
-      ...buildPublishers(row).map((item) => ({ year: readText(row["Année"]), country: item.country })),
-      ...buildAuthors(row).map((item) => ({ year: readText(row["Année"]), role: item.type })),
-      ...buildContributors(row).map((item) => ({ year: readText(row["Année"]), role: item.type })),
-    ]),
+    statistics: buildDetailStatistics(publishing.flatMap((item) => [
+      { year: item.year, primary: item.status === "O", language: item.language, role: item.status === "O" ? "original" : "translation" },
+      ...item.countries.map((country) => ({ year: item.year, country })),
+      ...item.authorRoles.map((role) => ({ year: item.year, role })),
+      ...item.authorLanguages.map((language) => ({ year: item.year, language })),
+      ...item.contributorRoles.map((role) => ({ year: item.year, role })),
+      ...item.contributorLanguages.map((language) => ({ year: item.year, language })),
+    ])),
     stats: {
       cardsFound: String(totals.cardsFound),
       databaseContains: String(totals.databaseContains),

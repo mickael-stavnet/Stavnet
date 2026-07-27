@@ -260,3 +260,6 @@
 # 27-07-2026
 
 - 09:57 - Importation versionnée des métadonnées et entrées de tables des matières dans D1 local et production, avec migration relationnelle, import UTF-8 idempotent, RPC Worker et affichage des entrées réelles sur les fiches d’ouvrages collectifs.
+- 12:13 - Remplacement de la page Statistiques par un parcours de comparaison livres, personnes ou organismes : sélection de une à cinq fiches, URL partageable, modes de lecture absolu/pourcentage/indice, évolution temporelle et répartitions langues, pays et rôles dans les six langues.
+- 12:25 - Séparation du parcours Statistiques en deux écrans : la sélection reste sur `/[locale]/statistics` et la validation ouvre désormais `/[locale]/statistiques/comparaison` avec les paramètres de comparaison conservés dans l’URL.
+- 12:55 - Enrichissement des comparaisons statistiques avec les publications liées, langues d’auteur et de contributeur, pays d’édition et rôles associés ; la série temporelle compte désormais les originaux comme les traductions.
