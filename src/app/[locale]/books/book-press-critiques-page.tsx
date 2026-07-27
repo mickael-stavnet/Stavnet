@@ -113,24 +113,13 @@ export default function BookPressCritiquesPage({ book }: BookPressCritiquesPageP
   const pressExtracts = pressRows.map((row) => [row.sourceTitle, row.excerpt]);
 
   return (
-    <BookDetailSecondaryLayout book={book} pageName={t("tabs.pressCritiques")} pagePath="/books/details/press-critiques">
-      <div className="flex min-h-0 flex-1 flex-col">
+    <BookDetailSecondaryLayout book={book} pageName={t("tabs.pressCritiques")} pagePath="/books/details/press-critiques" layout={pressExtracts.length > 0 ? "default" : "expandedCentered"}>
+      {pressExtracts.length === 0 ? null : <div className="flex min-h-0 flex-1 flex-col">
       <div className="mb-[6px] pl-[8px] text-[14px] font-bold leading-none text-black md:text-[16px]">
         <span className="text-[#ff1d1d]">{pressExtracts.length}</span> <span>{pageData.pressSectionTitle}</span>
       </div>
-      {pressExtracts.length > 0 ? (
-        <PressExtractsTable rows={pressExtracts} sourceLabel={pageData.pressColumns.source} extractsLabel={pageData.pressColumns.extracts} />
-      ) : (
-        <section className="border border-[#7ea8b8] bg-[#a6d9eb]">
-          <div className="border-b border-[#7ea8b8] bg-[#fff6bf] px-2 py-[2px] text-[10px] uppercase leading-[1.05] text-black md:text-[11px]">
-            {pageData.pressSectionTitle}
-          </div>
-          <div className="px-3 py-4 text-[14px] leading-[1.45] text-black md:px-4 md:py-5 md:text-[15px]">
-            Aucune critique de presse structurée n&apos;est disponible dans la base pour cet ouvrage.
-          </div>
-        </section>
-      )}
-      </div>
+      <PressExtractsTable rows={pressExtracts} sourceLabel={pageData.pressColumns.source} extractsLabel={pageData.pressColumns.extracts} />
+      </div>}
     </BookDetailSecondaryLayout>
   );
 }

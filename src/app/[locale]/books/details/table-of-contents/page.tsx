@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import BookTableOfContentsPage from "../../book-table-of-contents-page";
-import { getBookDetailById, getDefaultBookDetail } from "@/lib/data/books";
+import { getBookDetailById, getBookTableOfContentsEntries, getDefaultBookDetail } from "@/lib/data/books";
 import { buildBookPageMetadata } from "@/lib/site-metadata";
 
 interface BookTableOfContentsRouteProps {
@@ -27,5 +27,7 @@ export default async function BookTableOfContentsRoute({ searchParams }: BookTab
     notFound();
   }
 
-  return <BookTableOfContentsPage book={book} />;
+  const entries = await getBookTableOfContentsEntries(book.id);
+
+  return <BookTableOfContentsPage book={book} entries={entries} />;
 }

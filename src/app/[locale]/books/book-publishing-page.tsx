@@ -138,11 +138,11 @@ export default function BookPublishingPage({ book }: BookPublishingPageProps) {
   const publishingRows = book.publishing;
 
   return (
-    <BookDetailSecondaryLayout book={book} pageName={t("tabs.publishing")} pagePath="/books/details/publishing">
-      <section className="grid min-w-0 flex-1 gap-[8px] md:grid-cols-[230px_minmax(0,1fr)] md:items-stretch">
+    <BookDetailSecondaryLayout book={book} pageName={t("tabs.publishing")} pagePath="/books/details/publishing" layout={publishingRows.length > 0 ? "default" : "expandedCentered"}>
+      {publishingRows.length === 0 ? null : <section className="grid min-w-0 flex-1 gap-[8px] md:grid-cols-[230px_minmax(0,1fr)] md:items-stretch">
         <PublishingSummary stats={book.publishingStats} t={t} />
         <PublishingTable pageData={pageData} rows={publishingRows} />
-      </section>
+      </section>}
     </BookDetailSecondaryLayout>
   );
 }

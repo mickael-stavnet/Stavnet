@@ -244,6 +244,12 @@ async function rpc(db: D1Database, name: string, args: Record<string, unknown>):
     const books = await db.prepare("SELECT books.id, books.payload FROM book_work_titles JOIN books ON books.id = book_work_titles.book_id WHERE book_work_titles.value = ? ORDER BY books.sort_year, books.id").bind(value).all<{ id: number; payload: string }>();
     return books.results.map((entry) => ({ id: entry.id, ...parsePayload(entry.payload) }));
   }
+  if (name === "get_book_table_of_contents") {
+    const bookId = Number(args.p_book_id);
+    if (!Number.isSafeInteger(bookId) || bookId < 1) return [];
+    const entries = await db.prepare("SELECT position, source_entry_id, source_author_id, title, page FROM book_table_of_contents_entries WHERE book_id = ? ORDER BY position, id").bind(bookId).all<{ position: number; source_entry_id: string; source_author_id: string; title: string; page: string }>();
+    return entries.results.map((entry) => ({ position: entry.position, sourceEntryId: entry.source_entry_id, sourceAuthorId: entry.source_author_id, title: entry.title, page: entry.page }));
+  }
   if (name === "get_books_page") {
     const unsupported = ["p_person_last_name", "p_person_first_name", "p_organization", "p_theme", "p_publication_language", "p_year"].some((key) => String(args[key] ?? "").trim());
     if (unsupported) throw new Error("Could not find the function public.get_books_page");

@@ -771,6 +771,9 @@
   "Statistics": {
     "year": "Jahr", "decade": "Jahrzehnt", "month": "Monat", "monthlyUnavailable": "Die verfügbaren Daten erlauben keine Monatsansicht.", "noData": "Für dieses Diagramm liegen nicht genügend Daten vor.", "timeline": "Entwicklung", "primary": "Originale", "secondary": "Übersetzungen", "languages": "Publikationssprachen", "countries": "Publikationsländer", "roles": "Rollen und Beiträge"
   },
+  "EmptyStates": {
+    "tab": "In diesem Reiter sind keine Informationen verfügbar."
+  },
   "Errors": {
     "personDetails": { "title": "Fehler in der Personendatei", "message": "Beim Laden der Personenakte ist ein Fehler aufgetreten. Laden Sie die Seite erneut, um es noch einmal zu versuchen.", "return": "Zurück zu den Personen", "retry": "Erneut versuchen" },
     "bookDetails": { "title": "Fehler in der Buchdatei", "message": "Beim Laden der Buchakte ist ein Fehler aufgetreten. Laden Sie die Seite erneut, um es noch einmal zu versuchen.", "return": "Zurück zu den Büchern", "retry": "Erneut versuchen" },

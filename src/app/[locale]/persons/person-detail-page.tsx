@@ -7,6 +7,7 @@ import type { ReactNode } from "react";
 import { StavnetFooter } from "@/components/stavnet/footer";
 import { StavnetHeader } from "@/components/stavnet/header";
 import { DetailStatisticsPanel } from "@/components/stavnet/detail-statistics-panel";
+import { DetailEmptyTab } from "@/components/stavnet/detail-empty-tab";
 import {
   ClickableDetailValue,
   buildBookTitleResolverHref,
@@ -202,23 +203,9 @@ function LabelCell({ label, className }: { label: string; className?: string }) 
   return <div className={cn("border border-[#7aa8b7] bg-[#fff8c8] px-[10px] py-[4px] text-[11px] uppercase leading-none text-black md:px-3 md:text-[12px]", className)}>{label}</div>;
 }
 
-function BlankTabPanel({ title, rows = 3 }: { title: string; rows?: number }) {
-  return (
-    <section className="border border-[#7aa8b7] bg-[#a7dcee]">
-      <div className="border-b border-[#7aa8b7] bg-[#fff8c8] px-2 py-[4px] text-[12px] uppercase leading-none text-black">{title}</div>
-      <div className="p-[10px]">
-        <div className="border border-[#7aa8b7] bg-[#b2e0ef]">
-          {Array.from({ length: rows }).map((_, index) => (
-            <div key={index} className={cn("h-[102px] border-b border-[#7aa8b7]", index === rows - 1 && "border-b-0")} />
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
 export default function PersonDetailPage({ person }: PersonDetailPageProps) {
   const t = useTranslations("PersonFilePage");
+  const emptyT = useTranslations("EmptyStates");
   const statisticsT = useTranslations("Statistics");
   const tabs: TabKey[] = [
     "authorCard",
@@ -407,25 +394,15 @@ export default function PersonDetailPage({ person }: PersonDetailPageProps) {
                 ) : null}
 
                 {activeTab === "originalTitles" ? (
-                  <PersonBibliographySection
-                    count={person.bibliographyStats.originalTitles}
-                    rows={originalRows}
-                    statLabel={t("bibliography.originalTitles")}
-                    labels={mobileBibliographyLabels}
-                  />
+                  originalRows.length > 0 ? <PersonBibliographySection count={person.bibliographyStats.originalTitles} rows={originalRows} statLabel={t("bibliography.originalTitles")} labels={mobileBibliographyLabels} /> : <DetailEmptyTab message={emptyT("tab")} />
                 ) : null}
                 {activeTab === "translatedTitles" ? (
-                  <PersonBibliographySection
-                    count={person.bibliographyStats.translations}
-                    rows={translatedRows}
-                    statLabel={t("bibliography.translations")}
-                    labels={mobileBibliographyLabels}
-                  />
+                  translatedRows.length > 0 ? <PersonBibliographySection count={person.bibliographyStats.translations} rows={translatedRows} statLabel={t("bibliography.translations")} labels={mobileBibliographyLabels} /> : <DetailEmptyTab message={emptyT("tab")} />
                 ) : null}
-                {activeTab === "authorArticles" ? <BlankTabPanel title={t("content.authorArticles")} rows={3} /> : null}
-                {activeTab === "authorPublications" ? <BlankTabPanel title={t("content.authorPublications")} rows={3} /> : null}
-                {activeTab === "pressCritiques" ? <BlankTabPanel title={t("content.pressCritiques")} rows={3} /> : null}
-                {activeTab === "awards" ? <BlankTabPanel title={t("content.awards")} rows={3} /> : null}
+                {activeTab === "authorArticles" ? <DetailEmptyTab message={emptyT("tab")} /> : null}
+                {activeTab === "authorPublications" ? <DetailEmptyTab message={emptyT("tab")} /> : null}
+                {activeTab === "pressCritiques" ? <DetailEmptyTab message={emptyT("tab")} /> : null}
+                {activeTab === "awards" ? <DetailEmptyTab message={emptyT("tab")} /> : null}
                 {activeTab === "statistics" ? <DetailStatisticsPanel statistics={person.statistics} labels={{ title: t("content.statistics"), year: statisticsT("year"), decade: statisticsT("decade"), month: statisticsT("month"), monthlyUnavailable: statisticsT("monthlyUnavailable"), noData: statisticsT("noData"), timeline: statisticsT("timeline"), primary: statisticsT("primary"), secondary: statisticsT("secondary"), languages: statisticsT("languages"), countries: statisticsT("countries"), roles: statisticsT("roles") }} /> : null}
               </div>
             </div>

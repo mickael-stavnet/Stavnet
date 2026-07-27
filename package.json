@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "dev:worker": "npx --yes wrangler@4.26.1 dev --local --config cloudflare/wrangler.jsonc",
-    "dev:worker:local-db": "npx --yes wrangler@4.26.1 dev --local --persist-to cloudflare/.wrangler/local-db --config cloudflare/wrangler.jsonc",
+    "dev:worker:local-db": "npx --yes wrangler@4.26.1 dev --local --port 8787 --persist-to cloudflare/.wrangler/local-db --config cloudflare/wrangler.jsonc",
     "dev:worker:production-db": "npx --yes wrangler@4.26.1 dev --remote --config cloudflare/wrangler.jsonc",
     "db:local:sync": "node scripts/sync-local-db.mjs",
     "db:local:inspect": "node scripts/inspect-local-db.mjs",

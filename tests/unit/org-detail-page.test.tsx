@@ -136,6 +136,6 @@ describe("OrganizationsDetailPage", () => {
     fireEvent.click(screen.getByRole("button", { name: "Diffuseur" }));
 
     expect(screen.queryAllByRole("link", { name: "La Liste" })).toHaveLength(0);
-    expect(screen.getAllByText("Diffuseur").length).toBeGreaterThan(1);
+    expect(screen.getByRole("status")).toBeInTheDocument();
   });
 });

@@ -21,6 +21,8 @@ interface BookDetailSecondaryLayoutProps {
   book: BookDetail;
   pageName: string;
   pagePath: "/books/details/back-cover" | "/books/details/table-of-contents" | "/books/details/press-critiques" | "/books/details/availability" | "/books/details/publishing";
+  layout?: "default" | "expandedCentered" | "tableOfContents";
+  detailsExtra?: ReactNode;
   children: ReactNode;
 }
 
@@ -86,7 +88,7 @@ function InfoTable({
           {rows.map((row, rowIndex) => (
             <tr key={`${row[0]}-${rowIndex}`} className="text-[14px] leading-none text-black font-bold md:text-[15px]">
               {row.map((cell, cellIndex) => (
-                <td key={`${cell}-${cellIndex}`} className="min-h-[32px] border border-[#7ea8b8] px-2 py-[6px] align-middle md:whitespace-nowrap">
+                <td key={`${cell}-${cellIndex}`} className="min-h-[32px] border border-[#7ea8b8] px-2 py-[6px] align-middle leading-[1.15] md:whitespace-normal">
                   {cellIndex === 0 ? (
                     <span className="flex min-w-0 items-center gap-2">
                       <RedMarker />
@@ -180,11 +182,20 @@ export default function BookDetailSecondaryLayout({
   book,
   pageName,
   pagePath,
+  layout = "default",
+  detailsExtra,
   children,
 }: BookDetailSecondaryLayoutProps) {
   const t = useTranslations("BookDetailsPage");
   const router = useRouter();
+  const isExpandedCentered = layout === "expandedCentered";
+  const isTableOfContents = layout === "tableOfContents";
   const hasMissingCover = book.imageSrc === "/images/books-cover/book-cover-placeholder.png";
+  const contentWidthClass = isExpandedCentered ? "md:w-[1360px]" : isTableOfContents ? "md:w-[1040px]" : "md:w-[1200px]";
+  const contentPositionClass = isExpandedCentered ? "md:top-1/2 md:-translate-y-1/2" : isTableOfContents ? "md:top-[146px] md:bottom-[92px]" : "md:top-[160px] md:bottom-[100px]";
+  const topGridClass = isExpandedCentered ? "md:grid-cols-[280px_minmax(0,1fr)]" : isTableOfContents ? "md:grid-cols-[220px_minmax(0,1fr)]" : "md:grid-cols-[230px_minmax(0,1fr)]";
+  const cardSizeClass = isExpandedCentered ? "md:h-[460px] md:w-[280px]" : isTableOfContents ? "md:h-[330px] md:w-[220px]" : "md:h-[344px] md:w-[230px]";
+  const detailsHeightClass = isExpandedCentered ? "md:h-[460px]" : isTableOfContents ? "md:h-[330px]" : "md:h-[344px]";
   const footerItems = [
     { key: "back", icon: "/icons/icons-nav/back.png", href: "/home" as const, label: t("footer.back") },
     { key: "menu", icon: "/icons/icons-nav/menu.png", href: "/menu" as const, label: t("footer.menu") },
@@ -247,32 +258,32 @@ export default function BookDetailSecondaryLayout({
           subtitle={t("header.subtitle")}
         />
 
-        <section className="mt-6 flex min-w-0 flex-col gap-3 md:absolute md:left-1/2 md:top-[160px] md:bottom-[100px] md:w-[1200px] md:max-w-[calc(100vw-24px)] md:-translate-x-1/2">
-          <div className="flex min-w-0 flex-col gap-3 md:grid md:grid-cols-[230px_minmax(0,1fr)] md:gap-x-[12px]">
-            <aside className="min-w-0 md:h-[344px] md:w-[230px]">
-              <div className="w-full max-w-[270px] border border-[#b7ab92] bg-[#f3ead4] p-[6px] shadow-[2px_2px_4px_rgba(0,0,0,0.12)] md:h-[344px] md:w-[230px] md:max-w-none">
+        <section className={`mt-6 flex min-w-0 flex-col gap-3 md:absolute md:left-1/2 md:max-w-[calc(100vw-24px)] md:-translate-x-1/2 ${contentPositionClass} ${contentWidthClass}`}>
+          <div className={`flex min-w-0 flex-col gap-3 md:grid md:gap-x-[16px] ${topGridClass}`}>
+            <aside className={`min-w-0 ${cardSizeClass}`}>
+              <div className={`w-full max-w-[270px] border border-[#b7ab92] bg-[#f3ead4] p-[6px] shadow-[2px_2px_4px_rgba(0,0,0,0.12)] md:max-w-none ${cardSizeClass}`}>
                 {hasMissingCover ? (
                   <div className="flex h-[240px] w-full items-center justify-center bg-[#efe5d2] px-6 text-center text-[16px] leading-[1.3] text-[#6d614d] md:h-full md:text-[17px]">
                     {t("noCoverAvailable")}
                   </div>
                 ) : (
-                  <Image src={book.imageSrc} alt={book.title} width={258} height={387} priority className="h-auto w-full object-cover md:h-full md:w-full" />
+                  <Image src={book.imageSrc} alt={book.title} width={258} height={387} priority className="h-auto w-full object-contain md:h-full md:w-full" />
                 )}
               </div>
             </aside>
 
-            <section className="min-w-0 md:h-[344px]">
-              <div className="flex min-h-0 min-w-0 flex-col overflow-hidden rounded-[8px] border border-[#7aa8b7] bg-[linear-gradient(180deg,#8ecfe8_0%,#a8dbed_100%)] shadow-[4px_4px_8px_rgba(0,0,0,0.18)] md:h-[344px]">
-                <div className="flex h-full min-w-0 flex-col gap-[8px] px-3 py-3 md:px-[12px] md:py-[10px]">
+            <section className={`min-w-0 ${detailsHeightClass}`}>
+              <div className={`flex min-h-0 min-w-0 flex-col overflow-hidden rounded-[8px] border border-[#7aa8b7] bg-[linear-gradient(180deg,#8ecfe8_0%,#a8dbed_100%)] shadow-[4px_4px_8px_rgba(0,0,0,0.18)] ${detailsHeightClass}`}>
+                <div className="flex h-full min-w-0 flex-col gap-[8px] px-3 py-3 md:px-[12px] md:pb-[30px] md:pt-[10px]">
                   <InfoField label={t("fields.title")} value={bookTitle} valueClassName="font-bold" />
-                  <div className="grid gap-[3px] md:grid-cols-[1.08fr_1.05fr_1.12fr]">
+                  <div className="mt-[8px] grid gap-[3px] md:grid-cols-[1.08fr_1.05fr_1.12fr]">
                     <InfoField label={t("fields.originalEnglish")} value={book.titleEnglish} />
                     <InfoField label={t("fields.transcription")} value={book.titleTranscription || book.subtitleTranscription} valueClassName="italic" />
                     <InfoField label={t("fields.originalLanguage")} value={book.titleOriginal || book.language} valueClassName="justify-end" dir={book.titleOriginal ? "rtl" : undefined} />
                   </div>
                   <MobileInfoTable columns={[t("tables.authors"), t("tables.authorType"), t("tables.writingLanguage")]} rows={authorsRows} />
                   <div className="hidden md:block">
-                    <InfoTable columns={[t("tables.authors"), t("tables.authorType"), t("tables.writingLanguage")]} rows={authorsRows} columnWidths={["61%","18%","21%"]} />
+                    <InfoTable columns={[t("tables.authors"), t("tables.authorType"), t("tables.writingLanguage")]} rows={authorsRows} columnWidths={["58%","23%","19%"]} />
                   </div>
                   <MobileInfoTable columns={[t("tables.contributors"), t("tables.contributionType"), t("tables.writingLanguage")]} rows={contributorsRows} />
                   <div className="hidden md:block">
@@ -282,19 +293,20 @@ export default function BookDetailSecondaryLayout({
                   <div className="hidden md:block">
                     <InfoTable columns={[t("tables.publishers"), t("tables.country"), t("tables.isbn")]} rows={publishersRows} columnWidths={["46%","24%","30%"]} />
                   </div>
+                  {detailsExtra}
                 </div>
               </div>
             </section>
           </div>
 
-          <section className="min-w-0 md:flex md:min-h-0 md:flex-1">{children}</section>
+          {children ? <section className={`min-w-0 ${isTableOfContents ? "md:w-full md:self-start" : "md:flex md:min-h-0 md:flex-1"}`}>{children}</section> : null}
 
         </section>
 
         <StavnetFooter
           items={footerItems}
           desktopMode="compact"
-          className="md:left-1/2 md:right-auto md:w-[1200px] md:max-w-[calc(100vw-24px)] md:-translate-x-1/2"
+          className={`md:left-1/2 md:right-auto md:max-w-[calc(100vw-24px)] md:-translate-x-1/2 ${contentWidthClass}`}
         />
       </div>
     </main>

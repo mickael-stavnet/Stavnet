@@ -7,6 +7,7 @@ import type { ReactNode } from "react";
 import { StavnetFooter } from "@/components/stavnet/footer";
 import { StavnetHeader } from "@/components/stavnet/header";
 import { DetailStatisticsPanel } from "@/components/stavnet/detail-statistics-panel";
+import { DetailEmptyTab } from "@/components/stavnet/detail-empty-tab";
 import { Link } from "@/i18n/routing";
 import type { OrganizationDetail } from "@/lib/data/orgs";
 import { ClickableDetailValue, buildBookTitleResolverHref, buildOrganizationsByCountryHref } from "@/lib/detail-links";
@@ -62,26 +63,6 @@ function EmptyRows({ rows }: { rows: number }) {
   );
 }
 
-function BlankTabPanel({ title, rows = 4 }: { title: string; rows?: number }) {
-  return (
-    <section className="border border-[#7aa8b7] bg-[#a7dcee]">
-      <div className="border-b border-[#7aa8b7] bg-[#fff8c8] px-2 py-[4px] text-[12px] uppercase leading-none text-black">
-        {title}
-      </div>
-      <div className="p-[10px]">
-        <div className="border border-[#7aa8b7] bg-[#b2e0ef]">
-          {Array.from({ length: rows }).map((_, index) => (
-            <div
-              key={index}
-              className={`h-[90px] border-b border-[#7aa8b7] ${index === rows - 1 ? "border-b-0" : ""}`}
-            />
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
 function RedMarker() {
   return (
     <span className="mr-2 inline-block h-[11px] w-[11px] rounded-full border-[2px] border-[#ff1d1d]" />
@@ -94,6 +75,7 @@ export default function OrganizationsDetailPage({
   organization,
 }: OrganizationDetailPageProps) {
   const t = useTranslations("OrganizationFilePage");
+  const emptyT = useTranslations("EmptyStates");
   const statisticsT = useTranslations("Statistics");
   const tabs: OrganizationTab[] = [
     "editorCard",
@@ -415,25 +397,22 @@ export default function OrganizationsDetailPage({
                 ) : null}
 
                 {activeTab === "diffuser" ? (
-                  <BlankTabPanel title={t("content.diffuser")} rows={4} />
+                  <DetailEmptyTab message={emptyT("tab")} />
                 ) : null}
                 {activeTab === "distributor" ? (
-                  <BlankTabPanel title={t("content.distributor")} rows={4} />
+                  <DetailEmptyTab message={emptyT("tab")} />
                 ) : null}
                 {activeTab === "salesCounter" ? (
-                  <BlankTabPanel title={t("content.salesCounter")} rows={4} />
+                  <DetailEmptyTab message={emptyT("tab")} />
                 ) : null}
                 {activeTab === "readingCommittee" ? (
-                  <BlankTabPanel
-                    title={t("content.readingCommittee")}
-                    rows={4}
-                  />
+                  <DetailEmptyTab message={emptyT("tab")} />
                 ) : null}
                 {activeTab === "staff" ? (
-                  <BlankTabPanel title={t("content.staff")} rows={4} />
+                  <DetailEmptyTab message={emptyT("tab")} />
                 ) : null}
                 {activeTab === "literaryPrizes" ? (
-                  <BlankTabPanel title={t("content.literaryPrizes")} rows={4} />
+                  <DetailEmptyTab message={emptyT("tab")} />
                 ) : null}
                 {activeTab === "statistics" ? <DetailStatisticsPanel statistics={organization.statistics} labels={{ title: t("content.statistics"), year: statisticsT("year"), decade: statisticsT("decade"), month: statisticsT("month"), monthlyUnavailable: statisticsT("monthlyUnavailable"), noData: statisticsT("noData"), timeline: statisticsT("timeline"), primary: t("published.titlesCount"), secondary: t("published.authorsCount"), languages: statisticsT("languages"), countries: statisticsT("countries"), roles: statisticsT("roles") }} /> : null}
               </div>

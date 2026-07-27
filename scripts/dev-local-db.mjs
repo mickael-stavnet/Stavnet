@@ -5,6 +5,7 @@ import { resolve } from "node:path";
 
 const command = process.platform === "win32" ? "pnpm.cmd" : "pnpm";
 const shell = process.platform === "win32";
+const workerUrl = "http://localhost:8787";
 
 function getLocalWorkerSecret() {
   const devVarsPath = resolve(process.cwd(), "cloudflare", ".dev.vars");
@@ -34,6 +35,31 @@ function start(args, environment = process.env) {
   });
 }
 
+async function waitForWorker(secret, worker) {
+  const timeoutAt = Date.now() + 30_000;
+
+  while (Date.now() < timeoutAt) {
+    if (worker.exitCode !== null || worker.killed) {
+      throw new Error("Le Worker local s'est arrêté avant de devenir disponible.");
+    }
+
+    try {
+      const response = await fetch(`${workerUrl}/v1/showcase`, {
+        headers: { Authorization: `Bearer ${secret}` },
+        signal: AbortSignal.timeout(1_000),
+      });
+
+      if (response.ok) {
+        return;
+      }
+    } catch {}
+
+    await new Promise((resolvePromise) => setTimeout(resolvePromise, 250));
+  }
+
+  throw new Error("Le Worker local n'est pas devenu disponible sur http://localhost:8787 après 30 secondes.");
+}
+
 function ensurePortAvailable(port) {
   return new Promise((resolvePromise, rejectPromise) => {
     const probe = createServer();
@@ -61,6 +87,10 @@ function ensurePortAvailable(port) {
 }
 
 function stop(processToStop) {
+  if (!processToStop) {
+    return Promise.resolve();
+  }
+
   if (processToStop.exitCode !== null || processToStop.killed) {
     return Promise.resolve();
   }
@@ -77,16 +107,8 @@ function stop(processToStop) {
   return Promise.resolve();
 }
 
-await ensurePortAvailable(3000);
-
-const worker = start(["run", "dev:worker:local-db"]);
-const app = start(["exec", "next", "dev", "--port", "3000"], {
-  ...process.env,
-  STAVNET_DATA_WORKER_URL: "http://localhost:8787",
-  STAVNET_DATA_WORKER_SECRET: getLocalWorkerSecret(),
-});
-
 let isStopping = false;
+let app;
 
 async function shutdown(exitCode) {
   if (isStopping) {
@@ -98,10 +120,28 @@ async function shutdown(exitCode) {
   process.exit(exitCode);
 }
 
+await ensurePortAvailable(3000);
+
+const secret = getLocalWorkerSecret();
+const worker = start(["run", "dev:worker:local-db"]);
+
 worker.on("exit", (code) => {
   if (!isStopping) {
     void shutdown(code ?? 1);
   }
+});
+
+try {
+  await waitForWorker(secret, worker);
+} catch (error) {
+  await shutdown(1);
+  throw error;
+}
+
+app = start(["exec", "next", "dev", "--port", "3000"], {
+  ...process.env,
+  STAVNET_DATA_WORKER_URL: workerUrl,
+  STAVNET_DATA_WORKER_SECRET: secret,
 });
 
 app.on("exit", (code) => {

@@ -8,6 +8,7 @@ import { Link, useRouter } from "@/i18n/routing";
 import { StavnetFooter } from "@/components/stavnet/footer";
 import { StavnetHeader } from "@/components/stavnet/header";
 import { DetailStatisticsPanel } from "@/components/stavnet/detail-statistics-panel";
+import { DetailEmptyTab } from "@/components/stavnet/detail-empty-tab";
 import type { BookRelatedFacet } from "@/lib/book-related";
 import type { BookAuthorRow, BookContributorRow, BookDetail, BookPublisherRow } from "@/lib/data/books";
 import {
@@ -59,11 +60,6 @@ interface FilledTableProps {
 interface MiniCardProps {
   title: string;
   values?: ReactNode[];
-}
-
-interface BlankContentProps {
-  title: string;
-  rows?: number;
 }
 
 function MobileDataSection({ title, columns, rows }: MobileDataSectionProps) {
@@ -161,24 +157,11 @@ function MiniCard({ title, values = [] }: MiniCardProps) {
   );
 }
 
-function BlankContent({ title, rows = 1 }: BlankContentProps) {
-  return (
-    <section className="border border-[#7aa8b7] bg-[#a7dcee]">
-      <div className="border-b border-[#7aa8b7] bg-[#fff8c8] px-2 py-[4px] text-[12px] uppercase leading-none text-black">
-        {title}
-      </div>
-      <div className="p-[10px]">
-        <div className="min-h-[220px] border border-[#7aa8b7] bg-[#b2e0ef] md:min-h-[404px]">
-          {Array.from({ length: rows }).map((_, index) => (
-            <div key={index} className={cn("h-[72px] border-b border-[#7aa8b7] md:h-[96px]", index === rows - 1 && "border-b-0")} />
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
+function TextPanel({ title, value, emptyMessage }: { title: string; value: string; emptyMessage: string }) {
+  if (!value) {
+    return <DetailEmptyTab message={emptyMessage} />;
+  }
 
-function TextPanel({ title, value }: { title: string; value: string }) {
   return (
     <section className="border border-[#7aa8b7] bg-[#a7dcee]">
       <div className="border-b border-[#7aa8b7] bg-[#fff8c8] px-2 py-[4px] text-[12px] uppercase leading-none text-black">
@@ -245,6 +228,7 @@ function buildFacetCardValues(values: string[], facet: BookDetailFacet): ReactNo
 
 export default function BookDetailPage({ book }: BookDetailPageProps) {
   const t = useTranslations("BookDetailsPage");
+  const emptyT = useTranslations("EmptyStates");
   const statisticsT = useTranslations("Statistics");
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<BookTab>("bookCard");
@@ -396,14 +380,7 @@ export default function BookDetailPage({ book }: BookDetailPageProps) {
               })}
             </nav>
 
-            <div className="mt-[2px] flex min-h-[420px] min-w-0 flex-col rounded-[8px] border border-[#7aa8b7] bg-[linear-gradient(180deg,#8ecfe8_0%,#a8dbed_100%)] shadow-[4px_4px_8px_rgba(0,0,0,0.18)] md:h-[min(660px,calc(100dvh-370px))] md:min-h-0 md:overflow-hidden md:flex-row">
-              <aside className="border-b border-[#7aa8b7] px-3 py-4 md:w-[128px] md:border-b-0 md:border-r">
-                <p className="text-center text-[18px] font-bold leading-tight text-[#ff1313] md:text-[22px]">{t("side.translation")}</p>
-                <div className="mt-[2px] text-[16px] font-semibold leading-tight text-black md:text-[17px]">
-                  {book.language ? renderFacetValue(book.language, "translationLanguage") : t("side.language")}
-                </div>
-              </aside>
-
+            <div className="mt-[2px] flex min-h-[420px] min-w-0 flex-col rounded-[8px] border border-[#7aa8b7] bg-[linear-gradient(180deg,#8ecfe8_0%,#a8dbed_100%)] shadow-[4px_4px_8px_rgba(0,0,0,0.18)] md:h-[min(660px,calc(100dvh-370px))] md:min-h-0 md:overflow-hidden">
               <div className="min-w-0 flex-1 overflow-y-auto px-3 py-3 md:px-[16px] md:py-[10px]">
                 {activeTab === "bookCard" ? (
                   <div className="grid h-full gap-y-[14px] md:grid-rows-[auto_auto_auto_1fr]">
@@ -494,11 +471,11 @@ export default function BookDetailPage({ book }: BookDetailPageProps) {
                   </div>
                 ) : null}
 
-                {activeTab === "backCover" ? <TextPanel title={t("content.backCover")} value={book.backCover} /> : null}
-                {activeTab === "extracts" ? <BlankContent title={t("content.extracts")} rows={3} /> : null}
-                {activeTab === "pressCritiques" ? <BlankContent title={t("content.pressCritiques")} rows={3} /> : null}
-                {activeTab === "availability" ? <BlankContent title={t("content.availability")} rows={2} /> : null}
-                {activeTab === "publishing" ? <BlankContent title={t("content.publishing")} rows={2} /> : null}
+                {activeTab === "backCover" ? <TextPanel title={t("content.backCover")} value={book.backCover} emptyMessage={emptyT("tab")} /> : null}
+                {activeTab === "extracts" ? <DetailEmptyTab message={emptyT("tab")} /> : null}
+                {activeTab === "pressCritiques" ? <DetailEmptyTab message={emptyT("tab")} /> : null}
+                {activeTab === "availability" ? <DetailEmptyTab message={emptyT("tab")} /> : null}
+                {activeTab === "publishing" ? <DetailEmptyTab message={emptyT("tab")} /> : null}
                 {activeTab === "statistics" ? <DetailStatisticsPanel statistics={book.statistics} labels={{ title: t("content.statistics"), year: statisticsT("year"), decade: statisticsT("decade"), month: statisticsT("month"), monthlyUnavailable: statisticsT("monthlyUnavailable"), noData: statisticsT("noData"), timeline: statisticsT("timeline"), primary: statisticsT("primary"), secondary: statisticsT("secondary"), languages: statisticsT("languages"), countries: statisticsT("countries"), roles: statisticsT("roles") }} /> : null}
               </div>
             </div>

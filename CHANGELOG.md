@@ -255,3 +255,8 @@
 - 11:31 - Ajout d’un filtre auteur textuel dans la liste administrative des livres, combinable aux filtres de langue, genre et thème sur l’ensemble de la pagination.
 - 11:45 - Refonte des pages de création administratives : tous les champs D1 des livres, personnes et organisations sont désormais structurés par familles d’informations dans des groupes de champs lisibles.
 - 11:51 - Uniformisation des fiches administratives d’édition avec les formulaires de création : sections par famille, séparateurs sobres et suppression des cartes imbriquées pour alléger la lecture.
+- 14:15 - Fiabilisation de `dev:local-db` : attente authentifiée du Worker local sur le port 8787 avant le démarrage de Next.js, supprimant les erreurs de connexion de la configuration Étoile au lancement.
+
+# 27-07-2026
+
+- 09:57 - Importation versionnée des métadonnées et entrées de tables des matières dans D1 local et production, avec migration relationnelle, import UTF-8 idempotent, RPC Worker et affichage des entrées réelles sur les fiches d’ouvrages collectifs.

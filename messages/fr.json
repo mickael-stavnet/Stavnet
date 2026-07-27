@@ -771,6 +771,9 @@
   "Statistics": {
     "year": "Année", "decade": "Décennie", "month": "Mois", "monthlyUnavailable": "Les données disponibles ne permettent pas une vue mensuelle.", "noData": "Données insuffisantes pour afficher ce graphique.", "timeline": "Évolution", "primary": "Originaux", "secondary": "Traductions", "languages": "Langues de publication", "countries": "Pays de publication", "roles": "Rôles et contributions"
   },
+  "EmptyStates": {
+    "tab": "Aucune information n’est disponible dans cet onglet."
+  },
   "Errors": {
     "personDetails": { "title": "Erreur du fichier personne", "message": "Une erreur est survenue pendant le chargement de la fiche personne. Relance la page pour réessayer.", "return": "Retour aux personnes", "retry": "Réessayer" },
     "bookDetails": { "title": "Erreur de la fiche livre", "message": "Une erreur est survenue pendant le chargement de la fiche livre. Relance la page pour réessayer.", "return": "Retour aux livres", "retry": "Réessayer" },

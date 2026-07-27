@@ -112,13 +112,13 @@ export default function BookAvailabilityPage({ book }: BookAvailabilityPageProps
   const availabilityRows = book.availability;
 
   return (
-    <BookDetailSecondaryLayout book={book} pageName={t("tabs.availability")} pagePath="/books/details/availability">
-      <div className="flex min-h-0 flex-1 flex-col">
+    <BookDetailSecondaryLayout book={book} pageName={t("tabs.availability")} pagePath="/books/details/availability" layout={availabilityRows.length > 0 ? "default" : "expandedCentered"}>
+      {availabilityRows.length === 0 ? null : <div className="flex min-h-0 flex-1 flex-col">
       <div className="mb-[6px] pl-[8px] text-[14px] font-bold leading-none text-black md:text-[16px]">
         <span className="text-[#ff1d1d]">{availabilityRows.length}</span> <span>{pageData.availabilitySectionTitle}</span>
       </div>
       <AvailabilityTable pageData={pageData} rows={availabilityRows} />
-      </div>
+      </div>}
     </BookDetailSecondaryLayout>
   );
 }

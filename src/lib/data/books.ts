@@ -376,6 +376,14 @@ export interface BookPressReviewRow {
   excerpt: string;
 }
 
+export interface BookTableOfContentsEntry {
+  position: number;
+  sourceEntryId: string;
+  sourceAuthorId: string;
+  title: string;
+  page: string;
+}
+
 export interface BookDetail {
   id: string;
   imageSrc: string;
@@ -985,6 +993,43 @@ async function getBookPressReviews(bookId: string): Promise<BookPressReviewRow[]
     }))
     .filter((row) => row.excerpt.length > 0);
 }
+
+export const getBookTableOfContentsEntries = cacheData(
+  ["book-table-of-contents-v1"],
+  async (bookId: string): Promise<BookTableOfContentsEntry[]> => {
+    const normalizedBookId = readId(bookId);
+
+    if (!normalizedBookId) {
+      return [];
+    }
+
+    const { data, error, status, statusText } = await d1Client.rpc<BookTableOfContentsEntry[]>("get_book_table_of_contents", {
+      p_book_id: normalizedBookId,
+    });
+
+    if (error) {
+      logError("BOOK_TABLE_OF_CONTENTS_ERROR", {
+        bookId: normalizedBookId,
+        status,
+        statusText,
+        error,
+      });
+      throw new Error(error.message);
+    }
+
+    return (Array.isArray(data) ? data : [])
+      .map((entry) => ({
+        position: readNumber(entry.position),
+        sourceEntryId: readText(entry.sourceEntryId),
+        sourceAuthorId: readText(entry.sourceAuthorId),
+        title: readText(entry.title),
+        page: readText(entry.page),
+      }))
+      .filter((entry) => entry.position > 0 && entry.title.length > 0)
+      .sort((left, right) => left.position - right.position);
+  },
+  { revalidate: 300, tags: ["books", "book-table-of-contents"] },
+);
 
 function mapBookListItem(row: BookRow): BookListItem {
   const code = parsePublicationCode(readText(row["Année. Pages. Dimensions"]));
