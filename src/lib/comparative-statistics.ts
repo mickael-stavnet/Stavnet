@@ -13,6 +13,11 @@ export interface ComparisonSelection {
 export interface ComparisonSearchParams {
   type?: string | string[];
   ids?: string | string[];
+  from?: string | string[];
+  to?: string | string[];
+  language?: string | string[];
+  country?: string | string[];
+  role?: string | string[];
 }
 
 const COMPARISON_TYPES: readonly ComparisonType[] = ["books", "persons", "organizations"];
@@ -23,6 +28,10 @@ function isComparisonType(value: string): value is ComparisonType {
 
 function readSearchParam(value: string | string[] | undefined): string {
   return Array.isArray(value) ? value[0] ?? "" : value ?? "";
+}
+
+export function readComparisonSearchParam(value: string | string[] | undefined): string {
+  return readSearchParam(value).trim();
 }
 
 function readCount(value: string): number {

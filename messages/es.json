@@ -763,7 +763,7 @@
       "validate": "Validar"
     },
     "comparison": {
-      "books": "Libros", "persons": "Personas", "organizations": "Organizaciones", "search": "Buscar", "selected": "Selección", "maximum": "Máximo 5 elementos", "dashboard": "Panel comparativo", "timeline": "Evolución", "table": "Comparación", "primary": "Valor principal", "secondary": "Valor secundario", "index": "Índice / 100", "noData": "No hay datos suficientes para mostrar este gráfico.", "languages": "Idiomas de publicación", "countries": "Países de publicación", "roles": "Roles y contribuciones", "previous": "Gráfico anterior", "next": "Gráfico siguiente", "carousel": "Navegación entre gráficos"
+      "books": "Libros", "persons": "Personas", "organizations": "Organizaciones", "entityType": "Tipo de datos", "all": "Todos", "search": "Buscar", "selected": "Selección", "maximum": "Máximo 5 elementos", "dashboard": "Panel comparativo", "timeline": "Evolución", "table": "Comparación", "primary": "Valor principal", "secondary": "Valor secundario", "index": "Índice / 100", "noData": "No hay datos suficientes para mostrar este gráfico.", "languages": "Idiomas de publicación", "countries": "Países de publicación", "roles": "Roles y contribuciones", "previous": "Gráfico anterior", "next": "Gráfico siguiente", "carousel": "Navegación entre gráficos", "filters": "Filtros de análisis", "fromYear": "Desde el año", "toYear": "Hasta el año", "language": "Idioma", "country": "País", "role": "Función", "apply": "Aplicar", "clear": "Restablecer", "records": "Registros analizados", "coverage": "Datos informados", "compareRecords": "Comparar fichas", "compareDescription": "Elige de una a cinco fichas del mismo tipo para compararlas."
     },
     "footer": {
       "back": "Volver",

@@ -763,7 +763,7 @@
       "validate": "Bestätigen"
     },
     "comparison": {
-      "books": "Bücher", "persons": "Personen", "organizations": "Organisationen", "search": "Suchen", "selected": "Auswahl", "maximum": "Maximal 5 Elemente", "dashboard": "Vergleichs-Dashboard", "timeline": "Entwicklung", "table": "Vergleich", "primary": "Hauptwert", "secondary": "Nebenwert", "index": "Index / 100", "noData": "Nicht genügend Daten für dieses Diagramm.", "languages": "Publikationssprachen", "countries": "Publikationsländer", "roles": "Rollen und Beiträge", "previous": "Vorheriges Diagramm", "next": "Nächstes Diagramm", "carousel": "Diagrammnavigation"
+      "books": "Bücher", "persons": "Personen", "organizations": "Organisationen", "entityType": "Datentyp", "all": "Alle", "search": "Suchen", "selected": "Auswahl", "maximum": "Maximal 5 Elemente", "dashboard": "Vergleichs-Dashboard", "timeline": "Entwicklung", "table": "Vergleich", "primary": "Hauptwert", "secondary": "Nebenwert", "index": "Index / 100", "noData": "Nicht genügend Daten für dieses Diagramm.", "languages": "Publikationssprachen", "countries": "Publikationsländer", "roles": "Rollen und Beiträge", "previous": "Vorheriges Diagramm", "next": "Nächstes Diagramm", "carousel": "Diagrammnavigation", "filters": "Analysefilter", "fromYear": "Ab Jahr", "toYear": "Bis Jahr", "language": "Sprache", "country": "Land", "role": "Rolle", "apply": "Anwenden", "clear": "Zurücksetzen", "records": "Analysierte Datensätze", "coverage": "Erfasste Daten", "compareRecords": "Datensätze vergleichen", "compareDescription": "Wählen Sie ein bis fünf Datensätze desselben Typs zum Vergleich aus."
     },
     "footer": {
       "back": "Zurück",

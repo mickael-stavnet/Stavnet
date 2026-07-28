@@ -803,7 +803,7 @@
       "validate": "Validate"
     },
     "comparison": {
-      "books": "Books", "persons": "People", "organizations": "Organizations", "search": "Search", "selected": "Selection", "maximum": "Maximum 5 items", "dashboard": "Comparison dashboard", "timeline": "Timeline", "table": "Comparison", "primary": "Primary value", "secondary": "Secondary value", "index": "Index / 100", "noData": "Not enough data to display this chart.", "languages": "Publication languages", "countries": "Publication countries", "roles": "Roles and contributions", "previous": "Previous chart", "next": "Next chart", "carousel": "Chart navigation"
+      "books": "Books", "persons": "People", "organizations": "Organizations", "entityType": "Data type", "all": "All", "search": "Search", "selected": "Selection", "maximum": "Maximum 5 items", "dashboard": "Comparison dashboard", "timeline": "Timeline", "table": "Comparison", "primary": "Primary value", "secondary": "Secondary value", "index": "Index / 100", "noData": "Not enough data to display this chart.", "languages": "Publication languages", "countries": "Publication countries", "roles": "Roles and contributions", "previous": "Previous chart", "next": "Next chart", "carousel": "Chart navigation", "filters": "Analysis filters", "fromYear": "From year", "toYear": "To year", "language": "Language", "country": "Country", "role": "Role", "apply": "Apply", "clear": "Reset", "records": "Records analysed", "coverage": "Recorded data", "compareRecords": "Compare records", "compareDescription": "Choose one to five records of the same type to compare them."
     },
     "footer": {
       "back": "Return",

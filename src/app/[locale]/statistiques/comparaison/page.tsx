@@ -39,7 +39,7 @@ export default async function ComparisonPage({ searchParams }: ComparisonPagePro
           <div className="border-b-2 border-[#002b9e] pb-3 text-center">
             <h1 className="text-[24px] font-bold leading-tight text-[#002b9e] md:text-[28px]">{t("comparison.dashboard")}</h1>
           </div>
-          <ComparativeStatisticsDashboard items={items} labels={{ dashboard: t("comparison.dashboard"), timeline: t("comparison.timeline"), table: t("comparison.table"), primary: t("comparison.primary"), secondary: t("comparison.secondary"), index: t("comparison.index"), noData: t("comparison.noData"), languages: t("comparison.languages"), countries: t("comparison.countries"), roles: t("comparison.roles"), previous: t("comparison.previous"), next: t("comparison.next"), carousel: t("comparison.carousel") }} />
+          <ComparativeStatisticsDashboard items={items} labels={{ dashboard: t("comparison.dashboard"), timeline: t("comparison.timeline"), table: t("comparison.table"), primary: t("comparison.primary"), secondary: t("comparison.secondary"), index: t("comparison.index"), noData: t("comparison.noData"), languages: t("comparison.languages"), countries: t("comparison.countries"), roles: t("comparison.roles"), previous: t("comparison.previous"), next: t("comparison.next"), carousel: t("comparison.carousel"), coverage: t("comparison.coverage") }} />
         </section>
         <StavnetFooter items={footerItems} className="md:left-[7.2vw] md:right-[7.2vw]" desktopMode="equal" />
       </div>

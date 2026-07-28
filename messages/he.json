@@ -763,7 +763,7 @@
       "validate": "אישור"
     },
     "comparison": {
-      "books": "ספרים", "persons": "אנשים", "organizations": "ארגונים", "search": "חיפוש", "selected": "בחירה", "maximum": "עד 5 פריטים", "dashboard": "לוח השוואה", "timeline": "ציר זמן", "table": "השוואה", "primary": "ערך ראשי", "secondary": "ערך משני", "index": "מדד / 100", "noData": "אין די נתונים להצגת תרשים זה.", "languages": "שפות פרסום", "countries": "מדינות פרסום", "roles": "תפקידים ותרומות", "previous": "התרשים הקודם", "next": "התרשים הבא", "carousel": "ניווט בין תרשימים"
+      "books": "ספרים", "persons": "אנשים", "organizations": "ארגונים", "entityType": "סוג נתונים", "all": "הכול", "search": "חיפוש", "selected": "בחירה", "maximum": "עד 5 פריטים", "dashboard": "לוח השוואה", "timeline": "ציר זמן", "table": "השוואה", "primary": "ערך ראשי", "secondary": "ערך משני", "index": "מדד / 100", "noData": "אין די נתונים להצגת תרשים זה.", "languages": "שפות פרסום", "countries": "מדינות פרסום", "roles": "תפקידים ותרומות", "previous": "התרשים הקודם", "next": "התרשים הבא", "carousel": "ניווט בין תרשימים", "filters": "מסנני ניתוח", "fromYear": "משנה", "toYear": "עד שנה", "language": "שפה", "country": "מדינה", "role": "תפקיד", "apply": "החל", "clear": "איפוס", "records": "רשומות שנותחו", "coverage": "נתונים מתועדים", "compareRecords": "השוואת רשומות", "compareDescription": "בחרו אחת עד חמש רשומות מאותו סוג כדי להשוות ביניהן."
     },
     "footer": {
       "back": "חזרה",

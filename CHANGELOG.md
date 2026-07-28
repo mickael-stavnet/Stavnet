@@ -274,3 +274,6 @@
 - 13:59 - Alignement de la grille des fiches administratives : le titre, les actions et les contenus de cartes utilisent désormais le même retrait horizontal interne, supprimant les décalages visuels entre en-tête, image et formulaire.
 - 14:02 - Affinement des états de navigation administratifs : item actif et survol en gris zinc, hauteur réduite, rayon plus discret et retrait latéral pour supprimer le pavé noir trop imposant de la sidebar.
 - 14:44 - Refonte du tableau de bord comparatif en carrousel manuel : les cinq analyses occupent désormais une scène unique grand format, avec flèches de navigation accessibles, indicateur de position et libellés traduits dans les six langues.
+- 15:36 - Création du mode Explorer des statistiques : agrégation D1 sur les notices bibliographiques, filtres par type, période, langue, pays et rôle, indicateurs de couverture des métadonnées et parcours de comparaison de fiches conservé comme option secondaire.
+- 16:06 - Recomposition visuelle de l’Explorer Statistiques sans défilement interne : filtres condensés sur une seule barre, carrousel adapté à l’espace visible et sélection de fiches déplacée dans une fenêtre de comparaison dédiée.
+- 16:32 - Amélioration des filtres de l’Explorer Statistiques : alignement uniforme du type de données, et sélecteurs préconfigurés depuis D1 pour les langues, pays et rôles.

@@ -232,6 +232,80 @@ async function rpc(db: D1Database, name: string, args: Record<string, unknown>):
   if (name === "get_books_totals") {
     return { cardsFound: await stat(db, "books_valid"), databaseContains: await stat(db, "books_total") };
   }
+  if (name === "get_statistics_explorer") {
+    const entityType = ["books", "persons", "organizations"].includes(String(args.p_entity_type)) ? String(args.p_entity_type) : "books";
+    const fromYear = Math.max(0, Number(args.p_year_from) || 0);
+    const toYear = Math.max(0, Number(args.p_year_to) || 0);
+    const language = normalize(String(args.p_language ?? ""));
+    const country = normalize(String(args.p_country ?? ""));
+    const role = normalize(String(args.p_role ?? ""));
+    const clauses = ["item.is_valid = 1"];
+    const values: unknown[] = [];
+
+    if (entityType === "persons") clauses.push("EXISTS (SELECT 1 FROM book_facets AS entity_facet WHERE entity_facet.book_id = item.book_id AND entity_facet.facet = 'authorName')");
+    if (entityType === "organizations") clauses.push("EXISTS (SELECT 1 FROM book_facets AS entity_facet WHERE entity_facet.book_id = item.book_id AND entity_facet.facet = 'publisherName')");
+    if (fromYear > 0) { clauses.push("item.sort_year >= ?"); values.push(fromYear); }
+    if (toYear > 0) { clauses.push("item.sort_year <= ?"); values.push(toYear); }
+    if (language) { clauses.push("EXISTS (SELECT 1 FROM book_facets AS language_facet WHERE language_facet.book_id = item.book_id AND language_facet.facet = 'translationLanguage' AND language_facet.value = ?)"); values.push(language); }
+    if (country) { clauses.push("EXISTS (SELECT 1 FROM book_facets AS country_facet WHERE country_facet.book_id = item.book_id AND country_facet.facet = 'publisherCountry' AND country_facet.value = ?)"); values.push(country); }
+    if (role) { clauses.push("EXISTS (SELECT 1 FROM book_facets AS role_facet WHERE role_facet.book_id = item.book_id AND role_facet.facet = 'authorType' AND role_facet.value = ?)"); values.push(role); }
+
+    const rows = await db.prepare(`SELECT item.book_id, item.sort_year, item.publication_year, book.payload FROM book_list_items AS item JOIN books AS book ON book.id = item.book_id WHERE ${clauses.join(" AND ")} ORDER BY item.sort_year, item.book_id`).bind(...values).all<{ book_id: number; sort_year: number | null; publication_year: string; payload: string }>();
+    const timeline = new Map<number, { primary: number; secondary: number }>();
+    const languages = new Map<string, number>();
+    const countries = new Map<string, number>();
+    const roles = new Map<string, number>();
+    let primaryCount = 0;
+    let secondaryCount = 0;
+    let timelineCoverage = 0;
+    let languagesCoverage = 0;
+    let countriesCoverage = 0;
+    let rolesCoverage = 0;
+
+    for (const row of rows.results) {
+      const payload = parsePayload(row.payload);
+      const code = normalize(text(payload, "CodePublication"));
+      const isPrimary = code !== "t" && code !== "traduction";
+      if (isPrimary) primaryCount += 1;
+      else secondaryCount += 1;
+      const year = Number(row.sort_year) || Number(text(payload, "Année"));
+      if (Number.isSafeInteger(year) && year > 0) {
+        const point = timeline.get(year) ?? { primary: 0, secondary: 0 };
+        if (isPrimary) point.primary += 1;
+        else point.secondary += 1;
+        timeline.set(year, point);
+        timelineCoverage += 1;
+      }
+      const publicationLanguage = text(payload, "Langue");
+      if (publicationLanguage) {
+        languages.set(publicationLanguage, (languages.get(publicationLanguage) ?? 0) + 1);
+        languagesCoverage += 1;
+      }
+      const publicationCountries = [text(payload, "Éditeur. 1. Pays", "Pays. Éditeur"), text(payload, "Éditeur. 2. Pays")].filter(Boolean);
+      if (publicationCountries.length > 0) countriesCoverage += 1;
+      for (const value of new Set(publicationCountries)) countries.set(value, (countries.get(value) ?? 0) + 1);
+      const contributorRoles = [1, 2, 3].map((position) => text(payload, `Auteur. ${position}. Type`)).filter(Boolean);
+      if (contributorRoles.length > 0) rolesCoverage += 1;
+      for (const value of new Set(contributorRoles)) roles.set(value, (roles.get(value) ?? 0) + 1);
+    }
+
+    const entries = (source: Map<string, number>) => [...source.entries()].map(([label, value]) => ({ label, value }));
+    const distribution = (source: Map<string, number>) => entries(source).sort((left, right) => right.value - left.value || left.label.localeCompare(right.label)).slice(0, 8);
+    const filterOptions = (source: Map<string, number>) => entries(source).sort((left, right) => left.label.localeCompare(right.label)).map((entry) => entry.label);
+
+    return {
+      entityType,
+      totalRecords: rows.results.length,
+      primaryCount,
+      secondaryCount,
+      timeline: [...timeline.entries()].sort(([left], [right]) => left - right).map(([year, value]) => ({ period: String(year), ...value })),
+      languages: distribution(languages),
+      countries: distribution(countries),
+      roles: distribution(roles),
+      filterOptions: { languages: filterOptions(languages), countries: filterOptions(countries), roles: filterOptions(roles) },
+      coverage: { timeline: timelineCoverage, languages: languagesCoverage, countries: countriesCoverage, roles: rolesCoverage },
+    };
+  }
   if (name === "get_book_ids_by_exact_title") {
     const title = String(args.p_title ?? "").trim();
     if (!title) return [];
