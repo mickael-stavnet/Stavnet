@@ -492,13 +492,13 @@ function AdminShell({ onLogout }: { onLogout: () => void }) {
   return (
     <TooltipProvider>
       <SidebarProvider>
-        <Sidebar collapsible="icon" className="[--sidebar-width:18rem]">
+        <Sidebar collapsible="icon" className="[--sidebar-width:18rem] border-r border-zinc-200">
           <SidebarHeader>
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton size="lg">
-                  <Shield className="size-4" />
-                  <span>STAVNET Admin</span>
+                  <span className="flex size-8 items-center justify-center rounded-lg bg-zinc-900 text-white"><Shield className="size-4" /></span>
+                  <span className="font-semibold tracking-tight">STAVNET Admin</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>
@@ -568,13 +568,13 @@ function AdminShell({ onLogout }: { onLogout: () => void }) {
           </SidebarFooter>
         </Sidebar>
 
-        <SidebarInset className="min-w-0 overflow-x-hidden">
-          <header className="flex h-16 shrink-0 items-center gap-3 border-b px-6">
+        <SidebarInset className="min-w-0 overflow-x-hidden bg-zinc-50">
+          <header className="flex h-[4.5rem] shrink-0 items-center gap-3 border-b border-zinc-200 bg-white px-5 lg:px-8">
             <SidebarTrigger />
             <Separator orientation="vertical" className="h-4" />
             <div className="flex min-w-0 flex-1 items-center justify-between gap-4">
               <div className="flex min-w-0 items-center gap-2">
-                <ChevronsUpDown className="size-4 text-muted-foreground" />
+                <ChevronsUpDown className="size-4 text-zinc-400" />
                 <p className="truncate text-base font-semibold">Vitrine des auteurs</p>
               </div>
               <Button asChild variant="ghost">
@@ -586,7 +586,7 @@ function AdminShell({ onLogout }: { onLogout: () => void }) {
             </div>
           </header>
 
-          <main className="flex min-w-0 flex-1 flex-col gap-8 p-6 lg:p-10">
+          <main className="flex min-w-0 flex-1 flex-col gap-8 p-5 lg:p-8 xl:p-10">
             <div className="grid min-w-0 gap-5 md:grid-cols-2 xl:grid-cols-4">
               <Card className="min-w-0">
                 <CardHeader>

@@ -15,7 +15,7 @@
 - The first page to implement has not been selected yet.
 - Existing frontend code may be present, but the user considers current styling incorrect unless it matches the FileMaker reference.
 - For now, real data is not required in the frontend. Use fake/mock data until the user asks otherwise.
-- The real data exists in Supabase, but Supabase integration is not the current focus.
+- The project uses Cloudflare D1 as its only database. Supabase is not used and must not be introduced into plans, code, migrations, or data flows.
 - The current focus is page creation and linking between pages.
 - The `/[locale]/home` page is the FileMaker language/menu screen. It uses the STAVNET logo, a multilingual welcome panel, a language table, a books-table image, and a bottom icon navigation row.
 
@@ -52,7 +52,7 @@
 - TypeScript is used.
 - Tailwind CSS v4 is used.
 - `next-intl` is installed.
-- Supabase client is installed.
+- Database: Cloudflare D1 only.
 - The project has an `AGENTS.md` rule stating that this is not the usual Next.js and that relevant docs in `node_modules/next/dist/docs/` must be read before writing Next.js code.
 - `GEMINI.md` is a source of project rules and conventions.
 - To start the local development environment with the production D1 database, use `pnpm run dev:production-db`. It starts both the local Worker and Next.js; stop both with `Ctrl+C`.
@@ -66,6 +66,7 @@
 - Do not assume existing UI is correct.
 - Do not optimize for a modern-looking redesign unless the user explicitly changes direction.
 - Ask for the screenshot/reference before implementing a FileMaker screen.
+- Treat Cloudflare D1 as the sole database for this project; do not use or propose Supabase.
 
 ## Open Questions
 

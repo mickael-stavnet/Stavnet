@@ -49,6 +49,7 @@ vi.mock("next-intl", () => ({
       "tabs.statistics": "Statistiques",
       "side.authorCard": "Fiche auteur",
       "fields.person": "Personne : nom, prenom",
+      "fields.hebrewName": "Nom de l’auteur en hébreu",
       "fields.birth": "Date et lieu de naissance",
       "fields.death": "Date et lieu de décès",
       "fields.activity": "Activité professionnelle",
@@ -114,6 +115,13 @@ describe("PersonDetailPage", () => {
     render(<PersonDetailPage person={createPersonDetail()} />);
 
     expect(screen.queryByText("Date et lieu de décès")).not.toBeInTheDocument();
+  });
+
+  it("shows the Hebrew author name in the aligned identity column", () => {
+    render(<PersonDetailPage person={createPersonDetail({ hebrewName: "אהרן אפלפלד" })} />);
+
+    expect(screen.getByText("Nom de l’auteur en hébreu")).toBeInTheDocument();
+    expect(screen.getByText("אהרן אפלפלד")).toHaveAttribute("dir", "rtl");
   });
 
   it("shows the death label when the death information is present", () => {

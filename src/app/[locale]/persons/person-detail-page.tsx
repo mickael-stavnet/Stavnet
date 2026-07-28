@@ -293,10 +293,19 @@ export default function PersonDetailPage({ person }: PersonDetailPageProps) {
                   <div className="grid h-full grid-rows-[auto_auto_minmax(0,1fr)] gap-y-[14px] md:grid-rows-[auto_minmax(0,1fr)_auto] md:gap-y-[8px]">
                     <div className="grid gap-[10px] md:gap-[8px] lg:grid-cols-[2.1fr_0.98fr]">
                       <section className="border border-[#7aa8b7] bg-[#a7dcee]">
-                        <LabelCell label={t("fields.person")} className="md:py-[4px]" />
-                        <FilledBox value={person.name} className="border-x-0 border-b text-[16px] md:min-h-[36px] md:text-[17px]" />
-                        <div className="grid md:grid-cols-3">
-                          <div className="md:col-span-2">
+                        <div className="grid md:grid-cols-[1.6fr_1fr]">
+                          <div>
+                            <LabelCell label={t("fields.person")} className="md:py-[4px]" />
+                            <FilledBox value={person.name} className="border-x-0 border-b text-[16px] md:min-h-[36px] md:text-[17px]" />
+                          </div>
+                          <div>
+                            <LabelCell label={t("fields.hebrewName")} className="md:py-[4px]" />
+                            <FilledBox
+                              value={person.hebrewName ? <span dir="rtl" className="w-full text-right">{person.hebrewName}</span> : "\u00a0"}
+                              className="border-x-0 border-b text-[16px] md:min-h-[36px] md:text-[17px]"
+                            />
+                          </div>
+                          <div>
                             <LabelCell label={t("fields.birth")} className="md:py-[4px]" />
                             <FilledBox value={person.birthInfo} className="border-x-0 border-b md:min-h-[36px] md:border-b-0" />
                           </div>
@@ -304,8 +313,6 @@ export default function PersonDetailPage({ person }: PersonDetailPageProps) {
                             <LabelCell label={person.deathInfo.trim() ? t("fields.death") : ""} className="md:h-[22px] md:py-0" />
                             <FilledBox value={person.deathInfo.trim() ? person.deathInfo : "\u00a0"} className="md:min-h-[36px]" />
                           </div>
-                        </div>
-                        <div className="grid md:grid-cols-[1.6fr_1fr]">
                           <div>
                             <LabelCell label={t("fields.activity")} className="md:py-[4px]" />
                             <FilledBox value={person.professionalActivity} className="border-x-0 border-b-0 md:min-h-[36px] md:text-[15px]" />

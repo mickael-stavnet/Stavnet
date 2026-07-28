@@ -263,3 +263,13 @@
 - 12:13 - Remplacement de la page Statistiques par un parcours de comparaison livres, personnes ou organismes : sélection de une à cinq fiches, URL partageable, modes de lecture absolu/pourcentage/indice, évolution temporelle et répartitions langues, pays et rôles dans les six langues.
 - 12:25 - Séparation du parcours Statistiques en deux écrans : la sélection reste sur `/[locale]/statistics` et la validation ouvre désormais `/[locale]/statistiques/comparaison` avec les paramètres de comparaison conservés dans l’URL.
 - 12:55 - Enrichissement des comparaisons statistiques avec les publications liées, langues d’auteur et de contributeur, pays d’édition et rôles associés ; la série temporelle compte désormais les originaux comme les traductions.
+
+# 28-07-2026
+
+- 10:28 - Ajout du champ facultatif « Nom Auteur Hébreu » aux fiches personnes : migration Cloudflare D1 non appliquée, édition dans l’administration, lecture par le Worker et nouvelle colonne RTL alignée sur la fiche publique.
+- 10:51 - Allègement des formulaires administratifs des livres : retrait visuel des champs importés non pertinents, regroupement du titre original et de sa transcription, renommage de la section « Ouvrage » et documentation complète de la table D1 `people`.
+- 11:59 - Réorganisation détaillée de la fiche livre administrateur : ordre éditorial des sous-titres, éditeurs, prix, auteurs, contributeurs et bibliothèques, champs inutiles masqués sans suppression D1, intitulés simplifiés et ajout du champ « Éditeur 2 collection ».
+- 12:15 - Masquage du champ de saisie « Résumé » dans les formulaires administratifs de livres, tout en conservant les données existantes dans D1 et l’affichage public associé.
+- 13:54 - Refonte visuelle complète de l’administration en thème clair monochrome inspiré de shadcn/ui : typographie lisible, fond zinc, navigation structurée avec icônes, surfaces et tableaux hiérarchisés, formulaires plus nets et rayons cohérents sur le dashboard, les listes, les fiches, la recherche, la corbeille et l’historique.
+- 13:59 - Alignement de la grille des fiches administratives : le titre, les actions et les contenus de cartes utilisent désormais le même retrait horizontal interne, supprimant les décalages visuels entre en-tête, image et formulaire.
+- 14:02 - Affinement des états de navigation administratifs : item actif et survol en gris zinc, hauteur réduite, rayon plus discret et retrait latéral pour supprimer le pavé noir trop imposant de la sidebar.

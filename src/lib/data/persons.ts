@@ -33,6 +33,7 @@ type PersonBibliographyRowRpc = {
 type PersonDetailRpc = {
   name?: unknown;
   alternateName?: unknown;
+  hebrewName?: unknown;
   imageSrc?: unknown;
   type?: unknown;
   language?: unknown;
@@ -85,6 +86,7 @@ export interface PersonBibliographyRow {
 export interface PersonDetail {
   name: string;
   alternateName: string;
+  hebrewName: string;
   imageSrc: string;
   type: string;
   language: string;
@@ -216,6 +218,7 @@ function mapPersonDetail(detail: PersonDetailRpc): PersonDetail | null {
   return {
     name,
     alternateName,
+    hebrewName: readText(detail.hebrewName),
     imageSrc: readText(detail.imageSrc) || resolvePersonImageSrc(name, alternateName),
     type: readText(detail.type),
     language: readText(detail.language),

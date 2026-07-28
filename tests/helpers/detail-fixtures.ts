@@ -6,6 +6,7 @@ export function createPersonDetail(overrides: Partial<PersonDetail> = {}): Perso
   return {
     name: "Ada Aharoni",
     alternateName: "Aharoni Ada",
+    hebrewName: "",
     birthInfo: "1933",
     deathInfo: "",
     professionalActivity: "Écrivain",
