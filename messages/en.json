@@ -386,6 +386,7 @@
     },
     "fields": {
       "person": "Person: last name, first name",
+      "hebrewName": "Author name in Hebrew",
       "birth": "Date and place of birth",
       "death": "Date and place of death",
       "activity": "Professional activity",

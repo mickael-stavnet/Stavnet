@@ -90,6 +90,68 @@ import {
 import { TooltipProvider } from "@/components/ui/tooltip";
 
 const COLLECTIVE_BOOK_FIELD = "Ouvrage collectif";
+const BOOK_ORIGINAL_TITLE_FIELD = "Titre. Original";
+const BOOK_TRANSCRIPTION_TITLE_FIELD = "Titre. Transcription";
+const HIDDEN_BOOK_FIELD_KEYS = new Set([
+  "autreorganisme01 datemaj",
+  "autreorganisme01 typelibelle",
+  "codeedition",
+  "codemanuscrit",
+  "codepaysparution1",
+  "editeur 1 ville",
+  "nombrepages",
+  "resume",
+]);
+const BOOK_ADDITIONAL_FIELDS = ["Éditeur. 2. Collection"];
+const BOOK_FIELD_ORDER = new Map<string, number>([
+  ["titre", 1],
+  ["sous titre", 2],
+  ["sous titre anglais", 3],
+  ["sous titre original", 4],
+  ["sous titre transcription", 5],
+  ["editeur 1 nom", 101],
+  ["editeur 1 collection", 102],
+  ["editeur 1 isbn", 103],
+  ["editeur 1 pays", 104],
+  ["editeur 2 nom", 105],
+  ["editeur 2 collection", 106],
+  ["isbn", 107],
+  ["editeur 2 pays", 108],
+  ["prix $", 109],
+  ["prix €", 110],
+  ["prix public", 111],
+  ["reliure", 112],
+  ["auteur 1 nom", 201],
+  ["auteur 1 prenom", 202],
+  ["auteur 1 langue", 203],
+  ["auteur 1 type", 204],
+  ["auteur 2 nom", 205],
+  ["auteur 2 prenom", 206],
+  ["auteur 2 langue", 207],
+  ["auteur 2 type", 208],
+  ["auteur 3 nom", 209],
+  ["auteur 3 prenom", 210],
+  ["auteur 3 langue", 211],
+  ["auteur 3 type", 212],
+  ["contrib 1 nom", 301],
+  ["contrib 1 prenom", 302],
+  ["contrib 1 genre/langue", 303],
+  ["contrib 2 nom", 304],
+  ["contrib 2 prenom", 305],
+  ["contrib 2 genre/langue", 306],
+  ["contrib 3 nom", 307],
+  ["contrib 3 prenom", 308],
+  ["contrib 3 genre/langue", 309],
+  ["biblio 1 nom", 401],
+  ["biblio 1 ville", 402],
+  ["biblio 1 cote", 403],
+  ["biblio 2 nom", 404],
+  ["biblio 2 ville", 405],
+  ["biblio 2 cote", 406],
+  ["biblio 3 nom", 407],
+  ["biblio 3 ville", 408],
+  ["biblio 3 cote", 409],
+]);
 
 const labels: Record<AdminEntityType, string> = {
   books: "Livres",
@@ -219,6 +281,71 @@ function readable(key: string): string {
   return key.replaceAll(".", " · ").replaceAll("_", " ");
 }
 
+function fieldLabel(field: string): string {
+  const value = normalizedFieldKey(field);
+  if (value === "isbn") return "Éditeur 2 ISBN";
+  const authorLanguage = value.match(/^auteur ([1-9]) langue$/);
+  if (authorLanguage) return `Auteur ${authorLanguage[1]} langue d’écriture`;
+  const contributorGenre = value.match(/^contrib ([1-9]) genre\/langue$/);
+  if (contributorGenre) return `Contributeur ${contributorGenre[1]} genre`;
+  return readable(field);
+}
+
+function normalizedFieldKey(key: string): string {
+  return key
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replaceAll(".", " ")
+    .replaceAll("_", " ")
+    .replaceAll("-", " ")
+    .toLocaleLowerCase()
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function isHiddenBookAdminField(field: string): boolean {
+  const value = normalizedFieldKey(field);
+  if (
+    field === BOOK_ORIGINAL_TITLE_FIELD ||
+    field === BOOK_TRANSCRIPTION_TITLE_FIELD
+  )
+    return true;
+  if (/^contrib (?:[4-9]|10)\b/.test(value)) return true;
+  if (/^contrib [1-3] langue traduite$/.test(value)) return true;
+  if (/^biblio 4\b/.test(value)) return true;
+  if (/^biblio [1-3] (source|type)$/.test(value)) return true;
+  return HIDDEN_BOOK_FIELD_KEYS.has(value);
+}
+
+function shouldDisplayAdminPayloadField(
+  entityType: AdminEntityType,
+  field: string,
+): boolean {
+  return (
+    entityType !== "books" ||
+    (field !== COLLECTIVE_BOOK_FIELD && !isHiddenBookAdminField(field))
+  );
+}
+
+function compareAdminFields(
+  entityType: AdminEntityType,
+  [left]: [string, unknown],
+  [right]: [string, unknown],
+): number {
+  const sectionOrder = fieldSection(entityType, left).localeCompare(
+    fieldSection(entityType, right),
+    "fr",
+  );
+  if (sectionOrder !== 0) return sectionOrder;
+  if (entityType === "books") {
+    const leftOrder = BOOK_FIELD_ORDER.get(normalizedFieldKey(left));
+    const rightOrder = BOOK_FIELD_ORDER.get(normalizedFieldKey(right));
+    if (leftOrder !== undefined || rightOrder !== undefined)
+      return (leftOrder ?? Number.MAX_SAFE_INTEGER) - (rightOrder ?? Number.MAX_SAFE_INTEGER);
+  }
+  return fieldLabel(left).localeCompare(fieldLabel(right), "fr");
+}
+
 function fieldSection(entityType: AdminEntityType, field: string): string {
   const value = field
     .normalize("NFD")
@@ -227,7 +354,7 @@ function fieldSection(entityType: AdminEntityType, field: string): string {
   if (entityType === "books") {
     if (/(resume|sommaire|quatrieme|contenu|description)/.test(value))
       return "Contenu";
-    if (/(biblio|cote|source)/.test(value)) return "Bibliographies et références";
+    if (/(biblio|cote|source)/.test(value)) return "Bibliothèques";
     if (/(organisme)/.test(value)) return "Organisations liées";
     if (/(code|poids)/.test(value)) return "Références techniques";
     if (
@@ -241,9 +368,9 @@ function fieldSection(entityType: AdminEntityType, field: string): string {
         value,
       )
     )
-      return "Auteurs et contributeurs";
+      return "Auteurs";
     if (/(titre|langue|annee|genre|categorie|theme|rubrique)/.test(value))
-      return "Identification";
+      return "Ouvrage";
   }
   if (entityType === "persons") {
     if (
@@ -267,11 +394,11 @@ function fieldSection(entityType: AdminEntityType, field: string): string {
 
 const creationSectionOrder: Record<AdminEntityType, string[]> = {
   books: [
-    "Identification",
+    "Ouvrage",
     "Publication",
-    "Auteurs et contributeurs",
+    "Auteurs",
     "Contenu",
-    "Bibliographies et références",
+    "Bibliothèques",
     "Organisations liées",
     "Références techniques",
     "Autres informations importées",
@@ -303,10 +430,20 @@ function AdminPayloadField({
   onChange: (value: string) => void;
 }) {
   const multiline = isLongFormField(field, value);
+  const contributorGenre = /^contrib [1-3] genre\/langue$/.test(
+    normalizedFieldKey(field),
+  );
+  const bibliographyCote = /^biblio [1-3] cote$/.test(
+    normalizedFieldKey(field),
+  );
   return (
-    <div className={multiline ? "md:col-span-2" : ""}>
+    <div
+      className={
+        multiline || contributorGenre || bibliographyCote ? "md:col-span-2" : ""
+      }
+    >
       <Label className="mb-2 block text-sm" htmlFor={field}>
-        {readable(field)}
+        {fieldLabel(field)}
       </Label>
       <InputGroup className={multiline ? "min-h-28" : "min-h-11"}>
         {multiline ? (
@@ -318,6 +455,7 @@ function AdminPayloadField({
         ) : (
           <InputGroupInput
             id={field}
+            dir={field === "Nom Auteur Hébreu" ? "rtl" : undefined}
             value={String(value ?? "")}
             onChange={(event) => onChange(event.target.value)}
           />
@@ -344,13 +482,13 @@ function AdminSidebar({
     { href: "/admin/logs", label: "Historique", icon: History },
   ];
   return (
-    <Sidebar collapsible="icon" className="[--sidebar-width:18rem]">
+    <Sidebar collapsible="icon" className="[--sidebar-width:18rem] border-r border-zinc-200">
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg">
-              <Shield className="size-4" />
-              <span>STAVNET Admin</span>
+              <span className="flex size-8 items-center justify-center rounded-lg bg-zinc-900 text-white"><Shield className="size-4" /></span>
+              <span className="font-semibold tracking-tight">STAVNET Admin</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
@@ -374,7 +512,7 @@ function AdminSidebar({
                       tooltip={item.label}
                     >
                       <Link href={item.href}>
-                        <Icon className="size-4" />
+                        <Icon className="size-[18px]" strokeWidth={1.8} />
                         <span>{item.label}</span>
                       </Link>
                     </SidebarMenuButton>
@@ -390,14 +528,14 @@ function AdminSidebar({
           <SidebarMenuItem>
             <SidebarMenuButton asChild tooltip="Page d’accueil">
               <Link href="/en">
-                <Home className="size-4" />
+                <Home className="size-[18px]" strokeWidth={1.8} />
                 <span>Page d’accueil</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
             <SidebarMenuButton onClick={onLogout} tooltip="Se déconnecter">
-              <LockKeyhole className="size-4" />
+              <LockKeyhole className="size-[18px]" strokeWidth={1.8} />
               <span>Se déconnecter</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -441,14 +579,14 @@ function Frame({
     <TooltipProvider>
       <SidebarProvider>
         <AdminSidebar pathname={pathname} onLogout={() => void logout()} />
-        <SidebarInset className="min-w-0 overflow-x-hidden">
-          <header className="flex h-16 shrink-0 items-center gap-3 border-b px-6">
+        <SidebarInset className="min-w-0 overflow-x-hidden bg-zinc-50">
+          <header className="flex h-[4.5rem] shrink-0 items-center gap-3 border-b border-zinc-200 bg-white px-5 lg:px-8">
             <SidebarTrigger />
             <Separator orientation="vertical" className="h-4" />
             <div className="flex min-w-0 flex-1 items-center justify-between gap-4">
               <div className="flex min-w-0 items-center gap-2">
-                <ChevronsUpDown className="size-4 text-muted-foreground" />
-                <p className="truncate font-semibold">{title}</p>
+                <ChevronsUpDown className="size-4 text-zinc-400" />
+                <p className="truncate text-sm font-semibold tracking-tight">{title}</p>
               </div>
               <Button asChild variant="ghost">
                 <Link href="/en">
@@ -458,7 +596,7 @@ function Frame({
               </Button>
             </div>
           </header>
-          <main className="flex min-w-0 flex-1 flex-col p-6 lg:p-10">
+          <main className="flex min-w-0 flex-1 flex-col p-5 lg:p-8 xl:p-10">
             {children}
           </main>
         </SidebarInset>
@@ -555,7 +693,7 @@ export function AdminEntityList({
   return (
     <Frame title={title}>
       <div className="space-y-8">
-        <div className="flex flex-wrap items-end justify-between gap-5">
+        <div className="flex flex-wrap items-end justify-between gap-5 px-5">
           <div className="space-y-2">
             <h1 className="text-3xl font-semibold tracking-tight">{title}</h1>
             <p className="text-base text-muted-foreground">
@@ -841,7 +979,7 @@ function RelationManager({
       <CardHeader>
         <CardTitle>
           {type === "persons"
-            ? "Auteurs et contributeurs"
+            ? "Auteurs"
             : "Organisations liées"}
         </CardTitle>
         <CardDescription>
@@ -997,11 +1135,13 @@ export function AdminEntityEditor({
         : "Organisme";
   const initialFields =
     entityType === "organizations"
-      ? ([
+          ? ([
           ["Organisme", ""],
           ["Type", ""],
         ] as [string, unknown][])
-      : ([[primary, ""]] as [string, unknown][]);
+      : entityType === "persons"
+        ? ([[primary, ""], ["Nom Auteur Hébreu", ""]] as [string, unknown][])
+        : ([[primary, ""]] as [string, unknown][]);
   useEffect(() => {
     if (!isNew)
       void api(`${entityType}/${id}`)
@@ -1055,26 +1195,27 @@ export function AdminEntityEditor({
         key !== "dataQuality" &&
         key !== "Image. URL" &&
         key !== COLLECTIVE_BOOK_FIELD &&
+        shouldDisplayAdminPayloadField(entityType, key) &&
         (typeof value !== "object" || value === null),
     );
-    if (!isNew)
-      return payloadFields.sort(
-        ([left], [right]) =>
-          fieldSection(entityType, left).localeCompare(
-            fieldSection(entityType, right),
-            "fr",
-          ) || readable(left).localeCompare(readable(right), "fr"),
+    if (!isNew) {
+      const values = new Map<string, unknown>(payloadFields);
+      if (entityType === "books")
+        BOOK_ADDITIONAL_FIELDS.forEach((field) =>
+          values.set(field, values.get(field) ?? ""),
+        );
+      return Array.from(values.entries()).sort((left, right) =>
+        compareAdminFields(entityType, left, right),
       );
+    }
     const values = new Map<string, unknown>(initialFields);
     schemaFields.forEach((field) => values.set(field, values.get(field) ?? ""));
+    if (entityType === "books")
+      BOOK_ADDITIONAL_FIELDS.forEach((field) => values.set(field, values.get(field) ?? ""));
     payloadFields.forEach(([field, value]) => values.set(field, value));
-    return Array.from(values.entries()).sort(
-      ([left], [right]) =>
-        fieldSection(entityType, left).localeCompare(
-          fieldSection(entityType, right),
-          "fr",
-        ) || readable(left).localeCompare(readable(right), "fr"),
-    );
+    return Array.from(values.entries())
+      .filter(([field]) => shouldDisplayAdminPayloadField(entityType, field))
+      .sort((left, right) => compareAdminFields(entityType, left, right));
   }, [entityType, initialFields, isNew, payload, schemaFields]);
   async function save(force = false) {
     setPending(true);
@@ -1193,7 +1334,7 @@ export function AdminEntityEditor({
     .filter(
       (group) =>
         group.fields.length > 0 ||
-        (entityType === "books" && group.section === "Identification"),
+        (entityType === "books" && group.section === "Ouvrage"),
     );
   return (
     <Frame
@@ -1204,7 +1345,7 @@ export function AdminEntityEditor({
       }
     >
       <div className="space-y-5">
-        <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex flex-wrap items-center justify-between gap-3 px-5">
           <div>
             <h1 className="text-2xl font-semibold">
               {isNew
@@ -1299,7 +1440,7 @@ export function AdminEntityEditor({
                   <h2 className="text-base font-semibold">{group.section}</h2>
                   <div className="mt-4 grid gap-x-5 gap-y-4 md:grid-cols-2">
                     {entityType === "books" &&
-                      group.section === "Identification" && (
+                      group.section === "Ouvrage" && (
                         <div className="space-y-2 md:col-span-2">
                           <Label className="block text-sm" htmlFor="ouvrage-collectif">
                             Ouvrage collectif
@@ -1333,6 +1474,34 @@ export function AdminEntityEditor({
                           <p className="text-sm text-muted-foreground">
                             Indique si le livre réunit des textes de plusieurs auteurs.
                           </p>
+                        </div>
+                      )}
+                    {entityType === "books" &&
+                      group.section === "Ouvrage" && (
+                        <div className="md:col-span-2">
+                          <Label
+                            className="mb-2 block text-sm"
+                            htmlFor="titre-original-en-transcription"
+                          >
+                            Titre original en transcription
+                          </Label>
+                          <InputGroup className="min-h-11">
+                            <InputGroupInput
+                              id="titre-original-en-transcription"
+                              value={String(
+                                payload[BOOK_TRANSCRIPTION_TITLE_FIELD] ||
+                                  payload[BOOK_ORIGINAL_TITLE_FIELD] ||
+                                  "",
+                              )}
+                              onChange={(event) =>
+                                setPayload((current) => ({
+                                  ...current,
+                                  [BOOK_ORIGINAL_TITLE_FIELD]: event.target.value,
+                                  [BOOK_TRANSCRIPTION_TITLE_FIELD]: event.target.value,
+                                }))
+                              }
+                            />
+                          </InputGroup>
                         </div>
                       )}
                     {group.fields.map(([field, value]) => (
@@ -1661,7 +1830,7 @@ export function AdminSearchPage() {
   return (
     <Frame title="Recherche globale">
       <div className="space-y-5">
-        <div>
+        <div className="px-5">
           <h1 className="text-2xl font-semibold">Recherche globale</h1>
           <p className="text-sm text-muted-foreground">
             Livres, personnes et organisations.

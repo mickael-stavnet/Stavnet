@@ -346,6 +346,7 @@
     },
     "fields": {
       "person": "Personne : nom, prenom",
+      "hebrewName": "Nom de l’auteur en hébreu",
       "birth": "Date et lieu de naissance",
       "death": "Date et lieu de décès",
       "activity": "Activité professionnelle",
