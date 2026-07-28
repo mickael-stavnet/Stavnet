@@ -763,7 +763,7 @@
       "validate": "Bestätigen"
     },
     "comparison": {
-      "books": "Bücher", "persons": "Personen", "organizations": "Organisationen", "search": "Suchen", "selected": "Auswahl", "maximum": "Maximal 5 Elemente", "dashboard": "Vergleichs-Dashboard", "timeline": "Entwicklung", "table": "Vergleich", "primary": "Hauptwert", "secondary": "Nebenwert", "index": "Index / 100", "noData": "Nicht genügend Daten für dieses Diagramm.", "languages": "Publikationssprachen", "countries": "Publikationsländer", "roles": "Rollen und Beiträge"
+      "books": "Bücher", "persons": "Personen", "organizations": "Organisationen", "search": "Suchen", "selected": "Auswahl", "maximum": "Maximal 5 Elemente", "dashboard": "Vergleichs-Dashboard", "timeline": "Entwicklung", "table": "Vergleich", "primary": "Hauptwert", "secondary": "Nebenwert", "index": "Index / 100", "noData": "Nicht genügend Daten für dieses Diagramm.", "languages": "Publikationssprachen", "countries": "Publikationsländer", "roles": "Rollen und Beiträge", "previous": "Vorheriges Diagramm", "next": "Nächstes Diagramm", "carousel": "Diagrammnavigation"
     },
     "footer": {
       "back": "Zurück",
