@@ -17,6 +17,7 @@ export interface DetailStatistics {
   primaryDistribution: StatisticsDistributionItem[];
   secondaryDistribution: StatisticsDistributionItem[];
   tertiaryDistribution: StatisticsDistributionItem[];
+  quaternaryDistribution?: StatisticsDistributionItem[];
 }
 
 interface StatisticsSourceRow {

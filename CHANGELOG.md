@@ -285,3 +285,4 @@
 - 11:21 - Correction du nom « Josh Yehoshua Shachar » dans la sélection Étoile D1 locale et production, avec maintien de son portrait dans l’interface.
 - 11:30 - Correction du clic sur le portrait de Josh Yehoshua Shachar dans l’Étoile : accès au parcours de ses ouvrages liés.
 - 11:52 - Création des pages 404 et d’erreur globales STAVNET, avec actions de navigation, relance et traductions dans les six langues.
+- 12:15 - Enrichissement majeur de l’Explorer Statistiques : synthèse de période et tendances, métriques adaptées aux livres, personnes et organismes, répartition visuelle des volumes, tops éditoriaux et filtres croisés fondés sur les valeurs réellement compatibles.
