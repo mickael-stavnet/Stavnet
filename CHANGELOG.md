@@ -277,3 +277,11 @@
 - 15:36 - Création du mode Explorer des statistiques : agrégation D1 sur les notices bibliographiques, filtres par type, période, langue, pays et rôle, indicateurs de couverture des métadonnées et parcours de comparaison de fiches conservé comme option secondaire.
 - 16:06 - Recomposition visuelle de l’Explorer Statistiques sans défilement interne : filtres condensés sur une seule barre, carrousel adapté à l’espace visible et sélection de fiches déplacée dans une fenêtre de comparaison dédiée.
 - 16:32 - Amélioration des filtres de l’Explorer Statistiques : alignement uniforme du type de données, et sélecteurs préconfigurés depuis D1 pour les langues, pays et rôles.
+
+# 29-07-2026
+
+- 10:04 - Refonte complète des tables de matières : remplacement du modèle D1 historique par des contributions illimitées avec auteur et traducteur facultatifs, import des nouvelles données en local et production, affichage public enrichi et saisie conditionnelle dans l’administration pour les ouvrages collectifs.
+- 10:15 - Amélioration de la table des matières publique : composition élargie, entrées plus lisibles et accès direct aux fiches des auteurs et traducteurs depuis chaque contribution.
+- 11:21 - Correction du nom « Josh Yehoshua Shachar » dans la sélection Étoile D1 locale et production, avec maintien de son portrait dans l’interface.
+- 11:30 - Correction du clic sur le portrait de Josh Yehoshua Shachar dans l’Étoile : accès au parcours de ses ouvrages liés.
+- 11:52 - Création des pages 404 et d’erreur globales STAVNET, avec actions de navigation, relance et traductions dans les six langues.

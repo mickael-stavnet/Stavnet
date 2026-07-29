@@ -215,7 +215,9 @@
     },
     "tableOfContents": {
       "collectiveOnly": "תצוגה זו מיועדת ליצירות קולקטיביות בלבד.",
-      "empty": "טרם הוזן פריט לתוכן העניינים."
+      "empty": "טרם הוזן פריט לתוכן העניינים.",
+      "translatorPrefix": "תורגם על ידי",
+      "personLink": "הצגת הכרטיס של {name}"
     },
     "tables": {
       "authors": "מחברים, מחברים שותפים, עורכים: שם פרטי, שם משפחה",
@@ -778,10 +780,17 @@
   "EmptyStates": {
     "tab": "אין מידע זמין בלשונית זו."
   },
+  "TableOfContentsEditor": {
+    "title": "תוכן העניינים", "description": "הוסיפו כל סיפור קצר או פריט עריכתי. פרטי מחבר ותרגום הם אופציונליים.", "entry": "רשומה {number}", "remove": "הסרה", "addEntry": "הוספת רשומה", "author": "מחבר", "translator": "מתרגם", "lastName": "שם משפחה", "firstName": "שם פרטי", "writingLanguage": "שפת כתיבה", "language": "שפה", "authorLastName": "שם משפחת המחבר {number}", "authorFirstName": "שם פרטי של המחבר {number}", "authorWritingLanguage": "שפת כתיבה {number}", "translatorLastName": "שם משפחת המתרגם {number}", "translatorFirstName": "שם פרטי של המתרגם {number}", "translatorLanguage": "שפת המתרגם {number}",
+    "fields": { "title": "כותרת", "startPage": "עמוד התחלה", "type": "סוג" },
+    "types": { "story": "סיפור קצר", "foreword": "פתח דבר", "introduction": "מבוא", "bibliography": "ביבליוגרפיה", "other": "אחר" }
+  },
   "Errors": {
     "personDetails": { "title": "שגיאה בקובץ האדם", "message": "אירעה שגיאה בעת טעינת כרטיס האדם. רענן את העמוד כדי לנסות שוב.", "return": "חזרה לאנשים", "retry": "נסה שוב" },
     "bookDetails": { "title": "שגיאה בכרטיס הספר", "message": "אירעה שגיאה בעת טעינת כרטיס הספר. רענן את העמוד כדי לנסות שוב.", "return": "חזרה לספרים", "retry": "נסה שוב" },
     "organizationDetails": { "title": "שגיאה בכרטיס הארגון", "message": "אירעה שגיאה בעת טעינת כרטיס הארגון. רענן את העמוד כדי לנסות שוב.", "return": "חזרה לארגונים", "retry": "נסה שוב" },
-    "relatedBooks": { "title": "שגיאה בספרים קשורים", "message": "אירעה שגיאה בעת טעינת ספרים קשורים. רענן את העמוד כדי לנסות שוב.", "return": "חזרה לספרים", "retry": "נסה שוב" }
+    "relatedBooks": { "title": "שגיאה בספרים קשורים", "message": "אירעה שגיאה בעת טעינת ספרים קשורים. רענן את העמוד כדי לנסות שוב.", "return": "חזרה לספרים", "retry": "נסה שוב" },
+    "notFound": { "title": "העמוד לא נמצא", "message": "הכתובת המבוקשת אינה תואמת לעמוד במאגר STAVNET.", "home": "דף הבית", "menu": "תפריט" },
+    "application": { "title": "אירעה שגיאה", "message": "לא ניתן היה לטעון את העמוד כראוי. אפשר לנסות שוב או לחזור לדף הבית.", "return": "חזרה לדף הבית", "retry": "נסה שוב" }
   }
 }

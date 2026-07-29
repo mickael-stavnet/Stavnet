@@ -215,7 +215,9 @@
     },
     "tableOfContents": {
       "collectiveOnly": "Cette vue est réservée aux ouvrages collectifs.",
-      "empty": "Aucune entrée de table des matières n’est encore renseignée."
+      "empty": "Aucune entrée de table des matières n’est encore renseignée.",
+      "translatorPrefix": "Traduit par",
+      "personLink": "Voir la fiche de {name}"
     },
     "tables": {
       "authors": "Auteurs, co-auteurs, éditeurs : prénom, nom",
@@ -778,10 +780,17 @@
   "EmptyStates": {
     "tab": "Aucune information n’est disponible dans cet onglet."
   },
+  "TableOfContentsEditor": {
+    "title": "Table des matières", "description": "Ajoutez chaque nouvelle ou élément éditorial. Les informations d’auteur et de traduction sont facultatives.", "entry": "Entrée {number}", "remove": "Retirer", "addEntry": "Ajouter une entrée", "author": "Auteur", "translator": "Traducteur", "lastName": "Nom", "firstName": "Prénom", "writingLanguage": "Langue d’écriture", "language": "Langue", "authorLastName": "Nom de l’auteur {number}", "authorFirstName": "Prénom de l’auteur {number}", "authorWritingLanguage": "Langue d’écriture {number}", "translatorLastName": "Nom du traducteur {number}", "translatorFirstName": "Prénom du traducteur {number}", "translatorLanguage": "Langue du traducteur {number}",
+    "fields": { "title": "Titre", "startPage": "Page de début", "type": "Type" },
+    "types": { "story": "Nouvelle", "foreword": "Avant-propos", "introduction": "Introduction", "bibliography": "Bibliographie", "other": "Autre" }
+  },
   "Errors": {
     "personDetails": { "title": "Erreur du fichier personne", "message": "Une erreur est survenue pendant le chargement de la fiche personne. Relance la page pour réessayer.", "return": "Retour aux personnes", "retry": "Réessayer" },
     "bookDetails": { "title": "Erreur de la fiche livre", "message": "Une erreur est survenue pendant le chargement de la fiche livre. Relance la page pour réessayer.", "return": "Retour aux livres", "retry": "Réessayer" },
     "organizationDetails": { "title": "Erreur du fichier organisme", "message": "Une erreur est survenue pendant le chargement de la fiche organisme. Relance la page pour réessayer.", "return": "Retour aux organismes", "retry": "Réessayer" },
-    "relatedBooks": { "title": "Erreur des ouvrages liés", "message": "Une erreur est survenue pendant le chargement des ouvrages liés. Relance la page pour réessayer.", "return": "Retour aux livres", "retry": "Réessayer" }
+    "relatedBooks": { "title": "Erreur des ouvrages liés", "message": "Une erreur est survenue pendant le chargement des ouvrages liés. Relance la page pour réessayer.", "return": "Retour aux livres", "retry": "Réessayer" },
+    "notFound": { "title": "Page introuvable", "message": "L’adresse demandée ne correspond à aucune page de la base STAVNET.", "home": "Accueil", "menu": "Menu" },
+    "application": { "title": "Une erreur est survenue", "message": "La page n’a pas pu être chargée correctement. Vous pouvez réessayer ou revenir à l’accueil.", "return": "Retour à l’accueil", "retry": "Réessayer" }
   }
 }

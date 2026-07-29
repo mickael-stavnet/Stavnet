@@ -21,7 +21,6 @@ const productionTables = [
   "book_press_reviews",
   "book_publishers",
   "book_table_of_contents_entries",
-  "book_table_of_contents_metadata",
   "book_work_titles",
   "books",
   "organizations",

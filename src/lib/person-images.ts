@@ -77,6 +77,7 @@ export type PersonImageEntry = {
   name: string;
   src: string;
   detailName: string | null;
+  relatedBooksAuthorName?: string;
 };
 
 const ADDITIONAL_PERSON_IMAGE_ENTRIES: readonly PersonImageEntry[] = [
@@ -87,7 +88,7 @@ const ADDITIONAL_PERSON_IMAGE_ENTRIES: readonly PersonImageEntry[] = [
   { name: "Zeruya Shalev", src: "/images/persons/zeruya-shalev.jpg", detailName: "Zeruya Shalev" },
   { name: "Shulamit Lapid", src: "/images/persons/shulamit-lapid.jpg", detailName: "Shulamit Lapid" },
   { name: "Ronny Someck", src: "/images/persons/ronny-someck.jpg", detailName: "Ronny Someck" },
-  { name: "Josh=Yehoshua Shachar", src: "/images/persons/josh-yehoshua-shachar.png", detailName: null },
+  { name: "Josh Yehoshua Shachar", src: "/images/persons/josh-yehoshua-shachar.png", detailName: null, relatedBooksAuthorName: "Josh Yehoshua Shachar" },
   { name: "Castel-Blum Orly", src: "/images/persons/castel-blum-orly.jpg", detailName: "Orly Castel-Bloom" },
   { name: "Dorit Orgad", src: "/images/persons/dorit-orgad.jpg", detailName: "Dorit Orgad" },
   { name: "Yehuda Lancry", src: "/images/persons/yehuda-lancry.jpg", detailName: null },

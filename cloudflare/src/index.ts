@@ -44,6 +44,7 @@ type AdminMutationPayload = {
   imageKey?: unknown;
   personLinks?: unknown;
   organizationLinks?: unknown;
+  tableOfContentsEntries?: unknown;
 };
 
 const TABLES = {
@@ -321,8 +322,8 @@ async function rpc(db: D1Database, name: string, args: Record<string, unknown>):
   if (name === "get_book_table_of_contents") {
     const bookId = Number(args.p_book_id);
     if (!Number.isSafeInteger(bookId) || bookId < 1) return [];
-    const entries = await db.prepare("SELECT position, source_entry_id, source_author_id, title, page FROM book_table_of_contents_entries WHERE book_id = ? ORDER BY position, id").bind(bookId).all<{ position: number; source_entry_id: string; source_author_id: string; title: string; page: string }>();
-    return entries.results.map((entry) => ({ position: entry.position, sourceEntryId: entry.source_entry_id, sourceAuthorId: entry.source_author_id, title: entry.title, page: entry.page }));
+    const entries = await db.prepare("SELECT position, entry_type, title, page, author_last_name, author_first_name, author_writing_language, translator_last_name, translator_first_name, translator_language FROM book_table_of_contents_entries WHERE book_id = ? ORDER BY position, id").bind(bookId).all<{ position: number; entry_type: string; title: string; page: string; author_last_name: string; author_first_name: string; author_writing_language: string; translator_last_name: string; translator_first_name: string; translator_language: string }>();
+    return entries.results.map((entry) => ({ position: entry.position, entryType: entry.entry_type, title: entry.title, page: entry.page, authorLastName: entry.author_last_name, authorFirstName: entry.author_first_name, authorWritingLanguage: entry.author_writing_language, translatorLastName: entry.translator_last_name, translatorFirstName: entry.translator_first_name, translatorLanguage: entry.translator_language }));
   }
   if (name === "get_books_page") {
     const unsupported = ["p_person_last_name", "p_person_first_name", "p_organization", "p_theme", "p_publication_language", "p_year"].some((key) => String(args[key] ?? "").trim());
@@ -590,7 +591,8 @@ async function adminRecord(db: D1Database, entityType: AdminEntityType, id: numb
   }
   const personLinks = await db.prepare("SELECT link.person_id AS id, link.role, people.name, people.archived_at FROM book_person_links AS link JOIN people ON people.id = link.person_id WHERE link.book_id = ? ORDER BY link.position").bind(id).all<{ id: number; role: string; name: string; archived_at: string | null }>();
   const organizationLinks = await db.prepare("SELECT link.organization_id AS id, link.role, organizations.name, organizations.archived_at FROM book_organization_links AS link JOIN organizations ON organizations.id = link.organization_id WHERE link.book_id = ? ORDER BY link.position").bind(id).all<{ id: number; role: string; name: string; archived_at: string | null }>();
-  return { id: row.id, entityType, label: adminLabel(payload, definition), secondary: adminSecondary(payload, definition), status: adminStatus(payload, row.archived_at), version: row.version, payload, createdAt: row.created_at, updatedAt: row.updated_at, archivedAt: row.archived_at, imageKey: row.image_key, personLinks: personLinks.results.map((link) => ({ personId: link.id, role: link.role, label: link.name, archived: Boolean(link.archived_at) })), organizationLinks: organizationLinks.results.map((link) => ({ organizationId: link.id, role: link.role, label: link.name, archived: Boolean(link.archived_at) })) };
+  const tableOfContentsEntries = await db.prepare("SELECT entry_type, title, page, author_last_name, author_first_name, author_writing_language, translator_last_name, translator_first_name, translator_language FROM book_table_of_contents_entries WHERE book_id = ? ORDER BY position, id").bind(id).all<{ entry_type: string; title: string; page: string; author_last_name: string; author_first_name: string; author_writing_language: string; translator_last_name: string; translator_first_name: string; translator_language: string }>();
+  return { id: row.id, entityType, label: adminLabel(payload, definition), secondary: adminSecondary(payload, definition), status: adminStatus(payload, row.archived_at), version: row.version, payload, createdAt: row.created_at, updatedAt: row.updated_at, archivedAt: row.archived_at, imageKey: row.image_key, personLinks: personLinks.results.map((link) => ({ personId: link.id, role: link.role, label: link.name, archived: Boolean(link.archived_at) })), organizationLinks: organizationLinks.results.map((link) => ({ organizationId: link.id, role: link.role, label: link.name, archived: Boolean(link.archived_at) })), tableOfContentsEntries: tableOfContentsEntries.results.map((entry) => ({ entryType: entry.entry_type, title: entry.title, page: entry.page, authorLastName: entry.author_last_name, authorFirstName: entry.author_first_name, authorWritingLanguage: entry.author_writing_language, translatorLastName: entry.translator_last_name, translatorFirstName: entry.translator_first_name, translatorLanguage: entry.translator_language })) };
 }
 
 function auditStatement(db: D1Database, action: string, entityType: AdminEntityType, id: number, label: string, summary: string, before: unknown, after: unknown): D1Statement {
@@ -648,6 +650,19 @@ function relationStatements(db: D1Database, bookId: number, body: AdminMutationP
   return statements;
 }
 
+function tableOfContentsStatements(db: D1Database, bookId: number, entries: unknown): D1Statement[] {
+  if (!Array.isArray(entries)) return [];
+  const statements = [db.prepare("DELETE FROM book_table_of_contents_entries WHERE book_id = ?").bind(bookId)];
+  entries.forEach((value, index) => {
+    if (typeof value !== "object" || value === null || Array.isArray(value)) return;
+    const entry = value as Record<string, unknown>;
+    const title = String(entry.title ?? "").trim();
+    if (!title) return;
+    statements.push(db.prepare("INSERT INTO book_table_of_contents_entries (book_id, position, entry_type, title, page, author_last_name, author_first_name, author_writing_language, translator_last_name, translator_first_name, translator_language) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)").bind(bookId, index + 1, String(entry.entryType ?? "nouvelle").trim() || "nouvelle", title, String(entry.page ?? "").trim(), String(entry.authorLastName ?? "").trim(), String(entry.authorFirstName ?? "").trim(), String(entry.authorWritingLanguage ?? "").trim(), String(entry.translatorLastName ?? "").trim(), String(entry.translatorFirstName ?? "").trim(), String(entry.translatorLanguage ?? "").trim()));
+  });
+  return statements;
+}
+
 async function adminCreateOrUpdate(db: D1Database, entityType: AdminEntityType, id: number | null, body: AdminMutationPayload): Promise<{ record?: unknown; error?: string; status?: number }> {
   const definition = ADMIN_ENTITIES[entityType];
   const payload = adminPayload(body.payload);
@@ -668,6 +683,7 @@ async function adminCreateOrUpdate(db: D1Database, entityType: AdminEntityType, 
         db.prepare("INSERT INTO books (id, title, sort_year, search_text, payload, is_valid, created_at, updated_at, version, image_key) VALUES (?, ?, ?, ?, ?, 1, ?, ?, 1, ?)").bind(nextId, label, Number(text(payload, "Année")) || null, Object.values(storedPayload).map(String).join(" "), JSON.stringify(storedPayload), now, now, imageKey),
         ...bookProjectionStatements(db, nextId, storedPayload, 1),
         ...relationStatements(db, nextId, body, now),
+        ...tableOfContentsStatements(db, nextId, body.tableOfContentsEntries),
         auditStatement(db, "create", entityType, nextId, label, `Création de ${label}`, null, storedPayload),
       ]);
     } else {
@@ -688,6 +704,7 @@ async function adminCreateOrUpdate(db: D1Database, entityType: AdminEntityType, 
       db.prepare("UPDATE books SET title = ?, sort_year = ?, search_text = ?, payload = ?, image_key = ?, updated_at = ?, version = version + 1, archived_at = NULL WHERE id = ? AND version = ?").bind(label, Number(text(payload, "Année")) || null, Object.values(storedPayload).map(String).join(" "), JSON.stringify(storedPayload), imageKey, now, id, current.version),
       ...bookProjectionStatements(db, id, storedPayload, 1),
       ...relationStatements(db, id, body, now),
+      ...tableOfContentsStatements(db, id, body.tableOfContentsEntries),
       auditStatement(db, "update", entityType, id, label, `Modification de ${label}`, current.payload, storedPayload),
     ]);
   } else {

@@ -191,7 +191,7 @@ export default function BookDetailSecondaryLayout({
   const isExpandedCentered = layout === "expandedCentered";
   const isTableOfContents = layout === "tableOfContents";
   const hasMissingCover = book.imageSrc === "/images/books-cover/book-cover-placeholder.png";
-  const contentWidthClass = isExpandedCentered ? "md:w-[1360px]" : isTableOfContents ? "md:w-[1040px]" : "md:w-[1200px]";
+  const contentWidthClass = isExpandedCentered ? "md:w-[1360px]" : isTableOfContents ? "md:w-[1360px]" : "md:w-[1200px]";
   const contentPositionClass = isExpandedCentered ? "md:top-1/2 md:-translate-y-1/2" : isTableOfContents ? "md:top-[146px] md:bottom-[92px]" : "md:top-[160px] md:bottom-[100px]";
   const topGridClass = isExpandedCentered ? "md:grid-cols-[280px_minmax(0,1fr)]" : isTableOfContents ? "md:grid-cols-[220px_minmax(0,1fr)]" : "md:grid-cols-[230px_minmax(0,1fr)]";
   const cardSizeClass = isExpandedCentered ? "md:h-[460px] md:w-[280px]" : isTableOfContents ? "md:h-[330px] md:w-[220px]" : "md:h-[344px] md:w-[230px]";

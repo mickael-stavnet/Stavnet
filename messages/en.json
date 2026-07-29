@@ -215,7 +215,9 @@
     },
     "tableOfContents": {
       "collectiveOnly": "This view is reserved for collective works.",
-      "empty": "No table of contents entry has been provided yet."
+      "empty": "No table of contents entry has been provided yet.",
+      "translatorPrefix": "Translated by",
+      "personLink": "View {name}'s profile"
     },
     "tables": {
       "authors": "Authors, co-authors, editors: first name, last name",
@@ -818,6 +820,11 @@
   "EmptyStates": {
     "tab": "No information is available in this tab."
   },
+  "TableOfContentsEditor": {
+    "title": "Table of contents", "description": "Add each short story or editorial item. Author and translation details are optional.", "entry": "Entry {number}", "remove": "Remove", "addEntry": "Add entry", "author": "Author", "translator": "Translator", "lastName": "Last name", "firstName": "First name", "writingLanguage": "Writing language", "language": "Language", "authorLastName": "Author last name {number}", "authorFirstName": "Author first name {number}", "authorWritingLanguage": "Writing language {number}", "translatorLastName": "Translator last name {number}", "translatorFirstName": "Translator first name {number}", "translatorLanguage": "Translator language {number}",
+    "fields": { "title": "Title", "startPage": "Starting page", "type": "Type" },
+    "types": { "story": "Short story", "foreword": "Foreword", "introduction": "Introduction", "bibliography": "Bibliography", "other": "Other" }
+  },
   "Errors": {
     "personDetails": {
       "title": "Person record error",
@@ -841,6 +848,18 @@
       "title": "Related books error",
       "message": "An error occurred while loading related books. Reload the page to try again.",
       "return": "Back to books",
+      "retry": "Try again"
+    },
+    "notFound": {
+      "title": "Page not found",
+      "message": "The requested address does not match a page in the STAVNET database.",
+      "home": "Home",
+      "menu": "Menu"
+    },
+    "application": {
+      "title": "Something went wrong",
+      "message": "The page could not be loaded correctly. You can try again or return home.",
+      "return": "Back to home",
       "retry": "Try again"
     }
   }

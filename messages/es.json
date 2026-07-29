@@ -215,7 +215,9 @@
     },
     "tableOfContents": {
       "collectiveOnly": "Esta vista está reservada para obras colectivas.",
-      "empty": "Aún no se ha indicado ninguna entrada del índice."
+      "empty": "Aún no se ha indicado ninguna entrada del índice.",
+      "translatorPrefix": "Traducido por",
+      "personLink": "Ver la ficha de {name}"
     },
     "tables": {
       "authors": "Autores, coautores, editores: nombre, apellido",
@@ -778,10 +780,17 @@
   "EmptyStates": {
     "tab": "No hay información disponible en esta pestaña."
   },
+  "TableOfContentsEditor": {
+    "title": "Tabla de contenidos", "description": "Añada cada cuento o elemento editorial. Los datos de autor y traducción son opcionales.", "entry": "Entrada {number}", "remove": "Eliminar", "addEntry": "Añadir una entrada", "author": "Autor", "translator": "Traductor", "lastName": "Apellido", "firstName": "Nombre", "writingLanguage": "Lengua de escritura", "language": "Lengua", "authorLastName": "Apellido del autor {number}", "authorFirstName": "Nombre del autor {number}", "authorWritingLanguage": "Lengua de escritura {number}", "translatorLastName": "Apellido del traductor {number}", "translatorFirstName": "Nombre del traductor {number}", "translatorLanguage": "Lengua del traductor {number}",
+    "fields": { "title": "Título", "startPage": "Página inicial", "type": "Tipo" },
+    "types": { "story": "Cuento", "foreword": "Prólogo", "introduction": "Introducción", "bibliography": "Bibliografía", "other": "Otro" }
+  },
   "Errors": {
     "personDetails": { "title": "Error en la ficha de persona", "message": "Se produjo un error al cargar la ficha de la persona. Recarga la página para volver a intentarlo.", "return": "Volver a las personas", "retry": "Reintentar" },
     "bookDetails": { "title": "Error en la ficha del libro", "message": "Se produjo un error al cargar la ficha del libro. Recarga la página para volver a intentarlo.", "return": "Volver a los libros", "retry": "Reintentar" },
     "organizationDetails": { "title": "Error en la ficha de la organización", "message": "Se produjo un error al cargar la ficha de la organización. Recarga la página para volver a intentarlo.", "return": "Volver a las organizaciones", "retry": "Reintentar" },
-    "relatedBooks": { "title": "Error en los libros relacionados", "message": "Se produjo un error al cargar los libros relacionados. Recarga la página para volver a intentarlo.", "return": "Volver a los libros", "retry": "Reintentar" }
+    "relatedBooks": { "title": "Error en los libros relacionados", "message": "Se produjo un error al cargar los libros relacionados. Recarga la página para volver a intentarlo.", "return": "Volver a los libros", "retry": "Reintentar" },
+    "notFound": { "title": "Página no encontrada", "message": "La dirección solicitada no corresponde a ninguna página de la base de datos STAVNET.", "home": "Inicio", "menu": "Menú" },
+    "application": { "title": "Se produjo un error", "message": "La página no se pudo cargar correctamente. Puedes volver a intentarlo o regresar al inicio.", "return": "Volver al inicio", "retry": "Reintentar" }
   }
 }

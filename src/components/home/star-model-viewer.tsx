@@ -134,6 +134,15 @@ function buildPersonDetailUrl(personName: string): string {
   return `/${locale}/persons/details?${params.toString()}`;
 }
 
+function buildRelatedBooksUrl(authorName: string): string {
+  const locale = window.location.pathname.split("/").filter(Boolean)[0] || "en";
+  const params = new URLSearchParams({
+    facet: "authorName",
+    value: authorName,
+  });
+  return `/${locale}/books/related?${params.toString()}`;
+}
+
 function getMeshTriangles(mesh: THREE.Mesh) {
   const geometry = mesh.geometry;
   const positionAttribute = geometry.attributes.position;
@@ -755,9 +764,12 @@ export function StarModelViewer() {
           panelMesh.quaternion.copy(point.orientation);
           panelMesh.renderOrder = 30 + pointIndex;
           panelMesh.userData.personName = textureEntries[pointIndex]?.name;
-          panelMesh.userData.personHref = textureEntries[pointIndex]?.detailName
-            ? buildPersonDetailUrl(textureEntries[pointIndex].detailName)
-            : "";
+          const entry = textureEntries[pointIndex];
+          panelMesh.userData.personHref = entry?.detailName
+            ? buildPersonDetailUrl(entry.detailName)
+            : entry?.relatedBooksAuthorName
+              ? buildRelatedBooksUrl(entry.relatedBooksAuthorName)
+              : "";
           modelGroup.add(panelMesh);
           showcasePanels.push(panelMesh);
       });
@@ -962,7 +974,7 @@ export function StarModelViewer() {
 
     const render = () => {
       frameId = window.requestAnimationFrame(render);
-      modelGroup.rotation.y += 0.001124125;
+      modelGroup.rotation.y += 0.001942488;
       renderer.render(scene, camera);
     };
     render();
