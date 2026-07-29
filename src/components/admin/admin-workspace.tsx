@@ -29,6 +29,7 @@ import type {
   AdminLogEntry,
   AdminPageResult,
   AdminRecord,
+  BookTableOfContentsEntry,
 } from "@/lib/admin-types";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -88,6 +89,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { TableOfContentsEditor } from "@/components/admin/table-of-contents-editor";
 
 const COLLECTIVE_BOOK_FIELD = "Ouvrage collectif";
 const BOOK_ORIGINAL_TITLE_FIELD = "Titre. Original";
@@ -103,6 +105,12 @@ const HIDDEN_BOOK_FIELD_KEYS = new Set([
   "resume",
 ]);
 const BOOK_ADDITIONAL_FIELDS = ["Éditeur. 2. Collection"];
+
+function isCollectiveBook(payload: Record<string, unknown>): boolean {
+  const value = payload[COLLECTIVE_BOOK_FIELD];
+  return value === true || value === "true" || value === "Oui";
+}
+
 const BOOK_FIELD_ORDER = new Map<string, number>([
   ["titre", 1],
   ["sous titre", 2],
@@ -1120,6 +1128,7 @@ export function AdminEntityEditor({
   const [imageKey, setImageKey] = useState<string | null>(null);
   const [personLinks, setPersonLinks] = useState<EntityLink[]>([]);
   const [organizationLinks, setOrganizationLinks] = useState<EntityLink[]>([]);
+  const [tableOfContentsEntries, setTableOfContentsEntries] = useState<BookTableOfContentsEntry[]>([]);
   const [pending, setPending] = useState(false);
   const [action, setAction] = useState<"archive" | "restore" | "purge" | null>(
     null,
@@ -1154,6 +1163,7 @@ export function AdminEntityEditor({
           setImageKey(item.imageKey);
           setPersonLinks(item.personLinks ?? []);
           setOrganizationLinks(item.organizationLinks ?? []);
+          setTableOfContentsEntries(item.tableOfContentsEntries ?? []);
         })
         .catch((caught: unknown) =>
           toast.error(
@@ -1228,6 +1238,7 @@ export function AdminEntityEditor({
           imageKey,
           personLinks,
           organizationLinks,
+          tableOfContentsEntries,
           confirmDuplicate: force || confirmDuplicate,
         }),
       });
@@ -1257,6 +1268,7 @@ export function AdminEntityEditor({
       setImageKey(item.imageKey);
       setPersonLinks(item.personLinks ?? personLinks);
       setOrganizationLinks(item.organizationLinks ?? organizationLinks);
+      setTableOfContentsEntries(item.tableOfContentsEntries ?? tableOfContentsEntries);
       toast.success(isNew ? "Fiche créée" : "Modifications enregistrées");
       if (isNew) router.replace(`/admin/${entityType}/${item.id}`);
     } catch (caught) {
@@ -1447,9 +1459,7 @@ export function AdminEntityEditor({
                           </Label>
                           <Select
                             value={
-                              payload[COLLECTIVE_BOOK_FIELD] === true ||
-                              payload[COLLECTIVE_BOOK_FIELD] === "true" ||
-                              payload[COLLECTIVE_BOOK_FIELD] === "Oui"
+                              isCollectiveBook(payload)
                                 ? "yes"
                                 : "no"
                             }
@@ -1474,6 +1484,15 @@ export function AdminEntityEditor({
                           <p className="text-sm text-muted-foreground">
                             Indique si le livre réunit des textes de plusieurs auteurs.
                           </p>
+                          {isCollectiveBook(payload) && (
+                            <p className="text-sm text-muted-foreground">
+                              Renseignez les nouvelles, leurs auteurs et leurs traducteurs dans la{" "}
+                              <a className="text-blue-600 underline underline-offset-2" href="#table-des-matieres">
+                                section table des matières
+                              </a>
+                              .
+                            </p>
+                          )}
                         </div>
                       )}
                     {entityType === "books" &&
@@ -1525,6 +1544,12 @@ export function AdminEntityEditor({
             )}
           </CardContent>
         </Card>
+        {entityType === "books" && isCollectiveBook(payload) && (
+          <TableOfContentsEditor
+            entries={tableOfContentsEntries}
+            onChange={setTableOfContentsEntries}
+          />
+        )}
         {entityType === "books" && (
           <>
             <RelationManager

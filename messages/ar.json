@@ -215,7 +215,9 @@
     },
     "tableOfContents": {
       "collectiveOnly": "هذا العرض مخصص للأعمال الجماعية فقط.",
-      "empty": "لم تتم إضافة أي مدخلة لجدول المحتويات بعد."
+      "empty": "لم تتم إضافة أي مدخلة لجدول المحتويات بعد.",
+      "translatorPrefix": "ترجمة",
+      "personLink": "عرض بطاقة {name}"
     },
     "tables": {
       "authors": "المؤلفون، المؤلفون المشاركون، المحررون: الاسم الأول، الاسم العائلي",
@@ -774,6 +776,11 @@
   },
   "EmptyStates": {
     "tab": "لا تتوفر معلومات في علامة التبويب هذه."
+  },
+  "TableOfContentsEditor": {
+    "title": "جدول المحتويات", "description": "أضف كل قصة قصيرة أو عنصر تحريري. بيانات المؤلف والترجمة اختيارية.", "entry": "مدخلة {number}", "remove": "إزالة", "addEntry": "إضافة مدخلة", "author": "المؤلف", "translator": "المترجم", "lastName": "اسم العائلة", "firstName": "الاسم الأول", "writingLanguage": "لغة الكتابة", "language": "اللغة", "authorLastName": "اسم عائلة المؤلف {number}", "authorFirstName": "الاسم الأول للمؤلف {number}", "authorWritingLanguage": "لغة الكتابة {number}", "translatorLastName": "اسم عائلة المترجم {number}", "translatorFirstName": "الاسم الأول للمترجم {number}", "translatorLanguage": "لغة المترجم {number}",
+    "fields": { "title": "العنوان", "startPage": "صفحة البداية", "type": "النوع" },
+    "types": { "story": "قصة قصيرة", "foreword": "تمهيد", "introduction": "مقدمة", "bibliography": "ببليوغرافيا", "other": "أخرى" }
   },
   "Errors": {
     "personDetails": { "title": "خطأ في ملف الشخص", "message": "حدث خطأ أثناء تحميل ملف الشخص. أعد تحميل الصفحة للمحاولة مرة أخرى.", "return": "العودة إلى الأشخاص", "retry": "إعادة المحاولة" },

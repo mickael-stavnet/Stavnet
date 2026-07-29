@@ -378,10 +378,15 @@ export interface BookPressReviewRow {
 
 export interface BookTableOfContentsEntry {
   position: number;
-  sourceEntryId: string;
-  sourceAuthorId: string;
+  entryType: string;
   title: string;
   page: string;
+  authorLastName: string;
+  authorFirstName: string;
+  authorWritingLanguage: string;
+  translatorLastName: string;
+  translatorFirstName: string;
+  translatorLanguage: string;
 }
 
 export interface BookDetail {
@@ -1020,10 +1025,15 @@ export const getBookTableOfContentsEntries = cacheData(
     return (Array.isArray(data) ? data : [])
       .map((entry) => ({
         position: readNumber(entry.position),
-        sourceEntryId: readText(entry.sourceEntryId),
-        sourceAuthorId: readText(entry.sourceAuthorId),
+        entryType: readText(entry.entryType),
         title: readText(entry.title),
         page: readText(entry.page),
+        authorLastName: readText(entry.authorLastName),
+        authorFirstName: readText(entry.authorFirstName),
+        authorWritingLanguage: readText(entry.authorWritingLanguage),
+        translatorLastName: readText(entry.translatorLastName),
+        translatorFirstName: readText(entry.translatorFirstName),
+        translatorLanguage: readText(entry.translatorLanguage),
       }))
       .filter((entry) => entry.position > 0 && entry.title.length > 0)
       .sort((left, right) => left.position - right.position);

@@ -18,6 +18,19 @@ export interface AdminRecord {
   personLinks?: Array<{ personId: number; role: string; label: string; archived: boolean }>;
   organizationLinks?: Array<{ organizationId: number; role: string; label: string; archived: boolean }>;
   linkedBooks?: Array<{ bookId: number; role: string; label: string; archived: boolean }>;
+  tableOfContentsEntries?: BookTableOfContentsEntry[];
+}
+
+export interface BookTableOfContentsEntry {
+  entryType: string;
+  title: string;
+  page: string;
+  authorLastName: string;
+  authorFirstName: string;
+  authorWritingLanguage: string;
+  translatorLastName: string;
+  translatorFirstName: string;
+  translatorLanguage: string;
 }
 
 export interface AdminPageResult {

@@ -270,3 +270,8 @@
 - 13:54 - Refonte visuelle complète de l’administration en thème clair monochrome inspiré de shadcn/ui : typographie lisible, fond zinc, navigation structurée avec icônes, surfaces et tableaux hiérarchisés, formulaires plus nets et rayons cohérents sur le dashboard, les listes, les fiches, la recherche, la corbeille et l’historique.
 - 13:59 - Alignement de la grille des fiches administratives : le titre, les actions et les contenus de cartes utilisent désormais le même retrait horizontal interne, supprimant les décalages visuels entre en-tête, image et formulaire.
 - 14:02 - Affinement des états de navigation administratifs : item actif et survol en gris zinc, hauteur réduite, rayon plus discret et retrait latéral pour supprimer le pavé noir trop imposant de la sidebar.
+
+# 29-07-2026
+
+- 10:04 - Refonte complète des tables de matières : remplacement du modèle D1 historique par des contributions illimitées avec auteur et traducteur facultatifs, import des nouvelles données en local et production, affichage public enrichi et saisie conditionnelle dans l’administration pour les ouvrages collectifs.
+- 10:15 - Amélioration de la table des matières publique : composition élargie, entrées plus lisibles et accès direct aux fiches des auteurs et traducteurs depuis chaque contribution.
