@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useEffect } from "react";
-import { Home, RefreshCw, TriangleAlert } from "lucide-react";
+import { Home, RefreshCw, TriangleAlert, Undo2 } from "lucide-react";
 import { Link } from "@/i18n/routing";
 import { Button } from "@/components/ui/button";
 import {
@@ -18,6 +18,7 @@ interface RouteErrorScreenProps {
   homeHref: "/" | "/home" | "/books" | "/orgs" | "/persons";
   homeLabel: string;
   retryLabel: string;
+  backLabel?: string;
   reset: () => void;
   error: Error & { digest?: string };
 }
@@ -28,6 +29,7 @@ export function RouteErrorScreen({
   homeHref,
   homeLabel,
   retryLabel,
+  backLabel,
   reset,
   error,
 }: RouteErrorScreenProps) {
@@ -84,6 +86,18 @@ export function RouteErrorScreen({
                   {homeLabel}
                 </Link>
               </Button>
+              {backLabel ? (
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="lg"
+                  onClick={() => window.history.go(-1)}
+                  className="h-10 justify-center border-[#76aebb] bg-[#f7fcfd] px-4 font-bold text-[#173b46] hover:bg-[#e8f5f8] focus-visible:ring-[#0b6b85]/35 sm:justify-start"
+                >
+                  <Undo2 aria-hidden="true" />
+                  {backLabel}
+                </Button>
+              ) : null}
             </CardFooter>
           </Card>
         </div>

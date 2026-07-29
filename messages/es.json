@@ -786,6 +786,8 @@
     "personDetails": { "title": "Error en la ficha de persona", "message": "Se produjo un error al cargar la ficha de la persona. Recarga la página para volver a intentarlo.", "return": "Volver a las personas", "retry": "Reintentar" },
     "bookDetails": { "title": "Error en la ficha del libro", "message": "Se produjo un error al cargar la ficha del libro. Recarga la página para volver a intentarlo.", "return": "Volver a los libros", "retry": "Reintentar" },
     "organizationDetails": { "title": "Error en la ficha de la organización", "message": "Se produjo un error al cargar la ficha de la organización. Recarga la página para volver a intentarlo.", "return": "Volver a las organizaciones", "retry": "Reintentar" },
-    "relatedBooks": { "title": "Error en los libros relacionados", "message": "Se produjo un error al cargar los libros relacionados. Recarga la página para volver a intentarlo.", "return": "Volver a los libros", "retry": "Reintentar" }
+    "relatedBooks": { "title": "Error en los libros relacionados", "message": "Se produjo un error al cargar los libros relacionados. Recarga la página para volver a intentarlo.", "return": "Volver a los libros", "retry": "Reintentar" },
+    "notFound": { "title": "Página no encontrada", "message": "La dirección solicitada no corresponde a ninguna página de la base de datos STAVNET.", "home": "Inicio", "menu": "Menú" },
+    "application": { "title": "Se produjo un error", "message": "La página no se pudo cargar correctamente. Puedes volver a intentarlo o regresar al inicio.", "return": "Volver al inicio", "retry": "Reintentar" }
   }
 }

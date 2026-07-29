@@ -786,6 +786,8 @@
     "personDetails": { "title": "Erreur du fichier personne", "message": "Une erreur est survenue pendant le chargement de la fiche personne. Relance la page pour réessayer.", "return": "Retour aux personnes", "retry": "Réessayer" },
     "bookDetails": { "title": "Erreur de la fiche livre", "message": "Une erreur est survenue pendant le chargement de la fiche livre. Relance la page pour réessayer.", "return": "Retour aux livres", "retry": "Réessayer" },
     "organizationDetails": { "title": "Erreur du fichier organisme", "message": "Une erreur est survenue pendant le chargement de la fiche organisme. Relance la page pour réessayer.", "return": "Retour aux organismes", "retry": "Réessayer" },
-    "relatedBooks": { "title": "Erreur des ouvrages liés", "message": "Une erreur est survenue pendant le chargement des ouvrages liés. Relance la page pour réessayer.", "return": "Retour aux livres", "retry": "Réessayer" }
+    "relatedBooks": { "title": "Erreur des ouvrages liés", "message": "Une erreur est survenue pendant le chargement des ouvrages liés. Relance la page pour réessayer.", "return": "Retour aux livres", "retry": "Réessayer" },
+    "notFound": { "title": "Page introuvable", "message": "L’adresse demandée ne correspond à aucune page de la base STAVNET.", "home": "Accueil", "menu": "Menu" },
+    "application": { "title": "Une erreur est survenue", "message": "La page n’a pas pu être chargée correctement. Vous pouvez réessayer ou revenir à l’accueil.", "return": "Retour à l’accueil", "retry": "Réessayer" }
   }
 }

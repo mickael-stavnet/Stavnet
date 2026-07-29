@@ -275,3 +275,6 @@
 
 - 10:04 - Refonte complète des tables de matières : remplacement du modèle D1 historique par des contributions illimitées avec auteur et traducteur facultatifs, import des nouvelles données en local et production, affichage public enrichi et saisie conditionnelle dans l’administration pour les ouvrages collectifs.
 - 10:15 - Amélioration de la table des matières publique : composition élargie, entrées plus lisibles et accès direct aux fiches des auteurs et traducteurs depuis chaque contribution.
+- 11:21 - Correction du nom « Josh Yehoshua Shachar » dans la sélection Étoile D1 locale et production, avec maintien de son portrait dans l’interface.
+- 11:30 - Correction du clic sur le portrait de Josh Yehoshua Shachar dans l’Étoile : accès au parcours de ses ouvrages liés.
+- 11:52 - Création des pages 404 et d’erreur globales STAVNET, avec actions de navigation, relance et traductions dans les six langues.

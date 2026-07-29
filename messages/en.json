@@ -846,6 +846,18 @@
       "message": "An error occurred while loading related books. Reload the page to try again.",
       "return": "Back to books",
       "retry": "Try again"
+    },
+    "notFound": {
+      "title": "Page not found",
+      "message": "The requested address does not match a page in the STAVNET database.",
+      "home": "Home",
+      "menu": "Menu"
+    },
+    "application": {
+      "title": "Something went wrong",
+      "message": "The page could not be loaded correctly. You can try again or return home.",
+      "return": "Back to home",
+      "retry": "Try again"
     }
   }
 }

@@ -786,6 +786,8 @@
     "personDetails": { "title": "Fehler in der Personendatei", "message": "Beim Laden der Personenakte ist ein Fehler aufgetreten. Laden Sie die Seite erneut, um es noch einmal zu versuchen.", "return": "Zurück zu den Personen", "retry": "Erneut versuchen" },
     "bookDetails": { "title": "Fehler in der Buchdatei", "message": "Beim Laden der Buchakte ist ein Fehler aufgetreten. Laden Sie die Seite erneut, um es noch einmal zu versuchen.", "return": "Zurück zu den Büchern", "retry": "Erneut versuchen" },
     "organizationDetails": { "title": "Fehler in der Organisationsdatei", "message": "Beim Laden der Organisationsakte ist ein Fehler aufgetreten. Laden Sie die Seite erneut, um es noch einmal zu versuchen.", "return": "Zurück zu den Organisationen", "retry": "Erneut versuchen" },
-    "relatedBooks": { "title": "Fehler bei verwandten Büchern", "message": "Beim Laden verwandter Bücher ist ein Fehler aufgetreten. Laden Sie die Seite erneut, um es noch einmal zu versuchen.", "return": "Zurück zu den Büchern", "retry": "Erneut versuchen" }
+    "relatedBooks": { "title": "Fehler bei verwandten Büchern", "message": "Beim Laden verwandter Bücher ist ein Fehler aufgetreten. Laden Sie die Seite erneut, um es noch einmal zu versuchen.", "return": "Zurück zu den Büchern", "retry": "Erneut versuchen" },
+    "notFound": { "title": "Seite nicht gefunden", "message": "Die angeforderte Adresse entspricht keiner Seite in der STAVNET-Datenbank.", "home": "Startseite", "menu": "Menü" },
+    "application": { "title": "Ein Fehler ist aufgetreten", "message": "Die Seite konnte nicht korrekt geladen werden. Sie können es erneut versuchen oder zur Startseite zurückkehren.", "return": "Zurück zur Startseite", "retry": "Erneut versuchen" }
   }
 }
