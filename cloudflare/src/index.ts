@@ -233,6 +233,112 @@ async function rpc(db: D1Database, name: string, args: Record<string, unknown>):
   if (name === "get_books_totals") {
     return { cardsFound: await stat(db, "books_valid"), databaseContains: await stat(db, "books_total") };
   }
+  if (name === "get_statistics_explorer") {
+    const entityType = ["books", "persons", "organizations"].includes(String(args.p_entity_type)) ? String(args.p_entity_type) : "books";
+    const fromYear = Math.max(0, Number(args.p_year_from) || 0);
+    const toYear = Math.max(0, Number(args.p_year_to) || 0);
+    const language = normalize(String(args.p_language ?? ""));
+    const country = normalize(String(args.p_country ?? ""));
+    const role = normalize(String(args.p_role ?? ""));
+    const clauses = ["item.is_valid = 1"];
+    const values: unknown[] = [];
+
+    if (entityType === "persons") clauses.push("EXISTS (SELECT 1 FROM book_facets AS entity_facet WHERE entity_facet.book_id = item.book_id AND entity_facet.facet = 'authorName')");
+    if (entityType === "organizations") clauses.push("EXISTS (SELECT 1 FROM book_facets AS entity_facet WHERE entity_facet.book_id = item.book_id AND entity_facet.facet = 'publisherName')");
+    if (fromYear > 0) { clauses.push("item.sort_year >= ?"); values.push(fromYear); }
+    if (toYear > 0) { clauses.push("item.sort_year <= ?"); values.push(toYear); }
+    const rows = await db.prepare(`SELECT item.book_id, item.sort_year, item.publication_year, book.payload FROM book_list_items AS item JOIN books AS book ON book.id = item.book_id WHERE ${clauses.join(" AND ")} ORDER BY item.sort_year, item.book_id`).bind(...values).all<{ book_id: number; sort_year: number | null; publication_year: string; payload: string }>();
+    const timeline = new Map<number, { primary: number; secondary: number }>();
+    const languages = new Map<string, number>();
+    const countries = new Map<string, number>();
+    const roles = new Map<string, number>();
+    const focus = new Map<string, number>();
+    let primaryCount = 0;
+    let secondaryCount = 0;
+    let timelineCoverage = 0;
+    let languagesCoverage = 0;
+    let countriesCoverage = 0;
+    let rolesCoverage = 0;
+
+    const parsedRows = rows.results.map((row) => {
+      const payload = parsePayload(row.payload);
+      const code = normalize(text(payload, "CodePublication"));
+      const isPrimary = code !== "t" && code !== "traduction";
+      const year = Number(row.sort_year) || Number(text(payload, "Année"));
+      const publicationLanguage = text(payload, "Langue");
+      const publicationCountries = [text(payload, "Éditeur. 1. Pays", "Pays. Éditeur"), text(payload, "Éditeur. 2. Pays")].filter(Boolean);
+      const contributorRoles = [1, 2, 3].map((position) => text(payload, `Auteur. ${position}. Type`)).filter(Boolean);
+      const authors = [1, 2, 3].map((position) => [text(payload, `Auteur. ${position}. Prénom`), text(payload, `Auteur. ${position}. Nom`)].filter(Boolean).join(" ").trim()).filter(Boolean);
+      const publishers = [text(payload, "Éditeur. 1. Nom", "Éditeur"), text(payload, "Éditeur. 2. Nom")].filter(Boolean);
+      return { isPrimary, year, publicationLanguage, publicationCountries, contributorRoles, authors, publishers };
+    });
+    const matches = (values: string[], selected: string) => !selected || values.some((value) => normalize(value) === selected);
+    const includesFilters = (entry: typeof parsedRows[number], ignored = "") =>
+      (ignored === "language" || matches(entry.publicationLanguage ? [entry.publicationLanguage] : [], language))
+      && (ignored === "country" || matches(entry.publicationCountries, country))
+      && (ignored === "role" || matches(entry.contributorRoles, role));
+    const selectedRows = parsedRows.filter((entry) => includesFilters(entry));
+
+    for (const entry of selectedRows) {
+      const { isPrimary, year, publicationLanguage, publicationCountries, contributorRoles, authors, publishers } = entry;
+      if (entityType === "books") {
+        if (isPrimary) primaryCount += 1;
+        else secondaryCount += 1;
+      } else {
+        primaryCount += 1;
+      }
+      if (Number.isSafeInteger(year) && year >= 1500 && year <= 2099) {
+        const point = timeline.get(year) ?? { primary: 0, secondary: 0 };
+        if (isPrimary) point.primary += 1;
+        else point.secondary += 1;
+        timeline.set(year, point);
+        timelineCoverage += 1;
+      }
+      if (publicationLanguage) {
+        languages.set(publicationLanguage, (languages.get(publicationLanguage) ?? 0) + 1);
+        languagesCoverage += 1;
+      }
+      if (publicationCountries.length > 0) countriesCoverage += 1;
+      for (const value of new Set(publicationCountries)) countries.set(value, (countries.get(value) ?? 0) + 1);
+      if (contributorRoles.length > 0) rolesCoverage += 1;
+      for (const value of new Set(contributorRoles)) roles.set(value, (roles.get(value) ?? 0) + 1);
+      const focusValues = entityType === "organizations" ? authors : publishers;
+      for (const value of new Set(focusValues)) focus.set(value, (focus.get(value) ?? 0) + 1);
+    }
+
+    if (entityType !== "books") secondaryCount = new Set(selectedRows.flatMap((entry) => entry.authors)).size;
+
+    const entries = (source: Map<string, number>) => [...source.entries()].map(([label, value]) => ({ label, value }));
+    const distribution = (source: Map<string, number>) => entries(source).sort((left, right) => right.value - left.value || left.label.localeCompare(right.label)).slice(0, 10);
+    const optionValues = (value: "language" | "country" | "role") => {
+      const options = new Map<string, string>();
+      for (const entry of parsedRows.filter((entry) => includesFilters(entry, value))) {
+        const values = value === "language" ? (entry.publicationLanguage ? [entry.publicationLanguage] : []) : value === "country" ? entry.publicationCountries : entry.contributorRoles;
+        for (const option of values) options.set(normalize(option), option);
+      }
+      return [...options.values()].sort((left, right) => left.localeCompare(right));
+    };
+    const timelineEntries = [...timeline.entries()].sort(([left], [right]) => left - right);
+    const peak = timelineEntries.reduce<{ year: number; value: number } | null>((current, [year, values]) => !current || values.primary + values.secondary > current.value ? { year, value: values.primary + values.secondary } : current, null);
+    const recent = timelineEntries.filter(([year]) => year >= (timelineEntries.at(-1)?.[0] ?? 0) - 9).reduce((sum, [, values]) => sum + values.primary + values.secondary, 0);
+    const prior = timelineEntries.filter(([year]) => year >= (timelineEntries.at(-1)?.[0] ?? 0) - 19 && year < (timelineEntries.at(-1)?.[0] ?? 0) - 9).reduce((sum, [, values]) => sum + values.primary + values.secondary, 0);
+
+    return {
+      entityType,
+      totalRecords: selectedRows.length,
+      primaryCount,
+      secondaryCount,
+      timeline: timelineEntries.map(([year, value]) => ({ period: String(year), ...value })),
+      languages: distribution(languages),
+      countries: distribution(countries),
+      roles: distribution(roles),
+      focus: distribution(focus),
+      filterOptions: { languages: optionValues("language"), countries: optionValues("country"), roles: optionValues("role") },
+      coverage: { timeline: timelineCoverage, languages: languagesCoverage, countries: countriesCoverage, roles: rolesCoverage, focus: [...focus.values()].reduce((sum, value) => sum + value, 0) },
+      summary: { periodStart: timelineEntries[0] ? String(timelineEntries[0][0]) : "", periodEnd: timelineEntries.at(-1) ? String(timelineEntries.at(-1)![0]) : "", peakPeriod: peak ? String(peak.year) : "", peakValue: peak?.value ?? 0, trend: prior > 0 ? Math.round(((recent - prior) / prior) * 100) : null, distinctLanguages: languages.size, distinctCountries: countries.size, distinctRoles: roles.size },
+      metricKind: entityType === "books" ? { primary: "originals", secondary: "translations" } : entityType === "persons" ? { primary: "relatedTitles", secondary: "linkedPeople" } : { primary: "publishedTitles", secondary: "publishedAuthors" },
+    };
+  }
   if (name === "get_book_ids_by_exact_title") {
     const title = String(args.p_title ?? "").trim();
     if (!title) return [];
@@ -323,7 +429,24 @@ async function rpc(db: D1Database, name: string, args: Record<string, unknown>):
         .filter((value, index, values) => values.indexOf(value) === index);
       const placeholders = relatedNames.map(() => "?").join(", ");
       const books = await db.prepare(`SELECT DISTINCT books.id, books.payload FROM book_facets JOIN books ON books.id = book_facets.book_id WHERE book_facets.facet = 'authorName' AND book_facets.value IN (${placeholders}) ORDER BY books.sort_year DESC, books.id`).bind(...relatedNames).all<{ id: number; payload: string }>();
-      for (const entry of books.results) { const book = parsePayload(entry.payload); bibliographyRows.push({ type: bibliographyTypeFromPublicationCode(text(book, "CodePublication")), language: text(book, "Langue"), title: text(book, "Titre"), year: text(book, "Année"), issue: "" }); }
+      for (const entry of books.results) {
+        const book = parsePayload(entry.payload);
+        const matchedAuthor = [1, 2, 3]
+          .map((position) => ({
+            name: normalize([text(book, `Auteur. ${position}. Prénom`), text(book, `Auteur. ${position}. Nom`)].filter(Boolean).join(" ")),
+            role: text(book, `Auteur. ${position}. Type`),
+          }))
+          .find((author) => relatedNames.includes(author.name));
+        bibliographyRows.push({
+          type: bibliographyTypeFromPublicationCode(text(book, "CodePublication")),
+          language: text(book, "Langue"),
+          title: text(book, "Titre"),
+          year: text(book, "Année"),
+          issue: "",
+          country: text(book, "Éditeur. 1. Pays", "Pays. Éditeur"),
+          role: matchedAuthor?.role ?? "",
+        });
+      }
     }
     const originalTitles = bibliographyRows.filter((entry) => normalize(entry.type) === "original").length;
     const translations = bibliographyRows.filter((entry) => normalize(entry.type) === "traduction");

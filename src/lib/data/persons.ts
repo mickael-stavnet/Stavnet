@@ -26,6 +26,8 @@ type PersonBibliographyRowRpc = {
   title?: unknown;
   year?: unknown;
   issue?: unknown;
+  country?: unknown;
+  role?: unknown;
 };
 
 type PersonDetailRpc = {
@@ -77,6 +79,8 @@ export interface PersonBibliographyRow {
   title: string;
   year: string;
   issue: string;
+  country?: string;
+  role?: string;
 }
 
 export interface PersonDetail {
@@ -193,6 +197,8 @@ function mapBibliographyRow(row: PersonBibliographyRowRpc): PersonBibliographyRo
     title: readText(row.title),
     year: readText(row.year),
     issue: readText(row.issue),
+    country: readText(row.country),
+    role: readText(row.role),
   };
 }
 
@@ -227,7 +233,7 @@ function mapPersonDetail(detail: PersonDetailRpc): PersonDetail | null {
       publicationLanguages: readCount(detail.bibliographyStats?.publicationLanguages),
     },
     bibliographyRows,
-    statistics: buildDetailStatistics(bibliographyRows.map((item) => ({ year: item.year, primary: item.type.toLocaleLowerCase().includes("orig"), language: item.language, role: item.type }))),
+    statistics: buildDetailStatistics(bibliographyRows.map((item) => ({ year: item.year, primary: item.type.toLocaleLowerCase().includes("orig"), language: item.language, country: item.country, role: item.role || item.type }))),
     stats: {
       cardsFound: readCount(detail.stats?.cardsFound),
       databaseContains: readCount(detail.stats?.databaseContains),

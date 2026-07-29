@@ -27,6 +27,8 @@ export function createPersonDetail(overrides: Partial<PersonDetail> = {}): Perso
         title: "Original Book",
         year: "1992",
         issue: "",
+        country: "Israël",
+        role: "Auteur",
       },
       {
         type: "Original",
@@ -34,6 +36,8 @@ export function createPersonDetail(overrides: Partial<PersonDetail> = {}): Perso
         title: "Original Book Earlier",
         year: "1988",
         issue: "",
+        country: "Israël",
+        role: "Auteur",
       },
       {
         type: "Traduction",
@@ -41,6 +45,8 @@ export function createPersonDetail(overrides: Partial<PersonDetail> = {}): Perso
         title: "Translated Book",
         year: "2001",
         issue: "00009-T-L06-R-E01",
+        country: "France",
+        role: "Traducteur",
       },
       {
         type: "Traduction",
@@ -48,6 +54,8 @@ export function createPersonDetail(overrides: Partial<PersonDetail> = {}): Perso
         title: "Translated Book Earlier",
         year: "1994",
         issue: "00008-T-L06-R-E02",
+        country: "France",
+        role: "Traducteur",
       },
     ],
     statistics: buildDetailStatistics([]),

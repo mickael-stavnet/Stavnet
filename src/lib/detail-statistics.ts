@@ -17,6 +17,7 @@ export interface DetailStatistics {
   primaryDistribution: StatisticsDistributionItem[];
   secondaryDistribution: StatisticsDistributionItem[];
   tertiaryDistribution: StatisticsDistributionItem[];
+  quaternaryDistribution?: StatisticsDistributionItem[];
 }
 
 interface StatisticsSourceRow {
@@ -54,9 +55,11 @@ export function buildDetailStatistics(rows: StatisticsSourceRow[]): DetailStatis
     const year = readYear(row.year);
     if (year !== null) {
       const current = periods.get(year) ?? { primary: 0, secondary: 0 };
-      if (row.primary) current.primary += 1;
-      else current.secondary += 1;
-      periods.set(year, current);
+      if (row.primary !== undefined) {
+        if (row.primary) current.primary += 1;
+        else current.secondary += 1;
+        periods.set(year, current);
+      }
     }
     if (row.language) languages.push(row.language);
     if (row.country) countries.push(row.country);

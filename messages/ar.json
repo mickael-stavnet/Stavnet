@@ -764,6 +764,9 @@
     "actions": {
       "validate": "تأكيد"
     },
+    "comparison": {
+      "books": "الكتب", "persons": "الأشخاص", "organizations": "المنظمات", "entityType": "نوع البيانات", "all": "الكل", "search": "بحث", "selected": "الاختيار", "maximum": "خمسة عناصر كحد أقصى", "dashboard": "لوحة المقارنة", "timeline": "التطور الزمني", "table": "المقارنة", "primary": "القيمة الرئيسية", "secondary": "القيمة الثانوية", "index": "مؤشر / 100", "noData": "لا توجد بيانات كافية لعرض هذا الرسم البياني.", "languages": "لغات النشر", "countries": "بلدان النشر", "roles": "الأدوار والمساهمات", "previous": "الرسم البياني السابق", "next": "الرسم البياني التالي", "carousel": "التنقل بين الرسوم البيانية", "filters": "مرشحات التحليل", "fromYear": "من السنة", "toYear": "إلى السنة", "language": "اللغة", "country": "البلد", "role": "الدور", "apply": "تطبيق", "clear": "إعادة ضبط", "records": "السجلات المحللة", "coverage": "البيانات المعبأة", "compareRecords": "مقارنة السجلات", "compareDescription": "اختر من سجل واحد إلى خمسة سجلات من النوع نفسه لمقارنتها.", "summary": "ملخص", "period": "الفترة المشمولة", "peak": "أكثر سنة نشاطًا", "trend": "اتجاه 10 سنوات", "distinctLanguages": "لغات مختلفة", "distinctCountries": "بلدان مختلفة", "distinctRoles": "أدوار مختلفة", "distribution": "توزيع الأحجام", "publishers": "أهم الناشرين", "associatedOrganizations": "المنظمات المرتبطة", "publishedAuthors": "المؤلفون المنشورون", "originals": "الأعمال الأصلية", "translations": "الترجمات", "relatedTitles": "العناوين المرتبطة", "linkedPeople": "الأشخاص المرتبطون", "publishedTitles": "العناوين المنشورة"
+    },
     "footer": {
       "back": "عودة",
       "menu": "القائمة",

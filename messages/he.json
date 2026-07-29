@@ -764,6 +764,9 @@
     "actions": {
       "validate": "אישור"
     },
+    "comparison": {
+      "books": "ספרים", "persons": "אנשים", "organizations": "ארגונים", "entityType": "סוג נתונים", "all": "הכול", "search": "חיפוש", "selected": "בחירה", "maximum": "עד 5 פריטים", "dashboard": "לוח השוואה", "timeline": "ציר זמן", "table": "השוואה", "primary": "ערך ראשי", "secondary": "ערך משני", "index": "מדד / 100", "noData": "אין די נתונים להצגת תרשים זה.", "languages": "שפות פרסום", "countries": "מדינות פרסום", "roles": "תפקידים ותרומות", "previous": "התרשים הקודם", "next": "התרשים הבא", "carousel": "ניווט בין תרשימים", "filters": "מסנני ניתוח", "fromYear": "משנה", "toYear": "עד שנה", "language": "שפה", "country": "מדינה", "role": "תפקיד", "apply": "החל", "clear": "איפוס", "records": "רשומות שנותחו", "coverage": "נתונים מתועדים", "compareRecords": "השוואת רשומות", "compareDescription": "בחרו אחת עד חמש רשומות מאותו סוג כדי להשוות ביניהן.", "summary": "סיכום", "period": "תקופה מכוסה", "peak": "השנה הפעילה ביותר", "trend": "מגמת 10 שנים", "distinctLanguages": "שפות שונות", "distinctCountries": "מדינות שונות", "distinctRoles": "תפקידים שונים", "distribution": "התפלגות היקפים", "publishers": "מו״לים מובילים", "associatedOrganizations": "ארגונים קשורים", "publishedAuthors": "מחברים שפורסמו", "originals": "מקור", "translations": "תרגומים", "relatedTitles": "כותרים קשורים", "linkedPeople": "אנשים קשורים", "publishedTitles": "כותרים שפורסמו"
+    },
     "footer": {
       "back": "חזרה",
       "menu": "תפריט",

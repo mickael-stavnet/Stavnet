@@ -260,6 +260,9 @@
 # 27-07-2026
 
 - 09:57 - Importation versionnée des métadonnées et entrées de tables des matières dans D1 local et production, avec migration relationnelle, import UTF-8 idempotent, RPC Worker et affichage des entrées réelles sur les fiches d’ouvrages collectifs.
+- 12:13 - Remplacement de la page Statistiques par un parcours de comparaison livres, personnes ou organismes : sélection de une à cinq fiches, URL partageable, modes de lecture absolu/pourcentage/indice, évolution temporelle et répartitions langues, pays et rôles dans les six langues.
+- 12:25 - Séparation du parcours Statistiques en deux écrans : la sélection reste sur `/[locale]/statistics` et la validation ouvre désormais `/[locale]/statistiques/comparaison` avec les paramètres de comparaison conservés dans l’URL.
+- 12:55 - Enrichissement des comparaisons statistiques avec les publications liées, langues d’auteur et de contributeur, pays d’édition et rôles associés ; la série temporelle compte désormais les originaux comme les traductions.
 
 # 28-07-2026
 
@@ -270,6 +273,10 @@
 - 13:54 - Refonte visuelle complète de l’administration en thème clair monochrome inspiré de shadcn/ui : typographie lisible, fond zinc, navigation structurée avec icônes, surfaces et tableaux hiérarchisés, formulaires plus nets et rayons cohérents sur le dashboard, les listes, les fiches, la recherche, la corbeille et l’historique.
 - 13:59 - Alignement de la grille des fiches administratives : le titre, les actions et les contenus de cartes utilisent désormais le même retrait horizontal interne, supprimant les décalages visuels entre en-tête, image et formulaire.
 - 14:02 - Affinement des états de navigation administratifs : item actif et survol en gris zinc, hauteur réduite, rayon plus discret et retrait latéral pour supprimer le pavé noir trop imposant de la sidebar.
+- 14:44 - Refonte du tableau de bord comparatif en carrousel manuel : les cinq analyses occupent désormais une scène unique grand format, avec flèches de navigation accessibles, indicateur de position et libellés traduits dans les six langues.
+- 15:36 - Création du mode Explorer des statistiques : agrégation D1 sur les notices bibliographiques, filtres par type, période, langue, pays et rôle, indicateurs de couverture des métadonnées et parcours de comparaison de fiches conservé comme option secondaire.
+- 16:06 - Recomposition visuelle de l’Explorer Statistiques sans défilement interne : filtres condensés sur une seule barre, carrousel adapté à l’espace visible et sélection de fiches déplacée dans une fenêtre de comparaison dédiée.
+- 16:32 - Amélioration des filtres de l’Explorer Statistiques : alignement uniforme du type de données, et sélecteurs préconfigurés depuis D1 pour les langues, pays et rôles.
 
 # 29-07-2026
 
@@ -278,3 +285,4 @@
 - 11:21 - Correction du nom « Josh Yehoshua Shachar » dans la sélection Étoile D1 locale et production, avec maintien de son portrait dans l’interface.
 - 11:30 - Correction du clic sur le portrait de Josh Yehoshua Shachar dans l’Étoile : accès au parcours de ses ouvrages liés.
 - 11:52 - Création des pages 404 et d’erreur globales STAVNET, avec actions de navigation, relance et traductions dans les six langues.
+- 12:15 - Enrichissement majeur de l’Explorer Statistiques : synthèse de période et tendances, métriques adaptées aux livres, personnes et organismes, répartition visuelle des volumes, tops éditoriaux et filtres croisés fondés sur les valeurs réellement compatibles.
