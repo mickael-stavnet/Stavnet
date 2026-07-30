@@ -134,15 +134,6 @@ function buildPersonDetailUrl(personName: string): string {
   return `/${locale}/persons/details?${params.toString()}`;
 }
 
-function buildRelatedBooksUrl(authorName: string): string {
-  const locale = window.location.pathname.split("/").filter(Boolean)[0] || "en";
-  const params = new URLSearchParams({
-    facet: "authorName",
-    value: authorName,
-  });
-  return `/${locale}/books/related?${params.toString()}`;
-}
-
 function getMeshTriangles(mesh: THREE.Mesh) {
   const geometry = mesh.geometry;
   const positionAttribute = geometry.attributes.position;
@@ -765,11 +756,7 @@ export function StarModelViewer() {
           panelMesh.renderOrder = 30 + pointIndex;
           panelMesh.userData.personName = textureEntries[pointIndex]?.name;
           const entry = textureEntries[pointIndex];
-          panelMesh.userData.personHref = entry?.detailName
-            ? buildPersonDetailUrl(entry.detailName)
-            : entry?.relatedBooksAuthorName
-              ? buildRelatedBooksUrl(entry.relatedBooksAuthorName)
-              : "";
+          panelMesh.userData.personHref = entry?.detailName ? buildPersonDetailUrl(entry.detailName) : "";
           modelGroup.add(panelMesh);
           showcasePanels.push(panelMesh);
       });

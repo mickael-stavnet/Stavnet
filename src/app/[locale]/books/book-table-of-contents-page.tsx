@@ -41,41 +41,39 @@ function TableOfContentsGrid({ entries }: { entries: BookTableOfContentsEntry[] 
     if (secondHasPage) return 1;
     return first.position - second.position;
   });
-  const usesTwoColumns = orderedEntries.length > 7;
-  const entriesPerColumn = Math.ceil(orderedEntries.length / (usesTwoColumns ? 2 : 1));
-  const columns = Array.from(
-    { length: usesTwoColumns ? 2 : 1 },
-    (_, index) => orderedEntries.slice(index * entriesPerColumn, (index + 1) * entriesPerColumn),
-  );
-
   return (
-    <section className={`grid min-h-[278px] w-full overflow-hidden border border-[#669cb1] bg-[#a6d9eb] text-black shadow-[0_2px_8px_rgba(35,91,112,0.2)] ${usesTwoColumns ? "md:grid-cols-2" : "md:grid-cols-1"}`}>
-      {columns.map((column, columnIndex) => (
-        <div key={columnIndex} className={`divide-y divide-[#7ea8b8] ${usesTwoColumns && columnIndex === 0 ? "md:border-r md:border-[#669cb1]" : ""}`}>
-          {column.map((entry, entryIndex) => {
+    <section className="w-full overflow-x-auto border border-[#669cb1] bg-[#a6d9eb] text-black shadow-[0_2px_8px_rgba(35,91,112,0.2)] md:h-full md:overflow-y-auto">
+      <table className="w-full min-w-[760px] border-collapse text-left text-[13px] leading-[1.2] md:text-[15px]">
+        <colgroup>
+          <col className="w-[9%]" />
+          <col className="w-[39%]" />
+          <col className="w-[26%]" />
+          <col className="w-[26%]" />
+        </colgroup>
+        <thead className="sticky top-0 z-10 bg-[#fff6bf] text-[10px] uppercase leading-[1.1] md:text-[11px]">
+          <tr>
+            <th scope="col" className="border-b border-r border-[#669cb1] px-3 py-[5px] font-semibold">{t("tableOfContents.headers.page")}</th>
+            <th scope="col" className="border-b border-r border-[#669cb1] px-3 py-[5px] font-semibold">{t("tableOfContents.headers.title")}</th>
+            <th scope="col" className="border-b border-r border-[#669cb1] px-3 py-[5px] font-semibold">{t("tableOfContents.headers.author")}</th>
+            <th scope="col" className="border-b border-[#669cb1] px-3 py-[5px] font-semibold">{t("tableOfContents.headers.translator")}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {orderedEntries.map((entry) => {
             const authorName = getPersonName(entry.authorFirstName, entry.authorLastName);
             const translatorName = getPersonName(entry.translatorFirstName, entry.translatorLastName);
 
             return (
-              <article key={`${entry.position}-${entry.title}`} className="grid min-h-[52px] grid-cols-[44px_minmax(0,1fr)_58px] items-stretch text-[14px] leading-[1.2] transition-colors duration-150 hover:bg-white/20 md:text-[15px]">
-                <span className="flex items-center justify-center border-r border-[#7ea8b8] px-2 font-medium tabular-nums">{columnIndex * entriesPerColumn + entryIndex + 1}</span>
-                <span className="flex min-w-0 flex-col justify-center gap-0.5 px-4 py-1">
-                  <span className="grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-baseline gap-4">
-                    <span className="truncate font-semibold leading-tight" title={entry.title}>{entry.title}</span>
-                    {authorName ? <PersonLink name={authorName} /> : null}
-                  </span>
-                  {translatorName ? (
-                    <span className="text-[10px] leading-tight md:text-[11px]">
-                      {t("tableOfContents.translatorPrefix")} <PersonLink name={translatorName} />
-                    </span>
-                  ) : null}
-                </span>
-                <span className="flex items-center justify-end border-l border-[#7ea8b8] px-3 font-medium tabular-nums">{entry.page}</span>
-              </article>
+              <tr key={`${entry.position}-${entry.title}`} className="h-[46px] border-b border-[#7ea8b8] transition-colors duration-150 last:border-b-0 hover:bg-white/20">
+                <td className="border-r border-[#7ea8b8] px-3 py-2 text-center font-medium tabular-nums">{entry.page}</td>
+                <th scope="row" className="border-r border-[#7ea8b8] px-3 py-2 text-left font-semibold">{entry.title}</th>
+                <td className="border-r border-[#7ea8b8] px-3 py-2 align-middle">{authorName ? <PersonLink name={authorName} /> : "—"}</td>
+                <td className="px-3 py-2 align-middle">{translatorName ? <PersonLink name={translatorName} /> : "—"}</td>
+              </tr>
             );
           })}
-        </div>
-      ))}
+        </tbody>
+      </table>
     </section>
   );
 }

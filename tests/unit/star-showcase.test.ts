@@ -24,12 +24,12 @@ describe("star showcase selection", () => {
     ]);
   });
 
-  it("keeps portraits without a person page in the showcase without a detail link", () => {
+  it("keeps portrait entries linked to their person page in the showcase", () => {
     expect(entriesFromNames(["Alec Borenstein"])).toEqual([
       {
         name: "Alec Borenstein",
         src: "/images/persons/alec-borenstein.jpg",
-        detailName: null,
+        detailName: "Alec Borenstein",
       },
     ]);
   });

@@ -216,7 +216,7 @@
     "tableOfContents": {
       "collectiveOnly": "Diese Ansicht ist Sammelwerken vorbehalten.",
       "empty": "Es ist noch kein Inhaltsverzeichniseintrag vorhanden.",
-      "translatorPrefix": "Übersetzt von",
+      "headers": { "page": "Seite", "title": "Titel", "author": "Autor", "translator": "Übersetzer" },
       "personLink": "Profil von {name} anzeigen"
     },
     "tables": {

@@ -216,7 +216,7 @@
     "tableOfContents": {
       "collectiveOnly": "Esta vista está reservada para obras colectivas.",
       "empty": "Aún no se ha indicado ninguna entrada del índice.",
-      "translatorPrefix": "Traducido por",
+      "headers": { "page": "Página", "title": "Título", "author": "Autor", "translator": "Traductor" },
       "personLink": "Ver la ficha de {name}"
     },
     "tables": {

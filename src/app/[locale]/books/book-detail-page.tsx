@@ -277,7 +277,7 @@ export default function BookDetailPage({ book }: BookDetailPageProps) {
   return (
     <main dir="ltr" className="relative min-h-[100svh] overflow-x-hidden bg-[#e7f2f7] font-[Arial,Helvetica,sans-serif] text-black md:h-screen md:overflow-hidden">
       <Image
-        src="/background/background.png"
+        src="/background/background.jpg"
         alt=""
         fill
         priority
@@ -312,14 +312,6 @@ export default function BookDetailPage({ book }: BookDetailPageProps) {
               )}
             </div>
 
-            <div className="min-w-0 max-w-[270px] border border-[#7aa8b7] bg-[#d8dde2] md:flex-1 md:w-[270px] md:max-w-none">
-              <div className="border-b border-[#7aa8b7] bg-[#fff8c8] px-2 py-[3px] text-[12px] uppercase leading-none text-black">
-                {t("summary")}
-              </div>
-              <div className="max-h-[220px] overflow-auto px-3 py-3 text-[12px] leading-[1.45] text-black md:h-[calc(100%-23px)] md:max-h-none md:px-2 md:py-2 md:text-[16px] md:leading-[1.5]">
-                {book.summary || "—"}
-              </div>
-            </div>
           </aside>
 
           <section className="order-2 min-w-0 md:w-full md:max-w-none">

@@ -68,6 +68,7 @@ const BOOK_DETAIL_SELECT = [
   '"Sous-titre. Original"',
   '"Sous-titre. Transcription"',
   '"Langue"',
+  '"Image. URL"',
   '"Année"',
   '"Nb. Pages"',
   '"Dimensions"',

@@ -216,7 +216,7 @@
     "tableOfContents": {
       "collectiveOnly": "תצוגה זו מיועדת ליצירות קולקטיביות בלבד.",
       "empty": "טרם הוזן פריט לתוכן העניינים.",
-      "translatorPrefix": "תורגם על ידי",
+      "headers": { "page": "עמוד", "title": "כותרת", "author": "מחבר", "translator": "מתרגם" },
       "personLink": "הצגת הכרטיס של {name}"
     },
     "tables": {

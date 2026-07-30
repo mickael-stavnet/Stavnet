@@ -216,7 +216,7 @@
     "tableOfContents": {
       "collectiveOnly": "Cette vue est réservée aux ouvrages collectifs.",
       "empty": "Aucune entrée de table des matières n’est encore renseignée.",
-      "translatorPrefix": "Traduit par",
+      "headers": { "page": "Page", "title": "Titre", "author": "Auteur", "translator": "Traducteur" },
       "personLink": "Voir la fiche de {name}"
     },
     "tables": {

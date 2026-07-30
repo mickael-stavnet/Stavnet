@@ -286,3 +286,10 @@
 - 11:30 - Correction du clic sur le portrait de Josh Yehoshua Shachar dans l’Étoile : accès au parcours de ses ouvrages liés.
 - 11:52 - Création des pages 404 et d’erreur globales STAVNET, avec actions de navigation, relance et traductions dans les six langues.
 - 12:15 - Enrichissement majeur de l’Explorer Statistiques : synthèse de période et tendances, métriques adaptées aux livres, personnes et organismes, répartition visuelle des volumes, tops éditoriaux et filtres croisés fondés sur les valeurs réellement compatibles.
+
+# 30-07-2026
+
+- 09:35 - Remplacement partagé du fond STAVNET sur les écrans publics, avec téléchargement de l’image `Fond-Site-StavNet-1-scaled.jpg`, migration des 22 références et retrait de l’ancien asset PNG.
+- 09:42 - Création des fiches auteur minimales d’Alec Borenstein, Yehuda Lancry et Josh Yehoshua Shachar, synchronisées entre D1 local et production, et redirection de leurs portraits Étoile vers leurs pages auteur.
+- 09:52 - Refonte de la table des matières publique en tableau conventionnel à quatre colonnes (page, titre, auteur, traducteur), avec en-têtes jaunes localisés, liens vers les fiches personnes et défilement interne empêchant le recouvrement par le footer.
+- 09:58 - Correction du rendu des couvertures Blob sur les fiches publiques : lecture de `Image. URL` dans le détail livre, maintien du fallback local `public/images/books-cover` et invalidation immédiate du cache livres après une modification administrateur.

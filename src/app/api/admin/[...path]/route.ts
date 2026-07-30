@@ -1,5 +1,5 @@
 import type { NextRequest } from "next/server";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { NextResponse } from "next/server";
 import { forwardAdminRequest, hasAdminSession } from "@/lib/admin-api";
 import { resolveBookCoverSrc } from "@/lib/book-images";
@@ -39,6 +39,7 @@ async function proxy(request: NextRequest, context: { params: Promise<{ path: st
   const requestUrl = new URL(request.url);
   const response = await forwardAdminRequest(request, `/v1/admin/${path.map(encodeURIComponent).join("/")}${requestUrl.search}`);
   if (request.method !== "GET" && response.ok) {
+    revalidateTag("books", { expire: 0 });
     ["en", "fr", "he", "ar", "de", "es"].forEach((locale) => {
       revalidatePath(`/${locale}/books`);
       revalidatePath(`/${locale}/persons`);

@@ -90,7 +90,7 @@ export default function DefinitionPageClient() {
   return (
     <main className="relative min-h-[100svh] overflow-x-hidden bg-[#e7f2f7] font-[Arial,Helvetica,sans-serif] text-black md:h-screen md:overflow-hidden">
       <Image
-        src="/background/background.png"
+        src="/background/background.jpg"
         alt=""
         fill
         priority

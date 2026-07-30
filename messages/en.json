@@ -216,7 +216,7 @@
     "tableOfContents": {
       "collectiveOnly": "This view is reserved for collective works.",
       "empty": "No table of contents entry has been provided yet.",
-      "translatorPrefix": "Translated by",
+      "headers": { "page": "Page", "title": "Title", "author": "Author", "translator": "Translator" },
       "personLink": "View {name}'s profile"
     },
     "tables": {

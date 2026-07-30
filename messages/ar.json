@@ -216,7 +216,7 @@
     "tableOfContents": {
       "collectiveOnly": "هذا العرض مخصص للأعمال الجماعية فقط.",
       "empty": "لم تتم إضافة أي مدخلة لجدول المحتويات بعد.",
-      "translatorPrefix": "ترجمة",
+      "headers": { "page": "الصفحة", "title": "العنوان", "author": "المؤلف", "translator": "المترجم" },
       "personLink": "عرض بطاقة {name}"
     },
     "tables": {
