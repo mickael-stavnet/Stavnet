@@ -101,10 +101,15 @@ const HIDDEN_BOOK_FIELD_KEYS = new Set([
   "codemanuscrit",
   "codepaysparution1",
   "editeur 1 ville",
-  "nombrepages",
   "resume",
+  "autreorganisme01 nom",
+  "sommaire",
+  "editeur",
+  "pays editeur",
+  "genre",
+  "rubrique",
 ]);
-const BOOK_ADDITIONAL_FIELDS = ["Éditeur. 2. Collection"];
+const BOOK_ADDITIONAL_FIELDS = ["Éditeur. 2. Collection", "NombrePages", "Poids"];
 
 function isCollectiveBook(payload: Record<string, unknown>): boolean {
   const value = payload[COLLECTIVE_BOOK_FIELD];
@@ -129,6 +134,8 @@ const BOOK_FIELD_ORDER = new Map<string, number>([
   ["prix €", 110],
   ["prix public", 111],
   ["reliure", 112],
+  ["nombrepages", 113],
+  ["poids", 114],
   ["auteur 1 nom", 201],
   ["auteur 1 prenom", 202],
   ["auteur 1 langue", 203],
@@ -292,10 +299,15 @@ function readable(key: string): string {
 function fieldLabel(field: string): string {
   const value = normalizedFieldKey(field);
   if (value === "isbn") return "Éditeur 2 ISBN";
+  if (value === "langue") return "Langue d’écriture";
+  if (value === "categorie 1") return "Rubrique 1";
+  if (value === "categorie 2") return "Rubrique 2";
+  if (value === "sous titre original") return "Titre transcription";
+  if (value === "annee pages dimensions") return "Année";
   const authorLanguage = value.match(/^auteur ([1-9]) langue$/);
   if (authorLanguage) return `Auteur ${authorLanguage[1]} langue d’écriture`;
   const contributorGenre = value.match(/^contrib ([1-9]) genre\/langue$/);
-  if (contributorGenre) return `Contributeur ${contributorGenre[1]} genre`;
+  if (contributorGenre) return `Contributeur ${contributorGenre[1]} langue`;
   return readable(field);
 }
 
@@ -320,6 +332,7 @@ function isHiddenBookAdminField(field: string): boolean {
     return true;
   if (/^contrib (?:[4-9]|10)\b/.test(value)) return true;
   if (/^contrib [1-3] langue traduite$/.test(value)) return true;
+  if (/^auteur 3 (nom|prenom|langue|type)$/.test(value)) return true;
   if (/^biblio 4\b/.test(value)) return true;
   if (/^biblio [1-3] (source|type)$/.test(value)) return true;
   return HIDDEN_BOOK_FIELD_KEYS.has(value);
@@ -364,9 +377,9 @@ function fieldSection(entityType: AdminEntityType, field: string): string {
       return "Contenu";
     if (/(biblio|cote|source)/.test(value)) return "Bibliothèques";
     if (/(organisme)/.test(value)) return "Organisations liées";
-    if (/(code|poids)/.test(value)) return "Références techniques";
+    if (/(code)/.test(value)) return "Références techniques";
     if (
-      /(editeur|edition|collection|prix|reliure|pages|dimension|isbn|publication|ville|pays)/.test(
+      /(editeur|edition|collection|prix|reliure|pages|poids|dimension|isbn|publication|ville|pays)/.test(
         value,
       )
     )

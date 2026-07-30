@@ -606,7 +606,8 @@ async function adminList(db: D1Database, entityType: AdminEntityType, params: UR
 async function adminSchema(db: D1Database, entityType: AdminEntityType): Promise<{ fields: string[] }> {
   const definition = ADMIN_ENTITIES[entityType];
   const result = await db.prepare(`SELECT DISTINCT json_each.key AS field FROM ${definition.table}, json_each(${definition.table}.payload) WHERE json_each.type NOT IN ('object', 'array') AND json_each.key NOT IN ('id', 'dataQuality', 'Image. URL') ORDER BY json_each.key`).all<{ field: string }>();
-  return { fields: result.results.map((entry) => entry.field).filter(Boolean) };
+  const fields = result.results.map((entry) => entry.field).filter(Boolean);
+  return { fields: entityType === "books" ? [...new Set([...fields, "Poids"])] : fields };
 }
 
 async function adminRecord(db: D1Database, entityType: AdminEntityType, id: number): Promise<unknown | null> {
@@ -712,7 +713,7 @@ async function adminCreateOrUpdate(db: D1Database, entityType: AdminEntityType, 
     const storedPayload = { ...payload, ...(imageKey ? { "Image. URL": imageKey } : {}), id: nextId, dataQuality: { ...(adminPayload(payload.dataQuality) ?? {}), status: "canonical" } };
     if (entityType === "books") {
       await db.batch([
-        db.prepare("INSERT INTO books (id, title, sort_year, search_text, payload, is_valid, created_at, updated_at, version, image_key) VALUES (?, ?, ?, ?, ?, 1, ?, ?, 1, ?)").bind(nextId, label, Number(text(payload, "Année")) || null, Object.values(storedPayload).map(String).join(" "), JSON.stringify(storedPayload), now, now, imageKey),
+        db.prepare("INSERT INTO books (id, title, sort_year, search_text, payload, is_valid, created_at, updated_at, version, image_key, weight) VALUES (?, ?, ?, ?, ?, 1, ?, ?, 1, ?, ?)").bind(nextId, label, Number(text(payload, "Année")) || null, Object.values(storedPayload).map(String).join(" "), JSON.stringify(storedPayload), now, now, imageKey, text(storedPayload, "Poids")),
         ...bookProjectionStatements(db, nextId, storedPayload, 1),
         ...relationStatements(db, nextId, body, now),
         ...tableOfContentsStatements(db, nextId, body.tableOfContentsEntries),
@@ -733,7 +734,7 @@ async function adminCreateOrUpdate(db: D1Database, entityType: AdminEntityType, 
   const storedPayload = { ...payload, ...(imageKey ? { "Image. URL": imageKey } : {}), id, dataQuality: { ...(adminPayload(payload.dataQuality) ?? {}), status: "canonical" } };
   if (entityType === "books") {
     await db.batch([
-      db.prepare("UPDATE books SET title = ?, sort_year = ?, search_text = ?, payload = ?, image_key = ?, updated_at = ?, version = version + 1, archived_at = NULL WHERE id = ? AND version = ?").bind(label, Number(text(payload, "Année")) || null, Object.values(storedPayload).map(String).join(" "), JSON.stringify(storedPayload), imageKey, now, id, current.version),
+      db.prepare("UPDATE books SET title = ?, sort_year = ?, search_text = ?, payload = ?, image_key = ?, weight = ?, updated_at = ?, version = version + 1, archived_at = NULL WHERE id = ? AND version = ?").bind(label, Number(text(payload, "Année")) || null, Object.values(storedPayload).map(String).join(" "), JSON.stringify(storedPayload), imageKey, text(storedPayload, "Poids"), now, id, current.version),
       ...bookProjectionStatements(db, id, storedPayload, 1),
       ...relationStatements(db, id, body, now),
       ...tableOfContentsStatements(db, id, body.tableOfContentsEntries),

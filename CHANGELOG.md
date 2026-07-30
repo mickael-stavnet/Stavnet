@@ -293,6 +293,5 @@
 - 09:42 - Création des fiches auteur minimales d’Alec Borenstein, Yehuda Lancry et Josh Yehoshua Shachar, synchronisées entre D1 local et production, et redirection de leurs portraits Étoile vers leurs pages auteur.
 - 09:52 - Refonte de la table des matières publique en tableau conventionnel à quatre colonnes (page, titre, auteur, traducteur), avec en-têtes jaunes localisés, liens vers les fiches personnes et défilement interne empêchant le recouvrement par le footer.
 - 09:58 - Correction du rendu des couvertures Blob sur les fiches publiques : lecture de `Image. URL` dans le détail livre, maintien du fallback local `public/images/books-cover` et invalidation immédiate du cache livres après une modification administrateur.
-# 30-07-2026
-
-- 11:24 Ajout d’un contrôle automatique de production dans GitHub Actions pour vérifier les parcours publics critiques et chaque fiche exposée par la vitrine.
+- 11:24 - Ajout d’un contrôle automatique de production dans GitHub Actions pour vérifier les parcours publics critiques et chaque fiche exposée par la vitrine.
+- 14:19 - Mise à jour de la fiche livre administrateur : retrait des champs demandés, renommage des libellés éditoriaux, réintégration du nombre de pages et ajout du poids persistant dans D1.
