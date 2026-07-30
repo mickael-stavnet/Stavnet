@@ -9,6 +9,7 @@
     "dev:worker:production-db": "npx --yes wrangler@4.26.1 dev --remote --config cloudflare/wrangler.jsonc",
     "db:local:sync": "node scripts/sync-local-db.mjs",
     "db:local:inspect": "node scripts/inspect-local-db.mjs",
+    "production:verify": "node scripts/verify-production.mjs",
     "dev:local-db": "node scripts/dev-local-db.mjs",
     "dev:production-db": "node scripts/dev-production-db.mjs",
     "build": "next build",
