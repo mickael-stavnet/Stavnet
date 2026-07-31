@@ -295,3 +295,10 @@
 - 09:58 - Correction du rendu des couvertures Blob sur les fiches publiques : lecture de `Image. URL` dans le détail livre, maintien du fallback local `public/images/books-cover` et invalidation immédiate du cache livres après une modification administrateur.
 - 11:24 - Ajout d’un contrôle automatique de production dans GitHub Actions pour vérifier les parcours publics critiques et chaque fiche exposée par la vitrine.
 - 14:19 - Mise à jour de la fiche livre administrateur : retrait des champs demandés, renommage des libellés éditoriaux, réintégration du nombre de pages et ajout du poids persistant dans D1.
+- 20:34 - Refonte de la page Statistiques en tableau de bord général : tendances originaux/traductions, classements éditoriaux dont les auteurs les plus traduits, répartition des langues par type d’ouvrage, carrousel manuel et affichage compact sans contenu coupé.
+
+# 31-07-2026
+
+- 10:14 - Recalage visuel de la colonne d’accueil mobile : logo d’en-tête, sélecteur de langue et texte de présentation sont désormais centrés sur la même largeur visible, sans recouvrement du modèle 3D.
+- 10:24 - Correction de la recherche par titre : les articles courts comme « Le » ne bloquent plus les recherches complètes, avec repli sur le titre brut si une projection locale manque.
+- 10:33 - Réorganisation de la fiche livre administrateur : position du titre anglais, renommage des rubriques et déplacement des références techniques après l’ouvrage.

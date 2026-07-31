@@ -84,7 +84,7 @@ export default function HomePageClient({ showLanguageSwitcher = false }: HomePag
 
       <section
         data-stavnet-animate="star-viewer"
-        className="absolute left-[calc(50%-2px)] top-[44svh] z-30 h-[clamp(176px,23.5svh,230px)] w-[min(66vw,244px)] -translate-x-1/2 -translate-y-1/2 md:left-[21vw] md:right-auto md:top-[15vh] md:h-[74vh] md:w-[76vw] md:translate-x-0 md:translate-y-0 [@media(max-height:800px)]:md:left-[20vw] [@media(max-height:800px)]:md:top-[18vh] [@media(max-height:800px)]:md:h-[67vh] [@media(max-height:800px)]:md:w-[68vw]"
+        className="absolute left-[calc(50%-2px)] top-[44svh] z-30 hidden h-[clamp(176px,23.5svh,230px)] w-[min(66vw,244px)] -translate-x-1/2 -translate-y-1/2 md:block md:left-[21vw] md:right-auto md:top-[15vh] md:h-[74vh] md:w-[76vw] md:translate-x-0 md:translate-y-0 [@media(max-height:800px)]:md:left-[20vw] [@media(max-height:800px)]:md:top-[18vh] [@media(max-height:800px)]:md:h-[67vh] [@media(max-height:800px)]:md:w-[68vw]"
       >
         <StarModelViewer />
       </section>
@@ -104,30 +104,32 @@ export default function HomePageClient({ showLanguageSwitcher = false }: HomePag
           }
           title={tHome("coverMainTitle")}
           subtitle={tHome("coverSubtitle")}
+          headerClassName="h-[168px] !block !pt-0 md:!h-[146px] md:!pt-2"
+          logoClassName="!absolute !left-1/2 !top-3 !flex !w-[244px] !-translate-x-1/2 !justify-center md:!left-[calc(5.2vw-34px)] md:!top-3 md:!bottom-auto md:!translate-x-0"
+          logoImageClassName="!w-[244px]"
+          badgeClassName="!hidden md:!flex"
         />
 
         {showLanguageSwitcher ? (
-          <div className="relative z-50 mt-20 flex justify-center md:absolute md:left-[5.2vw] md:top-[220px] md:mt-0 md:block [@media(max-height:800px)]:top-[190px]">
+          <div className="relative z-50 mt-8 flex justify-center md:absolute md:left-[calc(5.2vw-34px)] md:top-[220px] md:mt-0 md:block [@media(max-height:800px)]:top-[190px]">
             <LanguageSwitcher />
           </div>
         ) : null}
 
         <aside
           data-stavnet-animate="cover-description"
-          className="hidden md:absolute md:left-[calc(5.2vw-30px)] md:top-[340px] md:z-40 md:block md:min-h-[372px] md:w-[290px] md:p-0 [@media(max-width:1100px)]:md:left-[calc(5.2vw-18px)] [@media(max-width:1100px)]:md:w-[260px] [@media(max-height:800px)]:top-[292px] [@media(max-height:800px)]:min-h-0"
+          className="hidden md:absolute md:left-[calc(5.2vw-47px)] md:top-[340px] md:z-40 md:block md:min-h-[372px] md:w-[270px] md:p-0 [@media(max-height:800px)]:top-[292px] [@media(max-height:800px)]:min-h-0"
         >
-          <p className="px-3.5 py-3.5 text-center font-[Georgia,Times_New_Roman,serif] text-[26.25px] leading-[1.36] text-black [@media(max-height:800px)]:px-2 [@media(max-height:800px)]:py-0 [@media(max-height:800px)]:text-[22.5px] [@media(max-height:800px)]:leading-[1.36]">
+          <p className="px-0 py-3.5 text-center font-[Georgia,Times_New_Roman,serif] text-[26.25px] leading-[1.36] text-black [@media(max-height:800px)]:py-0 [@media(max-height:800px)]:text-[22.5px] [@media(max-height:800px)]:leading-[1.36]">
             {`${tHome("coverDescriptionLine1")} ${tHome("coverDescriptionLine2")} ${tHome("coverDescriptionLine3")}`}
           </p>
         </aside>
 
-        <section data-stavnet-animate="cover-content" className="mt-28 flex flex-1 flex-col md:hidden">
-          <div className="flex flex-1 flex-col justify-end pb-[232px]">
-            <div className="mx-auto w-full max-w-[460px] px-3 py-3">
-              <p className="mx-auto max-w-[260px] text-center text-[24px] leading-[1.58] text-black">
+        <section data-stavnet-animate="cover-content" className="mt-[100px] md:hidden">
+          <div className="mx-auto w-[244px] px-0 py-3">
+              <p className="w-full text-center font-[Georgia,Times_New_Roman,serif] text-[24px] leading-[1.45] text-black">
                 {`${tHome("coverDescriptionLine1")} ${tHome("coverDescriptionLine2")} ${tHome("coverDescriptionLine3")}`}
               </p>
-            </div>
           </div>
         </section>
 

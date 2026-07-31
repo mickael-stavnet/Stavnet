@@ -66,7 +66,7 @@ export function LanguageSwitcher() {
   return (
     <div
       ref={rootRef}
-      className="relative z-30 w-[184px] self-center"
+      className="relative z-30 w-[244px] max-w-[calc(100vw-32px)] self-center"
       onMouseEnter={() => {
         cancelClose();
         setOpen(true);

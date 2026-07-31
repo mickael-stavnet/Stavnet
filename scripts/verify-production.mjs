@@ -67,6 +67,7 @@ await fetchPage(`/fr/persons/details?name=Yehuda%20Lancry&smoke=${runId}`, "Yehu
 await fetchPage(`/fr/books/details/table-of-contents?id=2887&smoke=${runId}`, "David Lazar");
 await fetchPage(`/fr/orgs/details?name=Albin%20Michel&smoke=${runId}`, "Albin Michel");
 await fetchPage(`/fr/books/by-title?title=Nadav&smoke=${runId}`, "Nadav");
+await fetchPage(`/fr/books?title=Le%20messager&smoke=${runId}`, "Le messager meurtri");
 await fetchPage(`/fr/search?smoke=${runId}`, "Recherche");
 await fetchPage(`/fr/statistics?smoke=${runId}`, "Statistiques");
 await fetchShowcase();

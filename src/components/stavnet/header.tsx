@@ -14,6 +14,7 @@ interface StavnetHeaderProps {
   rightControl?: ReactNode;
   headerClassName?: string;
   logoClassName?: string;
+  logoImageClassName?: string;
   badgeClassName?: string;
   titleBlockClassName?: string;
   titleClassName?: string;
@@ -30,6 +31,7 @@ export function StavnetHeader({
   rightControl,
   headerClassName,
   logoClassName,
+  logoImageClassName,
   badgeClassName,
   titleBlockClassName,
   titleClassName,
@@ -59,7 +61,10 @@ export function StavnetHeader({
           width={295}
           height={75}
           priority
-          className="h-auto w-[128px] drop-shadow-[0_4px_12px_rgba(0,0,0,0.18)] md:w-[176px]"
+          className={cn(
+            "h-auto w-[128px] drop-shadow-[0_4px_12px_rgba(0,0,0,0.18)] md:w-[176px]",
+            logoImageClassName,
+          )}
         />
       </div>
 

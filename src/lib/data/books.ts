@@ -1555,7 +1555,7 @@ export async function getBooksPage(page: number, pageSize = BOOKS_PAGE_SIZE): Pr
 }
 
 const getBooksPageByTitleCached = cacheData<[number, string, number?], BookListResult>(
-  ["books-page-by-title-v3"],
+  ["books-page-by-title-v4"],
   async (page: number, searchTerm: string, pageSize = BOOKS_PAGE_SIZE): Promise<BookListResult> => {
     return loadBooksPage(page, pageSize, searchTerm, {});
   },

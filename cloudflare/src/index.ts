@@ -233,6 +233,98 @@ async function rpc(db: D1Database, name: string, args: Record<string, unknown>):
   if (name === "get_books_totals") {
     return { cardsFound: await stat(db, "books_valid"), databaseContains: await stat(db, "books_total") };
   }
+  if (name === "get_general_statistics") {
+    const selectedLanguage = normalize(String(args.p_language ?? ""));
+    const books = await db.prepare("SELECT item.book_id, item.sort_year, item.title, book.payload FROM book_list_items AS item JOIN books AS book ON book.id = item.book_id WHERE item.is_valid = 1 ORDER BY item.sort_year, item.book_id").all<{ book_id: number; sort_year: number | null; title: string; payload: string }>();
+    const people = await db.prepare("SELECT payload FROM people WHERE COALESCE(json_extract(payload, '$.dataQuality.status'), 'canonical') <> 'archived'").all<{ payload: string }>();
+    const timeline = new Map<number, { originals: number; translations: number }>();
+    const originalAuthors = new Map<string, Set<number>>();
+    const translatedBooks = new Map<string, number>();
+    const translatedAuthors = new Map<string, Set<number>>();
+    const originalAuthorsByTitle = new Map<string, Set<string>>();
+    const translatedBooksByTitle = new Map<string, Set<number>>();
+    const originalPublishers = new Map<string, Set<number>>();
+    const translators = new Map<string, number>();
+    const translationPublishers = new Map<string, number>();
+    const publicationLanguages = new Map<string, number>();
+    const languageBreakdown = new Map<string, { originals: number; translations: number }>();
+    const publicationCountries = new Map<string, number>();
+
+    const names = (payload: Record<string, unknown>, prefix: "Auteur" | "Traducteur") => [1, 2, 3].map((position) => [text(payload, `${prefix}. ${position}. Prénom`, `${prefix}.${position}.Prénom`), text(payload, `${prefix}. ${position}. Nom`, `${prefix}.${position}.Nom`)].filter(Boolean).join(" ").trim()).filter(Boolean);
+    const increment = (source: Map<string, number>, value: string) => { if (value) source.set(value, (source.get(value) ?? 0) + 1); };
+    const addBook = (source: Map<string, Set<number>>, value: string, id: number) => { if (value) (source.get(value) ?? source.set(value, new Set<number>()).get(value)!).add(id); };
+
+    for (const row of books.results) {
+      const payload = parsePayload(row.payload);
+      const isOriginal = !["t", "traduction"].includes(normalize(text(payload, "CodePublication")));
+      const language = text(payload, "Langue");
+      const year = Number(row.sort_year) || Number(text(payload, "Année"));
+      const authors = names(payload, "Auteur");
+      const translatorNames = names(payload, "Traducteur");
+      const publishers = [text(payload, "Éditeur. 1. Nom", "Éditeur"), text(payload, "Éditeur. 2. Nom")].filter(Boolean);
+      const countries = [text(payload, "Éditeur. 1. Pays", "Pays. Éditeur"), text(payload, "Éditeur. 2. Pays")].filter(Boolean);
+      const workTitle = text(payload, "Titre Original", "Titre original", "Titre original en langue d'écriture") || row.title;
+      const matchesLanguage = !selectedLanguage || normalize(language) === selectedLanguage;
+      if (language) {
+        increment(publicationLanguages, language);
+        const point = languageBreakdown.get(language) ?? { originals: 0, translations: 0 };
+        if (isOriginal) point.originals += 1;
+        else point.translations += 1;
+        languageBreakdown.set(language, point);
+      }
+      for (const country of new Set(countries)) increment(publicationCountries, country);
+      if (Number.isSafeInteger(year) && year >= 1500 && year <= 2099) {
+        const point = timeline.get(year) ?? { originals: 0, translations: 0 };
+        if (isOriginal) point.originals += 1;
+        else point.translations += 1;
+        timeline.set(year, point);
+      }
+      if (isOriginal) {
+        for (const author of new Set(authors)) addBook(originalAuthors, author, row.book_id);
+        const titleKey = normalize(workTitle);
+        if (titleKey && authors.length > 0) originalAuthorsByTitle.set(titleKey, new Set([...(originalAuthorsByTitle.get(titleKey) ?? []), ...authors]));
+        for (const publisher of new Set(publishers)) addBook(originalPublishers, publisher, row.book_id);
+      } else {
+        increment(translatedBooks, workTitle);
+        for (const author of new Set(authors)) addBook(translatedAuthors, author, row.book_id);
+        const titleKey = normalize(workTitle);
+        if (titleKey) (translatedBooksByTitle.get(titleKey) ?? translatedBooksByTitle.set(titleKey, new Set<number>()).get(titleKey)!).add(row.book_id);
+        if (matchesLanguage) {
+          for (const translator of new Set(translatorNames)) increment(translators, translator);
+          for (const publisher of new Set(publishers)) increment(translationPublishers, publisher);
+        }
+      }
+    }
+    for (const [titleKey, bookIds] of translatedBooksByTitle) {
+      for (const author of originalAuthorsByTitle.get(titleKey) ?? []) for (const bookId of bookIds) addBook(translatedAuthors, author, bookId);
+    }
+
+    const pocketReissues = new Map<string, number>();
+    for (const row of people.results) {
+      const payload = parsePayload(row.payload);
+      const name = text(payload, "Prénom Nom", "Prenom Nom", "Auteur Original");
+      const count = Number(String(text(payload, "Nb. Rééditions Poche")).replace(",", "."));
+      if (name && Number.isFinite(count) && count > 0) pocketReissues.set(name, count);
+    }
+    const ranking = (source: Map<string, number> | Map<string, Set<number>>) => [...source.entries()].map(([label, value]) => ({ label, value: value instanceof Set ? value.size : value })).sort((left, right) => right.value - left.value || left.label.localeCompare(right.label)).slice(0, 100);
+    const languageOptions = [...publicationLanguages.keys()].sort((left, right) => left.localeCompare(right));
+    return {
+      timeline: [...timeline.entries()].sort(([left], [right]) => left - right).map(([year, values]) => ({ period: String(year), ...values })),
+      languageOptions,
+      languageBreakdown: [...languageBreakdown.entries()].map(([label, values]) => ({ label, ...values })).sort((left, right) => right.originals + right.translations - (left.originals + left.translations) || left.label.localeCompare(right.label)).slice(0, 100),
+      rankings: {
+        originalAuthors: ranking(originalAuthors),
+        translatedBooks: ranking(translatedBooks),
+        translatedAuthors: ranking(translatedAuthors),
+        originalPublishers: ranking(originalPublishers),
+        translators: ranking(translators),
+        translationPublishers: ranking(translationPublishers),
+        pocketReissues: ranking(pocketReissues),
+        publicationLanguages: ranking(publicationLanguages),
+        publicationCountries: ranking(publicationCountries),
+      },
+    };
+  }
   if (name === "get_statistics_explorer") {
     const entityType = ["books", "persons", "organizations"].includes(String(args.p_entity_type)) ? String(args.p_entity_type) : "books";
     const fromYear = Math.max(0, Number(args.p_year_from) || 0);
@@ -365,22 +457,26 @@ async function rpc(db: D1Database, name: string, args: Record<string, unknown>):
     const page = Math.max(1, Number(args.p_page) || 1);
     const pageSize = Math.max(1, Number(args.p_page_size) || 20);
     const generalTerms = generalSearch.split(/\s+/).map((term) => term.replaceAll('"', "").replaceAll("'", "")).filter(Boolean);
-    const titleTerms = titleSearch.split(/\s+/).map((term) => normalize(term)).filter(Boolean);
+    const titleTerms = titleSearch.split(/\s+/).map((term) => normalize(term)).filter((term) => term.length >= 3);
     const generalMatch = generalTerms.map((term) => `"${term}"`).join(" AND ");
     const titleMatch = titleTerms.map((term) => `"${term}"`).join(" AND ");
+    const titleFallback = titleTerms.map(() => "LOWER(title) LIKE ?").join(" AND ");
+    const titleFallbackValues = titleTerms.map((term) => `%${term}%`);
+    const titlePredicate = titleMatch ? `(book_id IN (SELECT book_id FROM book_titles_search WHERE book_titles_search MATCH ?) OR book_id IN (SELECT id FROM books WHERE ${titleFallback}))` : "";
     const query = generalMatch
       ? "SELECT book_list_items.book_id, book_list_items.title, book_list_items.author, book_list_items.publisher, book_list_items.language, book_list_items.writing_language, book_list_items.publication_year, book_list_items.publication_code FROM books_search JOIN book_list_items ON book_list_items.book_id = books_search.rowid WHERE books_search MATCH ? AND book_list_items.is_valid = 1 ORDER BY rank LIMIT ? OFFSET ?"
       : titleMatch
-        ? "SELECT book_id, title, author, publisher, language, writing_language, publication_year, publication_code FROM book_list_items WHERE is_valid = 1 AND book_id IN (SELECT book_id FROM book_titles_search WHERE book_titles_search MATCH ?) ORDER BY sort_year DESC, title ASC, book_id ASC LIMIT ? OFFSET ?"
+        ? `SELECT book_id, title, author, publisher, language, writing_language, publication_year, publication_code FROM book_list_items WHERE is_valid = 1 AND ${titlePredicate} ORDER BY sort_year DESC, title ASC, book_id ASC LIMIT ? OFFSET ?`
         : "SELECT book_id, title, author, publisher, language, writing_language, publication_year, publication_code FROM book_list_items WHERE is_valid = 1 ORDER BY sort_year DESC, title ASC, book_id ASC LIMIT ? OFFSET ?";
     const countQuery = generalMatch
       ? "SELECT COUNT(*) AS count FROM books_search JOIN book_list_items ON book_list_items.book_id = books_search.rowid WHERE books_search MATCH ? AND book_list_items.is_valid = 1"
       : titleMatch
-        ? "SELECT COUNT(*) AS count FROM book_list_items WHERE is_valid = 1 AND book_id IN (SELECT book_id FROM book_titles_search WHERE book_titles_search MATCH ?)"
+        ? `SELECT COUNT(*) AS count FROM book_list_items WHERE is_valid = 1 AND ${titlePredicate}`
         : null;
     const match = generalMatch || titleMatch;
-    const count = countQuery ? await db.prepare(countQuery).bind(match).all<{ count: number }>() : null;
-    const rows = await db.prepare(query).bind(...(match ? [match, pageSize, (page - 1) * pageSize] : [pageSize, (page - 1) * pageSize])).all<{ book_id: number; title: string; author: string; publisher: string; language: string; writing_language: string; publication_year: string; publication_code: string }>();
+    const titleBindings = titleMatch ? [titleMatch, ...titleFallbackValues] : [];
+    const count = countQuery ? await db.prepare(countQuery).bind(...(generalMatch ? [generalMatch] : titleBindings)).all<{ count: number }>() : null;
+    const rows = await db.prepare(query).bind(...(generalMatch ? [generalMatch, pageSize, (page - 1) * pageSize] : titleMatch ? [...titleBindings, pageSize, (page - 1) * pageSize] : [pageSize, (page - 1) * pageSize])).all<{ book_id: number; title: string; author: string; publisher: string; language: string; writing_language: string; publication_year: string; publication_code: string }>();
     const items = rows.results.map(bookListItem);
     const databaseTotal = await stat(db, "books_total");
     return { items, totalCount: count ? Number(count.results[0]?.count ?? 0) : await stat(db, "books_valid"), databaseTotal };

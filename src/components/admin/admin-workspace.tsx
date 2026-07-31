@@ -119,6 +119,7 @@ function isCollectiveBook(payload: Record<string, unknown>): boolean {
 const BOOK_FIELD_ORDER = new Map<string, number>([
   ["titre", 1],
   ["sous titre", 2],
+  ["titre anglais", 2.5],
   ["sous titre anglais", 3],
   ["sous titre original", 4],
   ["sous titre transcription", 5],
@@ -299,9 +300,10 @@ function readable(key: string): string {
 function fieldLabel(field: string): string {
   const value = normalizedFieldKey(field);
   if (value === "isbn") return "Éditeur 2 ISBN";
+  if (value === "titre anglais") return "Titre Anglais";
   if (value === "langue") return "Langue d’écriture";
-  if (value === "categorie 1") return "Rubrique 1";
-  if (value === "categorie 2") return "Rubrique 2";
+  if (value === "categorie 1") return "Rubrique";
+  if (value === "categorie 2") return "Rubrique 1";
   if (value === "sous titre original") return "Titre transcription";
   if (value === "annee pages dimensions") return "Année";
   const authorLanguage = value.match(/^auteur ([1-9]) langue$/);
@@ -416,12 +418,12 @@ function fieldSection(entityType: AdminEntityType, field: string): string {
 const creationSectionOrder: Record<AdminEntityType, string[]> = {
   books: [
     "Ouvrage",
+    "Références techniques",
     "Publication",
     "Auteurs",
     "Contenu",
     "Bibliothèques",
     "Organisations liées",
-    "Références techniques",
     "Autres informations importées",
   ],
   persons: [
