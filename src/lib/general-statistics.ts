@@ -16,6 +16,9 @@ export interface GeneralStatisticsResult {
   timeline: Array<{ period: string; originals: number; translations: number }>;
   languageBreakdown: LanguageBreakdownEntry[];
   languageOptions: string[];
+  countryOptions: string[];
+  publisherOptions: string[];
+  yearOptions: number[];
   rankings: {
     originalAuthors: GeneralRankingEntry[];
     translatedBooks: GeneralRankingEntry[];
@@ -33,6 +36,9 @@ interface GeneralStatisticsRpc {
   timeline?: unknown;
   languageBreakdown?: unknown;
   languageOptions?: unknown;
+  countryOptions?: unknown;
+  publisherOptions?: unknown;
+  yearOptions?: unknown;
   rankings?: Partial<Record<keyof GeneralStatisticsResult["rankings"], unknown>>;
 }
 
@@ -76,20 +82,44 @@ function options(value: unknown): string[] {
   return Array.isArray(value) ? value.filter((entry): entry is string => typeof entry === "string" && entry.trim().length > 0) : [];
 }
 
+function years(value: unknown): number[] {
+  return Array.isArray(value) ? value.flatMap((entry) => {
+    const year = Number(entry);
+    return Number.isSafeInteger(year) && year >= 1500 && year <= 2099 ? [year] : [];
+  }) : [];
+}
+
+export interface GeneralStatisticsFilters {
+  fromYear?: number;
+  toYear?: number;
+  language?: string;
+  country?: string;
+  publisher?: string;
+}
+
 const emptyRankings: GeneralStatisticsResult["rankings"] = {
   originalAuthors: [], translatedBooks: [], translatedAuthors: [], originalPublishers: [], translators: [], translationPublishers: [], pocketReissues: [], publicationLanguages: [], publicationCountries: [],
 };
 
 const getGeneralStatisticsCached = cacheData(
-  ["general-statistics"],
-  async (language: string): Promise<GeneralStatisticsResult> => {
-    const { data, error } = await d1Client.rpc<GeneralStatisticsRpc>("get_general_statistics", { p_language: language || null });
+  ["general-statistics-v4"],
+  async (filters: GeneralStatisticsFilters): Promise<GeneralStatisticsResult> => {
+    const { data, error } = await d1Client.rpc<GeneralStatisticsRpc>("get_general_statistics", {
+      p_from_year: filters.fromYear || null,
+      p_to_year: filters.toYear || null,
+      p_language: filters.language || null,
+      p_country: filters.country || null,
+      p_publisher: filters.publisher || null,
+    });
     if (error) throw new Error(error.message);
     const source = data?.rankings;
     return {
       timeline: timeline(data?.timeline),
       languageBreakdown: languageBreakdown(data?.languageBreakdown),
       languageOptions: options(data?.languageOptions),
+      countryOptions: options(data?.countryOptions),
+      publisherOptions: options(data?.publisherOptions),
+      yearOptions: years(data?.yearOptions),
       rankings: {
         originalAuthors: ranking(source?.originalAuthors),
         translatedBooks: ranking(source?.translatedBooks),
@@ -106,8 +136,14 @@ const getGeneralStatisticsCached = cacheData(
   { revalidate: 300, tags: ["books", "persons", "organizations"] },
 );
 
-export async function getGeneralStatistics(language = ""): Promise<GeneralStatisticsResult> {
-  return getGeneralStatisticsCached(language.trim());
+export async function getGeneralStatistics(filters: GeneralStatisticsFilters = {}): Promise<GeneralStatisticsResult> {
+  return getGeneralStatisticsCached({
+    fromYear: filters.fromYear,
+    toYear: filters.toYear,
+    language: filters.language?.trim(),
+    country: filters.country?.trim(),
+    publisher: filters.publisher?.trim(),
+  });
 }
 
-export const emptyGeneralStatistics: GeneralStatisticsResult = { timeline: [], languageBreakdown: [], languageOptions: [], rankings: emptyRankings };
+export const emptyGeneralStatistics: GeneralStatisticsResult = { timeline: [], languageBreakdown: [], languageOptions: [], countryOptions: [], publisherOptions: [], yearOptions: [], rankings: emptyRankings };

@@ -235,8 +235,11 @@ async function rpc(db: D1Database, name: string, args: Record<string, unknown>):
   }
   if (name === "get_general_statistics") {
     const selectedLanguage = normalize(String(args.p_language ?? ""));
+    const selectedCountry = normalize(String(args.p_country ?? ""));
+    const selectedPublisher = normalize(String(args.p_publisher ?? ""));
+    const fromYear = Math.max(0, Number(args.p_from_year) || 0);
+    const toYear = Math.max(0, Number(args.p_to_year) || 0);
     const books = await db.prepare("SELECT item.book_id, item.sort_year, item.title, book.payload FROM book_list_items AS item JOIN books AS book ON book.id = item.book_id WHERE item.is_valid = 1 ORDER BY item.sort_year, item.book_id").all<{ book_id: number; sort_year: number | null; title: string; payload: string }>();
-    const people = await db.prepare("SELECT payload FROM people WHERE COALESCE(json_extract(payload, '$.dataQuality.status'), 'canonical') <> 'archived'").all<{ payload: string }>();
     const timeline = new Map<number, { originals: number; translations: number }>();
     const originalAuthors = new Map<string, Set<number>>();
     const translatedBooks = new Map<string, number>();
@@ -249,22 +252,52 @@ async function rpc(db: D1Database, name: string, args: Record<string, unknown>):
     const publicationLanguages = new Map<string, number>();
     const languageBreakdown = new Map<string, { originals: number; translations: number }>();
     const publicationCountries = new Map<string, number>();
+    const pocketReissues = new Map<string, Set<number>>();
+    const allLanguages = new Set<string>();
+    const allCountries = new Set<string>();
+    const allPublishers = new Set<string>();
+    const allYears = new Set<number>();
 
     const names = (payload: Record<string, unknown>, prefix: "Auteur" | "Traducteur") => [1, 2, 3].map((position) => [text(payload, `${prefix}. ${position}. Prénom`, `${prefix}.${position}.Prénom`), text(payload, `${prefix}. ${position}. Nom`, `${prefix}.${position}.Nom`)].filter(Boolean).join(" ").trim()).filter(Boolean);
+    const translationContributors = (payload: Record<string, unknown>, publicationLanguage: string) => Array.from({ length: 10 }, (_, index) => index + 1).flatMap((position) => {
+      const role = normalize(text(payload, `Contrib. ${position}. Genre/Langue`));
+      const name = [text(payload, `Contrib. ${position}. Prénom`), text(payload, `Contrib. ${position}. Nom`)].filter(Boolean).join(" ").trim();
+      const language = text(payload, `Contrib. ${position}. Langue Traduite`);
+      const hasTranslationRole = role.includes("traducteur") || (Boolean(publicationLanguage) && role === normalize(publicationLanguage));
+      return hasTranslationRole && name ? [{ name, language }] : [];
+    });
     const increment = (source: Map<string, number>, value: string) => { if (value) source.set(value, (source.get(value) ?? 0) + 1); };
-    const addBook = (source: Map<string, Set<number>>, value: string, id: number) => { if (value) (source.get(value) ?? source.set(value, new Set<number>()).get(value)!).add(id); };
+    const addBook = (source: Map<string, Set<number>>, value: string, id: number) => {
+      if (!value) return;
+      const bookIds = source.get(value) ?? new Set<number>();
+      bookIds.add(id);
+      source.set(value, bookIds);
+    };
 
     for (const row of books.results) {
       const payload = parsePayload(row.payload);
-      const isOriginal = !["t", "traduction"].includes(normalize(text(payload, "CodePublication")));
       const language = text(payload, "Langue");
+      const contributorTranslators = translationContributors(payload, language);
+      const isOriginal = !["t", "traduction"].includes(normalize(text(payload, "CodePublication"))) && contributorTranslators.length === 0;
       const year = Number(row.sort_year) || Number(text(payload, "Année"));
       const authors = names(payload, "Auteur");
-      const translatorNames = names(payload, "Traducteur");
+      const translatorNames = [...new Set([...names(payload, "Traducteur"), ...contributorTranslators.map((contributor) => contributor.name)])];
       const publishers = [text(payload, "Éditeur. 1. Nom", "Éditeur"), text(payload, "Éditeur. 2. Nom")].filter(Boolean);
       const countries = [text(payload, "Éditeur. 1. Pays", "Pays. Éditeur"), text(payload, "Éditeur. 2. Pays")].filter(Boolean);
-      const workTitle = text(payload, "Titre Original", "Titre original", "Titre original en langue d'écriture") || row.title;
-      const matchesLanguage = !selectedLanguage || normalize(language) === selectedLanguage;
+      const workTitle = text(payload, "Titre. Original", "Titre Original", "Titre original", "Titre original en langue d'écriture") || row.title;
+      const isPocketReissue = normalize(text(payload, "CodeEdition")) === "p" || normalize(text(payload, "Éditeur. 1. Collection")).includes("livre de poche");
+      if (language) allLanguages.add(language);
+      for (const country of countries) allCountries.add(country);
+      for (const publisher of publishers) allPublishers.add(publisher);
+      if (Number.isSafeInteger(year) && year >= 1500 && year <= 2099) allYears.add(year);
+      const hasValidYear = Number.isSafeInteger(year) && year >= 1500 && year <= 2099;
+      const matchesFilters = (!selectedLanguage || normalize(language) === selectedLanguage || (!isOriginal && contributorTranslators.some((contributor) => normalize(contributor.language) === selectedLanguage)))
+        && (!selectedCountry || countries.some((country) => normalize(country) === selectedCountry))
+        && (!selectedPublisher || publishers.some((publisher) => normalize(publisher) === selectedPublisher))
+        && (!fromYear || (hasValidYear && year >= fromYear))
+        && (!toYear || (hasValidYear && year <= toYear));
+      if (!matchesFilters) continue;
+      if (isPocketReissue) for (const author of new Set(authors)) addBook(pocketReissues, author, row.book_id);
       if (language) {
         increment(publicationLanguages, language);
         const point = languageBreakdown.get(language) ?? { originals: 0, translations: 0 };
@@ -273,7 +306,7 @@ async function rpc(db: D1Database, name: string, args: Record<string, unknown>):
         languageBreakdown.set(language, point);
       }
       for (const country of new Set(countries)) increment(publicationCountries, country);
-      if (Number.isSafeInteger(year) && year >= 1500 && year <= 2099) {
+      if (hasValidYear) {
         const point = timeline.get(year) ?? { originals: 0, translations: 0 };
         if (isOriginal) point.originals += 1;
         else point.translations += 1;
@@ -289,28 +322,22 @@ async function rpc(db: D1Database, name: string, args: Record<string, unknown>):
         for (const author of new Set(authors)) addBook(translatedAuthors, author, row.book_id);
         const titleKey = normalize(workTitle);
         if (titleKey) (translatedBooksByTitle.get(titleKey) ?? translatedBooksByTitle.set(titleKey, new Set<number>()).get(titleKey)!).add(row.book_id);
-        if (matchesLanguage) {
-          for (const translator of new Set(translatorNames)) increment(translators, translator);
-          for (const publisher of new Set(publishers)) increment(translationPublishers, publisher);
-        }
+        for (const translator of new Set(translatorNames)) increment(translators, translator);
+        for (const publisher of new Set(publishers)) increment(translationPublishers, publisher);
       }
     }
     for (const [titleKey, bookIds] of translatedBooksByTitle) {
       for (const author of originalAuthorsByTitle.get(titleKey) ?? []) for (const bookId of bookIds) addBook(translatedAuthors, author, bookId);
     }
 
-    const pocketReissues = new Map<string, number>();
-    for (const row of people.results) {
-      const payload = parsePayload(row.payload);
-      const name = text(payload, "Prénom Nom", "Prenom Nom", "Auteur Original");
-      const count = Number(String(text(payload, "Nb. Rééditions Poche")).replace(",", "."));
-      if (name && Number.isFinite(count) && count > 0) pocketReissues.set(name, count);
-    }
     const ranking = (source: Map<string, number> | Map<string, Set<number>>) => [...source.entries()].map(([label, value]) => ({ label, value: value instanceof Set ? value.size : value })).sort((left, right) => right.value - left.value || left.label.localeCompare(right.label)).slice(0, 100);
-    const languageOptions = [...publicationLanguages.keys()].sort((left, right) => left.localeCompare(right));
+    const sortLabels = (source: Set<string>) => [...source].sort((left, right) => left.localeCompare(right));
     return {
       timeline: [...timeline.entries()].sort(([left], [right]) => left - right).map(([year, values]) => ({ period: String(year), ...values })),
-      languageOptions,
+      languageOptions: sortLabels(allLanguages),
+      countryOptions: sortLabels(allCountries),
+      publisherOptions: sortLabels(allPublishers),
+      yearOptions: [...allYears].sort((left, right) => left - right),
       languageBreakdown: [...languageBreakdown.entries()].map(([label, values]) => ({ label, ...values })).sort((left, right) => right.originals + right.translations - (left.originals + left.translations) || left.label.localeCompare(right.label)).slice(0, 100),
       rankings: {
         originalAuthors: ranking(originalAuthors),

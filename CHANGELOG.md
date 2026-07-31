@@ -302,3 +302,5 @@
 - 10:14 - Recalage visuel de la colonne d’accueil mobile : logo d’en-tête, sélecteur de langue et texte de présentation sont désormais centrés sur la même largeur visible, sans recouvrement du modèle 3D.
 - 10:24 - Correction de la recherche par titre : les articles courts comme « Le » ne bloquent plus les recherches complètes, avec repli sur le titre brut si une projection locale manque.
 - 10:33 - Réorganisation de la fiche livre administrateur : position du titre anglais, renommage des rubriques et déplacement des références techniques après l’ouvrage.
+- 11:38 - Refonte analytique du tableau de bord Statistiques : filtres combinables par période, langue, pays de publication et éditeur, calculs serveur cohérents, titres explicatifs et graphiques exclusivement en barres.
+- 15:47 - Harmonisation des quatre occurrences contributeur de Jean=Luc Allouch/Allouche en « Jean-Luc Allouche », avec mise à jour des recherches et facettes D1.

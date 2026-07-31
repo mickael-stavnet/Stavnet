@@ -17,6 +17,9 @@ export interface ComparisonSearchParams {
   to?: string | string[];
   language?: string | string[];
   country?: string | string[];
+  publisher?: string | string[];
+  fromYear?: string | string[];
+  toYear?: string | string[];
   role?: string | string[];
 }
 
