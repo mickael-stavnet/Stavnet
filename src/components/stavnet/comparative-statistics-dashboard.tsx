@@ -56,6 +56,7 @@ interface ComparativeStatisticsDashboardProps {
 }
 
 type DistributionKey = "primaryDistribution" | "secondaryDistribution" | "tertiaryDistribution";
+type TimelineDatum = { period: string } & Record<string, string | number>;
 
 interface DashboardSlide {
   id: string;
@@ -67,12 +68,13 @@ interface DashboardSlide {
 const colors = ["#07384a", "#e23d3d", "#2f6fdb", "#9b4d96", "#17826d"];
 
 function buildTimeline(items: ComparisonItem[]) {
-  const values = new Map<string, Record<string, number>>();
+  const values = new Map<string, TimelineDatum>();
 
   for (const item of items) {
     for (const point of item.statistics.timeline) {
       const entry = values.get(point.period) ?? { period: point.period };
-      entry[item.id] = (entry[item.id] ?? 0) + point.primary + point.secondary;
+      const currentValue = entry[item.id];
+      entry[item.id] = (typeof currentValue === "number" ? currentValue : 0) + point.primary + point.secondary;
       values.set(point.period, entry);
     }
   }
@@ -80,12 +82,16 @@ function buildTimeline(items: ComparisonItem[]) {
   const timeline = [...values.values()].sort((left, right) => String(left.period).localeCompare(String(right.period)));
   if (timeline.length <= 18) return timeline;
 
-  const decades = new Map<string, Record<string, number>>();
+  const decades = new Map<string, TimelineDatum>();
   for (const point of timeline) {
     const period = Number(point.period);
     const decade = Number.isSafeInteger(period) ? `${Math.floor(period / 10) * 10}` : String(point.period);
     const entry = decades.get(decade) ?? { period: decade };
-    for (const item of items) entry[item.id] = (entry[item.id] ?? 0) + (point[item.id] ?? 0);
+    for (const item of items) {
+      const entryValue = entry[item.id];
+      const pointValue = point[item.id];
+      entry[item.id] = (typeof entryValue === "number" ? entryValue : 0) + (typeof pointValue === "number" ? pointValue : 0);
+    }
     decades.set(decade, entry);
   }
 
