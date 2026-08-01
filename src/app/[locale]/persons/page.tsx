@@ -30,6 +30,7 @@ const PERSONS_TABLE_HEAD_CELL_CLASS = "whitespace-normal px-4 py-3 text-left fon
 const PERSONS_TABLE_BODY_CLASS = "text-[15px] leading-[1.25] [@media(max-height:950px)]:text-[12px] [@media(max-height:950px)]:leading-[1.1]";
 const PERSONS_TABLE_ROW_CLASS = "h-[42px] text-slate-950 [@media(max-height:950px)]:h-[35px]";
 const PERSONS_TABLE_CELL_CLASS = "px-4 py-3 align-middle [@media(max-height:950px)]:px-2 [@media(max-height:950px)]:py-1.5";
+const PERSONS_TABLE_TRUNCATED_CELL_CLASS = `${PERSONS_TABLE_CELL_CLASS} overflow-hidden text-ellipsis whitespace-nowrap`;
 
 interface PersonsPageProps {
   params: Promise<{
@@ -254,7 +255,7 @@ export default async function PersonsListPage({ params, searchParams }: PersonsP
             <div className="hidden md:block md:h-full md:overflow-auto">
               {result.items.length > 0 ? (
                 <div className="min-h-0 flex-1 overflow-auto">
-                  <Table className="min-w-[1260px] table-fixed bg-[#eaf5f8]/90 text-slate-950">
+                  <Table className="min-w-[1180px] table-fixed bg-[#eaf5f8]/90 text-slate-950">
                     <colgroup>
                       {PERSONS_COLUMN_WIDTHS.map((width, index) => (
                         <col key={`${width}-${index}`} style={{ width }} />
@@ -286,15 +287,15 @@ export default async function PersonsListPage({ params, searchParams }: PersonsP
                               <span className="w-full break-words">{person.name}</span>
                             </Link>
                           </TableCell>
-                          <TableCell className={PERSONS_TABLE_CELL_CLASS}>{person.type || "—"}</TableCell>
-                          <TableCell className={PERSONS_TABLE_CELL_CLASS}>{person.language || "—"}</TableCell>
-                          <TableCell className={`${PERSONS_TABLE_CELL_CLASS} text-center`}>{person.originalTitles}</TableCell>
-                          <TableCell className={`${PERSONS_TABLE_CELL_CLASS} text-center`}>{person.translatedTitles}</TableCell>
-                          <TableCell className={`${PERSONS_TABLE_CELL_CLASS} text-center`}>{person.translationLanguages}</TableCell>
-                          <TableCell className={`${PERSONS_TABLE_CELL_CLASS} text-center`}>{person.awards}</TableCell>
-                          <TableCell className={`${PERSONS_TABLE_CELL_CLASS} text-center`}>{person.regularReissues}</TableCell>
-                          <TableCell className={`${PERSONS_TABLE_CELL_CLASS} text-center`}>{person.pocketReissues}</TableCell>
-                          <TableCell className={`${PERSONS_TABLE_CELL_CLASS} text-center`}>{person.publicationCountries}</TableCell>
+                          <TableCell className={PERSONS_TABLE_TRUNCATED_CELL_CLASS}>{person.type || "—"}</TableCell>
+                          <TableCell className={PERSONS_TABLE_TRUNCATED_CELL_CLASS}>{person.language || "—"}</TableCell>
+                          <TableCell className={`${PERSONS_TABLE_TRUNCATED_CELL_CLASS} text-center`}>{person.originalTitles}</TableCell>
+                          <TableCell className={`${PERSONS_TABLE_TRUNCATED_CELL_CLASS} text-center`}>{person.translatedTitles}</TableCell>
+                          <TableCell className={`${PERSONS_TABLE_TRUNCATED_CELL_CLASS} text-center`}>{person.translationLanguages}</TableCell>
+                          <TableCell className={`${PERSONS_TABLE_TRUNCATED_CELL_CLASS} text-center`}>{person.awards}</TableCell>
+                          <TableCell className={`${PERSONS_TABLE_TRUNCATED_CELL_CLASS} text-center`}>{person.regularReissues}</TableCell>
+                          <TableCell className={`${PERSONS_TABLE_TRUNCATED_CELL_CLASS} text-center`}>{person.pocketReissues}</TableCell>
+                          <TableCell className={`${PERSONS_TABLE_TRUNCATED_CELL_CLASS} text-center`}>{person.publicationCountries}</TableCell>
                         </TableRow>
                       ))}
                     </TableBody>
