@@ -1,10 +1,11 @@
 # 01-08-2026
 
-- 11:13 - Renforcement transverse de la sécurité : validation et plafonnement des entrées publiques et administratives, limites anti-abus, contrôle d’origine des mutations, validation des relations D1, contrôle de signature des images téléversées, en-têtes CSP et protections navigateur, secrets d’exemple neutralisés et contrôles de sécurité ajoutés à la CI.
 - 10:15 - Correction des accès rapides de la page Menu : « Éditions » ouvre désormais la liste des organismes filtrée sur les maisons d’édition et « Bibliothèques » sur les bibliothèques.
 - 10:36 - Enrichissement du tableau de bord Statistiques : ajout des répartitions par genre d’écriture et pays de naissance des auteurs, calculées depuis les métadonnées bibliographiques et biographiques disponibles.
 - 10:38 - Amélioration du parcours organismes : « Librairies » ouvre les autres organismes, la liste respecte le sens RTL en arabe et en hébreu, et la recherche affiche son actualisation.
 - 10:42 - Simplification des compteurs de la liste organismes : le total de la base n’est affiché qu’en présence d’une recherche ou d’un filtre actif.
+- 11:13 - Renforcement transverse de la sécurité : validation et plafonnement des entrées publiques et administratives, limites anti-abus, contrôle d’origine des mutations, validation des relations D1, contrôle de signature des images téléversées, en-têtes CSP et protections navigateur, secrets d’exemple neutralisés et contrôles de sécurité ajoutés à la CI.
+- 12:18 - Refonte responsive majeure de la page Statistiques : mise en page fluide du tableau de bord, des filtres et des graphiques sur mobile, tablette, portable et grand écran, sans débordement horizontal ni contenu coupé.
 
 # 12-06-2026
 
