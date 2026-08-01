@@ -10,6 +10,7 @@ import { DetailStatisticsPanel } from "@/components/stavnet/detail-statistics-pa
 import { DetailEmptyTab } from "@/components/stavnet/detail-empty-tab";
 import { Link } from "@/i18n/routing";
 import type { OrganizationDetail } from "@/lib/data/orgs";
+import { formatOrganizationTypeLabel } from "@/lib/orgs-display";
 import { ClickableDetailValue, buildBookTitleResolverHref, buildOrganizationsByCountryHref } from "@/lib/detail-links";
 
 type OrganizationTab =
@@ -325,7 +326,7 @@ export default function OrganizationsDetailPage({
                                 href={{ pathname: "/orgs", query: { type: organization.type, page: "1" } }}
                                 className="cursor-pointer underline decoration-current underline-offset-2 transition-colors hover:text-[#0f4c81]"
                               >
-                                {organization.type}
+                                {formatOrganizationTypeLabel(organization.type)}
                               </Link>
                             ) : (
                               "—"

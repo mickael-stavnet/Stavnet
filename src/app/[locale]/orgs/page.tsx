@@ -14,6 +14,7 @@ import {
   getOrganizationsPageByName,
   getOrganizationsPageByType,
 } from "@/lib/data/orgs";
+import { formatOrganizationTypeLabel } from "@/lib/orgs-display";
 import {
   buildOrganizationsPageHref,
   ORGANIZATION_FILTER_OPTIONS,
@@ -38,7 +39,7 @@ const ORGS_COLUMN_WIDTHS = ["35.45%", "15.51%", "15.95%", "14.48%", "9.16%", "9.
 const ORGS_PAGE_SIZE = 10;
 const ORGS_TABLE_CONTAINER_CLASS = "min-h-[430px] bg-[#eaf5f8]/90 md:block md:min-h-0 md:flex-1";
 const ORGS_TABLE_HEAD_ROW_CLASS = "bg-[#d7ebf2]/85 text-[12px] uppercase tracking-[0.04em] text-slate-700 [@media(max-height:950px)]:text-[10px]";
-const ORGS_TABLE_HEAD_CELL_CLASS = "whitespace-normal px-4 py-3 text-left font-semibold [@media(max-height:950px)]:px-2 [@media(max-height:950px)]:py-1.5";
+const ORGS_TABLE_HEAD_CELL_CLASS = "whitespace-normal px-4 py-3 text-start font-semibold [@media(max-height:950px)]:px-2 [@media(max-height:950px)]:py-1.5";
 const ORGS_TABLE_BODY_CLASS = "text-[15px] leading-[1.25] [@media(max-height:950px)]:text-[12px] [@media(max-height:950px)]:leading-[1.1]";
 const ORGS_TABLE_ROW_CLASS = "h-[42px] text-slate-950 [@media(max-height:950px)]:h-[35px]";
 const ORGS_TABLE_CELL_CLASS = "px-4 py-3 align-middle [@media(max-height:950px)]:px-2 [@media(max-height:950px)]:py-1.5";
@@ -96,7 +97,7 @@ function MobileOrganizationCard({
     <article className="border-b border-[#b1bac0] px-1 py-3 last:border-b-0">
       <div className="min-w-0">
         <p className="text-[16px] font-bold leading-tight text-black">{organization.name}</p>
-        <p className="mt-1 text-[13px] leading-tight text-[#21323b]">{organization.type || "—"}</p>
+        <p className="mt-1 text-[13px] leading-tight text-[#21323b]">{formatOrganizationTypeLabel(organization.type) || "—"}</p>
       </div>
 
       <div className="mt-3 grid grid-cols-2 gap-3 text-[12px] leading-[1.35] text-black">
@@ -124,6 +125,8 @@ export default async function OrganizationsListPage({ params, searchParams }: Or
   const [{ locale }, { page, q, type, country, fallbackFacet: fallbackFacetParam }, t] = await Promise.all([params, searchParams, getTranslations("Orgs")]);
   const selection = resolveOrganizationsListSelection({ page, q, type, country });
   const fallbackFacet = isBookRelatedFacet(fallbackFacetParam ?? "") ? fallbackFacetParam : null;
+  const direction = locale === "ar" || locale === "he" ? "rtl" : "ltr";
+  const hasActiveSelection = selection.mode !== "basic";
 
   if (!isPageWithinLimit(selection.pageNumber, MAX_ORGANIZATIONS_PAGE)) {
     redirect({
@@ -204,7 +207,7 @@ export default async function OrganizationsListPage({ params, searchParams }: Or
   } as const;
 
   return (
-    <main dir="ltr" className="relative min-h-[100svh] overflow-x-hidden bg-[#e7f2f7] font-[Arial,Helvetica,sans-serif] text-black md:h-screen md:overflow-hidden">
+    <main dir={direction} className="relative min-h-[100svh] overflow-x-hidden bg-[#e7f2f7] font-[Arial,Helvetica,sans-serif] text-black md:h-screen md:overflow-hidden">
       <Image src="/background/background.jpg" alt="" fill priority sizes="100vw" className="object-cover object-center opacity-95 saturate-[1.08]" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.18),transparent_32%),linear-gradient(180deg,rgba(210,229,242,0.18),rgba(210,229,242,0.08))]" />
 
@@ -224,6 +227,7 @@ export default async function OrganizationsListPage({ params, searchParams }: Or
                 placeholder={t("search.placeholder")}
                 initialValue={selection.searchTerm}
                 resetLabel={t("search.reset")}
+                pendingLabel={t("search.pending")}
               />
               <div className="flex flex-col gap-2 [@media(max-height:950px)]:gap-1">
                 <p className="text-[13px] font-bold leading-none text-black [@media(max-height:950px)]:text-[12px]">{filterLabels.title}</p>
@@ -253,11 +257,13 @@ export default async function OrganizationsListPage({ params, searchParams }: Or
                 <span>:</span>
                 <span className="font-bold text-[#ff1d1d]">{result.total}</span>
               </div>
-              <div className="flex items-center gap-3 text-[18px] leading-none text-black [@media(max-height:950px)]:gap-2 [@media(max-height:950px)]:text-[15px]">
-                <span>{t("stats.databaseContains")}</span>
-                <span>:</span>
-                <span className="font-bold text-[#ff1d1d]">{result.databaseTotal}</span>
-              </div>
+              {hasActiveSelection ? (
+                <div className="flex items-center gap-3 text-[18px] leading-none text-black [@media(max-height:950px)]:gap-2 [@media(max-height:950px)]:text-[15px]">
+                  <span>{t("stats.databaseContains")}</span>
+                  <span>:</span>
+                  <span className="font-bold text-[#ff1d1d]">{result.databaseTotal}</span>
+                </div>
+              ) : null}
             </div>
           </div>
 
@@ -311,7 +317,7 @@ export default async function OrganizationsListPage({ params, searchParams }: Or
                               <span className="w-full break-words">{organization.name}</span>
                             </Link>
                           </TableCell>
-                          <TableCell className={ORGS_TABLE_CELL_CLASS}>{organization.type || "—"}</TableCell>
+                          <TableCell className={ORGS_TABLE_CELL_CLASS}>{formatOrganizationTypeLabel(organization.type) || "—"}</TableCell>
                           <TableCell className={ORGS_TABLE_CELL_CLASS}>{organization.creationDate || "—"}</TableCell>
                           <TableCell className={ORGS_TABLE_CELL_CLASS}>{organization.country || "—"}</TableCell>
                           <TableCell className={`${ORGS_TABLE_CELL_CLASS} text-center`}>{organization.publishedTitles}</TableCell>

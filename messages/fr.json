@@ -506,6 +506,7 @@
       "placeholder": "Nom de l’organisme...",
       "submit": "Chercher",
       "reset": "Réinitialiser",
+      "pending": "Recherche…",
       "noResults": "Aucun organisme trouvé."
     },
     "filters": {

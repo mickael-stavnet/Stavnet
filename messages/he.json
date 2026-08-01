@@ -506,6 +506,7 @@
       "placeholder": "שם הארגון...",
       "submit": "חיפוש",
       "reset": "איפוס",
+      "pending": "מתבצע חיפוש…",
       "noResults": "לא נמצא ארגון."
     },
     "filters": {

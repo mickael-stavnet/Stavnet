@@ -506,6 +506,7 @@
       "placeholder": "Nombre del organismo...",
       "submit": "Buscar",
       "reset": "Restablecer",
+      "pending": "Buscando…",
       "noResults": "No se encontró ningún organismo."
     },
     "filters": {

@@ -25,6 +25,7 @@ import {
   getOrganizationsPageByType,
   ORGS_PAGE_SIZE,
 } from "@/lib/data/orgs";
+import { formatOrganizationTypeLabel } from "@/lib/orgs-display";
 
 describe("organizations data access", () => {
   beforeEach(() => {
@@ -33,6 +34,12 @@ describe("organizations data access", () => {
     logErrorMock.mockReset();
     logInfoMock.mockReset();
     logWarnMock.mockReset();
+  });
+
+  it("normalizes known organization type labels for display", () => {
+    expect(formatOrganizationTypeLabel("Autre Organisme")).toBe("Autre organisme");
+    expect(formatOrganizationTypeLabel("AutreOrganisme")).toBe("Autre organisme");
+    expect(formatOrganizationTypeLabel("Editeur")).toBe("Editeur");
   });
 
   it("falls back to the base organizations page when the type is empty", async () => {

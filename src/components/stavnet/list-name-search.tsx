@@ -12,9 +12,10 @@ interface ListNameSearchProps {
   placeholder: string;
   initialValue: string;
   resetLabel: string;
+  pendingLabel?: string;
 }
 
-export function ListNameSearch({ label, placeholder, initialValue, resetLabel }: ListNameSearchProps) {
+export function ListNameSearch({ label, placeholder, initialValue, resetLabel, pendingLabel }: ListNameSearchProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -25,6 +26,7 @@ export function ListNameSearch({ label, placeholder, initialValue, resetLabel }:
   const searchParamsString = searchParams.toString();
   const currentQuery = (searchParams.get("q") ?? "").trim();
   const currentPage = searchParams.get("page") ?? "1";
+  const isUpdatingResults = isPending || value.trim() !== currentQuery;
 
   const applySearch = useCallback(() => {
     const params = new URLSearchParams(searchParamsString);
@@ -117,7 +119,7 @@ export function ListNameSearch({ label, placeholder, initialValue, resetLabel }:
         dir="auto"
         className="h-[38px] w-full min-w-0 border-[#7aa8b7] bg-[#f8fbfd] text-[14px] text-black placeholder:text-[#6a7a82] sm:w-[280px] md:w-[320px]"
         autoComplete="off"
-        aria-busy={isPending}
+        aria-busy={isUpdatingResults}
       />
       {value.trim() ? (
         <button
@@ -139,6 +141,11 @@ export function ListNameSearch({ label, placeholder, initialValue, resetLabel }:
         >
           {resetLabel}
         </button>
+      ) : null}
+      {pendingLabel && isUpdatingResults ? (
+        <span role="status" aria-live="polite" className="text-[13px] font-bold text-[#0f4c81]">
+          {pendingLabel}
+        </span>
       ) : null}
     </form>
   );

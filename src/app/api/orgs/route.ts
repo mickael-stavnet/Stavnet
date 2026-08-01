@@ -10,21 +10,14 @@ import {
 } from "@/lib/data/orgs";
 import { MAX_ORGANIZATIONS_PAGE } from "@/lib/pagination";
 import { logError, logInfo } from "@/lib/server-log";
-
-function parsePage(value: string | null): number {
-  const parsed = Number.parseInt(value ?? "1", 10);
-  return Number.isFinite(parsed) && parsed > 0 ? parsed : 1;
-}
-
-function parsePageSize(value: string | null, fallback: number): number {
-  const parsed = Number.parseInt(value ?? "", 10);
-  return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
-}
+import { allowRequest, errorResponse, MAX_PAGE_SIZE, readBoundedPositiveInteger, readBoundedText } from "@/lib/security";
 
 export async function GET(request: NextRequest): Promise<NextResponse> {
   try {
+    if (!allowRequest(request, "orgs", 120, 60_000)) return errorResponse(429, "Trop de requêtes. Réessayez plus tard.");
     const { searchParams } = new URL(request.url);
-    const name = searchParams.get("name");
+    const name = readBoundedText(searchParams.get("name"));
+    if (searchParams.has("name") && name === null) return errorResponse(400, "Paramètre name invalide.");
     logInfo("API_ORGS_GET_START", {
       method: request.method,
       url: request.url,
@@ -52,15 +45,18 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       return NextResponse.json({ data });
     }
 
-    const page = parsePage(searchParams.get("page"));
-    const pageSize = parsePageSize(searchParams.get("pageSize"), ORGS_PAGE_SIZE);
+    const page = readBoundedPositiveInteger(searchParams.get("page"), 1, MAX_ORGANIZATIONS_PAGE);
+    const pageSize = readBoundedPositiveInteger(searchParams.get("pageSize"), ORGS_PAGE_SIZE, MAX_PAGE_SIZE);
+
+    if (page === null || pageSize === null) return errorResponse(400, "Paramètres de pagination invalides.");
 
     if (page > MAX_ORGANIZATIONS_PAGE) {
       return NextResponse.json({ error: "Page out of range" }, { status: 400 });
     }
 
-    const type = searchParams.get("type")?.trim() ?? "";
-    const q = searchParams.get("q")?.trim() ?? "";
+    const type = readBoundedText(searchParams.get("type"));
+    const q = readBoundedText(searchParams.get("q"));
+    if (type === null || q === null) return errorResponse(400, "Paramètres de recherche invalides.");
     const result = type === "Editeur" || type === "Bibliothèque" || type === "AutreOrganisme"
       ? await getOrganizationsPageByCategory(page, type, q, pageSize)
       : type
@@ -89,7 +85,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     });
     return NextResponse.json(responseBody);
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Unknown error";
+    const message = "Impossible de traiter la demande.";
     logError("API_ORGS_GET_ERROR", {
       method: request.method,
       url: request.url,

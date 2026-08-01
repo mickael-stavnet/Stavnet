@@ -76,9 +76,9 @@ export default function MenuPageClient() {
     (column) => column.key === activeMenu,
   );
   const quickActions = [
-    ["libraries", "/orgs"],
-    ["editions", "/menu"],
-    ["bookstores", "/menu"],
+    ["libraries", { pathname: "/orgs", query: { page: "1", type: "Bibliothèque" } }],
+    ["editions", { pathname: "/orgs", query: { page: "1", type: "Editeur" } }],
+    ["bookstores", { pathname: "/orgs", query: { page: "1", type: "AutreOrganisme" } }],
     ["statistics", "/statistics"],
   ] as const;
   const footerItems = [

@@ -546,6 +546,7 @@
       "placeholder": "Organization name...",
       "submit": "Search",
       "reset": "Reset",
+      "pending": "Searching…",
       "noResults": "No organization found."
     },
     "filters": {

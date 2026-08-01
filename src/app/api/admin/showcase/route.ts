@@ -4,6 +4,7 @@ import {
   getAdminShowcaseSelection,
   saveAdminShowcaseSelection,
 } from "@/lib/star-showcase";
+import { errorResponse, isSameOriginMutation } from "@/lib/security";
 
 function isAdmin(request: NextRequest): boolean {
   return isValidAdminSessionToken(request.cookies.get(ADMIN_SESSION_COOKIE)?.value);
@@ -31,11 +32,12 @@ export async function PUT(request: NextRequest): Promise<NextResponse> {
   if (!isAdmin(request)) {
     return unauthorized();
   }
+  if (!isSameOriginMutation(request)) return errorResponse(400, "Origine de requête invalide.");
 
   const body = await request.json().catch(() => null);
   const names = body?.names;
-  if (!Array.isArray(names)) {
-    return NextResponse.json({ error: "names must be an array" }, { status: 400 });
+  if (!Array.isArray(names) || names.length > 12 || !names.every((name) => typeof name === "string" && name.length <= 160)) {
+    return errorResponse(400, "Sélection invalide.");
   }
 
   try {

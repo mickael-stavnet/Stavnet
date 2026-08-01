@@ -3,6 +3,7 @@ import { revalidatePath, revalidateTag } from "next/cache";
 import { NextResponse } from "next/server";
 import { forwardAdminRequest, hasAdminSession } from "@/lib/admin-api";
 import { resolveBookCoverSrc } from "@/lib/book-images";
+import { contentLengthExceeded, errorResponse, isSameOriginMutation } from "@/lib/security";
 
 function readText(value: unknown): string {
   return typeof value === "string" ? value.trim() : "";
@@ -34,6 +35,9 @@ function withImageSources(value: unknown, entityType: string): unknown {
 async function proxy(request: NextRequest, context: { params: Promise<{ path: string[] }> }): Promise<Response> {
   if (!hasAdminSession(request)) {
     return NextResponse.json({ error: "Admin authentication required" }, { status: 401 });
+  }
+  if (request.method !== "GET" && (!isSameOriginMutation(request) || contentLengthExceeded(request))) {
+    return errorResponse(contentLengthExceeded(request) ? 413 : 400, contentLengthExceeded(request) ? "Requête trop volumineuse." : "Origine de requête invalide.");
   }
   const { path } = await context.params;
   const requestUrl = new URL(request.url);

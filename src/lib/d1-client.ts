@@ -1,3 +1,5 @@
+import "server-only";
+
 type Filter = { field: string; operator: "eq" | "neq" | "is"; value: unknown };
 type Order = { field: string; ascending: boolean };
 export type DataClientResult<T> = { data: T | null; error: { message: string } | null; count: number | null; status: number; statusText: string };

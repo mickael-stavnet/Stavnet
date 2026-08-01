@@ -506,6 +506,7 @@
       "placeholder": "Name der Organisation...",
       "submit": "Suchen",
       "reset": "Zurücksetzen",
+      "pending": "Suche läuft…",
       "noResults": "Keine Organisation gefunden."
     },
     "filters": {

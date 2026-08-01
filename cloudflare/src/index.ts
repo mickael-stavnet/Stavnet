@@ -47,6 +47,14 @@ type AdminMutationPayload = {
   tableOfContentsEntries?: unknown;
 };
 
+const MAX_QUERY_FILTERS = 12;
+const MAX_QUERY_ORDERS = 4;
+const MAX_QUERY_ROWS = 1_000;
+const MAX_ADMIN_FIELDS = 120;
+const MAX_ADMIN_TEXT_LENGTH = 20_000;
+const MAX_RELATIONS = 50;
+const MAX_TABLE_OF_CONTENTS_ENTRIES = 300;
+
 const TABLES = {
   "data-books": { table: "books", payload: true },
   "data-person": { table: "people", payload: true },
@@ -119,7 +127,8 @@ async function queryRows(db: D1Database, payload: QueryPayload): Promise<{ data:
   if (definition.table === "books" || definition.table === "people" || definition.table === "organizations") {
     where.push("COALESCE(json_extract(payload, '$.dataQuality.status'), 'canonical') <> 'archived'");
   }
-  for (const filter of payload.filters ?? []) {
+  if (!Array.isArray(payload.filters) || payload.filters.length > MAX_QUERY_FILTERS || !Array.isArray(payload.order) && payload.order !== undefined) throw new Error("Invalid query");
+  for (const filter of payload.filters) {
     const field = fieldExpression(filter.field, definition.payload);
     if (!field || !["eq", "neq", "is"].includes(filter.operator)) {
       throw new Error("Invalid filter");
@@ -136,6 +145,7 @@ async function queryRows(db: D1Database, payload: QueryPayload): Promise<{ data:
   const countResult = payload.count ? await db.prepare(`SELECT COUNT(*) AS count FROM ${definition.table}${whereClause}`).bind(...values).all<{ count: number }>() : null;
   const order: string[] = [];
   const orderValues: unknown[] = [];
+  if ((payload.order?.length ?? 0) > MAX_QUERY_ORDERS) throw new Error("Invalid order");
   for (const item of payload.order ?? []) {
     const field = fieldExpression(item.field, definition.payload);
     if (!field) throw new Error("Invalid order");
@@ -144,7 +154,7 @@ async function queryRows(db: D1Database, payload: QueryPayload): Promise<{ data:
   }
   if (order.length === 0) order.push("id ASC");
   const from = Math.max(0, Number.isFinite(payload.from) ? Math.floor(payload.from ?? 0) : 0);
-  const to = Math.max(from, Number.isFinite(payload.to) ? Math.floor(payload.to ?? from + 999) : from + 999);
+  const to = Math.min(from + MAX_QUERY_ROWS - 1, Math.max(from, Number.isFinite(payload.to) ? Math.floor(payload.to ?? from + 999) : from + 999));
   const rows: D1Result<Record<string, unknown>> = payload.head ? { results: [] } : await db.prepare(`SELECT * FROM ${definition.table}${whereClause} ORDER BY ${order.join(", ")} LIMIT ? OFFSET ?`).bind(...values, ...orderValues, to - from + 1, from).all<Record<string, unknown>>();
   const data = rows.results.map((row) => selectColumns(definition.payload ? { id: row.id, ...parsePayload(String(row.payload ?? "{}")) } : row, payload.columns));
   return { data, count: Number(countResult?.results[0]?.count ?? 0) };
@@ -176,6 +186,15 @@ function personWritingLanguage(row: Record<string, unknown>): string {
 
 function normalize(value: string): string {
   return value.trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLocaleLowerCase();
+}
+
+const birthCountryByCity = new Map<string, string>([
+  ["bagdad", "Irak"], ["berlin", "Allemagne"], ["buczacz", "Ukraine"], ["budapest", "Hongrie"], ["cracovie", "Pologne"], ["czernowitz", "Ukraine"], ["fassuta", "Israël"], ["haifa", "Israël"], ["haleb", "Syrie"], ["jafa", "Israël"], ["jerusalem", "Israël"], ["kaunas", "Lituanie"], ["kfar mar'ar", "Israël"], ["kfar saba", "Israël"], ["kfar yehoshua", "Israël"], ["kharkov", "Ukraine"], ["kibbutz givat haim", "Israël"], ["kibbutz kinneret", "Israël"], ["lasi", "Roumanie"], ["lopatin", "Ukraine"], ["lvov", "Ukraine"], ["moscou", "Russie"], ["mikhailovka", "Russie"], ["nahalal", "Israël"], ["neisse", "Pologne"], ["oran", "Algérie"], ["petah tikva", "Israël"], ["petah tiqva", "Israël"], ["rehovot", "Israël"], ["safed", "Israël"], ["sofia", "Bulgarie"], ["tel aviv", "Israël"], ["tel mond", "Israël"], ["tira", "Israël"], ["varsovie", "Pologne"], ["verkhne-oudinsk", "Russie"], ["vilnius", "Lituanie"], ["wroclawek", "Pologne"], ["wurzburg", "Allemagne"], ["zbarar", "Ukraine"], ["zinkov", "Ukraine"],
+]);
+
+function birthCountryFromCity(value: string): string {
+  const normalizedCity = normalize(value);
+  return birthCountryByCity.get(normalizedCity) ?? birthCountryByCity.get(normalizedCity.replaceAll("-", " ")) ?? "";
 }
 
 function personNameTokens(value: string): string[] {
@@ -218,7 +237,7 @@ function personWhere(type: string, language: string, search: string): { sql: str
 }
 
 function organizationWhere(type: string, category: string, country: string, search: string): { sql: string; values: string[] } {
-  const clauses: string[] = ["COALESCE(json_extract(payload, '$.dataQuality.status'), 'canonical') <> 'archived'"];
+  const clauses: string[] = ["COALESCE(json_extract(payload, '$.dataQuality.status'), 'canonical') <> 'archived'", "TRIM(REPLACE(COALESCE(json_extract(payload, '$.Organisme'), ''), '?', '')) <> ''"];
   const values: string[] = [];
   if (type) { clauses.push("json_extract(payload, '$.Type') = ?"); values.push(type); }
   if (category === "Editeur") { clauses.push("json_extract(payload, '$.Type') = 'Editeur'"); }
@@ -240,6 +259,7 @@ async function rpc(db: D1Database, name: string, args: Record<string, unknown>):
     const fromYear = Math.max(0, Number(args.p_from_year) || 0);
     const toYear = Math.max(0, Number(args.p_to_year) || 0);
     const books = await db.prepare("SELECT item.book_id, item.sort_year, item.title, book.payload FROM book_list_items AS item JOIN books AS book ON book.id = item.book_id WHERE item.is_valid = 1 ORDER BY item.sort_year, item.book_id").all<{ book_id: number; sort_year: number | null; title: string; payload: string }>();
+    const authors = await db.prepare("SELECT payload FROM people WHERE json_extract(payload, '$.\"Type Personne\"') = 'Auteur' AND COALESCE(json_extract(payload, '$.dataQuality.status'), 'canonical') <> 'archived'").all<{ payload: string }>();
     const timeline = new Map<number, { originals: number; translations: number }>();
     const originalAuthors = new Map<string, Set<number>>();
     const translatedBooks = new Map<string, number>();
@@ -251,6 +271,8 @@ async function rpc(db: D1Database, name: string, args: Record<string, unknown>):
     const translationPublishers = new Map<string, number>();
     const publicationLanguages = new Map<string, number>();
     const languageBreakdown = new Map<string, { originals: number; translations: number }>();
+    const writingGenres = new Map<string, number>();
+    const birthCountries = new Map<string, number>();
     const publicationCountries = new Map<string, number>();
     const pocketReissues = new Map<string, Set<number>>();
     const allLanguages = new Set<string>();
@@ -274,6 +296,11 @@ async function rpc(db: D1Database, name: string, args: Record<string, unknown>):
       source.set(value, bookIds);
     };
 
+    for (const author of authors.results) {
+      const country = birthCountryFromCity(text(parsePayload(author.payload), "Ville de Naissance"));
+      if (country) increment(birthCountries, country);
+    }
+
     for (const row of books.results) {
       const payload = parsePayload(row.payload);
       const language = text(payload, "Langue");
@@ -285,6 +312,7 @@ async function rpc(db: D1Database, name: string, args: Record<string, unknown>):
       const publishers = [text(payload, "Éditeur. 1. Nom", "Éditeur"), text(payload, "Éditeur. 2. Nom")].filter(Boolean);
       const countries = [text(payload, "Éditeur. 1. Pays", "Pays. Éditeur"), text(payload, "Éditeur. 2. Pays")].filter(Boolean);
       const workTitle = text(payload, "Titre. Original", "Titre Original", "Titre original", "Titre original en langue d'écriture") || row.title;
+      const genres = [text(payload, "Genre"), text(payload, "Genre. 1", "Genre.1"), text(payload, "Genre. 2", "Genre.2")].filter(Boolean);
       const isPocketReissue = normalize(text(payload, "CodeEdition")) === "p" || normalize(text(payload, "Éditeur. 1. Collection")).includes("livre de poche");
       if (language) allLanguages.add(language);
       for (const country of countries) allCountries.add(country);
@@ -297,6 +325,7 @@ async function rpc(db: D1Database, name: string, args: Record<string, unknown>):
         && (!fromYear || (hasValidYear && year >= fromYear))
         && (!toYear || (hasValidYear && year <= toYear));
       if (!matchesFilters) continue;
+      for (const genre of new Set(genres)) increment(writingGenres, genre);
       if (isPocketReissue) for (const author of new Set(authors)) addBook(pocketReissues, author, row.book_id);
       if (language) {
         increment(publicationLanguages, language);
@@ -339,6 +368,8 @@ async function rpc(db: D1Database, name: string, args: Record<string, unknown>):
       publisherOptions: sortLabels(allPublishers),
       yearOptions: [...allYears].sort((left, right) => left - right),
       languageBreakdown: [...languageBreakdown.entries()].map(([label, values]) => ({ label, ...values })).sort((left, right) => right.originals + right.translations - (left.originals + left.translations) || left.label.localeCompare(right.label)).slice(0, 100),
+      writingGenres: ranking(writingGenres),
+      birthCountries: ranking(birthCountries),
       rankings: {
         originalAuthors: ranking(originalAuthors),
         translatedBooks: ranking(translatedBooks),
@@ -663,7 +694,11 @@ function adminEntityType(value: string): AdminEntityType | null {
 }
 
 function adminPayload(value: unknown): Record<string, unknown> | null {
-  return typeof value === "object" && value !== null && !Array.isArray(value) ? value as Record<string, unknown> : null;
+  if (typeof value !== "object" || value === null || Array.isArray(value)) return null;
+  const payload = value as Record<string, unknown>;
+  const entries = Object.entries(payload);
+  if (entries.length > MAX_ADMIN_FIELDS || entries.some(([key, entry]) => key.length === 0 || key.length > 160 || typeof entry === "function" || typeof entry === "symbol" || (typeof entry === "string" && entry.length > MAX_ADMIN_TEXT_LENGTH))) return null;
+  return payload;
 }
 
 function adminLabel(payload: Record<string, unknown>, definition: AdminEntityDefinition): string {
@@ -796,6 +831,7 @@ function bookProjectionStatements(db: D1Database, id: number, payload: Record<st
 }
 
 function relationStatements(db: D1Database, bookId: number, body: AdminMutationPayload, now: string): D1Statement[] {
+  if ((Array.isArray(body.personLinks) && body.personLinks.length > MAX_RELATIONS) || (Array.isArray(body.organizationLinks) && body.organizationLinks.length > MAX_RELATIONS)) throw new Error("Too many relations");
   const statements = [db.prepare("DELETE FROM book_person_links WHERE book_id = ?").bind(bookId), db.prepare("DELETE FROM book_organization_links WHERE book_id = ?").bind(bookId)];
   if (Array.isArray(body.personLinks)) {
     body.personLinks.forEach((value, index) => { if (typeof value === "object" && value !== null && "personId" in value && "role" in value && typeof value.personId === "number" && typeof value.role === "string") statements.push(db.prepare("INSERT INTO book_person_links (book_id, person_id, role, position, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)").bind(bookId, value.personId, value.role, index + 1, now, now)); });
@@ -806,8 +842,24 @@ function relationStatements(db: D1Database, bookId: number, body: AdminMutationP
   return statements;
 }
 
+async function validateRelations(db: D1Database, body: AdminMutationPayload): Promise<string | null> {
+  const checks: Array<["people" | "organizations", unknown, "personId" | "organizationId"]> = [["people", body.personLinks, "personId"], ["organizations", body.organizationLinks, "organizationId"]];
+  for (const [table, links, field] of checks) {
+    if (!Array.isArray(links)) continue;
+    if (links.length > MAX_RELATIONS) return "Too many relations";
+    const ids = [...new Set(links.flatMap((link) => typeof link === "object" && link !== null && field in link && typeof link[field] === "number" && Number.isSafeInteger(link[field]) && link[field] > 0 ? [link[field] as number] : []))];
+    if (ids.length !== links.length) return "Invalid relation";
+    if (ids.length === 0) continue;
+    const placeholders = ids.map(() => "?").join(",");
+    const result = await db.prepare(`SELECT id FROM ${table} WHERE id IN (${placeholders}) AND archived_at IS NULL`).bind(...ids).all<{ id: number }>();
+    if (result.results.length !== ids.length) return "Unknown or archived relation";
+  }
+  return null;
+}
+
 function tableOfContentsStatements(db: D1Database, bookId: number, entries: unknown): D1Statement[] {
   if (!Array.isArray(entries)) return [];
+  if (entries.length > MAX_TABLE_OF_CONTENTS_ENTRIES) throw new Error("Too many table of contents entries");
   const statements = [db.prepare("DELETE FROM book_table_of_contents_entries WHERE book_id = ?").bind(bookId)];
   entries.forEach((value, index) => {
     if (typeof value !== "object" || value === null || Array.isArray(value)) return;
@@ -826,6 +878,8 @@ async function adminCreateOrUpdate(db: D1Database, entityType: AdminEntityType, 
   const label = adminLabel(payload, definition).trim();
   if (!label || label === "Sans titre") return { error: `${entityType === "books" ? "Titre" : "Nom"} obligatoire`, status: 400 };
   if (entityType === "organizations" && !text(payload, "Type")) return { error: "Type obligatoire", status: 400 };
+  const relationError = entityType === "books" ? await validateRelations(db, body) : null;
+  if (relationError) return { error: "Relations invalides", status: 422 };
   const duplicates = await duplicateRecords(db, entityType, label, id);
   if (duplicates.length && body.confirmDuplicate !== true) return { error: "Doublon potentiel détecté", status: 409, record: { duplicates } };
   const now = new Date().toISOString();

@@ -15,6 +15,8 @@ export interface LanguageBreakdownEntry {
 export interface GeneralStatisticsResult {
   timeline: Array<{ period: string; originals: number; translations: number }>;
   languageBreakdown: LanguageBreakdownEntry[];
+  writingGenres: GeneralRankingEntry[];
+  birthCountries: GeneralRankingEntry[];
   languageOptions: string[];
   countryOptions: string[];
   publisherOptions: string[];
@@ -35,6 +37,8 @@ export interface GeneralStatisticsResult {
 interface GeneralStatisticsRpc {
   timeline?: unknown;
   languageBreakdown?: unknown;
+  writingGenres?: unknown;
+  birthCountries?: unknown;
   languageOptions?: unknown;
   countryOptions?: unknown;
   publisherOptions?: unknown;
@@ -102,7 +106,7 @@ const emptyRankings: GeneralStatisticsResult["rankings"] = {
 };
 
 const getGeneralStatisticsCached = cacheData(
-  ["general-statistics-v4"],
+  ["general-statistics-v6"],
   async (filters: GeneralStatisticsFilters): Promise<GeneralStatisticsResult> => {
     const { data, error } = await d1Client.rpc<GeneralStatisticsRpc>("get_general_statistics", {
       p_from_year: filters.fromYear || null,
@@ -116,6 +120,8 @@ const getGeneralStatisticsCached = cacheData(
     return {
       timeline: timeline(data?.timeline),
       languageBreakdown: languageBreakdown(data?.languageBreakdown),
+      writingGenres: ranking(data?.writingGenres),
+      birthCountries: ranking(data?.birthCountries),
       languageOptions: options(data?.languageOptions),
       countryOptions: options(data?.countryOptions),
       publisherOptions: options(data?.publisherOptions),
@@ -146,4 +152,4 @@ export async function getGeneralStatistics(filters: GeneralStatisticsFilters = {
   });
 }
 
-export const emptyGeneralStatistics: GeneralStatisticsResult = { timeline: [], languageBreakdown: [], languageOptions: [], countryOptions: [], publisherOptions: [], yearOptions: [], rankings: emptyRankings };
+export const emptyGeneralStatistics: GeneralStatisticsResult = { timeline: [], languageBreakdown: [], writingGenres: [], birthCountries: [], languageOptions: [], countryOptions: [], publisherOptions: [], yearOptions: [], rankings: emptyRankings };
