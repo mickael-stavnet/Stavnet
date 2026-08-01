@@ -23,6 +23,7 @@ export interface GeneralStatisticsResult {
   yearOptions: number[];
   rankings: {
     originalAuthors: GeneralRankingEntry[];
+    originalBooks: GeneralRankingEntry[];
     translatedBooks: GeneralRankingEntry[];
     translatedAuthors: GeneralRankingEntry[];
     originalPublishers: GeneralRankingEntry[];
@@ -102,7 +103,7 @@ export interface GeneralStatisticsFilters {
 }
 
 const emptyRankings: GeneralStatisticsResult["rankings"] = {
-  originalAuthors: [], translatedBooks: [], translatedAuthors: [], originalPublishers: [], translators: [], translationPublishers: [], pocketReissues: [], publicationLanguages: [], publicationCountries: [],
+  originalAuthors: [], originalBooks: [], translatedBooks: [], translatedAuthors: [], originalPublishers: [], translators: [], translationPublishers: [], pocketReissues: [], publicationLanguages: [], publicationCountries: [],
 };
 
 const getGeneralStatisticsCached = cacheData(
@@ -128,6 +129,7 @@ const getGeneralStatisticsCached = cacheData(
       yearOptions: years(data?.yearOptions),
       rankings: {
         originalAuthors: ranking(source?.originalAuthors),
+        originalBooks: ranking(source?.originalBooks),
         translatedBooks: ranking(source?.translatedBooks),
         translatedAuthors: ranking(source?.translatedAuthors),
         originalPublishers: ranking(source?.originalPublishers),

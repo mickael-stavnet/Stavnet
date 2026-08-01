@@ -1,11 +1,13 @@
 "use client";
 
 import { useEffect, useMemo, useState, type ReactNode } from "react";
-import { Area, AreaChart, Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
-import { BarChart3, CalendarDays, CircleAlert, Languages, MapPinned, UsersRound } from "lucide-react";
+import { Bar, BarChart, CartesianGrid, Cell, LabelList, XAxis, YAxis } from "recharts";
+import { BarChart3, BookOpen, CalendarDays, CircleAlert, Languages, MapPinned, Network, UsersRound } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart";
 import type { DetailStatistics, StatisticsDistributionItem, StatisticsGranularity, StatisticsSeriesPoint } from "@/lib/detail-statistics";
+
+type DetailStatisticsKind = "book" | "person" | "organization";
 
 interface StatisticsLabels {
   title: string;
@@ -20,21 +22,26 @@ interface StatisticsLabels {
   languages: string;
   countries: string;
   roles: string;
+  overview: string;
+  period: string;
+  records: string;
+  languagesCount: string;
+  countriesCount: string;
+  rolesCount: string;
+  reach: string;
+  contributions: string;
+  bookActivity: string;
+  personActivity: string;
+  organizationActivity: string;
 }
 
 interface DetailStatisticsPanelProps {
   statistics: DetailStatistics;
+  kind: DetailStatisticsKind;
   labels: StatisticsLabels;
 }
 
-const timelineConfig = {
-  primary: { label: "primary", color: "#ff1d1d" },
-  secondary: { label: "secondary", color: "#07384a" },
-} satisfies ChartConfig;
-
-const distributionConfig = {
-  value: { label: "value", color: "#0f6b86" },
-} satisfies ChartConfig;
+const rankingBarColors = ["#07384a", "#e23d3d", "#2f6fdb", "#9b4d96", "#17826d", "#e58b20", "#b43d6a", "#308c94"];
 
 function groupTimeline(points: StatisticsSeriesPoint[], granularity: StatisticsGranularity): StatisticsSeriesPoint[] {
   if (granularity === "year" || granularity === "month") return points;
@@ -49,23 +56,33 @@ function groupTimeline(points: StatisticsSeriesPoint[], granularity: StatisticsG
   return [...groups.entries()].map(([period, value]) => ({ period, ...value }));
 }
 
-function ChartCard({ title, icon, children }: { title: string; icon: ReactNode; children: ReactNode }) {
-  return <section className="min-w-0 border border-[#7aa8b7] bg-[#b2e0ef] shadow-[2px_2px_5px_rgba(0,0,0,0.13)]"><div className="flex min-h-10 items-center gap-2 border-b border-[#7aa8b7] bg-[#fff8c8] px-3 text-[12px] font-semibold uppercase leading-tight text-[#07384a]">{icon}{title}</div>{children}</section>;
+function AnalyticsCard({ title, icon, children }: { title: string; icon: ReactNode; children: ReactNode }) {
+  return <section className="min-w-0 overflow-hidden border border-[#6295a9] bg-[#eaf6fa] shadow-[2px_2px_0_rgba(0,43,112,0.14)]"><div className="flex min-h-11 items-center gap-2 border-b border-[#6295a9] bg-[#b5e0ee] px-3 text-sm font-bold text-[#07384a]">{icon}<h3>{title}</h3></div>{children}</section>;
 }
 
 function EmptyChart({ message }: { message: string }) {
-  return <div className="flex min-h-[220px] items-center justify-center px-6 text-center text-sm leading-5 text-[#07384a]"><CircleAlert className="mr-2 size-4 shrink-0" />{message}</div>;
+  return <p className="flex min-h-[238px] items-center justify-center px-6 text-center text-sm leading-5 text-[#315565]"><CircleAlert className="me-2 size-4 shrink-0" />{message}</p>;
+}
+
+function SummaryMetric({ label, value, accent = false }: { label: string; value: string | number; accent?: boolean }) {
+  return <div className="flex min-h-[70px] min-w-0 flex-col justify-center border-s border-[#6295a9] px-4 py-3 first:border-s-0 sm:px-5"><p className="text-xs font-bold leading-4 uppercase tracking-wide text-[#315565]">{label}</p><p className={`mt-1.5 break-words text-2xl font-bold leading-none tabular-nums ${accent ? "text-[#002b9e]" : "text-[#07384a]"}`}>{value}</p></div>;
 }
 
 function DistributionChart({ title, icon, data, emptyLabel }: { title: string; icon: ReactNode; data: StatisticsDistributionItem[]; emptyLabel: string }) {
-  return <ChartCard title={title} icon={icon}>{data.length === 0 ? <EmptyChart message={emptyLabel} /> : <div className="p-3"><ChartContainer config={distributionConfig} className="h-[220px] w-full aspect-auto"><BarChart accessibilityLayer data={data} layout="vertical" margin={{ left: 0, right: 10 }}><CartesianGrid horizontal={false} /><YAxis dataKey="label" type="category" tickLine={false} axisLine={false} width={82} tick={{ fontSize: 11 }} /><XAxis type="number" hide /><ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} /><Bar dataKey="value" fill="var(--color-value)" radius={3} /></BarChart></ChartContainer></div>}</ChartCard>;
+  const chartData = data.slice(0, 8);
+  const config = Object.fromEntries(chartData.map((item, index) => [item.label, { label: item.label, color: rankingBarColors[index % rankingBarColors.length] }])) satisfies ChartConfig;
+  return <AnalyticsCard title={title} icon={icon}>{chartData.length === 0 ? <EmptyChart message={emptyLabel} /> : <div className="p-3"><ChartContainer config={config} className="h-[238px] w-full aspect-auto"><BarChart accessibilityLayer data={chartData} layout="vertical" margin={{ left: 0, right: 26 }}><CartesianGrid horizontal={false} /><XAxis type="number" allowDecimals={false} hide /><YAxis dataKey="label" type="category" width={92} tickLine={false} axisLine={false} tick={{ fontSize: 11 }} /><ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} /><Bar dataKey="value" radius={[0, 3, 3, 0]}>{chartData.map((item, index) => <Cell key={item.label} fill={rankingBarColors[index % rankingBarColors.length]} />)}<LabelList dataKey="value" position="right" fill="#07384a" fontSize={11} /></Bar></BarChart></ChartContainer></div>}</AnalyticsCard>;
 }
 
-export function DetailStatisticsPanel({ statistics, labels }: DetailStatisticsPanelProps) {
+export function DetailStatisticsPanel({ statistics, kind, labels }: DetailStatisticsPanelProps) {
   const [granularity, setGranularity] = useState<StatisticsGranularity>(statistics.timeline.length > 12 ? "decade" : "year");
   const [reducedMotion, setReducedMotion] = useState(false);
   const [visibleSeries, setVisibleSeries] = useState({ primary: true, secondary: true });
   const chartData = useMemo(() => groupTimeline(statistics.timeline, granularity), [granularity, statistics.timeline]);
+  const timelineConfig = useMemo(() => ({ primary: { label: labels.primary, color: "#e23d3d" }, secondary: { label: labels.secondary, color: "#07384a" } }), [labels.primary, labels.secondary]);
+  const totals = useMemo(() => statistics.timeline.reduce((current, point) => ({ primary: current.primary + point.primary, secondary: current.secondary + point.secondary }), { primary: 0, secondary: 0 }), [statistics.timeline]);
+  const period = statistics.timeline.length > 0 ? `${statistics.timeline[0]?.period} - ${statistics.timeline[statistics.timeline.length - 1]?.period}` : "-";
+  const activityTitle = kind === "book" ? labels.bookActivity : kind === "person" ? labels.personActivity : labels.organizationActivity;
   const animationDuration = reducedMotion ? 0 : 220;
 
   useEffect(() => {
@@ -76,20 +93,30 @@ export function DetailStatisticsPanel({ statistics, labels }: DetailStatisticsPa
     return () => media.removeEventListener("change", update);
   }, []);
 
-  return <div className="space-y-3" aria-label={labels.title}>
-    <div className="flex flex-wrap items-center justify-between gap-2 border border-[#7aa8b7] bg-[#a7dcee] px-3 py-2">
-      <div className="flex items-center gap-2 text-[13px] font-bold text-[#07384a]"><BarChart3 className="size-4" />{labels.title}</div>
-      <div className="flex rounded-md border border-[#7aa8b7] bg-[#eaf5f8] p-0.5" role="group" aria-label={labels.timeline}>
-        {(["year", "decade", "month"] as const).map((option) => <Button key={option} size="xs" variant={granularity === option ? "default" : "ghost"} className={granularity === option ? "bg-[#07384a] text-white hover:bg-[#07384a]/90" : "text-[#07384a]"} onClick={() => setGranularity(option)}>{labels[option]}</Button>)}
+  return <section aria-label={labels.title} className="w-full space-y-3">
+    <AnalyticsCard title={labels.overview} icon={<BarChart3 className="size-4" />}>
+      <div className="grid grid-cols-2 divide-y divide-[#6295a9] sm:grid-cols-3 sm:divide-x sm:divide-y-0 xl:grid-cols-6">
+        <SummaryMetric label={labels.primary} value={totals.primary} accent />
+        <SummaryMetric label={labels.secondary} value={totals.secondary} accent />
+        <SummaryMetric label={labels.period} value={period} />
+        <SummaryMetric label={labels.languagesCount} value={statistics.primaryDistribution.length} />
+        <SummaryMetric label={labels.countriesCount} value={statistics.secondaryDistribution.length} />
+        <SummaryMetric label={labels.rolesCount} value={statistics.tertiaryDistribution.length} />
       </div>
-    </div>
-    <div className="grid gap-3 xl:grid-cols-2">
-      <ChartCard title={labels.timeline} icon={<CalendarDays className="size-4" />}>
-        {granularity === "month" ? <EmptyChart message={labels.monthlyUnavailable} /> : chartData.length === 0 ? <EmptyChart message={labels.noData} /> : <div className="p-3"><ChartContainer config={{ ...timelineConfig, primary: { ...timelineConfig.primary, label: labels.primary }, secondary: { ...timelineConfig.secondary, label: labels.secondary } }} className="h-[220px] w-full aspect-auto"><AreaChart accessibilityLayer data={chartData} margin={{ left: -14, right: 8 }}><defs><linearGradient id="statistics-primary" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="var(--color-primary)" stopOpacity={0.42} /><stop offset="95%" stopColor="var(--color-primary)" stopOpacity={0.04} /></linearGradient></defs><CartesianGrid vertical={false} /><XAxis dataKey="period" tickLine={false} axisLine={false} tickMargin={8} /><YAxis allowDecimals={false} tickLine={false} axisLine={false} /><ChartTooltip content={<ChartTooltipContent />} />{visibleSeries.secondary ? <Area dataKey="secondary" type="monotone" stroke="var(--color-secondary)" fill="transparent" strokeWidth={2} animationDuration={animationDuration} /> : null}{visibleSeries.primary ? <Area dataKey="primary" type="monotone" stroke="var(--color-primary)" fill="url(#statistics-primary)" strokeWidth={2} animationDuration={animationDuration} /> : null}</AreaChart></ChartContainer><div className="mt-2 flex flex-wrap gap-2" aria-label={labels.timeline}>{(["primary", "secondary"] as const).map((key) => <button key={key} type="button" className={`inline-flex items-center gap-1.5 text-xs ${visibleSeries[key] ? "text-[#07384a]" : "text-[#5d7f8a] line-through"}`} onClick={() => setVisibleSeries((current) => ({ ...current, [key]: !current[key] }))}><span className="size-2 rounded-full" style={{ backgroundColor: key === "primary" ? "#ff1d1d" : "#07384a" }} />{labels[key]}</button>)}</div></div>}
-      </ChartCard>
-      <DistributionChart title={labels.languages} icon={<Languages className="size-4" />} data={statistics.primaryDistribution} emptyLabel={labels.noData} />
+    </AnalyticsCard>
+
+    <AnalyticsCard title={activityTitle} icon={<CalendarDays className="size-4" />}>
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#6295a9] bg-[#dceff5] px-3 py-2.5">
+        <div className="flex flex-wrap gap-2" aria-label={labels.timeline}>{(["primary", "secondary"] as const).map((key) => <button key={key} type="button" className={`inline-flex min-h-8 items-center gap-1.5 border px-2 text-xs font-semibold transition-colors ${visibleSeries[key] ? "border-[#456f87] bg-white text-[#07384a]" : "border-transparent bg-transparent text-[#5d7f8a] line-through"}`} onClick={() => setVisibleSeries((current) => ({ ...current, [key]: !current[key] }))}><span className="size-2 rounded-full" style={{ backgroundColor: key === "primary" ? "#e23d3d" : "#07384a" }} />{labels[key]}</button>)}</div>
+        <div className="flex border border-[#6295a9] bg-[#eaf6fa] p-0.5" role="group" aria-label={labels.timeline}>{(["year", "decade", "month"] as const).map((option) => <Button key={option} size="xs" variant={granularity === option ? "default" : "ghost"} className={granularity === option ? "rounded-none bg-[#002b9e] text-white hover:bg-[#002b9e]/90" : "rounded-none text-[#07384a]"} onClick={() => setGranularity(option)}>{labels[option]}</Button>)}</div>
+      </div>
+      {granularity === "month" && !statistics.timelineHasMonthlyDates ? <EmptyChart message={labels.monthlyUnavailable} /> : chartData.length === 0 ? <EmptyChart message={labels.noData} /> : <div className="p-3 sm:p-4"><ChartContainer config={timelineConfig} className="h-[260px] w-full aspect-auto"><BarChart accessibilityLayer data={chartData} margin={{ left: -10, right: 10 }}><CartesianGrid vertical={false} /><XAxis dataKey="period" tickLine={false} axisLine={false} tickMargin={8} /><YAxis allowDecimals={false} tickLine={false} axisLine={false} /><ChartTooltip content={<ChartTooltipContent />} />{visibleSeries.primary ? <Bar dataKey="primary" fill="var(--color-primary)" radius={[2, 2, 0, 0]} animationDuration={animationDuration} /> : null}{visibleSeries.secondary ? <Bar dataKey="secondary" fill="var(--color-secondary)" radius={[2, 2, 0, 0]} animationDuration={animationDuration} /> : null}</BarChart></ChartContainer></div>}
+    </AnalyticsCard>
+
+    <div className="grid gap-3 xl:grid-cols-3">
+      <DistributionChart title={labels.reach} icon={<Languages className="size-4" />} data={statistics.primaryDistribution} emptyLabel={labels.noData} />
       <DistributionChart title={labels.countries} icon={<MapPinned className="size-4" />} data={statistics.secondaryDistribution} emptyLabel={labels.noData} />
-      <DistributionChart title={labels.roles} icon={<UsersRound className="size-4" />} data={statistics.tertiaryDistribution} emptyLabel={labels.noData} />
+      <DistributionChart title={labels.contributions} icon={kind === "organization" ? <Network className="size-4" /> : kind === "person" ? <BookOpen className="size-4" /> : <UsersRound className="size-4" />} data={statistics.tertiaryDistribution} emptyLabel={labels.noData} />
     </div>
-  </div>;
+  </section>;
 }

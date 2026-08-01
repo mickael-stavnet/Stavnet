@@ -262,6 +262,7 @@ async function rpc(db: D1Database, name: string, args: Record<string, unknown>):
     const authors = await db.prepare("SELECT payload FROM people WHERE json_extract(payload, '$.\"Type Personne\"') = 'Auteur' AND COALESCE(json_extract(payload, '$.dataQuality.status'), 'canonical') <> 'archived'").all<{ payload: string }>();
     const timeline = new Map<number, { originals: number; translations: number }>();
     const originalAuthors = new Map<string, Set<number>>();
+    const originalBooks = new Map<string, Set<number>>();
     const translatedBooks = new Map<string, number>();
     const translatedAuthors = new Map<string, Set<number>>();
     const originalAuthorsByTitle = new Map<string, Set<string>>();
@@ -342,6 +343,7 @@ async function rpc(db: D1Database, name: string, args: Record<string, unknown>):
         timeline.set(year, point);
       }
       if (isOriginal) {
+        addBook(originalBooks, workTitle, row.book_id);
         for (const author of new Set(authors)) addBook(originalAuthors, author, row.book_id);
         const titleKey = normalize(workTitle);
         if (titleKey && authors.length > 0) originalAuthorsByTitle.set(titleKey, new Set([...(originalAuthorsByTitle.get(titleKey) ?? []), ...authors]));
@@ -372,6 +374,7 @@ async function rpc(db: D1Database, name: string, args: Record<string, unknown>):
       birthCountries: ranking(birthCountries),
       rankings: {
         originalAuthors: ranking(originalAuthors),
+        originalBooks: ranking(originalBooks),
         translatedBooks: ranking(translatedBooks),
         translatedAuthors: ranking(translatedAuthors),
         originalPublishers: ranking(originalPublishers),

@@ -1,12 +1,3 @@
-# 01-08-2026
-
-- 10:15 - Correction des accès rapides de la page Menu : « Éditions » ouvre désormais la liste des organismes filtrée sur les maisons d’édition et « Bibliothèques » sur les bibliothèques.
-- 10:36 - Enrichissement du tableau de bord Statistiques : ajout des répartitions par genre d’écriture et pays de naissance des auteurs, calculées depuis les métadonnées bibliographiques et biographiques disponibles.
-- 10:38 - Amélioration du parcours organismes : « Librairies » ouvre les autres organismes, la liste respecte le sens RTL en arabe et en hébreu, et la recherche affiche son actualisation.
-- 10:42 - Simplification des compteurs de la liste organismes : le total de la base n’est affiché qu’en présence d’une recherche ou d’un filtre actif.
-- 11:13 - Renforcement transverse de la sécurité : validation et plafonnement des entrées publiques et administratives, limites anti-abus, contrôle d’origine des mutations, validation des relations D1, contrôle de signature des images téléversées, en-têtes CSP et protections navigateur, secrets d’exemple neutralisés et contrôles de sécurité ajoutés à la CI.
-- 12:18 - Refonte responsive majeure de la page Statistiques : mise en page fluide du tableau de bord, des filtres et des graphiques sur mobile, tablette, portable et grand écran, sans débordement horizontal ni contenu coupé.
-
 # 12-06-2026
 
 - 15:31 - Refonte du jeu d’icônes de navigation de l’application avec retour au set PNG partagé utilisé sur les écrans principaux afin d’uniformiser durablement la navigation basse.
@@ -313,3 +304,17 @@
 - 10:33 - Réorganisation de la fiche livre administrateur : position du titre anglais, renommage des rubriques et déplacement des références techniques après l’ouvrage.
 - 11:38 - Refonte analytique du tableau de bord Statistiques : filtres combinables par période, langue, pays de publication et éditeur, calculs serveur cohérents, titres explicatifs et graphiques exclusivement en barres.
 - 15:47 - Harmonisation des quatre occurrences contributeur de Jean=Luc Allouch/Allouche en « Jean-Luc Allouche », avec mise à jour des recherches et facettes D1.
+
+# 01-08-2026
+
+- 10:15 - Correction des accès rapides de la page Menu : « Éditions » ouvre désormais la liste des organismes filtrée sur les maisons d’édition et « Bibliothèques » sur les bibliothèques.
+- 10:36 - Enrichissement du tableau de bord Statistiques : ajout des répartitions par genre d’écriture et pays de naissance des auteurs, calculées depuis les métadonnées bibliographiques et biographiques disponibles.
+- 10:38 - Amélioration du parcours organismes : « Librairies » ouvre les autres organismes, la liste respecte le sens RTL en arabe et en hébreu, et la recherche affiche son actualisation.
+- 10:42 - Simplification des compteurs de la liste organismes : le total de la base n’est affiché qu’en présence d’une recherche ou d’un filtre actif.
+- 11:13 - Renforcement transverse de la sécurité : validation et plafonnement des entrées publiques et administratives, limites anti-abus, contrôle d’origine des mutations, validation des relations D1, contrôle de signature des images téléversées, en-têtes CSP et protections navigateur, secrets d’exemple neutralisés et contrôles de sécurité ajoutés à la CI.
+- 12:18 - Refonte responsive majeure de la page Statistiques : mise en page fluide du tableau de bord, des filtres et des graphiques sur mobile, tablette, portable et grand écran, sans débordement horizontal ni contenu coupé.
+- 14:41 - Refonte ergonomique du modal de comparaison : sélection de type clarifiée, recherche et sélection active regroupées, liste verticale plus lisible, états sélectionnés explicites et action de validation priorisée.
+- 14:53 - Enrichissement du tableau de bord Statistiques avec un classement des ouvrages originaux par nombre de publications, distinct des auteurs et organismes, et clarification du classement des auteurs dont les ouvrages sont le plus publiés en traduction.
+- 15:06 - Refonte analytique des onglets Statistiques des fiches livre, personne et organisme : synthèse éditoriale, activité chronologique en barres, portées linguistique et géographique, et contributions adaptées à chaque type de fiche.
+- 15:07 - Ajout d’un chargement progressif dans le modal de comparaison : 25 fiches initiales par type, totaux réels affichés et pages suivantes récupérées automatiquement au défilement de la liste.
+- 15:25 - Refonte de la page de comparaison de fiches : parcours visuel aligné sur le tableau de bord Statistiques, état sans sélection guidé et six comparaisons explicites des volumes, activités, portées, langues, pays et contributions.
