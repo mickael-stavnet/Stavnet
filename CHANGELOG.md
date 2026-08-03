@@ -327,3 +327,4 @@
 - 13:07 - Correction du raccordement Vercel Production au Worker D1 actuel : rotation du secret, exclusion des fichiers `.env` locaux du paquet de déploiement et redéploiement validé sur la fiche `L’Autre Parnasse` (ID 5034) avec les compteurs production 3771/5054.
 - 14:13 - Mise en place du socle SEO public : sitemap dynamique des pages et fiches D1, robots.txt, titres et descriptions localisés, URLs canoniques, hreflang, Open Graph, Twitter Cards, favicon, mots-clés éditoriaux et données structurées WebSite/Organization.
 - 14:20 - Intégration de Google Tag Manager `GTM-NGRF2WB7` dans le layout global, avec initialisation du dataLayer et fallback noscript pour le suivi des pages publiques.
+- 14:35 - Simplification du sitemap public pour ne conserver que les pages principales localisées et exclure les fiches détaillées ainsi que les sous-pages dynamiques.
