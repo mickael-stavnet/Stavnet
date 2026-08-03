@@ -35,7 +35,9 @@ export async function generateMetadata({ params, searchParams }: PersonDetailsPa
     name: trimmedName || null,
     resolvedName: person?.name ?? null,
   });
-  return buildPersonPageMetadata(locale, "/persons/details", person?.name);
+  const canonicalName = person?.name ?? trimmedName;
+  const pathname = canonicalName ? `/persons/details?name=${encodeURIComponent(canonicalName)}` : "/persons/details";
+  return buildPersonPageMetadata(locale, pathname, person?.name);
 }
 
 export default async function PersonDetailsPage({ params, searchParams }: PersonDetailsPageProps) {

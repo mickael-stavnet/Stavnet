@@ -16,7 +16,8 @@ interface BookPressCritiquesRouteProps {
 export async function generateMetadata({ params, searchParams }: BookPressCritiquesRouteProps): Promise<Metadata> {
   const [{ locale }, { id }] = await Promise.all([params, searchParams]);
   const book = id ? await getBookDetailById(id) : await getDefaultBookDetail();
-  return buildBookPageMetadata(locale, "pressCritiques", "/books/details/press-critiques", book?.title);
+  const pathname = id ? `/books/details/press-critiques?id=${encodeURIComponent(id)}` : "/books/details/press-critiques";
+  return buildBookPageMetadata(locale, "pressCritiques", pathname, book?.title);
 }
 
 export default async function BookPressCritiquesRoute({ searchParams }: BookPressCritiquesRouteProps) {

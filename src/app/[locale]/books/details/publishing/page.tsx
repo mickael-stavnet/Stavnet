@@ -16,7 +16,8 @@ interface BookPublishingRouteProps {
 export async function generateMetadata({ params, searchParams }: BookPublishingRouteProps): Promise<Metadata> {
   const [{ locale }, { id }] = await Promise.all([params, searchParams]);
   const book = id ? await getBookDetailById(id) : await getDefaultBookDetail();
-  return buildBookPageMetadata(locale, "publishing", "/books/details/publishing", book?.title);
+  const pathname = id ? `/books/details/publishing?id=${encodeURIComponent(id)}` : "/books/details/publishing";
+  return buildBookPageMetadata(locale, "publishing", pathname, book?.title);
 }
 
 export default async function BookPublishingRoute({ searchParams }: BookPublishingRouteProps) {

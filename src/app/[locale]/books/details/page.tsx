@@ -16,7 +16,8 @@ interface BookDetailsPageProps {
 export async function generateMetadata({ params, searchParams }: BookDetailsPageProps): Promise<Metadata> {
   const [{ locale }, { id }] = await Promise.all([params, searchParams]);
   const book = id ? await getBookDetailById(id) : await getDefaultBookDetail();
-  return buildBookPageMetadata(locale, "bookRecord", "/books/details", book?.title);
+  const pathname = id ? `/books/details?id=${encodeURIComponent(id)}` : "/books/details";
+  return buildBookPageMetadata(locale, "bookRecord", pathname, book?.title);
 }
 
 export default async function BookDetailsPage({ searchParams }: BookDetailsPageProps) {

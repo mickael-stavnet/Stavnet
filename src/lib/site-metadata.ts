@@ -21,8 +21,18 @@ type BookPageKey =
   | "availability"
   | "publishing";
 
-const SITE_NAME = "Israeli Literature";
-const SITE_URL = "https://israeli-literature.com";
+export const SITE_NAME = "Israeli Literature";
+export const SITE_URL = "https://israeli-literature.com";
+const SITE_KEYWORDS = [
+  "Israeli literature",
+  "Israeli books",
+  "Israeli authors",
+  "Hebrew literature",
+  "Israeli book database",
+  "Israeli translations",
+  "bibliography",
+  "biography",
+];
 
 type LocaleMetadataDictionary = {
   siteDescription: string;
@@ -697,15 +707,28 @@ function buildLocalizedPath(locale: AppLocale, pathname: string): string {
   return `/${locale}${normalizedPath}`;
 }
 
+function buildLocalizedUrl(locale: AppLocale, pathname: string): string {
+  return new URL(buildLocalizedPath(locale, pathname), SITE_URL).toString();
+}
+
+function buildLanguageAlternates(pathname: string): Record<string, string> {
+  return {
+    ...Object.fromEntries(routing.locales.map((locale) => [locale, buildLocalizedUrl(locale, pathname)])),
+    "x-default": buildLocalizedUrl(routing.defaultLocale, pathname),
+  };
+}
+
 function buildMetadata(locale: string, title: string, description: string, pathname: string): Metadata {
   const normalizedLocale = normalizeLocale(locale);
-  const url = buildLocalizedPath(normalizedLocale, pathname);
+  const url = buildLocalizedUrl(normalizedLocale, pathname);
 
   return {
     title: `${title} | ${SITE_NAME}`,
     description,
+    keywords: [...SITE_KEYWORDS, title],
     alternates: {
       canonical: url,
+      languages: buildLanguageAlternates(pathname),
     },
     openGraph: {
       type: "website",
@@ -731,12 +754,19 @@ export function buildSiteMetadata(locale: string): Metadata {
     applicationName: SITE_NAME,
     title: SITE_NAME,
     description: dictionary.siteDescription,
+    keywords: SITE_KEYWORDS,
+    alternates: {
+      canonical: buildLocalizedUrl(normalizedLocale, ""),
+      languages: buildLanguageAlternates(""),
+    },
     icons: {
-      icon: "/icons/logo/icon-stavnet.jpg",
+      icon: [{ url: "/icons/logo/icon-stavnet.jpg", type: "image/jpeg" }],
+      shortcut: ["/icons/logo/icon-stavnet.jpg"],
+      apple: [{ url: "/icons/logo/icon-stavnet.jpg", type: "image/jpeg" }],
     },
     openGraph: {
       type: "website",
-      url: buildLocalizedPath(normalizedLocale, ""),
+      url: buildLocalizedUrl(normalizedLocale, ""),
       siteName: SITE_NAME,
       title: SITE_NAME,
       description: dictionary.siteDescription,

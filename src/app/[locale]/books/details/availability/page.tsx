@@ -16,7 +16,8 @@ interface BookAvailabilityRouteProps {
 export async function generateMetadata({ params, searchParams }: BookAvailabilityRouteProps): Promise<Metadata> {
   const [{ locale }, { id }] = await Promise.all([params, searchParams]);
   const book = id ? await getBookDetailById(id) : await getDefaultBookDetail();
-  return buildBookPageMetadata(locale, "availability", "/books/details/availability", book?.title);
+  const pathname = id ? `/books/details/availability?id=${encodeURIComponent(id)}` : "/books/details/availability";
+  return buildBookPageMetadata(locale, "availability", pathname, book?.title);
 }
 
 export default async function BookAvailabilityRoute({ searchParams }: BookAvailabilityRouteProps) {

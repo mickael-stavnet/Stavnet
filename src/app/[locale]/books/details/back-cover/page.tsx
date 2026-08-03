@@ -16,7 +16,8 @@ interface BookBackCoverRouteProps {
 export async function generateMetadata({ params, searchParams }: BookBackCoverRouteProps): Promise<Metadata> {
   const [{ locale }, { id }] = await Promise.all([params, searchParams]);
   const book = id ? await getBookDetailById(id) : await getDefaultBookDetail();
-  return buildBookPageMetadata(locale, "backCover", "/books/details/back-cover", book?.title);
+  const pathname = id ? `/books/details/back-cover?id=${encodeURIComponent(id)}` : "/books/details/back-cover";
+  return buildBookPageMetadata(locale, "backCover", pathname, book?.title);
 }
 
 export default async function BookBackCoverRoute({ searchParams }: BookBackCoverRouteProps) {

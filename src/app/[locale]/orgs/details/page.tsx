@@ -20,7 +20,9 @@ interface OrganizationDetailsPageProps {
 export async function generateMetadata({ params, searchParams }: OrganizationDetailsPageProps): Promise<Metadata> {
   const [{ locale }, { name }] = await Promise.all([params, searchParams]);
   const organization = name ? await getOrganizationDetailByName(name) : await getDefaultOrganizationDetail();
-  return buildOrganizationPageMetadata(locale, "/orgs/details", organization?.name);
+  const canonicalName = organization?.name ?? name?.trim() ?? "";
+  const pathname = canonicalName ? `/orgs/details?name=${encodeURIComponent(canonicalName)}` : "/orgs/details";
+  return buildOrganizationPageMetadata(locale, pathname, organization?.name);
 }
 
 export default async function OrganizationDetailsPage({ params, searchParams }: OrganizationDetailsPageProps) {
