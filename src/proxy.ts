@@ -14,7 +14,7 @@ export default function proxy(request: NextRequest): NextResponse {
     "style-src 'self' 'unsafe-inline'",
     "img-src 'self' data: blob: https://cdn.pixabay.com https://st3.depositphotos.com https://*.public.blob.vercel-storage.com",
     "font-src 'self'",
-    "connect-src 'self'",
+    "connect-src 'self' blob:",
     "object-src 'none'",
     "base-uri 'self'",
     "form-action 'self'",

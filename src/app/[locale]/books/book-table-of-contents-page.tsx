@@ -21,7 +21,7 @@ function PersonLink({ name }: { name: string }) {
     <Link
       href={{ pathname: "/persons/details", query: { name } }}
       aria-label={t("tableOfContents.personLink", { name })}
-      className="w-fit font-medium text-[#a31d24] underline decoration-[#c85656] decoration-[1.5px] underline-offset-2 transition-colors duration-150 hover:text-[#6f1017] hover:decoration-[#6f1017] focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#a31d24] focus-visible:ring-offset-2 focus-visible:ring-offset-[#a6d9eb]"
+      className="w-fit font-medium text-black underline decoration-black decoration-[1.5px] underline-offset-2 transition-colors duration-150 hover:text-black hover:decoration-black focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#a31d24] focus-visible:ring-offset-2 focus-visible:ring-offset-[#a6d9eb]"
     >
       {name}
     </Link>

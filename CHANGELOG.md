@@ -318,3 +318,7 @@
 - 15:06 - Refonte analytique des onglets Statistiques des fiches livre, personne et organisme : synthèse éditoriale, activité chronologique en barres, portées linguistique et géographique, et contributions adaptées à chaque type de fiche.
 - 15:07 - Ajout d’un chargement progressif dans le modal de comparaison : 25 fiches initiales par type, totaux réels affichés et pages suivantes récupérées automatiquement au défilement de la liste.
 - 15:25 - Refonte de la page de comparaison de fiches : parcours visuel aligné sur le tableau de bord Statistiques, état sans sélection guidé et six comparaisons explicites des volumes, activités, portées, langues, pays et contributions.
+
+# 03-08-2026
+
+- 09:45 - Ajout de deux analyses chronologiques indépendantes au tableau de bord Statistiques : publications de livres filtrées uniquement par pays de publication et traductions filtrées uniquement par langue, avec barres par décennie et libellés localisés.
